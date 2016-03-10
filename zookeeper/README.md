@@ -9,7 +9,7 @@ PreRequisites
 =============
 
 Ensure that the Zookeeper service is installated and up and running
-Download Zookeeper from https://github.com/site24x7/server-plugins/zookeeper/zookeeper.py 
+Download Zookeeper from https://github.com/site24x7/plugins/blob/master/zookeeper/zookeeper.py 
 Place it in the plugin folder 'zookeeper/zookeeper.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
 
 
