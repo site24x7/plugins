@@ -62,12 +62,4 @@ Some of the collected mongodb attributes are as follows:
 
 "cursors_total_open" : Total number of open cursors
 
-"heap_usage" : Total heap usage 
-
-"memory_mapped" : 
-
-"memory_resident" : 
-
-"memory_virtual" : 
-
-"flush_length_avrg" : 
+"heap_usage" : Total heap usage
