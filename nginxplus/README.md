@@ -10,7 +10,7 @@ PreRequisites
 
 Ensure that the NGINX server is installed and is up and running
 Make sure the status URL is configured in your NGINX server
-Download NGINX plugin from https://github.com/site24x7/server-plugins/nginxplus/nginxplus.py
+Download NGINX plugin from https://github.com/site24x7/plugins/blob/master/nginxplus/nginxplus.py
 Place it in the plugin folder 'nginxplus/nginxplus.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
 
 
