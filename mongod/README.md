@@ -8,7 +8,7 @@ MongoDB Plugin is for monitoring the performance metrics of MongoDB database.
 PreRequisites
 =============
 
-Download mongodb plugin from https://github.com/site24x7/server-plugins/mongod/mongod.py
+Download mongodb plugin from https://github.com/site24x7/plugins/blob/master/mongod/mongod.py
 Place the plugin folder 'mongod/mongod.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
 Our plugin uses 'pymongo' module to interact with the MongoDB server. Have this installed to use this feature.
 Installation of the pymongo module is as follows
