@@ -8,7 +8,7 @@ MySQL Plugin is for monitoring the performance metrics of MySQL database.
 PreRequisites
 ======================
 
-Download mysql plugin from https://github.com/site24x7/server-plugins/mysql/mysql.py
+Download mysql plugin from https://github.com/site24x7/plugins/blob/master/mysql/mysql.py
 Place the plugin folder 'mysql/mysql.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
 Our plugin uses 'pymysql' module to interact with the MySQL server. Have this installed to use this feature.
 Installation of the pymysql module to interact with MySQL
