@@ -6,7 +6,9 @@ Use free plugins to monitor unlimited attributes with unlimited plugin monitors.
 
 Related Links
 =============
-* [Site24x7 Linux Monitoring] (https://www.site24x7.com/linux-monitoring.html)
+* [Site24x7 Server Monitoring] (https://www.site24x7.com/server-monitoring.html)
 * [Site24x7 Plugins] (https://www.site24x7.com/plugins.html)
 * [Site24x7 Signup] (https://www.site24x7.com/signup.html?pack=5&l=en)
 * [Site24x7 Help Documentation] (https://www.site24x7.com/help/admin/adding-a-monitor/plugins.html)
+* [Site24x7 Forums] (https://forums.site24x7.com/)
+* [Site24x7 Blogs] (https://blogs.site24x7.com/)
