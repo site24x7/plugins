@@ -12,3 +12,4 @@ Related Links
 * [Site24x7 Help Documentation] (https://www.site24x7.com/help/admin/adding-a-monitor/plugins.html)
 * [Site24x7 Forums] (https://forums.site24x7.com/)
 * [Site24x7 Blogs] (https://blogs.site24x7.com/)
+* [Site24x7 Support] (https://www.site24x7.com/contact-support.html)
