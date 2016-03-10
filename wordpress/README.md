@@ -8,7 +8,7 @@ For monitoring the performance metrics of your Wordpress servers using Site24x7 
 PreRequisites
 =============
 
-Download wordpress plugin from https://github.com/site24x7/server-plugins/wordpress/wordpress.sh
+Download wordpress plugin from https://github.com/site24x7/plugins/blob/master/wordpress/wordpress.sh
 Place the plugin folder 'wordpress/wordpress.sh' under agent plugins directory (/opt/site24x7/monagent/plugins/)
 Our plugin requires 'Curl' tool to fetch the statistics. Have this installed to use this feature.
 
