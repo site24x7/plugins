@@ -8,7 +8,7 @@ Redis Plugin is for monitoring the performance metrics of Redis database.
 PreRequisites
 =============
 
-Download redis plugin from https://github.com/site24x7/server-plugins/redis/Redis.py
+Download redis plugin from https://github.com/site24x7/plugins/blob/master/redis/Redis.py
 Place the plugin folder 'redis/redis.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
 Our plugin uses 'redis' module to interact with the Redis server. Have this installed to use this feature.
 Installation of the redis module is as follows
