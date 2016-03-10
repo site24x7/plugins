@@ -1,0 +1,184 @@
+#!/usr/bin/python
+
+import collections
+import datetime
+import traceback
+import time
+import json
+
+#if any impacting changes to this plugin kindly increment the plugin version here.
+PLUGIN_VERSION = "1"
+
+#Setting this to true will alert you when there is a communication problem while posting plugin data to server
+HEARTBEAT="true"
+
+#Config Section:
+MONGODB_HOST='127.0.0.1'
+
+MONGODB_PORT=27017
+
+MONGODB_DBSTATS="yes"
+
+MONGODB_REPLSET="no"
+
+class MongoDB(object):
+    def __init__(self, config):
+        self.configurations = config
+        self.connection = None
+        self.host=self.configurations.get('host')
+        self.port=self.configurations.get('port')
+        self.mongod_server = "{0}:{1}".format(self.host, self.port)
+        self.dbstats = self.configurations.get('dbstats')
+        self.replset = self.configurations.get('replset')
+
+    def getDbConnection(self):
+        try:
+            try:
+                from pymongo import MongoClient
+            except ImportError:
+                pass
+            import urlparse
+            parsed = urlparse.urlparse(self.mongod_server)
+            mongo_uri = ''
+            # Can't use attributes on Python 2.4
+            if parsed[0] != 'mongodb':
+                mongo_uri = 'mongodb://'
+                if parsed[2]:
+                    if parsed[0]:
+                        mongo_uri = mongo_uri + parsed[0] + ':' + parsed[2]
+                    else:
+                        mongo_uri = mongo_uri + parsed[2]
+            else:
+                mongo_uri = self.mongod_server
+            self.connection = MongoClient(mongo_uri)
+        except Exception:
+            return False
+        
+        return True
+
+    def metricCollector(self):
+        data = {}
+        data['plugin_version'] = PLUGIN_VERSION
+        data['heartbeat_required']=HEARTBEAT
+        try:
+            import pymongo
+        except ImportError:
+            data['status']=0
+            data['msg']='pymongo module not installed'
+
+        if not self.getDbConnection():
+            data['status']=0
+            data['msg']='Connection Error'
+            return data
+        
+        try:
+            db = self.connection['local']
+
+            output = db.command('serverStatus', recordStats=0)
+
+            #Version
+            try:
+                data['version'] = output['version']
+            except KeyError as ex:
+                pass
+
+            #Memory
+            try:
+                data['memory_resident'] = output['mem']['resident']
+                data['memory_virtual'] = output['mem']['virtual']
+                data['memory_mapped'] = output['mem']['mapped']
+
+            except KeyError as ex:
+                pass
+
+            # Connections
+            try:
+                data['connections_current'] = output['connections']['current']
+                data['connections_available'] = output['connections']['available']
+
+            except KeyError as ex:
+                pass
+
+            try:
+                data['heap_usage'] = output['extra_info']['heap_usage_bytes']
+                data['page_faults'] = output['extra_info']['page_faults']
+
+            except KeyError as ex:
+                pass
+
+            # flushing
+            try:
+                delta = (datetime.datetime.utcnow()-output['backgroundFlushing']['last_finished'])
+                data['seconds_since_lastflush'] = delta.seconds
+                data['last_flush_length'] = output['backgroundFlushing']['last_ms']
+                data['flush_length_avrg'] = output['backgroundFlushing']['average_ms']
+            except KeyError as ex:
+                pass
+
+            # Cursors
+            try:
+                data['cursors_total_open'] = output['cursors']['totalOpen']
+            except KeyError as ex:
+                pass
+
+            # Replica set status
+            if 'replset' in self.configurations and self.configurations.get('replset') =='yes':
+                # isMaster (to get state
+                isMaster = db.command('isMaster')
+
+                data['replSet_setName'] = isMaster['setName']
+                data['replSet_isMaster'] = isMaster['ismaster']
+                data['replSet_isSecondary'] = isMaster['secondary']
+
+                if 'arbiterOnly' in isMaster:
+                    data['replSet_isArbiter'] = isMaster['arbiterOnly']
+
+                # rs.status()
+                db = self.connection['admin']
+                repl_set = db.command('replSetGetStatus')
+
+                data['replSet_myState'] = repl_set['myState']
+
+                data['replSet'] = {}
+                data['replSet']['members'] = {}
+
+                for member in repl_set['members']:
+
+                    data['replSet']['members'][str(member['_id'])] = {
+                        'name': member['name'],
+                        'state': member['state']
+                    }
+                    
+            # db.stats()
+            if 'dbstats' in self.configurations and self.configurations.get('dbstats')=='yes':
+                for database in self.connection.database_names():
+                    if database != 'config' and database != 'local' and database != 'admin' and database != 'test':
+
+                        dbstats_database = 'dbStats_{0}'.format(database)
+                        dbstats_database_namespaces = 'dbStats_{0}_namespaces'.format(database)
+
+                        master = self.connection[database].command('isMaster')
+
+                        data[dbstats_database] = self.connection[database].command('dbstats')
+
+                        for key in data[dbstats_database].keys():
+                                data[dbstats_database][key] = str(data[dbstats_database][key])
+
+                        if master['ismaster']:
+                            namespaces = (self.connection[database]['system']['namespaces'])
+                            data[dbstats_database_namespaces] = (namespaces.count())
+        except Exception:
+            pass
+
+        return data
+
+if __name__ == "__main__":
+    
+    configurations = {'host':MONGODB_HOST,'port':MONGODB_PORT,'dbstats':MONGODB_DBSTATS,'replset':MONGODB_REPLSET}
+
+    mongo_check = MongoDB(configurations)
+    
+    result = mongo_check.metricCollector()
+    
+    print(json.dumps(result, indent=4, sort_keys=True))
+        
