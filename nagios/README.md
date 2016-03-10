@@ -8,7 +8,7 @@ A plugin to all your existing Nagios integrations and harness the power of the o
 PreRequisites
 =============
 
-Download 'nagios_plugins.json' plugin from https://github.com/site24x7/plugins/nagios/nagios_plugins.json
+Download 'nagios_plugins.json' plugin from https://github.com/site24x7/plugins/edit/master/nagios/nagios_plugins.json
 Place the plugin 'nagios_plugins.json' under agent plugins directory (/opt/site24x7/monagent/plugins/)
 Nagios scripts which obey the performance data format as mentioned in 'http://docs.pnp4nagios.org/pnp-0.6/perfdata_format' are only supported.
 
