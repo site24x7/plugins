@@ -1,7 +1,7 @@
 #!/bin/bash
 export PLUGIN_VERSION="1"
 export HEARTBEAT="true"
-export METRICS_UNITS="{'php_cpu'-'%','php_mem'-'%','mysql_cpu'-'%','mysql_mem'-'%'}"
+export METRICS_UNITS="{php_cpu - % , php_mem - % , mysql_cpu - % , mysql_mem - %}"
 
 #Change this value to "ENABLED" only if you have configured apache stats as mentioned in the help doc
 APACHE_STATS="DISABLED"
@@ -129,7 +129,7 @@ getApacheStats()
 			if(NR < 10) 
                         	print "apache",$1":"$2
         }
-        END{ print "plugin_version: '"$PLUGIN_VERSION"'|heartbeat:'"$HEARTBEAT"'|units:'"$METRICS_UNITS"'"}'
+        END{ print "plugin_version: '"$PLUGIN_VERSION"'|heartbeat_required:'"$HEARTBEAT"'|units:'"$METRICS_UNITS"'"}'
 }
 
 main()
@@ -140,7 +140,7 @@ main()
 	if [ "$APACHE_STATS" = "ENABLED" ]; then
         	getApacheStats
 	else
-		echo "plugin_version:"$PLUGIN_VERSION"|heartbeat:"$HEARTBEAT"|units:"$METRICS_UNITS
+		echo "plugin_version:"$PLUGIN_VERSION"|heartbeat_required:"$HEARTBEAT"|units:"$METRICS_UNITS
 	fi
 }
 
