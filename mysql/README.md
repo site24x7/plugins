@@ -55,16 +55,16 @@ MySQL Plugin Attributes:
 
 Some of the collected  mysql attributes are as follows:
 
-"slow_queries" : No. of slow queries running on the MySQL server
+* `slow_queries` : No. of slow queries running on the MySQL server
 
-"max_used_connections" : Total no. of used connections
+* `max_used_connections` : Total no. of used connections
 
-"aborted_clients" : Total connections that were aborted
+* `aborted_clients` : Total connections that were aborted
 
-"aborted_connects" : No. of failed attempts to connect to the MySQL server
+* `aborted_connects` : No. of failed attempts to connect to the MySQL server
 
-"open_files" : No. of files that are open by the MySQL server
+* `open_files` : No. of files that are open by the MySQL server
 
-"threads_running" : No. of threads that are currently running
+* `threads_running` : No. of threads that are currently running
 
-"threads_connected" : No. of currently open connections
+* `threads_connected` : No. of currently open connections
