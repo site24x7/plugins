@@ -42,7 +42,7 @@ Configure the agent plugin
 2. Enter your stats URL as added in httpd.conf file in previous step to the variable "APACHE_STATUS_URL".
 	The final stats URL should contain "?auto" in the end as this is required to fetch the statistics from our agent.
 	Sample value - 
-		APACHE_STATUS_URL="http://localhost:80/whm-server-status?auto"
+		APACHE_STATUS_URL="http://localhost:80/server-status?auto"
 
 3. Save and close the file. Site24x7 Agent willl now monitor your wordpress server.
 
