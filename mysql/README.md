@@ -42,11 +42,13 @@ In order to change the monitoring configurations, go to plugins directory and ed
 
 For e.g. mysql => /opt/site24x7agent/monagent/plugins/mysql/mysql.py
 
+```
 #Config Section:
 MYSQL_HOST = "localhost"
 MYSQL_PORT="3306"
 MYSQL_USERNAME="root"
 MYSQL_PASSWORD=""
+```
 
 MySQL Plugin Attributes:
 =======================
