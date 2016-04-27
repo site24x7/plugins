@@ -25,7 +25,7 @@ NGINX_STATUS_URL = "http://localhost/status"
 
 
 NginxPlus Plugin Attributes:
-=======================
+========================
 
 Some of the collected nginx server attributes are as follows:
 
