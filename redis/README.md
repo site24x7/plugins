@@ -43,7 +43,7 @@ In order to change the monitoring configurations, go to plugins directory and ed
 For e.g. redis => /opt/site24x7agent/monagent/plugins/redis/Redis.py
 
 #Config Section:
-==================
+=================
 
 REDIS_HOST = "localhost"
 
