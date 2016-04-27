@@ -1,6 +1,6 @@
 
 Plugin for MongoDB Monitoring
-===========================
+=============================
 
 MongoDB Plugin is for monitoring the performance metrics of MongoDB database. 
   
