@@ -14,7 +14,7 @@ Our plugin requires 'Curl' tool to fetch the statistics. Have this installed to 
 
 
 Configure Apache to support statistics
-=======================================
+======================================
 
 1. Edit your httpd.conf file so that it enables sending statistics. As mentioned at 
 	https://httpd.apache.org/docs/2.4/mod/mod_status.html#machinereadable
