@@ -39,7 +39,7 @@ MEMCACHE_HOST='127.0.0.1'
 MEMCACHE_PORT=11211
 
 Memcache Plugin Attributes:
-=======================
+=========================
 
 Some of the collected memcache attributes are as follows:
 
