@@ -6,7 +6,7 @@ For monitoring the performance metrics of your Apache server using Site24x7 Serv
   
 
 PreRequisites
-=====================
+====================
 
 Download apache plugin from https://github.com/site24x7/server-plugins/apache/apache.py
 Place the plugin folder 'apache/apache.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
