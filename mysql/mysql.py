@@ -7,6 +7,7 @@ Site24x7 MySql Plugin
 import traceback
 import re
 import json
+import os
 
 VERSION_QUERY = 'SELECT VERSION()'
 
@@ -17,19 +18,16 @@ PLUGIN_VERSION = "1"
 HEARTBEAT="true"
 
 #Config Section:
-MYSQL_HOST = "localhost"
-
-MYSQL_PORT="3306"
-
-MYSQL_USERNAME="root"
-
-MYSQL_PASSWORD=""
+MYSQL_HOST     = os.getenv('MYSQL_HOST', "localhost")
+MYSQL_PORT     = os.getenv('MYSQL_PORT', "3306")
+MYSQL_USERNAME = os.getenv('MYSQL_USERNAME', "root")
+MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD', "")
 
 #Mention the units of your metrics in this python dictionary. If any new metrics are added make an entry here for its unit.
 METRICS_UNITS={'connection_usage':'%'}
 
 class MySQL(object):
-    
+
     def __init__(self,config):
         self.configurations = config
         self.connection = None
@@ -68,14 +66,14 @@ class MySQL(object):
         data = {}
         data['plugin_version'] = PLUGIN_VERSION
         data['heartbeat_required']=HEARTBEAT
-        
+
         try:
             import pymysql
         except Exception:
             data['status']=0
             data['msg']='pymysql Module Not Installed'
             return data
-        
+
         if not self.getDbConnection():
             data['status']=0
             data['msg']='Connection Error'
@@ -83,7 +81,7 @@ class MySQL(object):
 
         try:
             con = self.connection
-            
+
             # get MySQL version
             try:
                 cursor = con.cursor()
@@ -94,42 +92,42 @@ class MySQL(object):
                 return data
 
             global_metrics = self.executeQuery(con, 'SHOW GLOBAL STATUS')
-            
+
             global_variables = self.executeQuery(con, 'SHOW VARIABLES')
 
             data['uptime'] = global_metrics['Uptime']
-            
+
             data['open_tables'] = global_metrics['Open_tables']
-            
+
             data['slow_queries'] = global_metrics['Slow_queries']
-            
+
             data['threads_connected'] = global_metrics['Threads_connected']
-            
+
             data['threads_running'] = global_metrics['Threads_running']
-            
-            
+
+
             data['max_connections'] = global_variables['max_connections']
-            
+
             data['max_used_connections'] = global_metrics['Max_used_connections']
-            
+
             data['connection_usage'] = ((data['threads_running'] /data['max_connections'])*100)
-            
+
             # Buffer pool
             data['buffer_pool_pages_total'] = global_metrics['Innodb_buffer_pool_pages_total']
-            
+
             data['buffer_pool_pages_free'] = global_metrics['Innodb_buffer_pool_pages_free']
-            
+
             data['buffer_pool_pages_dirty'] = global_metrics['Innodb_buffer_pool_pages_dirty']
-            
+
             data['buffer pool pages data'] = global_metrics['Innodb_buffer_pool_pages_data']
 
             # Query cache items
             data['qcache_hits'] = global_metrics['Qcache_hits']
-            
+
             data['qcache_free_memory'] = global_metrics['Qcache_free_memory']
-            
+
             data['qcache_not_cached'] = global_metrics['Qcache_not_cached']
-            
+
             data['qcache_in_cache'] = global_metrics['Qcache_queries_in_cache']
 
             #no of reads & writes
@@ -156,10 +154,10 @@ class MySQL(object):
             # Created temporary tables in memory and on disk
             data['created_tmp_tables'] = global_metrics['Created_tmp_tables']
             data['created_tmp_tables_on_disk'] = global_metrics['Created_tmp_disk_tables']
-            
+
             # select_full_join
             data['select_full_join'] = global_metrics['Select_full_join']
-            
+
             # slave_running
             result = global_metrics['Slave_running']
             if result == 'OFF':
@@ -167,18 +165,18 @@ class MySQL(object):
             else:
                 result = 1
             data['slave_running'] = result
-            
+
             # open files
             data['open_files'] = global_metrics['Open_files']
             data['open_files_limit'] = global_variables['open_files_limit']
-            
+
 
             # table_locks_waited
             data['table_locks_waited'] = global_metrics['Table_locks_waited']
-            
+
             #key reads
             data['key_reads'] = global_metrics['Key_reads']
-            
+
             #Innodb_buffer_pool_wait_free
             data['innodb_buffer_pool_wait_free'] = global_metrics['Innodb_buffer_pool_wait_free']
 
@@ -187,7 +185,7 @@ class MySQL(object):
 
 
         data['units']=METRICS_UNITS
-        
+
         return data
 
 if __name__ == "__main__":
@@ -195,7 +193,7 @@ if __name__ == "__main__":
     configurations = {'host': MYSQL_HOST,'port': MYSQL_PORT,'user': MYSQL_USERNAME,'password': MYSQL_PASSWORD}
 
     mysql_plugins = MySQL(configurations)
-    
+
     result = mysql_plugins.metricCollector()
-    
+
     print(json.dumps(result, indent=4, sort_keys=True))
