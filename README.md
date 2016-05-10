@@ -1,8 +1,20 @@
-Server monitoring notifies you of outages and tracks server performance. Reduce time to repair issues with root cause analysis capabilities and take corrective actions. Monitor Windows, Linux, and FreeBSD servers and more. 
+Site24x7 Plugins lets you customize the set of monitored attributes for the hosts, devices, services, protocols, applications and all other resources in their environments, providing deep performance visibility into the entire application stack.
 
-Plugins are a great way to customize and measure attributes and keep track of data that matters the most. We support Redis, MySQL, MongoDB, NGINX, HAProxy, ZooKeeper, WordPRess, Apache and Zombie Process plugins in the latest version of the Linux monitoring agent. Just install the latest Linux agent on the server and the plugins will automatically detect any MySQL or Redis instances configured in the server and add a plugins monitor in the server monitoring dashboard of your Site24x7 client. Additionally, users can write their own script and monitor customized attributes tracking critical metrics and set thresholds for individual attributes and configure alerts. Support for adding out of the box Nagios plugins is also extended.
+Why Site24x7 Plugins?
 
-Use free plugins to monitor unlimited attributes with unlimited plugin monitors.
+Network and server administrators often require specific monitoring data that goes beyond the scope of vendors’ standard monitoring solutions. Acquiring such data typically requires users to extend the functionality of their existing tools with third-party and custom plugins designed to provide detailed monitoring metrics of individual resources. With Site24x7 Plugins, IT admins can now access that data using thousands of supported, pre-built plugins or create their own.
+
+Out-of-the-box Plugins Support.
+
+Site24x7 Plugins support a wide range of out-of-the-box integrations, including MySQL, Redis, MongoDB, NGINX, HAProxy, ZooKeeper, WordPress, Apache and Memcached. Site24x7 Plugins will support additional modules going forward.
+
+Nagios Plugins without Nagios Servers.
+
+With support for Nagios, you can execute thousands of Nagios Plugins in Site24x7 without the need to run a Nagios Server. This means that there is no need to maintain a dedicated server for Nagios and Nagios server software, yet you can still take advantage of Nagios community scripts. Nagios plugins can be executed with a simple configuration file.
+
+Create Your Own Plugins.
+
+Create custom plugins using Python or shell scripts and analyze the performance of databases, web servers and more with a simple script.
 
 Related Links
 =============
