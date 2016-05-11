@@ -2,17 +2,6 @@
 Plugin for Zombies Process Monitoring
 ======================================
 
-This plugin is for calculating the number of "zombie" processes created in the server.
-  
+Calculate the number of "zombie" processes created in the server using this plugin.
 
-PreRequisites
-=============
-
-Download zombies plugin from https://github.com/site24x7/plugins/blob/master/zombies/zombies.py.
-Place the plugin folder 'zombies/zombies.py' under agent plugins directory (/opt/site24x7/monagent/plugins/).
-Our plugin uses 'top' command to get the number of zombies process count.
-
-
-Metrics
-=======
-Reports back the number of zombies process present in the server.
+Learn more about the plugin installation steps and the various performance metrics that you can monitor here - https://www.site24x7.com/plugins/zombie-process-monitoring.html
