@@ -1,6 +1,6 @@
 
 Plugin for Zombies Process Monitoring
-======================================
+=====================================
 
 Calculate the number of "zombie" processes created in the server using this plugin.
 
