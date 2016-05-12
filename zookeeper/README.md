@@ -1,6 +1,6 @@
 
 Plugin for Zookeeper Monitoring
-=============================
+==============================
 
 Configure Zookeeper plugin and monitor the performance metrics of your Zookeeper service.
 
