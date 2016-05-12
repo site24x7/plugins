@@ -17,7 +17,7 @@ Create Your Own Plugins.
 Create custom plugins using Python or shell scripts and analyze the performance of databases, web servers and more with a simple script.
 
 Related Links
-=============
+==============
 * [Site24x7 Server Monitoring] (https://www.site24x7.com/server-monitoring.html)
 * [Site24x7 Linux Server Monitoring] (https://www.site24x7.com/contact-support.html)
 * [Site24x7 Plugins] (https://www.site24x7.com/plugins.html)
