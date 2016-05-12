@@ -1,15 +1,14 @@
-#!/usr/bin/python3
+#!/usr/bin/python
+import os
+import sys
 import json,time
-import urllib
-import urllib.request as urlconnection
-from urllib.error import URLError, HTTPError
-from http.client import InvalidURL
 from collections import OrderedDict
+from _socket import timeout
 
 url = "http://localhost:80/haproxy?stats;csv"       #Please retain the ";csv" prefix after adding your URL here.
 username = None                            #Enter the user name provided by you in haproxy config file here
 password = None                            #Enter the password provided by you in haproxy config file here
-realm = None                               #Enter 'None' if no realm specified in haproxy config file
+realm = None                 #Enter 'None' if no realm specified in haproxy config file. Do not include any escape characters while adding this value
 
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
@@ -19,18 +18,30 @@ PLUGIN_VERSION = "1"
 HEARTBEAT="true"
 
 
-dict_reqdMet = {'stot':'sessions-total' ,
-                'ereq':'request-errors' ,
+dict_reqdMet = {'ereq':'request-errors' ,
                 'bin':'bytes-in',
                 'bout':'bytes-out' ,
-                'scur':'sessions-active-current' ,
                 'qcur':'requests-queue-current' ,
-                'act':'servers-active' ,
-                'rate':'sessions-rate-current' ,
-                'status':'status' 
+                'rate':'sessions-rate-current' 
                 }
 
 METRICS_UNITS = {'appname_BACKEND_bytes-out':'KB'}
+
+counterFilePath = '/opt/site24x7/monagent/plugins/haproxy/counter.json'
+
+
+PYTHON_MAJOR_VERSION = sys.version_info[0]
+#REQUESTS_INSTALLED = None
+if PYTHON_MAJOR_VERSION == 3:
+    import urllib
+    import urllib.request as urlconnection
+    from urllib.error import URLError, HTTPError
+    from http.client import InvalidURL
+elif PYTHON_MAJOR_VERSION == 2:
+    import urllib2 as urlconnection
+    from urllib2 import HTTPError,URLError
+    from httplib import InvalidURL
+
 
 class haproxy():
     def __init__(self):
@@ -39,11 +50,42 @@ class haproxy():
         self._userPass = password
         self._realm = realm
         self.dictCounterValues = {}
+        self.dictInterfaceData = {}
+        self.loadCounterValues()
+    def loadCounterValues(self):
+        file_obj = None
+        if not os.path.exists(counterFilePath):
+            file_obj = open(counterFilePath,'w')
+            file_obj.close()
+        else:
+            file_obj = open(counterFilePath,'r')
+            str_counterValues = file_obj.read()
+            if str_counterValues:
+                self.dictCounterValues = json.loads(str_counterValues)
+            file_obj.close()
+    def updateCounterValues(self,dict_valuesToUpdate):
+        if os.path.exists(counterFilePath):
+            file_obj = open(counterFilePath,'w')
+            file_obj.write(json.dumps(dict_valuesToUpdate))
+            file_obj.close()
     def main(self):
-        self.metricCollector()
-    def metricCollector(self):
-        self._openURL()
-    def _openURL(self):
+        if PYTHON_MAJOR_VERSION == 3:
+            self.metricCollector3()
+        elif PYTHON_MAJOR_VERSION == 2:
+            self.metricCollector2()
+        else:
+            self.dictInterfaceData['status'] = 0
+            self.dictInterfaceData['msg'] = 'Python version is 2 and requests not installed'
+        print(json.dumps(self.dictInterfaceData))
+    def metricCollector3(self):
+        self._openURL3()
+        self.dictInterfaceData['plugin_version'] = PLUGIN_VERSION
+        self.dictInterfaceData['heartbeat_required']= HEARTBEAT
+    def metricCollector2(self):
+        self._openURL2()
+        self.dictInterfaceData['plugin_version'] = PLUGIN_VERSION
+        self.dictInterfaceData['heartbeat_required']= HEARTBEAT
+    def _openURL2(self):
         try:
             if (self._userName and self._userPass):
                 password_mgr = urlconnection.HTTPPasswordMgr()
@@ -51,29 +93,59 @@ class haproxy():
                 auth_handler = urlconnection.HTTPBasicAuthHandler(password_mgr)
                 opener = urlconnection.build_opener(auth_handler)
                 urlconnection.install_opener(opener)
-                #requestObj = urlconnection.Request(self._url)
             response = urlconnection.urlopen(self._url, timeout=10)
-            time.sleep(5)
-            response1 = urlconnection.urlopen(self._url, timeout=10)
-            if (response.status == 200 and response1.status == 200):
+            if (response.getcode() == 200):
                 byte_responseData = response.read()
                 str_responseData = byte_responseData.decode('UTF-8')
                 self._parseStats(str_responseData)
-                byte_responseData1 = response1.read()
-                str_responseData1 = byte_responseData1.decode('UTF-8')
-                self._parseStats(str_responseData1,counter=True)
             else:
-                print(str(json.dumps({'Error_code':str(response.status)})))
+                self.dictInterfaceData['status'] = 0
+                self.dictInterfaceData['msg'] = 'Response status code from haproxy url is :'  + str(response.getcode())
         except HTTPError as e:
-            print(str(json.dumps({'Error_code':'HTTP Error '+str(e.code)})))
+            self.dictInterfaceData['status'] = 0
+            self.dictInterfaceData['msg'] ='Haproxy stats url has HTTP Error '+str(e.code)
         except URLError as e:
-            print(str(json.dumps({'Error_code':'URL Error '+str(e.reason)})))
+            self.dictInterfaceData['status'] = 0
+            self.dictInterfaceData['msg'] = 'Haproxy stats url has URL Error '+str(e.reason)
         except InvalidURL as e:
-            print(str(json.dumps({'Error_code':'Invalid URL'})))
-    def _parseStats(self,str_statsData,counter=False):
+            self.dictInterfaceData['status'] = 0
+            self.dictInterfaceData['msg'] = 'Haproxy stats url is invalid URL'
+        except Exception as e:
+            self.dictInterfaceData['status'] = 0
+            self.dictInterfaceData['msg'] = 'Haproxy stats URL error : ' + str(e)
+    def _openURL3(self):
+        try:
+            if (self._userName and self._userPass):
+                password_mgr = urlconnection.HTTPPasswordMgr()
+                password_mgr.add_password(self._realm, self._url, self._userName, self._userPass)
+                auth_handler = urlconnection.HTTPBasicAuthHandler(password_mgr)
+                opener = urlconnection.build_opener(auth_handler)
+                urlconnection.install_opener(opener)
+            response = urlconnection.urlopen(self._url, timeout=10)
+            if (response.status == 200):
+                byte_responseData = response.read()
+                str_responseData = byte_responseData.decode('UTF-8')
+                self._parseStats(str_responseData)
+            else:
+                self.dictInterfaceData['status'] = 0
+                self.dictInterfaceData['msg'] = 'Response status code from haproxy url is :'  + str(response.status)
+        except HTTPError as e:
+            self.dictInterfaceData['status'] = 0
+            self.dictInterfaceData['msg'] ='Haproxy stats url has HTTP Error '+str(e.code)
+        except URLError as e:
+            self.dictInterfaceData['status'] = 0
+            self.dictInterfaceData['msg'] = 'Haproxy stats url has URL Error '+str(e.reason)
+        except InvalidURL as e:
+            self.dictInterfaceData['status'] = 0
+            self.dictInterfaceData['msg'] = 'Haproxy stats url is invalid URL'
+        except Exception as e:
+            self.dictInterfaceData['status'] = 0
+            self.dictInterfaceData['msg'] = 'Haproxy stats URL error : ' + str(e)
+    def _parseStats(self,str_statsData):
         listHeaderData = []
         listInterfaces = []
-        dictInterfaceData = OrderedDict()
+        #dictInterfaceData = OrderedDict()
+        dcTime = time.time()
         listStatsData = str_statsData.split("#")[1].lstrip().rstrip().split("\n")
         for interfaceIndex in range(len(listStatsData)):
             str_interfaceData = ""
@@ -90,18 +162,25 @@ class haproxy():
                     listInterfaces.append(str_dictKey)
                 for eachValue in range(len(listValues)-1):
                     if listHeaderData[eachValue] in dict_reqdMet.keys():
-                        dictInterfaceData.setdefault(str_dictKey+ "_" + str(dict_reqdMet[listHeaderData[eachValue]]),listValues[eachValue])
-                        if (counter == True and (listHeaderData[eachValue] == 'bin' or listHeaderData[eachValue] == 'bout')):
-                            finalValue = ((int(listValues[eachValue]) - int(self.dictCounterValues[str_dictKey+ "_" + str(dict_reqdMet[listHeaderData[eachValue]])]))/5)
-                            dictInterfaceData[str_dictKey+ "_" + str(dict_reqdMet[listHeaderData[eachValue]])] = str(finalValue)
-                        else:
+                        if listValues[eachValue] == '':
+                            listValues[eachValue] = '0'
+                        self.dictInterfaceData.setdefault(str_dictKey+ "_" + str(dict_reqdMet[listHeaderData[eachValue]]),listValues[eachValue])
+                        try:
+                            if (listHeaderData[eachValue] == 'bin' or listHeaderData[eachValue] == 'bout'):
+                                if ((str_dictKey+ "_" + str(dict_reqdMet[listHeaderData[eachValue]])) in self.dictCounterValues):
+                                    finalValue = int(listValues[eachValue]) - int(self.dictCounterValues[str_dictKey+ "_" + str(dict_reqdMet[listHeaderData[eachValue]])])
+                                    if finalValue > 0:
+                                        self.dictInterfaceData[str_dictKey+ "_" + str(dict_reqdMet[listHeaderData[eachValue]])] = str(finalValue)
+                                    else:
+                                        self.dictInterfaceData[str_dictKey+ "_" + str(dict_reqdMet[listHeaderData[eachValue]])] = '0'
+                                else:
+                                    self.dictInterfaceData[str_dictKey+ "_" + str(dict_reqdMet[listHeaderData[eachValue]])] = '0'
+                                self.dictCounterValues[str_dictKey+ "_" + str(dict_reqdMet[listHeaderData[eachValue]])] = int(listValues[eachValue])
+                        except Exception as e:
                             pass
-        if counter==False:
-            self.dictCounterValues = dictInterfaceData
-        else:
-            dictInterfaceData['plugin_version'] = PLUGIN_VERSION
-            dictInterfaceData['heartbeat_required']=HEARTBEAT
-            print(str(json.dumps(dictInterfaceData)))
+        #self.dictCounterValues = self.dictInterfaceData
+        #self.dictCounterValues['ct'] = dcTime
+        self.updateCounterValues(self.dictCounterValues)
 
 if __name__ == '__main__':
     hap = haproxy()
