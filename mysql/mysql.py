@@ -7,6 +7,7 @@ Site24x7 MySql Plugin
 import traceback
 import re
 import json
+import os
 
 VERSION_QUERY = 'SELECT VERSION()'
 
@@ -64,130 +65,150 @@ class MySQL(object):
             return False
         return True
 
-    def metricCollector(self):
-        data = {}
-        data['plugin_version'] = PLUGIN_VERSION
-        data['heartbeat_required']=HEARTBEAT
-        
+    def checkPreRequisites(self,data):
+        bool_result = True
         try:
             import pymysql
         except Exception:
             data['status']=0
-            data['msg']='pymysql Module Not Installed'
-            return data
-        
-        if not self.getDbConnection():
-            data['status']=0
-            data['msg']='Connection Error'
-            return data
+            data['msg']='pymysql module not installed'
+            bool_result=False
+            pymysql_returnVal=os.system('pip install pymysql >/dev/null 2>&1')
+            if pymysql_returnVal==0:
+                bool_result=True
+                data.pop('status')
+                data.pop('msg')
+        return bool_result,data
 
-        try:
-            con = self.connection
-            
-            # get MySQL version
+    def metricCollector(self):
+        data = {}
+        data['plugin_version'] = PLUGIN_VERSION
+        data['heartbeat_required']=HEARTBEAT
+
+        bool_result,data = self.checkPreRequisites(data)
+        
+        if bool_result==False:
+            return data
+        else:
             try:
-                cursor = con.cursor()
-                cursor.execute(VERSION_QUERY)
-                result = cursor.fetchone()
-                data['version'] = result[0]
-            except pymysql.OperationalError as message:
+                import pymysql
+            except Exception:
+                data['status']=0
+                data['msg']='pymysql module not installed'
                 return data
 
-            global_metrics = self.executeQuery(con, 'SHOW GLOBAL STATUS')
-            
-            global_variables = self.executeQuery(con, 'SHOW VARIABLES')
-
-            data['uptime'] = global_metrics['Uptime']
-            
-            data['open_tables'] = global_metrics['Open_tables']
-            
-            data['slow_queries'] = global_metrics['Slow_queries']
-            
-            data['threads_connected'] = global_metrics['Threads_connected']
-            
-            data['threads_running'] = global_metrics['Threads_running']
-            
-            
-            data['max_connections'] = global_variables['max_connections']
-            
-            data['max_used_connections'] = global_metrics['Max_used_connections']
-            
-            data['connection_usage'] = ((data['threads_running'] /data['max_connections'])*100)
-            
-            # Buffer pool
-            data['buffer_pool_pages_total'] = global_metrics['Innodb_buffer_pool_pages_total']
-            
-            data['buffer_pool_pages_free'] = global_metrics['Innodb_buffer_pool_pages_free']
-            
-            data['buffer_pool_pages_dirty'] = global_metrics['Innodb_buffer_pool_pages_dirty']
-            
-            data['buffer pool pages data'] = global_metrics['Innodb_buffer_pool_pages_data']
-
-            # Query cache items
-            data['qcache_hits'] = global_metrics['Qcache_hits']
-            
-            data['qcache_free_memory'] = global_metrics['Qcache_free_memory']
-            
-            data['qcache_not_cached'] = global_metrics['Qcache_not_cached']
-            
-            data['qcache_in_cache'] = global_metrics['Qcache_queries_in_cache']
-
-            #no of reads & writes
-            writes = (global_metrics['Com_insert'] +global_metrics['Com_replace'] +global_metrics['Com_update'] +global_metrics['Com_delete'])
-            data['writes'] = writes
-
-            # reads
-            reads = global_metrics['Com_select'] + data['qcache_hits']
-            data['reads'] = reads
-
+            if not self.getDbConnection():
+                data['status']=0
+                data['msg']='Connection Error'
+                return data
+    
             try:
-                data['rw ratio'] = reads/writes
-            except ZeroDivisionError:
-                data['rw ratio'] = 0
-
-            # transactions
-            transactions = (global_metrics['Com_commit'] +global_metrics['Com_rollback'])
-            data['transactions'] = transactions
-
-            # Aborted connections and clients
-            data['aborted_clients'] = global_metrics['Aborted_clients']
-            data['aborted_connects'] = global_metrics['Aborted_connects']
-
-            # Created temporary tables in memory and on disk
-            data['created_tmp_tables'] = global_metrics['Created_tmp_tables']
-            data['created_tmp_tables_on_disk'] = global_metrics['Created_tmp_disk_tables']
+                con = self.connection
+                
+                # get MySQL version
+                try:
+                    cursor = con.cursor()
+                    cursor.execute(VERSION_QUERY)
+                    result = cursor.fetchone()
+                    data['version'] = result[0]
+                except pymysql.OperationalError as message:
+                    return data
+    
+                global_metrics = self.executeQuery(con, 'SHOW GLOBAL STATUS')
+                
+                global_variables = self.executeQuery(con, 'SHOW VARIABLES')
+    
+                data['uptime'] = global_metrics['Uptime']
+                
+                data['open_tables'] = global_metrics['Open_tables']
+                
+                data['slow_queries'] = global_metrics['Slow_queries']
+                
+                data['threads_connected'] = global_metrics['Threads_connected']
+                
+                data['threads_running'] = global_metrics['Threads_running']
+                
+                
+                data['max_connections'] = global_variables['max_connections']
+                
+                data['max_used_connections'] = global_metrics['Max_used_connections']
+                
+                data['connection_usage'] = ((data['threads_running'] /data['max_connections'])*100)
+                
+                # Buffer pool
+                data['buffer_pool_pages_total'] = global_metrics['Innodb_buffer_pool_pages_total']
+                
+                data['buffer_pool_pages_free'] = global_metrics['Innodb_buffer_pool_pages_free']
+                
+                data['buffer_pool_pages_dirty'] = global_metrics['Innodb_buffer_pool_pages_dirty']
+                
+                data['buffer pool pages data'] = global_metrics['Innodb_buffer_pool_pages_data']
+    
+                # Query cache items
+                data['qcache_hits'] = global_metrics['Qcache_hits']
+                
+                data['qcache_free_memory'] = global_metrics['Qcache_free_memory']
+                
+                data['qcache_not_cached'] = global_metrics['Qcache_not_cached']
+                
+                data['qcache_in_cache'] = global_metrics['Qcache_queries_in_cache']
+    
+                #no of reads & writes
+                writes = (global_metrics['Com_insert'] +global_metrics['Com_replace'] +global_metrics['Com_update'] +global_metrics['Com_delete'])
+                data['writes'] = writes
+    
+                # reads
+                reads = global_metrics['Com_select'] + data['qcache_hits']
+                data['reads'] = reads
+    
+                try:
+                    data['rw ratio'] = reads/writes
+                except ZeroDivisionError:
+                    data['rw ratio'] = 0
+    
+                # transactions
+                transactions = (global_metrics['Com_commit'] +global_metrics['Com_rollback'])
+                data['transactions'] = transactions
+    
+                # Aborted connections and clients
+                data['aborted_clients'] = global_metrics['Aborted_clients']
+                data['aborted_connects'] = global_metrics['Aborted_connects']
+    
+                # Created temporary tables in memory and on disk
+                data['created_tmp_tables'] = global_metrics['Created_tmp_tables']
+                data['created_tmp_tables_on_disk'] = global_metrics['Created_tmp_disk_tables']
+                
+                # select_full_join
+                data['select_full_join'] = global_metrics['Select_full_join']
+                
+                # slave_running
+                result = global_metrics['Slave_running']
+                if result == 'OFF':
+                    result = 0
+                else:
+                    result = 1
+                data['slave_running'] = result
+                
+                # open files
+                data['open_files'] = global_metrics['Open_files']
+                data['open_files_limit'] = global_variables['open_files_limit']
+                
+    
+                # table_locks_waited
+                data['table_locks_waited'] = global_metrics['Table_locks_waited']
+                
+                #key reads
+                data['key_reads'] = global_metrics['Key_reads']
+                
+                #Innodb_buffer_pool_wait_free
+                data['innodb_buffer_pool_wait_free'] = global_metrics['Innodb_buffer_pool_wait_free']
+    
+            except Exception as e:
+                traceback.format_exc()
+    
+    
+            data['units']=METRICS_UNITS
             
-            # select_full_join
-            data['select_full_join'] = global_metrics['Select_full_join']
-            
-            # slave_running
-            result = global_metrics['Slave_running']
-            if result == 'OFF':
-                result = 0
-            else:
-                result = 1
-            data['slave_running'] = result
-            
-            # open files
-            data['open_files'] = global_metrics['Open_files']
-            data['open_files_limit'] = global_variables['open_files_limit']
-            
-
-            # table_locks_waited
-            data['table_locks_waited'] = global_metrics['Table_locks_waited']
-            
-            #key reads
-            data['key_reads'] = global_metrics['Key_reads']
-            
-            #Innodb_buffer_pool_wait_free
-            data['innodb_buffer_pool_wait_free'] = global_metrics['Innodb_buffer_pool_wait_free']
-
-        except Exception as e:
-            traceback.format_exc()
-
-
-        data['units']=METRICS_UNITS
-        
         return data
 
 if __name__ == "__main__":
