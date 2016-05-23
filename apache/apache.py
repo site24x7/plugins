@@ -2,7 +2,6 @@
 
 import sys
 import json
-from collections import OrderedDict
 
 # Change the Apache stats URL accordingly here. Retain the "?auto" suffix.
 url = "http://localhost:80/server-status?auto"
