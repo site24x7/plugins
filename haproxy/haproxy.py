@@ -11,7 +11,6 @@ username = None                            #Enter the user name provided by you 
 password = None                            #Enter the password provided by you in haproxy config file here
 realm = None                 #Enter 'None' if no realm specified in haproxy config file. Do not include any escape characters while adding this value
 
-
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
 
