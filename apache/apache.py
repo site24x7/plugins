@@ -55,7 +55,7 @@ class apache():
         elif PYTHON_MAJOR_VERSION == 2:
             self.metricCollector2()
         else:
-            self.dictApacheData['status'] = 0
+            #self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Unknown python version : ' + str(PYTHON_MAJOR_VERSION)
         print(str(json.dumps(self.dictApacheData)))
     def metricCollector2(self):
@@ -72,19 +72,19 @@ class apache():
                 str_responseData = byte_responseData.decode('UTF-8')
                 self._parseStats(str_responseData)
             else:
-                self.dictApacheData['status'] = 0
+                #self.dictApacheData['status'] = 0
                 self.dictApacheData['msg'] = 'Error_code' + str(response.getcode())
         except HTTPError as e:
-            self.dictApacheData['status'] = 0
+            #self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Error_code : HTTP Error ' + str(e.code)
         except URLError as e:
-            self.dictApacheData['status'] = 0
+            #self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Error_code : URL Error ' + str(e.reason)
         except InvalidURL as e:
-            self.dictApacheData['status'] = 0
+            #self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Error_code : Invalid URL'
         except Exception as e:
-            self.dictApacheData['status'] = 0
+            #self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Exception occured in collecting data : ' + str(e)
     def metricCollector3(self):
         try:
@@ -100,19 +100,19 @@ class apache():
                 str_responseData = byte_responseData.decode('UTF-8')
                 self._parseStats(str_responseData)
             else:
-                self.dictApacheData['status'] = 0
+                #self.dictApacheData['status'] = 0
                 self.dictApacheData['msg'] = 'Error_code' + str(response.status)
         except HTTPError as e:
-            self.dictApacheData['status'] = 0
+            #self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Error_code : HTTP Error ' + str(e.code)
         except URLError as e:
-            self.dictApacheData['status'] = 0
+            #self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Error_code : URL Error ' + str(e.reason)
         except InvalidURL as e:
-            self.dictApacheData['status'] = 0
+            #self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Error_code : Invalid URL'
         except Exception as e:
-            self.dictApacheData['status'] = 0
+            #self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Exception occured in collecting data : ' + str(e)
     def _parseStats(self, str_responseData):
         try:
@@ -127,11 +127,11 @@ class apache():
             self.dictApacheData['units'] = METRICS_UNITS
             # print(str(json.dumps(dictApacheData)))
         except TypeError as e:
-            self.dictApacheData['status'] = 0
+            #self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Type error in _parseStats'
             # print(str(json.dumps({'Error_code': 'Type error in _parseStats'})))
         except Exception as e:
-            self.dictApacheData['status'] = 0
+            #self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Exception in _parse stats' + str(e)
             # print(str(json.dumps({'Error_code':str(e)})))
     

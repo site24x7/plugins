@@ -75,7 +75,7 @@ class haproxy():
         elif PYTHON_MAJOR_VERSION == 2:
             self.metricCollector2()
         else:
-            self.dictInterfaceData['status'] = 0
+            #self.dictInterfaceData['status'] = 0
             self.dictInterfaceData['msg'] = 'Python version is 2 and requests not installed'
         print(json.dumps(self.dictInterfaceData))
     def metricCollector3(self):
@@ -100,19 +100,19 @@ class haproxy():
                 str_responseData = byte_responseData.decode('UTF-8')
                 self._parseStats(str_responseData)
             else:
-                self.dictInterfaceData['status'] = 0
+                #self.dictInterfaceData['status'] = 0
                 self.dictInterfaceData['msg'] = 'Response status code from haproxy url is :'  + str(response.getcode())
         except HTTPError as e:
-            self.dictInterfaceData['status'] = 0
+            #self.dictInterfaceData['status'] = 0
             self.dictInterfaceData['msg'] ='Haproxy stats url has HTTP Error '+str(e.code)
         except URLError as e:
-            self.dictInterfaceData['status'] = 0
+            #self.dictInterfaceData['status'] = 0
             self.dictInterfaceData['msg'] = 'Haproxy stats url has URL Error '+str(e.reason)
         except InvalidURL as e:
-            self.dictInterfaceData['status'] = 0
+            #self.dictInterfaceData['status'] = 0
             self.dictInterfaceData['msg'] = 'Haproxy stats url is invalid URL'
         except Exception as e:
-            self.dictInterfaceData['status'] = 0
+            #self.dictInterfaceData['status'] = 0
             self.dictInterfaceData['msg'] = 'Haproxy stats URL error : ' + str(e)
     def _openURL3(self):
         try:
@@ -128,19 +128,19 @@ class haproxy():
                 str_responseData = byte_responseData.decode('UTF-8')
                 self._parseStats(str_responseData)
             else:
-                self.dictInterfaceData['status'] = 0
+                #self.dictInterfaceData['status'] = 0
                 self.dictInterfaceData['msg'] = 'Response status code from haproxy url is :'  + str(response.status)
         except HTTPError as e:
-            self.dictInterfaceData['status'] = 0
+            #self.dictInterfaceData['status'] = 0
             self.dictInterfaceData['msg'] ='Haproxy stats url has HTTP Error '+str(e.code)
         except URLError as e:
-            self.dictInterfaceData['status'] = 0
+            #self.dictInterfaceData['status'] = 0
             self.dictInterfaceData['msg'] = 'Haproxy stats url has URL Error '+str(e.reason)
         except InvalidURL as e:
-            self.dictInterfaceData['status'] = 0
+            #self.dictInterfaceData['status'] = 0
             self.dictInterfaceData['msg'] = 'Haproxy stats url is invalid URL'
         except Exception as e:
-            self.dictInterfaceData['status'] = 0
+            #self.dictInterfaceData['status'] = 0
             self.dictInterfaceData['msg'] = 'Haproxy stats URL error : ' + str(e)
     def _parseStats(self,str_statsData):
         listHeaderData = []
