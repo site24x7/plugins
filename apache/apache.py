@@ -121,7 +121,7 @@ class apache():
             for eachStat in listStatsData:
                 stats = eachStat.split(':')
                 if str(stats[0]) in dict_reqdMet:
-                    self.dictApacheData.setdefault(dict_reqdMet[str(stats[0])], str(stats[1]))
+                    self.dictApacheData.setdefault(dict_reqdMet[str(stats[0])], str.strip(str(stats[1])))
             self.dictApacheData['plugin_version'] = PLUGIN_VERSION
             self.dictApacheData['heartbeat_required'] = HEARTBEAT
             self.dictApacheData['units'] = METRICS_UNITS
