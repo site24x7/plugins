@@ -42,7 +42,7 @@ Ehcache Plugin Attributes:
 
 Some of the collected Ehcache attributes are as follows:
 
-`ObjectCount` : Total number of elements stored in the cache
+`ObjectCount` : Total number of elements stored in the cache <br />
 `CacheHits`:	Total number of times a requested item was found in the cache
 `CacheMisses` : Total number of times a requested element was not found in the cache.
 `CacheHitPercentage`  : Percentage of successful hits.
