@@ -47,14 +47,3 @@ Some of the collected Ehcache attributes are as follows:
 `CacheMisses` : Total number of times a requested element was not found in the cache.
 `CacheHitPercentage`  : Percentage of successful hits.
 `CacheMissPercentage` :	Percentage of accesses that failed to find anything.
-
-
-### Changes in the plugin will be reflected in Site24x7 only when there is a change in PLUGIN_VERSION.
-
-### HEARTBEAT - false : Site24x7 will alert as down only when plugin status is down
-### HEARTBEAT - true  : Site24x7 will alert as down 1. When plugin status is down 2. When there is no data from plugin
-
-
-
-Learn more about the plugin installation steps and the various performance metrics that you can monitor here
-https://www.site24x7.com/plugins.html
