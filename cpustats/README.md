@@ -3,6 +3,7 @@
 ## This plugin monitors the CPU performance metrics of servers
 
 ## Monitored Attributes : All the system listed cpu attributes in top command output. 
+
 	user_percentage : % CPU time spent in user space
 	system_percentage :  % CPU time spent in kernel space
 	nicetime_percentage : % CPU time spent on low priority processes
