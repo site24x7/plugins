@@ -1,12 +1,9 @@
 #!/usr/bin/python
 
 """
-
-__author__ = Vijay, Zoho Corp
-Language = Python
-
+Author :  Vijay, Zoho Corp
+Language:  Python
 Tested in Ubuntu
-
 """
 
 import os
