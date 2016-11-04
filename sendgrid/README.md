@@ -11,7 +11,7 @@ SendGrid account and a valid api key has to generated in the account
 SendGrid plugin installation
 =============
 
-Download sendgrid plugin from https://github.com/site24x7/plugins/sendgrid/sendgrid.py
+Download sendgrid plugin from https://github.com/site24x7/plugins/blob/master/sendgrid/sendgrid.py
 
 Place the plugin folder 'sendgrid/sendgrid.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
 
