@@ -26,7 +26,7 @@ Configuration
 =============
 The generated api key has to passed as input to this plugin
 
->API_KEY = <a valid api key>
+>API_KEY = < valid api key>
 
 
 SendGrid plugin attributes
