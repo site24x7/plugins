@@ -17,7 +17,7 @@ For more info, refer to [Application API](https://hadoop.apache.org/docs/r2.6.0/
 Resource Manager APP Metrics Plugin installation
 =============
 
-Download resource manager appmetrics plugin from https://github.com/site24x7/plugins/hadoop\_resourcemanager\_appmetrics/hadoop\_resourcemanager\_appmetrics.py
+Download resource manager appmetrics plugin from https://github.com/site24x7/plugins/blob/master/hadoop_resourcemanager_appmetrics/hadoop_resourcemanager_appmetrics.py
 
 Place the plugin folder 'hadoop\_resourcemanager\_appmetrics/hadoop\_resourcemanager\_appmetrics.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
 
