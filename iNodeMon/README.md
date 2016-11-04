@@ -18,11 +18,6 @@ Monitor iNode usage on servers.
 - Create a directory "iNodeMon" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/iNodeMon
 - Download the file [iNodeMon.py] and place it under the "iNodeMon" directory
 
-### iNodeMon Plugin configuration
----
-
-No configuration needed.
-
 ### iNodeMon Metrics
 ---
 
