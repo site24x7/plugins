@@ -14,12 +14,20 @@ For more info, refer to [https://hadoop.apache.org/docs/r2.6.0/hadoop-yarn/hadoo
 ### Tested in Ubuntu
 
 
-Prerequisites
+Resource Manager Node Metrics plugin installation
 =============
 
 Download resource manager nodemetrics plugin from https://github.com/site24x7/plugins/hadoop_resourcemanager_nodemetrics/hadoop_resourcemanager_nodemetrics.py
 
 Place the plugin folder 'hadoop_resourcemanager_nodemetrics/hadoop_resourcemanager_nodemetrics.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
+
+Commands to perform the above steps:
+
+	cd /opt/site24x7/monagent/plugins/
+	mkdir hadoop_resourcemanager_nodemetrics
+	cd hadoop_resourcemanager_nodemetrics
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/hadoop_resourcemanager_nodemetrics/hadoop_resourcemanager_nodemetrics.py
+
 
 
 Configure the agent plugin
@@ -47,7 +55,8 @@ Resource Manager Plugin Attributes:
 
 Sample result of the above plugin,
 		
-###### {
+
+	 {
     "availMemoryMB": 8192,
     "availableVirtualCores": 8,
     "lastHealthUpdate": 1477049600392,
@@ -62,11 +71,15 @@ Sample result of the above plugin,
     },
     "usedMemoryMB": 0,
     "usedVirtualCores": 0
-}
+	}
 
 
 where the detailed explanation of each attribute can be found here,
 [attibute explanation](https://hadoop.apache.org/docs/r2.6.0/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html#Cluster_Node_API "attribute explanations") 
 
 
-		 
+Monitoring additional metrics:
+==============================
+To monitor additional metrics, edit the "hadoop\_resourcemanager\_nodemetrics.py" file and add the new metrics that need monitoring
+ 
+Increment the plugin version value in the file "hadoop\_resourcemanager\_nodemetrics.py" to view the newly added metrics ( For e.g. Change the default plugin version from PLUGIN_VERSION = "1" to "PLUGIN_VERSION = "2")

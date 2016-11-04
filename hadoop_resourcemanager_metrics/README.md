@@ -1,4 +1,4 @@
-Resource Manager Metrics Plugin:
+Resource Manager cluster Metrics Plugin:
 ================================
 
 The ResourceManager REST API's allow the user to get information about the cluster - status on the cluster, metrics on the cluster, scheduler information, information about nodes in the cluster, and information about applications on the cluster.
@@ -11,11 +11,18 @@ For monitoring the metrics of resource manager cluster setup using Site24x7 Serv
 ### Language : Python
 ### Tested in Ubuntu
 
-Prerequisites
+Resource Manager Cluster Metrics Plugin installation
 =============
 
 Download hadoop plugin from https://github.com/site24x7/plugins/hadoop_resourcemanager_metrics/hadoop_resourcemanager_metrics.py
 Place the plugin folder 'hadoop_resourcemanager_metrics/hadoop_resourcemanager_metrics.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
+
+Commands to perform the above steps:
+
+	cd /opt/site24x7/monagent/plugins/
+	mkdir hadoop_resourcemanager_metrics
+	cd hadoop_resourcemanager_metrics
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/hadoop_resourcemanager_metrics/hadoop_resourcemanager_metrics.py
 
 
 Configure the agent plugin
@@ -80,6 +87,12 @@ Sample result of the above plugin,
 
 where the detailed explanation of each attribute can be found here,
 [https://hadoop.apache.org/docs/r2.6.0/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html#Cluster_Metrics_API](https://hadoop.apache.org/docs/r2.6.0/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html#Cluster_Metrics_API "metric details") 
+
+Monitoring additional metrics:
+==============================
+To monitor additional metrics, edit the "hadoop\_resourcemanager\_metrics.py" file and add the new metrics that need monitoring
+ 
+Increment the plugin version value in the file "hadoop\_resourcemanager\_metrics.py" to view the newly added metrics ( For e.g. Change the default plugin version from PLUGIN_VERSION = "1" to "PLUGIN_VERSION = "2") 
 
 
 		 
