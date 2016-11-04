@@ -15,12 +15,12 @@ commands to perform the above steps:
 	cd /opt/site24x7/monagent/plugins/
 	mkdir open_file_stats
 	cd open_file_stats
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/open_file_stats/open_file_stats.py
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/open_files_linux/open_files_linux.py
 
 
 open_files_linux Attributes:
 ===========================
 
 	open_files	: Number of files that are open. 		
-    total_files: Number of files that are present
+	total_files	: Number of files that are present
 
