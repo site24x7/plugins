@@ -13,7 +13,7 @@ PreRequisites
 =============
 	Site24x7 MySQL plugin uses "pymysql" module to get the performance metrics of MySQL servers
 
-Download mysql plugin from https://github.com/site24x7/plugins/blob/master/mysql\_table\_status/mysql\_table\_status.py
+Download mysql plugin from https://github.com/site24x7/plugins/blob/master/mysql_table_status/mysql_table_status.py
 Place the plugin folder 'mysql/mysql.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
 Our plugin uses 'pymysql' module to interact with the MySQL server. Have this installed to use this feature.
 
@@ -50,16 +50,16 @@ Download the file ["mysql_table_status.py" from our GitHub repository](https://g
 Commands to perform the above step:
 	
 	cd /opt/site24x7/monagent/plugins/
-	mkdir mysql\_table\_status
-	cd mysql\_table\_status
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql\_table\_status/mysql\_table\_status.py
+	mkdir mysql_table_status
+	cd mysql_table_status
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_table_status/mysql_table_status.py
 	
 
 Configurations:
 ==============
 In order to change the monitoring configurations, go to plugins directory and edit the required plugin file.
 
-For e.g. mysql => /opt/site24x7agent/monagent/plugins/mysql\_table\_status/mysql\_table\_status.py
+For e.g. mysql => /opt/site24x7agent/monagent/plugins/mysql_table_status/mysql_table_status.py
 
 #Config Section:
 	MYSQL_HOST = "localhost"
@@ -92,6 +92,6 @@ MySQL Table stats Plugin Attributes:
 
 Monitoring additional metrics:
 ==============================
-To monitor additional metrics, edit the "mysql\_table\_status.py" file and add the new metrics that need monitoring
+To monitor additional metrics, edit the "mysql_table_status.py" file and add the new metrics that need monitoring
  
-Increment the plugin version value in the file "mysql\_table\_status.py" to view the newly added metrics ( For e.g. Change the default plugin version from PLUGIN_VERSION = "1" to "PLUGIN_VERSION = "2") 
+Increment the plugin version value in the file "mysql_table_status.py" to view the newly added metrics ( For e.g. Change the default plugin version from PLUGIN_VERSION = "1" to "PLUGIN_VERSION = "2") 
