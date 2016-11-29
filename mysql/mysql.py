@@ -34,11 +34,11 @@ class MySQL(object):
     def __init__(self,config):
         self.configurations = config
         self.connection = None
-        self.host = self.configurations.get('host', 'localhost')
-        self.port = int(self.configurations.get('port', '3306'))
-        self.username = self.configurations.get('user', 'root')
-        self.password = self.configurations.get('password', '')
-
+        self.host     = os.getenv('MYSQL_HOST', self.configurations.get('host', 'localhost'))
+        self.port     = os.getenv('MYSQL_PORT', int(self.configurations.get('port', '3306')))
+        self.username = os.getenv('MYSQL_USERNAME', self.configurations.get('user', 'root'))
+        self.password = os.getenv('MYSQL_PASSWORD', self.configurations.get('password', ''))
+    
     #execute a mysql query and returns a dictionary
     def executeQuery(self, con, query):
         try:
