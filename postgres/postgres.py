@@ -2,7 +2,7 @@
 
 
 #import psycopg2
-=======
+#=======
 ### This plugin is used for monitoring PostGres Database
 ### For monitoring the performance metrics of your PostgreSQL database using Site24x7 Server Monitoring Plugins.
 ### 
