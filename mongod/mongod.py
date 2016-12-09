@@ -21,13 +21,35 @@ MONGODB_DBSTATS="yes"
 
 MONGODB_REPLSET="no"
 
+MONGODB_USERNAME=None
+
+MONGODB_PWD=None
+
+MONGODB_AUTHDB=None
+
+METRICS_UNITS = {'heap_usage':'MB',
+                 'memory_resident':'MB',
+                 'memory_virtual':'MB',
+                 'memory_mapped':'MB'
+                 }
+
 class MongoDB(object):
     def __init__(self, config):
         self.configurations = config
         self.connection = None
         self.host=self.configurations.get('host')
         self.port=self.configurations.get('port')
-        self.mongod_server = "{0}:{1}".format(self.host, self.port)
+        self.username = self.configurations.get('username')
+        self.password = self.configurations.get('password')
+        self.dbname=self.configurations.get('dbname')
+        if(self.username!=None and self.password!=None and self.dbname!=None):
+            self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username, self.password, self.host, self.port, self.dbname)
+        elif(self.username!=None and self.password!=None):
+            self.mongod_server = "{0}:{1}@{2}:{3}".format(self.username, self.password, self.host, self.port)
+        elif(self.dbname!=None):
+            self.mongod_server = "{0}:{1}/{2}".format(self.host, self.port, self.dbname)
+        else:
+            self.mongod_server = "{0}:{1}".format(self.host, self.port)
         self.dbstats = self.configurations.get('dbstats')
         self.replset = self.configurations.get('replset')
 
@@ -100,7 +122,7 @@ class MongoDB(object):
                 pass
 
             try:
-                data['heap_usage'] = output['extra_info']['heap_usage_bytes']
+                data['heap_usage'] = round((float(output['extra_info']['heap_usage_bytes'])/(1024*1024)),2)
                 data['page_faults'] = output['extra_info']['page_faults']
 
             except KeyError as ex:
@@ -168,17 +190,19 @@ class MongoDB(object):
                             namespaces = (self.connection[database]['system']['namespaces'])
                             data[dbstats_database_namespaces] = (namespaces.count())
         except Exception:
-            pass
+            import traceback
+            traceback.print_exc()
+
+        data['units']=METRICS_UNITS
 
         return data
 
 if __name__ == "__main__":
     
-    configurations = {'host':MONGODB_HOST,'port':MONGODB_PORT,'dbstats':MONGODB_DBSTATS,'replset':MONGODB_REPLSET}
+    configurations = {'host':MONGODB_HOST,'port':MONGODB_PORT,'dbstats':MONGODB_DBSTATS,'replset':MONGODB_REPLSET,'username':MONGODB_USERNAME,'password':MONGODB_PWD,'dbname':MONGODB_AUTHDB}
 
     mongo_check = MongoDB(configurations)
     
     result = mongo_check.metricCollector()
     
     print(json.dumps(result, indent=4, sort_keys=True))
-        
