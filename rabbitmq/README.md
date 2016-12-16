@@ -4,7 +4,7 @@ Plugin for RabbitMQ Monitoring
 
 RabbitMQ is open source message broker software (sometimes called message-oriented middleware) that implements the Advanced Message Queuing Protocol (AMQP). The RabbitMQ server is written in the Erlang programming language and is built on the Open Telecom Platform framework for clustering and failover.
 
-Our RabbitMQ Plugin is for monitoring the performance metrics of a RIAK server. 
+Our RabbitMQ Plugin is for monitoring the performance metrics of a RabbitMQ server. 
   
 
 PreRequisites
@@ -21,7 +21,7 @@ Go to linux agent plugins directory - '/opt/site24x7/monagent/plugins'
 
 Make a directory in the name 'rabbitmq'
 
-Download riak plugin from https://github.com/site24x7/plugins/blob/master/rabbitmq/rabbitmq.py
+Download rabbitmq plugin from https://github.com/site24x7/plugins/blob/master/rabbitmq/rabbitmq.py
 
 Place the plugin file into the rabbitmq directory
 
