@@ -2,6 +2,7 @@
 
 import json
 import urllib2
+import socket
 
 ### For monitoring the performance metrics of your Elasticsearch cluster using Site24x7 Server Monitoring Plugins.
 
@@ -12,17 +13,28 @@ import urllib2
 
 ### Author: Tarun, Zoho Corp
 ### Language : Python
-### Tested in Ubuntu
+### Tested in Ubuntu, CentOS 6
 
+
+### Modified By: Pierce Fortin, SmashFly Technologies
+### Changes Made: Modified for Elastic 2.4.2, Added integration for the ability to have hostname and IP address dynamically generated based on eth0 IP address and system hostname to align with common Elastic automation 
 
 # Change the Elasticsearch stats accordingly here.
-URL = "http://localhost:9200/_nodes/stats"
+URL = "http://127.0.0.1:9200/_nodes/stats"
 USERNAME = None
 PASSWORD = None
-NODE = 'Node Name' # Name of the node
+NODE = 'NODE_NAME' # Name of the node
+
+### If you want to use Dynamic IP and Node Naming, Comment NODE = and URL = above and uncomment lines below: 
+
+#IP = socket.gethostbyname(socket.gethostname()) # Get local IP address
+#URL = "http://%s:9200/_nodes/stats" % IP        # Set URL as IP address found in IP line
+#USERNAME = None
+#PASSWORD = None
+#NODE = socket.gethostname()                     #Sets node name to local hostname of server
 
 # If any changes done in the plugin, plugin_version must be incremented by 1. For. E.g 2,3,4.. 
-PLUGIN_VERSION = "1"
+PLUGIN_VERSION = "2"
 
 # Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT = "true"
@@ -30,19 +42,22 @@ HEARTBEAT = "true"
 ### Attribute Names
 KEYS = {'host':'host', # ESCluster Host
         'transport_address':'transport_address',# ESClusted address
-        'cpu_used':'cpu_used', # CPU Used
         'cpu_percent':'cpu_percent', # CPU Used Percent
         'mem_used':'mem_used', # Memory Used
         'mem_free':'mem_free', # Memory Free
-        'mem_resident_in_bytes':'resident_mem', # Resident Memory in Bytes
-        'mem_share_in_bytes':'shared_mem', # Shared Memory in Bytes
-        'mem_total_virtual_in_bytes':'vitual_mem', # Total Virtual Memory in Bytes    
+        'non_heap_used_in_bytes':'non_heap_used_in_bytes', # Non Heap Used In Bytes
+        'non_heap_committed_in_bytes':'non_heap_comitted_in_bytes', # Non Heap Commited in Bytes
+        'mem_total_virtual_in_bytes':'vitual_mem', # Total Virtual Memory in Bytes
+        'heap_used_percent':'heap_used_percent', # JVM Heap Utilization
 }
 UNITS = {
         'cpu_percent':'%',
-        'resident_mem':'Bytes', # number of data nodes in the cluster
-        'shared_mem':'Bytes', # number of nodes in a cluster
-        'vitual_mem':'Bytes', # number of shards that are currently moving from one node to another node      
+        'mem_used':'%',
+        'mem_free':'%',      
+        'non_heap_used_in_bytes':'Bytes', 
+        'non_heap_committed_in_bytes':'Bytes', 
+        'vitual_mem':'Bytes',
+        'heap_used_percent':'%',       
          }
    
 
@@ -96,14 +111,14 @@ class Elasticsearch():
                 if NODE == nodename : 
                     self.data['host'] = node['host']
                     self.data['transport_address'] = node['transport_address']
-                    self.data['cpu_used'] = node['os']['cpu']['usage']
                     self.data['mem_used'] = node['os']['mem']['used_percent']
                     self.data['mem_free'] = node['os']['mem']['free_percent']
                     
                     self.data['cpu_percent'] = node['process']['cpu']['percent']
-                    self.data['mem_resident_in_bytes'] = node['process']['mem']['resident_in_bytes']
-                    self.data['mem_share_in_bytes'] = node['process']['mem']['share_in_bytes']
-                    self.data['mem_total_virtual_in_bytes'] = node['process']['mem']['total_virtual_in_bytes']
+                    self.data['non_heap_used_in_bytes'] = node['jvm']['mem']['non_heap_used_in_bytes']
+                    self.data['non_heap_committed_in_bytes'] = node['jvm']['mem']['non_heap_committed_in_bytes']
+                    #self.data['mem_total_virtual_in_bytes'] = node['process']['mem']['total_virtual_in_bytes']
+                    self.data['heap_used_percent'] = node['jvm']['mem']['heap_used_percent']
                     
                 else : 
                     self.data['msg'] = "node not present"
