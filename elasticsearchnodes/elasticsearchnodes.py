@@ -24,7 +24,7 @@ URL = "http://127.0.0.1:9200/_nodes/stats"
 USERNAME = None
 PASSWORD = None
 NODE = 'NODE_NAME' # Name of the node
-
+nodecount = 0
 ### If you want to use Dynamic IP and Node Naming, Comment NODE = and URL = above and uncomment lines below: 
 
 #IP = socket.gethostbyname(socket.gethostname()) # Get local IP address
@@ -34,7 +34,7 @@ NODE = 'NODE_NAME' # Name of the node
 #NODE = socket.gethostname()                     #Sets node name to local hostname of server
 
 # If any changes done in the plugin, plugin_version must be incremented by 1. For. E.g 2,3,4.. 
-PLUGIN_VERSION = "2"
+PLUGIN_VERSION = "3"
 
 # Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT = "true"
@@ -101,6 +101,7 @@ class Elasticsearch():
         return self.data
     
     def parseClusterData(self, output):
+        global nodecount
         try:
             data = json.loads(output.decode('UTF-8'))
             nodes = data['nodes'].keys()
@@ -117,12 +118,17 @@ class Elasticsearch():
                     self.data['cpu_percent'] = node['process']['cpu']['percent']
                     self.data['non_heap_used_in_bytes'] = node['jvm']['mem']['non_heap_used_in_bytes']
                     self.data['non_heap_committed_in_bytes'] = node['jvm']['mem']['non_heap_committed_in_bytes']
-                    #self.data['mem_total_virtual_in_bytes'] = node['process']['mem']['total_virtual_in_bytes']
+                    self.data['mem_total_virtual_in_bytes'] = node['process']['mem']['total_virtual_in_bytes']
                     self.data['heap_used_percent'] = node['jvm']['mem']['heap_used_percent']
-                    
-                else : 
-                    self.data['msg'] = "node not present"
-                    self.data['status'] = 0 
+                    nodecount = 1
+                
+                else :
+                   continue #Continue the loop until all nodes are enumerated
+            if nodecount != 1: #After loop is completed, Do basic error handling. If NODE variable was not found in JSON document, Return node not found in cluster and status 0
+               self.data['msg'] = "Node not found in cluster"
+               self.data['status'] = 0
+
+
                 
         except Exception as e:
             print e
