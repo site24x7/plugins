@@ -5,7 +5,7 @@ For monitoring the performance metrics of your Elasticsearch cluster using Site2
   
 ### Author: Anita, Zoho Corp
 ### Language : Python
-### Tested in Ubuntu
+### Tested in Ubuntu, CentOS6
 
 Before you start
 ======================
@@ -31,6 +31,18 @@ Make the following changes in the escluster plugin file ( copied to agent's plug
 Site24x7 agent will now report Elasticsearch cluster statistics in the plugins tab under the site24x7.com portal.
 
 For further monitoring all your Elasticsearch nodes, we suggest adding our linux server monitoring agent in each node.
+
+Configuring for Automated Deploy
+================================
+When using automation, It is common to have Elastic listinging on the LAN IP address and the elastic node name set to the hostname.
+This script contains commented out variables to automatically generate the node name and connection string on the fly.
+
+1. Comment out URL, Username, Password, and Node variables
+
+2. Uncomment IP, URL, Username, Password, and Node variables in the block directly below the ones you commented
+
+3. Deploy using steps outlined above, Restarting monagent when completed. 
+
 
 
 ESCluster Attributes:
