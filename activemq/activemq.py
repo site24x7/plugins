@@ -7,6 +7,8 @@ Site24x7 ActiveMQ Plugin
 
 import json
 
+import os
+
 # if any impacting changes to this plugin kindly increment the plugin
 # version here.
 PLUGIN_VERSION = "1"
