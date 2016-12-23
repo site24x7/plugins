@@ -8,7 +8,7 @@ For monitoring the performance metrics of your ActiveMQ setup using Site24x7 Ser
 Prerequisites
 =============
 
-Download activemq plugin from https://github.com/site24x7/plugins/activemq/activemq.py
+Download activemq plugin from https://raw.githubusercontent.com/site24x7/plugins/master/activemq/activemq.py
 Place the plugin folder 'activemq/activemq.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
 
 
