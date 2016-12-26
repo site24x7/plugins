@@ -26,7 +26,7 @@ PLUGIN_VERSION = "1"
 HEARTBEAT="true"
 
 #Change the broker name and port accordingly here:
-BROKER_NAME = "ramya-3913"
+BROKER_NAME = "localhost"
 
 PORT="9092"
 
