@@ -145,7 +145,6 @@ class Tomcat(object):
                         if name==self.connector:
                             thread = connector.find('./threadInfo')
                             request = connector.find('./requestInfo')
-                            print thread
                             data['name']=name
                             data['thread_count']=int(thread.get('currentThreadCount'))     
                             data['thread_busy']=int(thread.get('currentThreadsBusy'))       
