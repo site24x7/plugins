@@ -47,18 +47,26 @@ Configure the agent plugin
 
 Site24x7 agent will now report tomcat statistics in the plugins tab under the site24x7.com portal.
 
-
 Tomcat Plugin Attributes:
 ==========================
 
-Some of the collected tomcat attributes are as follows:
+1. name  - Connector name
 
-name  - Connector name
-thread_count  - Total number of threads
-thread_busy  - Busy threads count
-thread_allowed - total number of threads allowed
-bytes_received - number of bytes received
-bytes_sent  - number of bytes sent
-error_count - number of errors
-processing_time - time taken for processing the request
-request_count - number of requests
+2. thread_count  - Total number of threads
+
+3. thread_busy  - Busy threads count
+
+4. thread_allowed - total number of threads allowed
+
+5. bytes_received - number of bytes received
+
+6. bytes_sent  - number of bytes sent
+
+7. error_count - number of errors
+
+8. processing_time - time taken for processing the request
+
+9. request_count - number of requests
+
+
+
