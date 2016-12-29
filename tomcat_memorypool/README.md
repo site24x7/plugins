@@ -51,6 +51,5 @@ Site24x7 agent will now report tomcat statistics in the plugins tab under the si
 Tomcat Plugin Attributes:
 ==========================
 
-Some of the collected tomcat attributes are as follows:
 
 usage_"name of the memory pool" - usage stats of each memory pool
