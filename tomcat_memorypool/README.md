@@ -52,4 +52,5 @@ Tomcat Plugin Attributes:
 ==========================
 
 Some of the collected tomcat attributes are as follows:
-usage_<memorypool_name> - usage stats of each memory pool
+
+usage_"name of the memory pool" - usage stats of each memory pool
