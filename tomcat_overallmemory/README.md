@@ -52,9 +52,14 @@ Tomcat Plugin Attributes:
 ==========================
 
 Some of the collected tomcat attributes are as follows:
-free_memory - total free memory
-total_memory - total memory
-max_memory - max memory allowed
-available_memory - free memory
-used_memory - used memory
-percent_used_memory - used memory percent
+1. free_memory - total free memory
+
+2. total_memory - total memory
+
+3. max_memory - max memory allowed
+
+4. available_memory - free memory
+
+5. used_memory - used memory
+
+6. percent_used_memory - used memory percent
