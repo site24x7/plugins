@@ -52,6 +52,7 @@ Tomcat Plugin Attributes:
 ==========================
 
 Some of the collected tomcat attributes are as follows:
+
 1. free_memory - total free memory
 
 2. total_memory - total memory
