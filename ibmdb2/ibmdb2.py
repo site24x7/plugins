@@ -57,7 +57,7 @@ class DB2(object):
 
     def getDbConnection(self):
         try:
-        	url="DATABASE="+DB2_SAMPLE_DB+";HOSTNAME="+DB2_HOST+";PORT="+DB2_PORT+";PROTOCOL=TCPIP;UID="+DB2_USERNAME+";PWD="+DB2_PASSWORD+";"
+            url="DATABASE="+DB2_SAMPLE_DB+";HOSTNAME="+DB2_HOST+";PORT="+DB2_PORT+";PROTOCOL=TCPIP;UID="+DB2_USERNAME+";PWD="+DB2_PASSWORD+";"
             db = ibm_db.connect(url, "", "")  #Connect to an uncataloged database
             self.connection = db
         except Exception as e:
