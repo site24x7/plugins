@@ -22,13 +22,13 @@ PLUGIN_VERSION = "1"
 HEARTBEAT="true"
 
 #Config Section:Change DB2 Host,Port,Username,Password and Database name of DB2 server. 
-DB2_HOST = "app-w12r2s-7"
+DB2_HOST = "localhost"
 
 DB2_PORT="50000"
 
-DB2_USERNAME="db2admin"
+DB2_USERNAME="db2"
 
-DB2_PASSWORD="administrator@123"
+DB2_PASSWORD="db2"
 
 DB2_SAMPLE_DB="SAMPLE"
 
