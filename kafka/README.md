@@ -22,8 +22,8 @@ Install the kafka module using the steps below:
 
 
 # Installation:
-1. Download kafka_consumer.py file
-2. Create a folder named "kafka" under agent plugins directory (/opt/site24x7/monagent/plugins/) and place the kafka_consumer plugin file
+1. Download kafka_producer.py file
+2. Create a folder named "kafka" under agent plugins directory (/opt/site24x7/monagent/plugins/) and place the kafka_producer plugin file
 3. Save the changes and restart the agent
 /etc/init.d/site24x7monagent restart
 
