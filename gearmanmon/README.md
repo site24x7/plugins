@@ -8,6 +8,7 @@ Monitor gearman servers performance.
     - Installation
     
             easy_install gearman
+            (OR)
             pip install gearman
 
 - For more detail refer  [How to install gearman?]
