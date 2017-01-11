@@ -2,6 +2,8 @@
 
 import json
 
+import sys
+
 #if any changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION=1
 
@@ -13,11 +15,15 @@ RIAK_HOST='127.0.0.1'
 
 RIAK_PORT="8098"
 
+#Riak Status URL
 RIAK_STATS_URI="/stats/"
 
+#If any username / password is required to authenticate the stats url kindly mention here.
 RIAK_USERNAME=None
 
 RIAK_PASSWORD=None
+
+REALM=None
 
 METRICS_UNITS={'memory_total':'MB','memory_atom':'MB','memory_atom_used':'MB','memory_binary':'MB','memory_code':'MB','memory_ets':'MB',
               'memory_processes':'MB','memory_processes_used':'MB'}
@@ -31,51 +37,41 @@ METRICS_TO_BE_PUSHED_TO_SERVER = ["pbc_active","pbc_connects","read_repairs","no
 
 BYTES_TO_MB_LIST=['memory_total','memory_code','memory_ets','memory_processes','memory_processes_used','memory_atom','memory_atom_used','memory_binary']
 
+PYTHON_MAJOR_VERSION = sys.version_info[0]
 
+if PYTHON_MAJOR_VERSION == 3:
+    import urllib
+    import urllib.request as urlconnection
+elif PYTHON_MAJOR_VERSION == 2:
+    import urllib2 as urlconnection
 
 def metricCollector():
     data = {}
+    
     #defaults
-
     data['plugin_version'] = PLUGIN_VERSION
 
     data['heartbeat_required']=HEARTBEAT
 
     data['units']=METRICS_UNITS
     
-    import requests
+    URL = "http://"+RIAK_HOST+":"+RIAK_PORT+"/"+RIAK_STATS_URI
     
-    from requests.exceptions import ConnectionError
-
-    from urlparse import urljoin
-    
-    server = "http://"+RIAK_HOST+":"+RIAK_PORT+"/"
-    
-    url = urljoin(server, RIAK_STATS_URI)
-    
-    credentials = None
-    
-    if RIAK_USERNAME and RIAK_PASSWORD:
-        credentials = (RIAK_USERNAME,RIAK_PASSWORD)
-
-    req_headers={}
-
-    req_headers['Accept'] = 'application/json'
-
     try:
-        response = requests.get(url, auth=credentials, headers=req_headers,timeout=int(30))
         
-        if response.status_code == 404:
-            data['status']=0
-            data['msg']='received status code 404'
-            return data
+        if RIAK_USERNAME and RIAK_PASSWORD:
+            password_mgr = urlconnection.HTTPPasswordMgr()
+            password_mgr.add_password(REALM, URL, RIAK_USERNAME, RIAK_PASSWORD)
+            auth_handler = urlconnection.HTTPBasicAuthHandler(password_mgr)
+            opener = urlconnection.build_opener(auth_handler)
+            urlconnection.install_opener(opener)
 
-        if response.status_code == 400:
-            data['status']=0
-            data['msg']='received status code 400'
-            return data
+        response = urlconnection.urlopen(URL, timeout=10)
+    
+        byte_responseData = response.read()
+        str_responseData = byte_responseData.decode('UTF-8')
 
-        riak_dict = response.json()
+        riak_dict = json.loads(str_responseData)
 
         for metric in riak_dict:
             if metric in METRICS_TO_BE_PUSHED_TO_SERVER:
@@ -83,9 +79,9 @@ def metricCollector():
                 if metric in BYTES_TO_MB_LIST:
                      value=convertBytesToMB(value)
                 data[metric]=value 
-    except ConnectionError as e:
+    except Exception as e:
             data['status']=0
-            data['msg']='Connection Error'  
+            data['msg']=str(e)
     
     return data
 
