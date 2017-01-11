@@ -12,7 +12,9 @@ PreRequisites
 
 Our plugin uses Management Plugin to fetch the performance metrics (http://127.0.0.1:15672/api/overview).
 
-By default it is configured in the installation of RabbitMQ itself otherwise configure it.
+The management plugin is included in the RabbitMQ installation itself.To enable it execute the following command :
+
+rabbitmq-plugins enable rabbitmq_management
 
 Installation
 =============
