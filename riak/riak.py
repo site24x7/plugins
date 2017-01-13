@@ -41,9 +41,9 @@ PYTHON_MAJOR_VERSION = sys.version_info[0]
 
 if PYTHON_MAJOR_VERSION == 3:
     import urllib
-    import urllib.request as urlconnection
+    import urllib.request as connector
 elif PYTHON_MAJOR_VERSION == 2:
-    import urllib2 as urlconnection
+    import urllib2 as connector
 
 def metricCollector():
     data = {}
@@ -60,13 +60,13 @@ def metricCollector():
     try:
         
         if RIAK_USERNAME and RIAK_PASSWORD:
-            password_mgr = urlconnection.HTTPPasswordMgr()
+            password_mgr = connector.HTTPPasswordMgrWithDefaultRealm()
             password_mgr.add_password(REALM, URL, RIAK_USERNAME, RIAK_PASSWORD)
-            auth_handler = urlconnection.HTTPBasicAuthHandler(password_mgr)
-            opener = urlconnection.build_opener(auth_handler)
-            urlconnection.install_opener(opener)
+            auth_handler = connector.HTTPBasicAuthHandler(password_mgr)
+            opener = connector.build_opener(auth_handler)
+            connector.install_opener(opener)
 
-        response = urlconnection.urlopen(URL, timeout=10)
+        response = connector.urlopen(URL, timeout=10)
     
         byte_responseData = response.read()
         str_responseData = byte_responseData.decode('UTF-8')
