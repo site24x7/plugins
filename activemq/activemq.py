@@ -9,16 +9,16 @@ import json
 
 import os
 
-# if any impacting changes to this plugin kindly increment the plugin
-# version here.
+import sys
+
+# if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
 
-# Setting this to true will alert you when there is a communication
-# problem while posting plugin data to server
+# Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT = "true"
 
 # Config Section:
-ACTIVEMQ_HOST = "localhost"
+ACTIVEMQ_HOST = "192.168.220.135"
 
 ACTIVEMQ_PORT = "8161"
 
@@ -26,87 +26,58 @@ ACTIVEMQ_USERNAME = "admin"
 
 ACTIVEMQ_PASSWORD = "admin"
 
+REALM = None
+
 # Mention the units of your metrics . If any new metrics are added, make
 # an entry here for its unit if needed.
 METRICS_UNITS = {'total_message_count': 'units', 'total_connections_count': 'units',
                  'total_consumer_count': 'units', 'total_producer_count': 'units'}
 
+PYTHON_MAJOR_VERSION = sys.version_info[0]
 
-class ActiveMQ(object):
-    def __init__(self, config):
-        self.configurations = config
-        self.connection = None
-        self.host = self.configurations.get('host', 'localhost')
-        self.port = int(self.configurations.get('port', '8161'))
-        self.username = self.configurations.get('user', 'root')
-        self.password = self.configurations.get('password', '')
+if PYTHON_MAJOR_VERSION == 3:
+    import urllib
+    import urllib.request as connector
+elif PYTHON_MAJOR_VERSION == 2:
+    import urllib2 as connector
 
-    def checkPreRequisites(self, data):
-        bool_result = True
-        try:
-            import requests
-        except Exception:
-            data['status'] = 0
-            data['msg'] = 'requests module not installed'
-            bool_result = False
-            requests_returnVal = os.system(
-                'pip install requests >/dev/null 2>&1')
-            if requests_returnVal == 0:
-                bool_result = True
-                data.pop('status')
-                data.pop('msg')
-        return bool_result, data
+def metricCollector():
+    
+    data = {}
+    data['plugin_version'] = PLUGIN_VERSION
+    data['heartbeat_required'] = HEARTBEAT
+    data['units'] = METRICS_UNITS
 
-    def metricCollector(self):
-        data = {}
-        data['plugin_version'] = PLUGIN_VERSION
-        data['heartbeat_required'] = HEARTBEAT
+    URL = 'http://%s:%s/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost' % (ACTIVEMQ_HOST, ACTIVEMQ_PORT)
+    try:
+        if ACTIVEMQ_USERNAME and ACTIVEMQ_PASSWORD:
+            password_mgr = connector.HTTPPasswordMgrWithDefaultRealm()
+            password_mgr.add_password(REALM, URL, ACTIVEMQ_USERNAME, ACTIVEMQ_PASSWORD)
+            auth_handler = connector.HTTPBasicAuthHandler(password_mgr)
+            opener = connector.build_opener(auth_handler)
+            connector.install_opener(opener)
 
-        bool_result, data = self.checkPreRequisites(data)
+        response = connector.urlopen(URL, timeout=10)
+        byte_responseData = response.read()
+        str_responseData = byte_responseData.decode('UTF-8')
+        json_data = json.loads(str_responseData)
 
-        if bool_result == False:
-            return data
-        else:
-            try:
-                import requests
-                from requests import ConnectionError
-            except Exception:
-                data['status'] = 0
-                data['msg'] = 'requests module not installed'
-                return data
+        total_message_count = json_data['value']['TotalMessageCount']
+        total_connections_count = json_data['value']['TotalConnectionsCount']
+        total_consumer_count = json_data['value']['TotalConsumerCount']
+        total_producer_count = json_data['value']['TotalProducerCount']
 
-            url = 'http://%s:%s/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost' % (
-                self.host, self.port)
+        data['total_message_count'] = total_message_count
+        data['total_connections_count'] = total_connections_count
+        data['total_consumer_count'] = total_consumer_count
+        data['total_producer_count'] = total_producer_count
+        
+    except Exception as e:
+        data['status'] = 0
+        data['msg'] = str(e)
 
-            try:
-                r = requests.get(url, auth=(self.username, self.password))
-                json_data = r.json()
-
-                total_message_count = json_data['value']['TotalMessageCount']
-                total_connections_count = json_data[
-                    'value']['TotalConnectionsCount']
-                total_consumer_count = json_data['value']['TotalConsumerCount']
-                total_producer_count = json_data['value']['TotalProducerCount']
-
-                data['total_message_count'] = total_message_count
-                data['total_connections_count'] = total_connections_count
-                data['total_consumer_count'] = total_consumer_count
-                data['total_producer_count'] = total_producer_count
-            except ConnectionError as e:
-                data['status'] = 0
-                data['msg'] = str("Connection error.")
-
-            data['units'] = METRICS_UNITS
-
-        return data
-
-
+    return data
+    
 if __name__ == "__main__":
-    configurations = {'host': ACTIVEMQ_HOST, 'port': ACTIVEMQ_PORT,
-                      'user': ACTIVEMQ_USERNAME, 'password': ACTIVEMQ_PASSWORD}
-
-    activemq_plugins = ActiveMQ(configurations)
-
-    result = activemq_plugins.metricCollector()
-
-    print(json.dumps(result, indent=4, sort_keys=True))
+    
+    print(json.dumps(metricCollector(), indent=4, sort_keys=True))
