@@ -18,7 +18,7 @@ PLUGIN_VERSION = "1"
 HEARTBEAT = "true"
 
 # Config Section:
-ACTIVEMQ_HOST = "192.168.220.135"
+ACTIVEMQ_HOST = "localhost"
 
 ACTIVEMQ_PORT = "8161"
 
