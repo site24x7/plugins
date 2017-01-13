@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 ### Author: Vinoth Manoharan, Zoho Corp
 ### Language : Python
