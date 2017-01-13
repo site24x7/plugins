@@ -4,13 +4,7 @@ import json
 
 import requests
 
-import traceback
-    
-from requests.exceptions import ConnectionError
-
-from requests.exceptions import Timeout
-
-from urlparse import urljoin
+import sys
 
 #if any changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION=1
@@ -31,39 +25,35 @@ RABBITMQ_USERNAME='guest'
 
 RABBITMQ_PASSWORD='guest'
 
-RABBITMQ_SERVER = "http://"+RABBITMQ_HOST+":"+RABBITMQ_PORT+"/"
+REALM=None
+
+RABBITMQ_SERVER = "http://"+RABBITMQ_HOST+":"+RABBITMQ_PORT
 
 METRICS_UNITS={'mem_used':'MB','disk_free_limit':'MB'}
 
 BYTES_TO_MB_LIST=['mem_used','disk_free_limit']
 
+PYTHON_MAJOR_VERSION = sys.version_info[0]
+
+if PYTHON_MAJOR_VERSION == 3:
+    import urllib
+    import urllib.request as connector
+elif PYTHON_MAJOR_VERSION == 2:
+    import urllib2 as connector
+
 def metricCollector():
     data = {}
-    #defaults
 
+    #defaults
     data['plugin_version'] = PLUGIN_VERSION
 
     data['heartbeat_required']=HEARTBEAT
 
     data['units']=METRICS_UNITS
 
-    credentials = None
-    
-    if RABBITMQ_USERNAME and RABBITMQ_PASSWORD:
-        credentials = (RABBITMQ_USERNAME,RABBITMQ_PASSWORD)
+    getOverview(data)
 
-    req_headers={}
-
-    req_headers['Accept'] = 'application/json'
-
-    api_working = isMgmtApiWorking(data,req_headers,credentials)
-
-    if not api_working:
-        return data
-
-    getOverview(data,req_headers,credentials)
-
-    getNodes(data,req_headers,credentials)
+    getNodes(data)
 
     return data
 
@@ -79,65 +69,23 @@ def convertBytesToMB(v):
         pass
     return v  
 
-def isMgmtApiWorking(data,req_headers,credentials):
+def getOverview(data):
     try:
-        url = urljoin(RABBITMQ_SERVER, RABBITMQ_API_URI)
-        response = requests.get(url, auth=credentials, headers=req_headers,timeout=int(3))
-        
-        if response.status_code == 404:
-            data['status']=0
-            data['msg']='received status code 404'
-            return False
+        URL = RABBITMQ_SERVER+RABBITMQ_API_URI
+        if RABBITMQ_USERNAME and RABBITMQ_PASSWORD:
+            password_mgr = connector.HTTPPasswordMgrWithDefaultRealm()
+            password_mgr.add_password(REALM, URL, RABBITMQ_USERNAME, RABBITMQ_PASSWORD)
+            auth_handler = connector.HTTPBasicAuthHandler(password_mgr)
+            opener = connector.build_opener(auth_handler)
+            connector.install_opener(opener)
 
-        if response.status_code == 400:
-            data['status']=0
-            data['msg']='received status code 400'
-            return False
+        response = connector.urlopen(URL, timeout=10)
+    
+        byte_responseData = response.read()
+        str_responseData = byte_responseData.decode('UTF-8')
 
-        resp_dict = response.json()
-
-        if resp_dict:
-            if 'error' in resp_dict and resp_dict['error'] is not None:
-                data['status']=0
-                data['msg']='Login Failed - not authorized'
-                return False
-
-    except ConnectionError as e:
-            data['status']=0
-            data['msg']='Connection Error'
-            return False
-
-    except requests.exceptions.Timeout as e:
-           data['status']=0
-           data['msg']='Connection Time Out Error'
-           return False
-
-    return True
-
-def getOverview(data,req_headers,credentials):
-    try:
-        url = urljoin(RABBITMQ_SERVER, RABBITMQ_API_URI)
-        response = requests.get(url, auth=credentials, headers=req_headers,timeout=int(30))
-        
-        if response.status_code == 404:
-            data['status']=0
-            data['msg']='received status code 404'
-            return data
-
-        if response.status_code == 400:
-            data['status']=0
-            data['msg']='received status code 400'
-            return data
-
-        rabbit_dict = response.json()
-
+        rabbit_dict = json.loads(str_responseData)
         if rabbit_dict:
-            if 'management_version' in rabbit_dict:
-                data['mgmt_version']=rabbit_dict['management_version']
-
-            if 'rabbitmq_version' in rabbit_dict:
-                data['rabbitmq_version']=rabbit_dict['rabbitmq_version']
-
             if 'consumers' in rabbit_dict['object_totals']:
                 data['consumers']=rabbit_dict['object_totals']['consumers']
 
@@ -165,26 +113,29 @@ def getOverview(data,req_headers,credentials):
             if 'publish_details' in rabbit_dict['message_stats']:
                 data['publishrate']=rabbit_dict['message_stats']['publish_details']['rate']
 
-    except ConnectionError as e:
-            data['status']=0
-            data['msg']='Connection Error'
-
     except Exception as e:
-           traceback.print_exc() 
+           data['status']=0
+           data['msg']=str(e)
     
-    return data
-
-
-def getNodes(data,req_headers,credentials):
+def getNodes(data):
     try:
-        url = urljoin(RABBITMQ_SERVER, RABBITMQ_NODES_URI)
-        response = requests.get(url, auth=credentials, headers=req_headers,timeout=int(30))
-        
-        rabbit_nodes_dict = response.json()
+       
+        NODES_URL=RABBITMQ_SERVER+RABBITMQ_NODES_URI 
+        if RABBITMQ_USERNAME and RABBITMQ_PASSWORD:
+            password_mgr = connector.HTTPPasswordMgrWithDefaultRealm()
+            password_mgr.add_password(REALM, NODES_URL, RABBITMQ_USERNAME, RABBITMQ_PASSWORD)
+            auth_handler = connector.HTTPBasicAuthHandler(password_mgr)
+            opener = connector.build_opener(auth_handler)
+            connector.install_opener(opener)
 
-        nodes_dict=rabbit_nodes_dict[0]
-        
-        if nodes_dict:
+        response = connector.urlopen(NODES_URL, timeout=10)
+
+        byte_responseData = response.read()
+        str_responseData = byte_responseData.decode('UTF-8')
+
+        rabbit_nodes_dict = json.loads(str_responseData)
+    	nodes_dict=rabbit_nodes_dict[0]
+	if nodes_dict:
             if 'mem_used' in nodes_dict:
                 value = convertBytesToMB(nodes_dict['mem_used'])
                 data['mem_used']=value
@@ -209,11 +160,9 @@ def getNodes(data,req_headers,credentials):
             if 'partitions' in nodes_dict:
                 partitions=nodes_dict['partitions']
                 data['partitions']=len(partitions)
-    except ConnectionError as e:
-        return data
-
-    return data
-
+    except  Exception as e:
+        data['status']=0
+        data['msg']=str(e)
 
 if __name__ == "__main__":
     
