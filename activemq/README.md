@@ -1,38 +1,7 @@
 
-Plugin for Apache ActiveMQ Monitoring
-=====================================
+Apache ActiveMQ enables easy processing of messages from various applications and communicates them across your infrastructure. Install and configure the ActiveMQ plugin to get a detailed view of how your systems and services are performing, all in a single, intuitive dashboard.
 
-For monitoring the performance metrics of your ActiveMQ setup using Site24x7 Server Monitoring Plugins. 
-  
+Get to know how to configure the ActiveMQ plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of Apache ActiveMQ instances.
 
-Prerequisites
-=============
-
-Download activemq plugin from https://raw.githubusercontent.com/site24x7/plugins/master/activemq/activemq.py
-Place the plugin folder 'activemq/activemq.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
-
-
-Configure the agent plugin
-==========================
- 
-1. Make the following changes in the activemq plugin file ( copied to agent's plugin directory earlier ).
- 
-	Change the values of ACTIVEMQ_HOST, ACTIVEMQ_PORT, ACTIVEMQ_USERNAME and ACTIVEMQ_PASSWORD to match your configuration.
- 
-2. Save the changes and restart the agent.
- 
-		/etc/init.d/site24x7monagent restart
-
-Site24x7 agent will now report ActiveMQ statistics in the plugins tab under the site24x7.com portal.
-
-
-ActiveMQ Plugin Attributes:
-===========================
-
-Some of the collected ActiveMQ attributes are as follows:
-
-		"total_message_count" : Total number of messages in queue
-		"total_connections_count" : Total number of connections.
-		"total_consumer_count" : Total number of consumers.
-		"total_producer_count" : Total number of producers.
+Learn more https://www.site24x7.com/plugins/activemq-monitoring.html
 
