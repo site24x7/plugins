@@ -1,31 +1,5 @@
+Samba is an open Source/free Software suite that provides seamless file and print services to SMB/CIFS clients. Install and use our Samba monitoring tool and get detailed insights into server activity and health. Learn how the plugin works.
 
-Plugin for Samba Monitoring
-==============================
+Get to know how to configure the Samba plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of Samba servers.
 
-Samba Plugin is for monitoring the performance metrics of Samba server. 
-  
-
-PreRequisites
-=============
-
-Download samba plugin from https://github.com/site24x7/plugins/blob/master/samba/samba.py
-Place the plugin folder 'samba/samba.py' under agent plugins directory (/opt/site24x7/monagent/plugins/)
-
-
-Configurations:
-==============
-In order to change the monitoring configurations, go to plugins directory and edit the required plugin file.
-
-For e.g. samba => /opt/site24x7agent/monagent/plugins/samba/samba.py
-
-
-Samba Plugin Attributes:
-=======================
-
-The collected Samba attributes are as follows:
-
-"samba_version" : Current Samba server installation version number. 
-
-"folders_accessed" : Number of unique folder shares being accessed by users.
-
-"users" : Total number of users that have open connection to Samba server.
+Learn more https://www.site24x7.com/plugins/samba-monitoring.html
