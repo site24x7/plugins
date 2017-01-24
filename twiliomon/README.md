@@ -6,7 +6,10 @@ Learn how to configure the Site24x7 Twilio plugin and the monitoring metrics for
 
 
 # Related Links:
-[How to install twilio?]: <https://www.twilio.com/docs/libraries/python#installation>
-[Twilio console]: <http://www.twilio.com/console>
-[twiliomon.py]: <https://raw.githubusercontent.com/site24x7/plugins/master/twiliomon/twiliomon.py>
-[twiliomon.ps1]: <https://raw.githubusercontent.com/site24x7/plugins/master/twiliomon/twiliomon.ps1>
+How to install twilio?: <https://www.twilio.com/docs/libraries/python#installation>
+
+Twilio console: <http://www.twilio.com/console>
+
+twiliomon.py: <https://raw.githubusercontent.com/site24x7/plugins/master/twiliomon/twiliomon.py>
+
+twiliomon.ps1: <https://raw.githubusercontent.com/site24x7/plugins/master/twiliomon/twiliomon.ps1>
