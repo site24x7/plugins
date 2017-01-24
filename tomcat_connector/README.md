@@ -1,5 +1,4 @@
 # Apache Tomcat monitoring
-=============================
 
 Efficient monitoring of your Apache Tomcat servers is essential as poor performance can have a direct influence on the end-user experience. With Site24x7 Tomcat plugin, get a detailed view of all the critical Tomcat service metrics in a single, intuitive dashboard.
 
