@@ -1,66 +1,7 @@
-Plugin for Tomcat Monitoring
-=============================
+# Apache Tomcat monitoring
 
-For monitoring the performance metrics of your Tomcat server using Site24x7 Server Monitoring Plugins. 
-  
+Efficient monitoring of your Apache Tomcat servers is essential as poor performance can have a direct influence on the end-user experience. With Site24x7 Tomcat plugin, get a detailed view of all the critical Tomcat service metrics in a single, intuitive dashboard.
 
-PreRequisites
-======================
+Know how to configure the Apache Tomcat plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of Tomcat servers. Metrics for monitoring Tomcat server falls into three categories: thread pool metrics, overall memory metrics and usage metrics for each memory pool.
 
-Download tomcatOverallmemory plugin from https://github.com/site24x7/server-plugins/tomcatOverallmemory/tomcatOverallmemory.py
-Place the plugin folder ‘tomcatOverallmemory/tomcatOverallmemory.py’ under agent plugins directory (/opt/site24x7/monagent/plugins/)
-
-
-Configure Tomcat to support statistics
-=======================================
-
-1. Edit your tomcat-users.xml file to provide access to /manager url 
-
-
-Configure the agent plugin
-==========================
- 
-1. Now make the following changes in the tomcat plugin file ( copied to agent's plugin directory earlier ).
- 
-	Replace the shebang character "#!" in line 1 to the appropriate path for python in your system. Eg : 
-		#!/usr/local/bin/python3
-
-2. You can configure the following for the plugin
-	TOMCAT_HOST = 'localhost'
-
-	TOMCAT_PORT = '8080'
-
-	TOMCAT_USERNAME = 'admin'
-
-	TOMCAT_PASSWORD = 'admin'
-
-	TOMCAT_URL = '/manager'
-
-	TOMCAT_CONNECTOR = 'http-nio-8080'
-
-	TOMCAT_TIMEOUT = '5'
-
-	 
-3. Save the changes and restart the agent.
- 
-		/etc/init.d/site24x7monagent restart
-
-Site24x7 agent will now report tomcat statistics in the plugins tab under the site24x7.com portal.
-
-
-Tomcat Plugin Attributes:
-==========================
-
-Some of the collected tomcat attributes are as follows:
-
-1. free_memory - total free memory
-
-2. total_memory - total memory
-
-3. max_memory - max memory allowed
-
-4. available_memory - free memory
-
-5. used_memory - used memory
-
-6. percent_used_memory - used memory percent
+Learn more: https://www.site24x7.com/plugins/tomcat-monitoring.html
