@@ -5,4 +5,5 @@ Efficient monitoring of your Gearman cluster is essential as a bottleneck can ha
 Know how to configure the Gearmand server plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of Gearmand servers.
 
 Learn more : https://www.site24x7.com/plugins/gearman-monitoring.html
+
 How to install gearman?: <https://pypi.python.org/pypi/gearman/>
