@@ -15,10 +15,11 @@ import urllib2
 ### Tested in Ubuntu
 
 # Change the Elasticsearch stats accordingly here.
-CLUSTERURL = "http://localhost:9200/_cluster/health"
+HOST='localhost'
+PORT='9200'
 USERNAME = None
 PASSWORD = None
-
+CLUSTERURL =  "http://"+HOST+':'+PORT+"/_cluster/health"
 # If any changes done in the plugin, plugin_version must be incremented by 1. For. E.g 2,3,4.. 
 PLUGIN_VERSION = "1"
 
