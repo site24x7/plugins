@@ -14,11 +14,16 @@
 
 import json, os
 import time
-import sys
+import urllib2 as urlconnection
+from urllib2 import HTTPError,URLError
+from httplib import InvalidURL
 
-url = 'http://localhost:9200'                          #Please change the cluster URL here and retain the configured port number at the end E.g 'http://hostname:9200'
-username = None                     #Add the username if any authentication is set for ES stats api
-password = None                     #Add the password if any authentication is set for ES stats api
+
+HOST='localhost'
+PORT='9200'
+USERNAME = None   #Add the username if any authentication is set for ES stats api
+PASSWORD = None   #Add the password if any authentication is set for ES stats api
+
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
@@ -26,37 +31,23 @@ PLUGIN_VERSION = "1"
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT = "true"
 
-METRICS_UNITS = {'jvm_gc_old_coll_time':'ms',
-                 'jvm_mem_pool_old_used_perc' : '%'
-                 }
+METRICS_UNITS = { 'jvm_gc_old_coll_time':'ms',
+                  'jvm_mem_pool_old_used_perc' : '%'
+                }
 
-PYTHON_MAJOR_VERSION = sys.version_info[0]
-REQUESTS_INSTALLED = None
-if PYTHON_MAJOR_VERSION == 3:
-    import urllib
-    import urllib.request as urlconnection
-    from urllib.error import URLError, HTTPError
-    from http.client import InvalidURL
-elif PYTHON_MAJOR_VERSION == 2:
-    import urllib2 as urlconnection
-    from urllib2 import HTTPError,URLError
-    from httplib import InvalidURL
+counterFilePath = '/opt/site24x7/monagent/plugins/elasticsearch/counter.json'
 
-import collections
-from collections import OrderedDict
+dictStatusValue = { 'yellow' : '2', 'green' : '1', 'red' : '0' }
 
-dictStatusValue = {'yellow' : '2',
-                   'green' : '1',
-                   'red' : '0'
-                   }
 
-counterFilePath = '/opt/site24x7/monagent/plugins/escluster/counter.json'
+
 
 class escluster():
     def __init__(self):
-        self._url = url
-        self._userName = username
-        self._userPass = password
+        self._url = 'http://'+HOST+':'+PORT
+        self._userName = USERNAME
+        self._userPass = PASSWORD
+        self._realm = None
         self.dictEsPluginData = {}
         self.dictCounterValues = {}
         self.loadCounterValues()
@@ -79,17 +70,7 @@ class escluster():
             file_obj.write(json.dumps(dict_valuesToUpdate))
             file_obj.close()
     
-    def main(self):
-        if PYTHON_MAJOR_VERSION == 3:
-            self.metricCollector3()
-        elif PYTHON_MAJOR_VERSION == 2:
-            self.metricCollector2()
-        else:
-            self.dictEsPluginData['status'] = 0
-            self.dictEsPluginData['msg'] = 'Python version: ' + str(PYTHON_MAJOR_VERSION) + ' is not handled'
-        print(json.dumps(self.dictEsPluginData))
-    
-    def metricCollector2(self):
+    def metricCollector(self):
         str_nodesData = self._openURL2('/_nodes/stats')
         if str_nodesData:
             self.parseNodesData(str_nodesData)
@@ -99,62 +80,20 @@ class escluster():
         self.dictEsPluginData['units'] = METRICS_UNITS
         self.dictEsPluginData['plugin_version'] = PLUGIN_VERSION
         self.dictEsPluginData['heartbeat_required'] = HEARTBEAT
-    
-    def metricCollector3(self):
-        str_nodesData = self._openURL('/_nodes/stats')
-        if str_nodesData:
-            self.parseNodesData(str_nodesData)
-        str_clusterData = self._openURL('/_cluster/health')
-        if str_clusterData:
-            self.parseClusterData(str_clusterData)
-        self.dictEsPluginData['units'] = METRICS_UNITS
-        self.dictEsPluginData['plugin_version'] = PLUGIN_VERSION
-        self.dictEsPluginData['heartbeat_required'] = HEARTBEAT
-    
-    def _openURL(self,str_URLsuffix):
-        str_responseData = None
-        url = None
-        try:
-            url = self._url + str_URLsuffix
-            if (self._userName and self._userPass):
-                password_mgr = urlconnection.HTTPPasswordMgr()
-                password_mgr.add_password(self._realm, url, self._userName, self._userPass)
-                auth_handler = urlconnection.HTTPBasicAuthHandler(password_mgr)
-                opener = urlconnection.build_opener(auth_handler)
-                urlconnection.install_opener(opener)
-            response = urlconnection.urlopen(url, timeout = 5)
-            if response.status == 200:
-                byte_responseData = response.read()
-                str_responseData = byte_responseData.decode('UTF-8')
-            else:
-                self.dictEsPluginData['status'] = '0'
-                self.dictEsPluginData['msg'] = 'Invalid response after opening URL : ' + str(response.status)
-        except HTTPError as e:
-            self.dictEsPluginData['status'] = '0'
-            self.dictEsPluginData['msg'] ='HTTP Error '+str(e.code)
-        except URLError as e:
-            self.dictEsPluginData['status'] = '0'
-            self.dictEsPluginData['msg'] = 'URL Error '+str(e.reason)
-        except InvalidURL as e:
-            self.dictEsPluginData['status'] = '0'
-            self.dictEsPluginData['msg'] = 'Invalid URL'
-        except Exception as e:
-            self.dictEsPluginData['status'] = '0'
-            self.dictEsPluginData['msg'] = 'Exception while opening stats url in python 2 : ' + str(e)
-        finally:
-            return str_responseData
         
+        return self.dictEsPluginData
+    
     def _openURL2(self,str_URLsuffix):
         str_responseData = None
         url = None
         try:
             url = self._url + str_URLsuffix
-            if (self._userName and self._userPass):
-                password_mgr = urlconnection.HTTPPasswordMgr()
-                password_mgr.add_password(self._realm, url, self._userName, self._userPass)
-                auth_handler = urlconnection.HTTPBasicAuthHandler(password_mgr)
-                opener = urlconnection.build_opener(auth_handler)
-                urlconnection.install_opener(opener)
+            password_mgr = urlconnection.HTTPPasswordMgr()
+            password_mgr.add_password(None, url, self._userName, self._userPass)
+            auth_handler = urlconnection.HTTPBasicAuthHandler(password_mgr)
+            proxy = urlconnection.ProxyHandler({}) # Uses NO Proxy
+            opener = urlconnection.build_opener(proxy, auth_handler)
+            urlconnection.install_opener(opener)
             response = urlconnection.urlopen(url, timeout = 5)
             if response.getcode() == 200:
                 byte_responseData = response.read()
@@ -276,4 +215,5 @@ class escluster():
     
 if __name__ == '__main__':
     esc = escluster()
-    esc.main()
+    result = esc.metricCollector()
+    print(json.dumps(result, indent=4, sort_keys=True))
