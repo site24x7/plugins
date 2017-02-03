@@ -1,32 +1,5 @@
-# Plugin for iNode Monitoring
+iNode is a data structure in a Unix-style file system which stores the attributes and disk block locations of the object's data. Install and use our iNode monitoring tool and get detailed insights into server activity and health.
 
-Monitor iNode usage on servers.
+Get to know how to configure the iNode plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of iNode servers.
 
-### Prerequisites
----
-- Site24X7 iNodeMon plugin uses python's "psutil" package to collect metrics.
-    - Installation
-    
-            pip install psutil
-
-- For more detail on installation refer  [How to install psutil?]
-
-### iNodeMon Plugin installation
----
-##### Linux
-
-- Create a directory "iNodeMon" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/iNodeMon
-- Download the file [iNodeMon.py] and place it under the "iNodeMon" directory
-
-### iNodeMon Metrics
----
-
-Name            	| Description
----             	|   ---
-inode_total     	| Total inodes available
-inode_used			| Number of inodes in use
-inode_free       	| Number of inodes free
-inode_use_percent	| Percentage of inodes used
-
-[How to install psutil?]: <https://github.com/giampaolo/psutil/blob/master/INSTALL.rst>
-[iNodemon.py]: <https://raw.githubusercontent.com/site24x7/plugins/master/iNodeMon/iNodeMon.py>
+Learn more https://www.site24x7.com/plugins/inode-monitoring.html
