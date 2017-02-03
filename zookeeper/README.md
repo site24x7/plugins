@@ -1,7 +1,5 @@
+Apache Zookeeper is a distributed hierarchical key-value store, which is used to provide a distributed configuration service, synchronization service, and naming registry for large distributed systems. Install and use our Zookeeper monitoring tool and get detailed insights into system activity and health.
 
-Plugin for Zookeeper Monitoring
-==============================
+Get to know how to configure the Zookeeper plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of Zookeeper servers.
 
-Configure Zookeeper plugin and monitor the performance metrics of your Zookeeper service.
-
-Learn more about the plugin installation steps and the various performance metrics that you can monitor here - https://www.site24x7.com/plugins/zookeeper-monitoring.html
+Learn more https://www.site24x7.com/plugins/zookeeper-monitoring.html
