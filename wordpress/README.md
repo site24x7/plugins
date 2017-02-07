@@ -1,5 +1,5 @@
 
-Plugin for Monitoring wordpress servers
+Plugin for Monitoring WordPress servers
 =======================================
 
 WordPress is a free and open-source content management system (CMS) based on PHP and MySQL. WordPress is reportedly the easiest and most popular website management or blogging system in use on the Web, supporting more than 60 million websites. Configure our agent and check WordPress performance using a wide variety of metrics.
