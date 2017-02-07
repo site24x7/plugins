@@ -2,6 +2,8 @@
 Plugin for MongoDB Monitoring
 =============================
 
-Monitor the performance metrics of your MongoDB database. 
+MongoDB is a free and open-source cross-platform document-oriented database program. Use Site24x7 plugins and gain in-depth visibility into the right MongoDB metrics to optimize your data infrastructures.
 
-Learn more about the plugin installation steps and the various performance metrics that you can monitor here - https://www.site24x7.com/plugins/mongodb-monitoring.html
+This document details how to configure the MongoDB plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of MongoDB servers.
+
+Learn more https://www.site24x7.com/plugins/mongodb-monitoring.html
