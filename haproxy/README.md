@@ -2,7 +2,9 @@
 Plugin for Haproxy Monitoring
 =============================
 
-Monitor the performance metrics of your Haproxy setup using this plugin. 
+HAProxy is free, open source software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers. Monitor the performance metrics of your Haproxy setup using this plugin. 
   
-Learn more about the plugin installation steps and the various performance metrics that you can monitor here - https://www.site24x7.com/plugins/haproxy-monitoring.html
+Get to know how to configure the HAProxy plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of HAProxy servers.
+
+Learn more https://www.site24x7.com/plugins/haproxy-monitoring.html
 
