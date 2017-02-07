@@ -2,7 +2,9 @@
 Plugin for Apache Monitoring
 =============================
 
-Monitor the performance metrics of your Apache server using this plugin. 
+The Apache HTTP Server, commonly known as Apache, is the world's most used web server software. Configure Site24x7 Apache plugin to monitor the performance of your apache server and stay on top of issues at all times.
 
-Learn more about the plugin installation steps and the various performance metrics that you can monitor here - https://www.site24x7.com/plugins/apache-monitoring.html
+Get to know how to configure the Apache plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of Apache servers.
+
+Learn more https://www.site24x7.com/plugins/apache-monitoring.html
   
