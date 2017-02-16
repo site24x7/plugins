@@ -37,24 +37,22 @@ class SNMPPARSER:
     
     
     def executeSNMPCommand(self):
-        try:
-            snmp_command = self.command+ ' -O q -v '+ self.snmp_version + ' -c ' + self.snmp_community +' '+ self.host +' '+ self.oids  +' -m '+ self.mibs
-            #print(snmp_command)
-            status, output = run(snmp_command)  # query snmp data
-            
-            if status != 0:
-                if 'Unknown Object Identifier' in output:
-                    print('your MIB may out of dated!')
-                elif 'Timeout:' in output:
-                    print('SNMP timeout!')
-                else:
-                    print(output)
-                sys.exit(1)
+        
+        snmp_command = self.command+ ' -O q -v '+ self.snmp_version + ' -c ' + self.snmp_community +' '+ self.host +' '+ self.oids  +' -m '+ self.mibs
+        #print(snmp_command)
+        status, output = run(snmp_command)  # query snmp data
+        
+        if status != 0:
+            if 'Unknown Object Identifier' in output:
+                raise ValueError('Unable to connect.Please check configurations.')
+            elif 'Timeout:' in output:
+                raise ValueError('SNMP timeout!')
             else:
-                pass
-        except:
-            print('Exception!!!!' , sys.exc_info()[0])
-             
+                print(output)
+            sys.exit(1)
+        else:
+            pass
+         
         if self.command == 'snmpget' :
             return output
         else :
