@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-import commands
 import json
-import sys
-import re
 import SNMPUtil
 
 ### Monitoring iDRAC Servers - Memory Performance
@@ -101,8 +98,12 @@ class HardwareParser:
 if __name__ == '__main__':
     
     parser = HardwareParser()
-    data = parser.getData()
-    result = data['data']
-    result['units'] = data['units'] 
+    result = {}
+    try:
+        output = parser.getData()
+        result = output['data']
+        result['units'] = output['units']
+    except ValueError as e:
+        result['msg'] = str(e)
     print(json.dumps(result, indent=2, sort_keys=True))
     
