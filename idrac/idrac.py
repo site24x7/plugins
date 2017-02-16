@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import commands
 import json
 import SNMPUtil
 
@@ -76,12 +75,12 @@ class HardwareParser:
             self.oids = OIDS[self.hardware]
             
             for _ in self.oids:
-                snmpdata = SNMPUtil.SNMPPARSER('snmpwalk',HOST,VERSION,COMMUNITY,_,MIB,hardware[self.hardware])
-                self.snmp_data = snmpdata.getRawData()
-                output_data = self.parseSNMPData(output_data)
-            
-                #output_data = self.parseSNMPData(output_data)
-            
+                try:
+                    snmpdata = SNMPUtil.SNMPPARSER('snmpwalk',HOST,VERSION,COMMUNITY,_,MIB,hardware[self.hardware])
+                    self.snmp_data = snmpdata.getRawData()
+                    output_data = self.parseSNMPData(output_data)
+                except ValueError as e:
+                    raise ValueError(e)
         return output_data
     
     def parseSNMPData(self,output_data):
@@ -126,6 +125,12 @@ class HardwareParser:
 if __name__ == '__main__':
     
     parser = HardwareParser()
-    result = parser.getData()
+    result = {}
+    try:
+        output = parser.getData()
+        result = output['data']
+        result['units'] = output['units']
+    except ValueError as e:
+        result['msg'] = str(e)
     print(json.dumps(result, indent=2, sort_keys=True))
     
