@@ -1,41 +1,5 @@
-# Monitoring iDRAC Servers
+# Dell iDRAC server hardware monitoring
 
-This plugin in python monitors the hardwares of iDRAC servers
+Integrated Dell Remote Access Controller (iDRAC) is an integrated motherboard to oversee the various aspects of servers and mid-range systems sold by Dell. iDRAC monitoring is critical to know all kinds of hardware related events and its status including temperatures, fan speeds, power supply status, individual disk status and more.
 
-### It uses snmpwalk command to get the hadrware data from the iDRAC Servers
-### Download and install the latest version of Site24x7 Linux Agent. The agent will execute the plugin and push the data to the Site24x7 server
-
-### Author: Anita, Zoho Corp
-### Language : Python
-### Tested in Ubuntu
-### Tested for snmp version 2c
-
-# PreRequisites : Install Site24x7 Server Agents
-1. Download and Install Site24x7 Server Agent 
-2. Download plugin from https://raw.githubusercontent.com/site24x7/plugins/master/iDRAC_Battery/iDRAC_Battery.py
-3. Place the plugin in the created folder under agent plugins directory (/opt/site24x7/monagent/plugins/iDRAC_Battery/)
-4. Plugin name and folder name must be same
-5. The agent will execute the plugin and push the data to the Site24x7 server
-
-# Prerequisites : Python Packages
-Install netsnmp python package
-
-# Update iDRAC Server configuration details
-
-HOST = 'localhost'
-VERSION = '2c' # supports snmp version 2c 
-COMMUNITY = 'public'
-MIB = 'MIB LOCATION' #Absolute path of the MIB Location
-
-# Monitored Attributes
-
-### Battery
-state, status, reading, location
-
-### Changes in the plugin will be reflected in Site24x7 only when there is a change in plugin_version.
-
-### HEARTBEAT - false : Site24x7 will alert as down only when plugin status is down
-### HEARTBEAT - true  : Site24x7 will alert as down 1. When plugin status is down 2. When there is no data from plugin
-
-Learn more about the plugin installation steps and the various performance metrics that you can monitor here
-https://www.site24x7.com/plugins.html
+Know how to configure the Dell iDRAC plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of iDRAC servers - https://www.site24x7.com/plugins/idrac-monitoring.html
