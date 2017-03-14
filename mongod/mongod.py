@@ -41,14 +41,14 @@ class MongoDB(object):
         self.port=self.configurations.get('port')
         self.username = self.configurations.get('username')
         self.password = self.configurations.get('password')
-        self.dbname=self.configurations.get('dbname')
+	self.dbname=self.configurations.get('dbname')
         if(self.username!=None and self.password!=None and self.dbname!=None):
             self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username, self.password, self.host, self.port, self.dbname)
-        elif(self.username!=None and self.password!=None):
+	elif(self.username!=None and self.password!=None):
             self.mongod_server = "{0}:{1}@{2}:{3}".format(self.username, self.password, self.host, self.port)
         elif(self.dbname!=None):
             self.mongod_server = "{0}:{1}/{2}".format(self.host, self.port, self.dbname)
-        else:
+	else:
             self.mongod_server = "{0}:{1}".format(self.host, self.port)
         self.dbstats = self.configurations.get('dbstats')
         self.replset = self.configurations.get('replset')
