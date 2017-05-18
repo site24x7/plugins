@@ -8,9 +8,8 @@ import traceback
 from kafka import KafkaConsumer
 from kafka import KafkaProducer
 
-### This plugin in python monitors the performance metrics of kafka producers.
+### Monitors the performance metrics of kafka producers.
 
-### It uses the inbuilt Lighttpd monitoring options to get the monitoring data.
 ### Download and install the latest version of Site24x7 Linux Agent. The agent will execute the plugin and push the data to the Site24x7 server
 
 ### Author: Shobana, Zoho Corp
