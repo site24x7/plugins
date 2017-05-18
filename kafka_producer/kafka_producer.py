@@ -52,7 +52,6 @@ class Kafka(object):
         self.connection=KafkaConsumer(bootstrap_servers=[self.broker+":"+self.port])   # Kafka consumer connection 
 
     def metricCollector(self):
-        print("get metrics")
         data = {}
         data['plugin_version'] = PLUGIN_VERSION
         data['heartbeat_required']=HEARTBEAT
