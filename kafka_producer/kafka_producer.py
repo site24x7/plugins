@@ -76,7 +76,6 @@ class Kafka(object):
                 data['units']=UNITS
         
         except Exception as e:
-            traceback.print_exc()
             data['status']=0
             data['msg']='Connection Error'
         
