@@ -16,7 +16,7 @@ API_KEY is used for authorization while getting the stats from sendgrid server.
 Find more info on how to create API keys in the below url
 https://sendgrid.com/docs/User_Guide/Settings/api_keys.html
 '''
-API_KEY = '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'
+API_KEY = '<apikey>'
 
 METRIC_UNITS = {}
 
