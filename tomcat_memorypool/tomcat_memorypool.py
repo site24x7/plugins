@@ -6,13 +6,22 @@ Site24x7 Tomcat Plugin
 """
 import argparse
 import sys
-import urllib2
 import socket
 import xml.etree.ElementTree as ET
 from math import log
 import json
 import os
 import traceback
+
+PYTHON_MAJOR_VERSION = sys.version_info[0]
+if PYTHON_MAJOR_VERSION == 3:
+    import urllib
+    import urllib.request as urlconnection
+    from urllib.error import URLError, HTTPError
+elif PYTHON_MAJOR_VERSION == 2:
+    import urllib2 as urlconnection
+    from urllib2 import HTTPError, URLError
+
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
@@ -64,15 +73,15 @@ class Tomcat(object):
         error=False
         tomcatUrl = "http://"+host+":"+str(port)+url
         try:
-            pwdManager = urllib2.HTTPPasswordMgrWithDefaultRealm()
+            pwdManager = urlconnection.HTTPPasswordMgrWithDefaultRealm()
             pwdManager.add_password(None,tomcatUrl,user,password)
-            authHandler = urllib2.HTTPBasicAuthHandler(pwdManager)
-            opener=urllib2.build_opener(authHandler)
-            urllib2.install_opener(opener)
-            req = urllib2.Request(tomcatUrl)
-            handle = urllib2.urlopen(req, None)
+            authHandler = urlconnection.HTTPBasicAuthHandler(pwdManager)
+            opener=urlconnection.build_opener(authHandler)
+            urlconnection.install_opener(opener)
+            req = urlconnection.Request(tomcatUrl)
+            handle = urlconnection.urlopen(req, None)
             data = handle.read()
-        except urllib2.HTTPError as e:
+        except HTTPError as e:
             if(e.code==401):
                 data="ERROR: Unauthorized user. Does not have permissions. %s" %(e)
             elif(e.code==403):
@@ -80,7 +89,7 @@ class Tomcat(object):
             else:
                 data="ERROR: The server couldn\'t fulfill the request. %s" %(e)
             error=True
-        except urllib2.URLError as e:
+        except URLError as e:
             data = 'ERROR: We failed to reach a server. Reason: %s' %(e.reason)
             error = True
         except socket.timeout as e:
@@ -108,7 +117,7 @@ class Tomcat(object):
             serverinfoUrl = self.url+"/text/serverinfo"
             serverinfoData,serverinfoError = self.readUrl(self.host,self.port,serverinfoUrl,self.username,self.password)
         if(serverinfoError==False):
-            serverinfo = serverinfoData.splitlines()
+            serverinfo = serverinfoData.decode("utf-8").splitlines()
             tomcatVersionStr = (serverinfo[1].split(":"))[1]
             tomcatStatusStr = serverinfo[0]
             tomcatVersion = (tomcatVersionStr.split("/"))[1].split(".")[0]
