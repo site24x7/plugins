@@ -118,6 +118,10 @@ class MySQL(object):
                 
                 global_variables = self.executeQuery(con, 'SHOW VARIABLES')
     
+                cursor.close()
+
+                con.close()
+                
                 data['uptime'] = global_metrics['Uptime']
                 
                 data['open_tables'] = global_metrics['Open_tables']
