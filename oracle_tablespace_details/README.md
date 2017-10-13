@@ -24,7 +24,9 @@ Ensure the following modules are installed to connect to the Oracle database:
 	2. Download instant client for Linux x86-64 
 		instantclient-basic-linux.x64-12.2.0.1.0.zip
 		instantclient-sdk-linux.x64-12.2.0.1.0.zip  
-	from Oracle Website (link : http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html ). Please sign in to download
+	(http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html).
+	Note: You will be prompted to sign in to download the above files
+	
 	3. Unzip and extract the downloaded zip files into a folder, and extract the zip files there.
 	   for example, in a directory 
 		mkdir -p /opt/oracle_client 
