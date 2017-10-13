@@ -11,7 +11,7 @@ Ensure the following modules are installed to connect to the Oracle database:
     
     1. 	oracle-instantclient-basic-linux
 	
-	2.	oracle-instantclient-sdk-linux
+    2.	oracle-instantclient-sdk-linux
 	
     3.  cx_Oracle - python module
 	
