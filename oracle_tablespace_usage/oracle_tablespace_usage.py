@@ -16,7 +16,7 @@ PLUGIN_VERSION = "1"
 HEARTBEAT = "true"
 
 # Config Section: Enter your configuration details to connect to the oracle database
-ORACLE_HOST = "site24x7-windows8"
+ORACLE_HOST = "hostname"
 
 ORACLE_PORT = "1521"
 
