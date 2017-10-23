@@ -129,7 +129,7 @@ getApacheStats()
 			if(NR < 10) 
                         	print "apache",$1":"$2
         }
-        END{ print "plugin_version: '"$PLUGIN_VERSION"'|heartbeat_required:'"$HEARTBEAT"'|units:'"$METRICS_UNITS"'"}'
+        END{ print "plugin_version:'"$PLUGIN_VERSION"'|heartbeat_required:'"$HEARTBEAT"'|units:'"$METRICS_UNITS"'"}'
 }
 
 main()
@@ -138,7 +138,7 @@ main()
         findPHPVersion
         findMySQLVersion
 	if [ "$APACHE_STATS" = "ENABLED" ]; then
-        	getApacheStats
+        	getApacheStats | rev | cut -c 2- | rev
 	else
 		echo "plugin_version:"$PLUGIN_VERSION"|heartbeat_required:"$HEARTBEAT"|units:"$METRICS_UNITS
 	fi
