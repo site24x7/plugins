@@ -81,6 +81,7 @@ def metricCollector():
             urlconnection.install_opener(opener)
         response = urlconnection.urlopen(url, timeout=10)
         output = response.read()
+        output = output.decode('utf-8')
         active_con = re.search(r'Active connections:\s+(\d+)', output)
         if active_con:
             connection = int(active_con.group(1))
