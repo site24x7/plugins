@@ -24,7 +24,7 @@ def metricCollector():
 ##smbstatus gets report of current samba server connections
 	p = subprocess.Popen('smbstatus', stdout=subprocess.PIPE)
 	output, err = p.communicate()
-	oparr = output.split('\n')
+	oparr = output.decode().split('\n')
 	version_op = oparr[1].replace("Samba version ","")
 	samba_version =  version_op.split("-")[0]
 	index=[0,0]
