@@ -41,42 +41,18 @@ class MongoDB(object):
         self.port=self.configurations.get('port')
         self.username = self.configurations.get('username')
         self.password = self.configurations.get('password')
-	self.dbname=self.configurations.get('dbname')
+        self.dbname=self.configurations.get('dbname')
         if(self.username!=None and self.password!=None and self.dbname!=None):
             self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username, self.password, self.host, self.port, self.dbname)
-	elif(self.username!=None and self.password!=None):
+        elif(self.username!=None and self.password!=None):
             self.mongod_server = "{0}:{1}@{2}:{3}".format(self.username, self.password, self.host, self.port)
         elif(self.dbname!=None):
             self.mongod_server = "{0}:{1}/{2}".format(self.host, self.port, self.dbname)
-	else:
+        else:
             self.mongod_server = "{0}:{1}".format(self.host, self.port)
         self.dbstats = self.configurations.get('dbstats')
         self.replset = self.configurations.get('replset')
 
-    def getDbConnection(self):
-        try:
-            try:
-                from pymongo import MongoClient
-            except ImportError:
-                pass
-            import urlparse
-            parsed = urlparse.urlparse(self.mongod_server)
-            mongo_uri = ''
-            # Can't use attributes on Python 2.4
-            if parsed[0] != 'mongodb':
-                mongo_uri = 'mongodb://'
-                if parsed[2]:
-                    if parsed[0]:
-                        mongo_uri = mongo_uri + parsed[0] + ':' + parsed[2]
-                    else:
-                        mongo_uri = mongo_uri + parsed[2]
-            else:
-                mongo_uri = self.mongod_server
-            self.connection = MongoClient(mongo_uri)
-        except Exception:
-            return False
-        
-        return True
 
     def metricCollector(self):
         data = {}
@@ -84,19 +60,31 @@ class MongoDB(object):
         data['heartbeat_required']=HEARTBEAT
         try:
             import pymongo
+            from pymongo import MongoClient
         except ImportError:
             data['status']=0
             data['msg']='pymongo module not installed'
-
-        if not self.getDbConnection():
-            data['status']=0
-            data['msg']='Connection Error'
             return data
         
         try:
-            db = self.connection['local']
 
-            output = db.command('serverStatus', recordStats=0)
+            try:
+                mongo_uri = 'mongodb://' + self.mongod_server
+                self.connection = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
+                db = self.connection['local']
+                output = db.command('serverStatus', recordStats=0)
+            except pymongo.errors.ServerSelectionTimeoutError:
+                data['status']=0
+                data['msg']='No mongoDB server is available to connect'
+                return data
+            except pymongo.errors.ConnectionFailure:
+                data['status']=0
+                data['msg']='Connection to database failed'
+                return data
+            except pymongo.errors.ExecutionTimeout:
+                data['status']=0
+                data['msg']='Execution of database command failed'
+                return data
 
             #Version
             try:
@@ -181,17 +169,17 @@ class MongoDB(object):
 
                         master = self.connection[database].command('isMaster')
 
-                        data[dbstats_database] = self.connection[database].command('dbstats')
+                        dt={}
+                        dt[dbstats_database] = self.connection[database].command('dbstats')
 
-                        for key in data[dbstats_database].keys():
-                                data[dbstats_database][key] = str(data[dbstats_database][key])
+                        for key in dt[dbstats_database].keys():
+                                data[dbstats_database+'_'+key] = str(dt[dbstats_database][key])
 
-                        if master['ismaster']:
-                            namespaces = (self.connection[database]['system']['namespaces'])
-                            data[dbstats_database_namespaces] = (namespaces.count())
+                        # if master['ismaster']:
+                        #     namespaces = (self.connection[database]['system']['namespaces'])
+                        #     data[dbstats_database_namespaces] = (namespaces.count())
         except Exception:
-            import traceback
-            traceback.print_exc()
+            data['msg']=traceback.format_exc()
 
         data['units']=METRICS_UNITS
 
