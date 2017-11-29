@@ -46,7 +46,7 @@ Ensure the following modules are installed to connect to the Oracle database:
 
 	5. Create a symlink 
 		cd $ORACLE_HOME
-		ln -s libclntsh.so.12.1 libclntsh.so
+		ln -s libclntsh.so.12.2 libclntsh.so
 		
 	6. Install cx_oracle python using pip
 		pip install cx_Oracle
