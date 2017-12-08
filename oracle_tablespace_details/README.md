@@ -1,4 +1,4 @@
-Plugin for Oracle DB Monitoring
+Plugin for Monitoring your Oracle Tablespace Details
 =====================================
 
 Monitor the performance of your Oracle databases and quickly identify and fix problematic servers and resource areas.
