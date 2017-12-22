@@ -26,6 +26,8 @@ MYSQL_USERNAME="root"
 
 MYSQL_PASSWORD=""
 
+MYSQL_SOCKET = "/tmp/mysql.sock"
+
 #Mention the units of your metrics in this python dictionary. If any new metrics are added make an entry here for its unit.
 METRICS_UNITS={'connection_usage':'%'}
 
@@ -38,6 +40,21 @@ class MySQL(object):
         self.port     = os.getenv('MYSQL_PORT', int(self.configurations.get('port', '3306')))
         self.username = os.getenv('MYSQL_USERNAME', self.configurations.get('user', 'root'))
         self.password = os.getenv('MYSQL_PASSWORD', self.configurations.get('password', ''))
+    
+    @staticmethod
+    def get_sock_path():
+        _output, _status = None, False
+        try:
+            proc = subprocess.Popen("netstat -ln | awk '/mysql(.*)?\.sock/ { print $9 }'" , shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            time.sleep(0.2)
+            if not proc.poll() is None:
+                _status = True
+                _output, error = proc.communicate()
+                _output = _output.strip("\n")
+        except Exception as e:
+            pass
+        finally:
+            return _status, _output
     
     #execute a mysql query and returns a dictionary
     def executeQuery(self, con, query):
@@ -58,11 +75,20 @@ class MySQL(object):
     def getDbConnection(self):
         try:
             import pymysql
-            db = pymysql.connect(host=self.host,user=self.username,passwd=self.password,port=int(self.port))
+            db = pymysql.connect(host=self.host, user=self.username, passwd=self.password, port=int(self.port))
             self.connection = db
         except Exception as e:
-            traceback.print_exc()
-            return False
+            try:
+                import pymysql
+                _status, _output = MySQL.get_sock_path()
+                if _status:
+                    db = pymysql.connect(host=self.host, user=self.username, passwd=self.password, port=int(self.port), unix_socket=_output)
+                else:
+                    db = pymysql.connect(host=self.host, user=self.username, passwd=self.password, port=int(self.port), unix_socket=MYSQL_SOCKET)
+                self.connection = db
+            except Exception as e:
+                traceback.print_exc()
+                return False
         return True
 
     def checkPreRequisites(self,data):
@@ -217,7 +243,7 @@ class MySQL(object):
 
 if __name__ == "__main__":
 
-    configurations = {'host': MYSQL_HOST,'port': MYSQL_PORT,'user': MYSQL_USERNAME,'password': MYSQL_PASSWORD}
+    configurations = {'host': MYSQL_HOST, 'port': MYSQL_PORT, 'user': MYSQL_USERNAME, 'password': MYSQL_PASSWORD}
 
     mysql_plugins = MySQL(configurations)
     
