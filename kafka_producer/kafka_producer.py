@@ -30,14 +30,14 @@ BROKER_NAME = "localhost"
 PORT="9092"
 
 ### Attribute Units
-UNITS = {'connection_count':'MB',
-         'network_io_rate':'MB',
-         'incoming_byte_rate':'MB',
-         'outgoing_byte_rate':'MB',
-         'avg_request_latency':'ms',
-         'request_rate':'MB',
-         'response_rate':'MB',
-         'io-time-ns-avg':'ns',
+UNITS = { 'connection_count':'Nos',
+'network_io_rate':'Bytes/sec',
+'incoming_byte_rate':'Bytes/sec',
+'outgoing_byte_rate':'Bytes/sec',
+'avg_request_latency':'ms',
+'request_rate':'Requests/sec',
+'response_rate':'Responses/sec',
+'io-time-ns-avg':'ns'
 }
 
 class Kafka(object):
