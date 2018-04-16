@@ -49,6 +49,13 @@ class apache():
         self._userPass = password
         self._url = url
         self.dictApacheData = {}
+        self._realm=None
+        if (self._userName and self._userPass):
+           if PYTHON_MAJOR_VERSION==2:
+              self._realm=urllib2.HTTPPasswordMgrWithDefaultRealm()
+	   if PYTHON_MAJOR_VERSION==3:
+              self._realm=urlconnection.HTTPPasswordMgrWithDefaultRealm()
+
     def main(self):
         if PYTHON_MAJOR_VERSION == 3:
             self.metricCollector3()
