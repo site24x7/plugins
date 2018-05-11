@@ -1,0 +1,2804 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>S22.Imap</name>
+    </assembly>
+    <members>
+        <member name="T:S22.Imap.MIMEPart">
+            <summary>
+            Represents a part of a MIME multi-part message. Each part consists
+            of its own content header and a content body.
+            </summary>
+            <remarks>The MIMEPart class has been deprecated as of version 2.0
+            in favor of partial fetching of mail messages.</remarks>
+        </member>
+        <member name="P:S22.Imap.MIMEPart.header">
+            <summary>
+            A collection containing the content header information as
+            key-value pairs.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.MIMEPart.body">
+            <summary>
+            A string containing the content body of the part.
+            </summary>
+        </member>
+        <member name="T:S22.Imap.MailboxStatus">
+            <summary>
+            Contains status information for a mailbox.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.MailboxStatus.#ctor(System.Int32,System.Int32,System.UInt64,System.UInt64)">
+            <summary>
+            Initializes a new MailboxStatus instance with the specified number
+            of total and unread messages.
+            </summary>
+            <param name="Messages">The total number of messages in the mailbox.</param>
+            <param name="Unread">The number of unread (unseen) messages in the mailbox.</param>
+            <param name="Usage">The amount of occupied space in the mailbox, in bytes.</param>
+            <param name="Free">The amount of free space in the mailbox, in bytes.</param>
+        </member>
+        <member name="P:S22.Imap.MailboxStatus.Messages">
+            <summary>
+            The total number of messages in the mailbox.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.MailboxStatus.Unread">
+            <summary>
+            The number of unread (unseen) messages in the mailbox.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.MailboxStatus.UsedStorage">
+            <summary>
+            The amount of used storage in the mailbox, measured in bytes.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.MailboxStatus.FreeStorage">
+            <summary>
+            The amount of free storage in the mailbox, measured in bytes.
+            </summary>
+        </member>
+        <member name="T:S22.Imap.FetchOptions">
+            <summary>
+            Fetch options that can be used with the GetMessage and GetMessages methods
+            to selectively retrieve parts of a mail message while skipping others.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.FetchOptions.Normal">
+            <summary>
+            Fetches the entire mail message with all of its content.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.FetchOptions.HeadersOnly">
+            <summary>
+            Only the mail message headers will be retrieved, while the actual content will
+            not be downloaded. If this option is specified, only the header fields of the
+            returned MailMessage object will be initialized.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.FetchOptions.TextOnly">
+            <summary>
+            Retrieves the mail message, but will only download content that has a
+            content-type of text. This will retrieve text as well as html representations,
+            but no inline content or attachments.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.FetchOptions.NoAttachments">
+            <summary>
+            Retrieves the mail message, but skips any content that has been marked as
+            attachment.
+            </summary>
+        </member>
+        <member name="T:S22.Imap.ContentDisposition">
+            <summary>
+            Represents the content disposition as is presented in the BODYSTRUCTURE
+            response by the IMAP server.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.ContentDisposition.#ctor">
+            <summary>
+            Initializes a new instance of the ContentDisposition class with
+            default values.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentDisposition.Map">
+            <summary>
+            Maps MIME content disposition string values to their corresponding
+            counter-parts of the ContentDispositionType enumeration.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.ContentDisposition.Type">
+            <summary>
+            The content disposition specifies the presentation style.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.ContentDisposition.Attributes">
+            <summary>
+            Additional attribute fields for specifying the name of a file, the creation
+            date and modification date, which can be used by the reader's mail user agent
+            to store the attachment.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.ContentDisposition.Filename">
+            <summary>
+            Contains the name of the transmitted file if the content-disposition is of type
+            "Attachment" and if the name value was provided as part of the header information.
+            This field may be empty.
+            </summary>
+        </member>
+        <member name="T:S22.Imap.ContentDispositionType">
+            <summary>
+            Possible values for the content disposition type which determines the presentation
+            style
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentDispositionType.Unknown">
+            <summary>
+            The content disposition could not be determined.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentDispositionType.Inline">
+            <summary>
+            An inline content disposition means that the content should be automatically
+            displayed when the message is displayed.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentDispositionType.Attachment">
+            <summary>
+            An attachment content disposition means that the content should not be displayed
+            automatically and requires some form of action from the user to open it.
+            </summary>
+        </member>
+        <member name="T:S22.Imap.Bodypart">
+            <summary>
+            Represents a MIME body part of a mail message that has multiple
+            parts.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.Bodypart.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the Bodypart class with default
+            values.
+            </summary>
+            <param name="partNumber">The part number as is expected by the
+            IMAP FETCH command.</param>
+        </member>
+        <member name="M:S22.Imap.Bodypart.ToString">
+            <summary>
+            Returns a detailed description listing all properties of this
+            Bodypart instance.
+            </summary>
+            <returns>A string describing this instance of the Bodypart class</returns>
+        </member>
+        <member name="P:S22.Imap.Bodypart.PartNumber">
+            <summary>
+            The body part number which acts as part specifier for
+            the FETCH BODY command.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.Bodypart.Type">
+            <summary>
+            The MIME content-type of this body part. The content-type is
+            used to declare the general type of data.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.Bodypart.Subtype">
+            <summary>
+            The MIME content-subtype of this body part. The subtype
+            specifies a specific format for the type of data.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.Bodypart.Parameters">
+            <summary>
+            Parameter values present in the MIME content-type header
+            of this body part (for instance, 'charset').
+            </summary>
+        </member>
+        <member name="P:S22.Imap.Bodypart.Id">
+            <summary>
+            The MIME content-id of this body part, if any. This value
+            may be used for uniquely identifying MIME entities in
+            several contexts.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.Bodypart.Description">
+            <summary>
+            The MIME content-description of this body part. This value
+            may contain some descriptive information on the body part.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.Bodypart.Encoding">
+            <summary>
+            The MIME content-transfer-encoding mechanism used for
+            encoding this body part's data.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.Bodypart.Size">
+            <summary>
+            The size of this body part in bytes. Note that this size
+            is the size in its transfer encoding and not the resulting
+            size after any decoding.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.Bodypart.Lines">
+            <summary>
+            The size of the body in text lines. This field is only
+            present in body parts with a content-type of text.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.Bodypart.Md5">
+            <summary>
+            The computed MD5-Hash of the body part. This field is not
+            mandatory and may be empty.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.Bodypart.Disposition">
+            <summary>
+            The MIME content-disposition for this body part. This field
+            is not mandatory and may be empty.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.Bodypart.Language">
+            <summary>
+            A string giving the body language. This field is not mandatory
+            and may be empty.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.Bodypart.Location">
+            <summary>
+            A string list giving the body content URI. This field is not
+            mandatory and may be empty.
+            </summary>
+        </member>
+        <member name="T:S22.Imap.Util">
+            <summary>
+            A static utility class containing methods for decoding encoded
+            non-ASCII data as is often used in mail messages as well as
+            extension methods for some existing classes.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.Util.QuoteString(System.String)">
+            <summary>
+            Returns a copy of the string enclosed in double-quotes and with escaped
+            CRLF, back-slash and double-quote characters (as is expected by some
+            commands of the IMAP protocol).
+            </summary>
+            <param name="value">Extends the System.String class</param>
+            <returns>A copy of the string enclosed in double-quotes and properly
+            escaped as is required by the IMAP protocol.</returns>
+        </member>
+        <member name="M:S22.Imap.Util.IsASCII(System.String)">
+            <summary>
+            Returns true if the string contains only ASCII characters.
+            </summary>
+            <param name="s">Extension method for the String class.</param>
+            <returns>Returns true if the string contains only ASCII characters,
+            otherwise false is returned.</returns>
+        </member>
+        <member name="M:S22.Imap.Util.ToChunks(System.String,System.Int32)">
+            <summary>
+            Splits a string into chunks of the specified number of
+            characters.
+            </summary>
+            <param name="str">Extension method for the String class.</param>
+            <param name="characters">The length of a chunk, measured in
+            characters.</param>
+            <returns>An array of string chunks</returns>
+        </member>
+        <member name="M:S22.Imap.Util.Raise``1(System.EventHandler{``0},System.Object,``0)">
+            <summary>
+            Raises the event. Ensures the event is only raised, if it is not null.
+            </summary>
+            <typeparam name="T">Extends System.EventHandler class"/></typeparam>
+            <param name="event">Extends System.EventHandler class</param>
+            <param name="sender">The sender of the event</param>
+            <param name="args">The event arguments associated with this event</param>
+        </member>
+        <member name="M:S22.Imap.Util.DecodeWords(System.String)">
+            <summary>
+            Decodes a string composed of one or several MIME 'encoded-words'.
+            </summary>
+            <param name="words">A string to composed of one or several MIME
+            'encoded-words'</param>
+            <exception cref="T:System.FormatException">Thrown when an unknown encoding
+            (other than Q-Encoding or Base64) is encountered.</exception>
+            <returns>A concatenation of all enconded-words in the passed
+            string</returns>
+        </member>
+        <member name="M:S22.Imap.Util.DecodeWord(System.String)">
+            <summary>
+            Decodes a MIME 'encoded-word' string.
+            </summary>
+            <param name="word">The encoded word to decode</param>
+            <exception cref="T:System.FormatException">Thrown when an unknown encoding
+            (other than Q-Encoding or Base64) is encountered.</exception>
+            <returns>A decoded string</returns>
+            <remarks>MIME encoded-word syntax is a way to encode strings that
+            contain non-ASCII data. Commonly used encodings for the encoded-word
+            sytax are Q-Encoding and Base64. For an in-depth description, refer
+            to RFC 2047</remarks>
+        </member>
+        <member name="M:S22.Imap.Util.QDecode(System.String,System.Text.Encoding)">
+            <summary>
+            Takes a Q-encoded string and decodes it using the specified
+            encoding.
+            </summary>
+            <param name="value">The Q-encoded string to decode</param>
+            <param name="encoding">The encoding to use for encoding the
+            returned string</param>
+            <returns>A Q-decoded string</returns>
+        </member>
+        <member name="M:S22.Imap.Util.QPDecode(System.String,System.Text.Encoding)">
+            <summary>
+            Takes a quoted-printable-encoded string and decodes it using
+            the specified encoding.
+            </summary>
+            <param name="value">The quoted-printable-encoded string to
+            decode</param>
+            <param name="encoding">The encoding to use for encoding the
+            returned string</param>
+            <returns>A quoted-printable-decoded string</returns>
+        </member>
+        <member name="M:S22.Imap.Util.Base64Decode(System.String)">
+            <summary>
+            Takes a Base64-encoded string and decodes it.
+            </summary>
+            <param name="value">The Base64-encoded string to decode</param>
+            <returns>A byte array containing the Base64-decoded bytes
+            of the input string.</returns>
+        </member>
+        <member name="M:S22.Imap.Util.GetEncoding(System.String)">
+            <summary>
+            This just wraps Encoding.GetEncoding in a try-catch block to
+            ensure it never fails. If the encoding can not be determined
+            ASCII is returned as a default.
+            </summary>
+            <param name="name">The code page name of the preferred encoding.
+            Any value returned by System.Text.Encoding.WebName is a valid
+            input.</param>
+            <returns>The System.Text.Encoding associated with the specified
+            code page or Encoding.ASCII if the specified code page could not
+            be resolved.</returns>
+        </member>
+        <member name="T:S22.Imap.Bodystructure">
+            <summary>
+            Provides a means for parsing the textual description of the body structure of a mail
+            message as is returned by an IMAP server for a "FETCH BODYSTRUCTURE" command.
+            </summary>
+            <remarks>
+            They couldn't have made the BODYSTRUCTURE any more complicated and unnecessarily
+            hard to parse. I wonder what they were thinking when they came up with this.
+            </remarks>
+        </member>
+        <member name="M:S22.Imap.Bodystructure.Parse(System.String)">
+            <summary>
+            Parses the body structure of a mail message as is returned by the IMAP server
+            in response to a FETCH BODYSTRUCTURE command.
+            </summary>
+            <param name="text">The body structure server response</param>
+            <returns>An array of initialized Bodypart objects representing the body
+            structure of the mail message</returns>
+            <exception cref="T:System.FormatException">Thrown if the passed string does not
+            contain a valid body structure and parsing failed.</exception>
+        </member>
+        <member name="F:S22.Imap.Bodystructure.reader">
+            <summary>
+            A Reader object initialized with the string containing the bodystructure
+            response.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.Bodystructure.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the Bodystructure class.
+            </summary>
+            <param name="text"></param>
+        </member>
+        <member name="M:S22.Imap.Bodystructure.ParseBodypart(System.String,System.Boolean)">
+            <summary>
+            Parses a bodypart entry from the body structure and advances the
+            read pointer.
+            </summary>
+            <param name="partNumber">The designated part specifier by which the body
+            part is refered to by the server.</param>
+            <param name="parenthesis">Set to true if the bodypart is enclosed
+            in parenthesis.</param>
+            <returns></returns>
+        </member>
+        <member name="M:S22.Imap.Bodystructure.ParseOptionalFields(S22.Imap.Bodypart,System.Boolean)">
+            <summary>
+            Parses the optional fields of a bodypart entry from the body structure
+            and advances the read pointer.
+            </summary>
+            <param name="part">The bodypart instance the parsed fields will be
+            added to.</param>
+            <param name="parenthesis">Set to true if the bodypart entry is enclosed
+            in parenthesis.</param>
+        </member>
+        <member name="M:S22.Imap.Bodystructure.ParseList(System.String)">
+            <summary>
+            Parses a list of bodypart entries as is outlined in the description of the
+            BODYPART response in RFC 3501.
+            </summary>
+            <param name="nestPrefix">The nesting prefix that will be prefixed to the
+            bodyparts partNumber.</param>
+            <returns>An array of initialized Bodypart objects parsed from the
+            list.</returns>
+        </member>
+        <member name="M:S22.Imap.Bodystructure.SkipMultipart">
+            <summary>
+            Advances the read pointer to skip over a multipart entry.
+            </summary>
+        </member>
+        <member name="T:S22.Imap.MailboxQuota">
+            <summary>
+            Represents an IMAP QUOTA entry for a resource which typically consists of
+            a resource name, the current usage of the resource, and the resource limit.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.MailboxQuota.#ctor(System.String,System.UInt32,System.UInt32)">
+            <summary>
+            Initializes a new instance of the MailboxQuota class with the specified
+            values.
+            </summary>
+            <param name="Name">The name of the resource this MailboxQuota instance
+            describes.</param>
+            <param name="Usage">The current usage of the resource in units of 1024 
+            bytes.</param>
+            <param name="Limit">The limit of the resource in units of 1024 bytes.</param>
+        </member>
+        <member name="P:S22.Imap.MailboxQuota.ResourceName">
+            <summary>
+            The name of the resource this MailboxQuota instance describes.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.MailboxQuota.Usage">
+            <summary>
+            The current usage of the resource this MailboxQuota instance describes,
+            in bytes.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.MailboxQuota.Limit">
+            <summary>
+            The limit of the resource this MailboxQuota instance describes,
+            in bytes.
+            </summary>
+        </member>
+        <member name="T:S22.Imap.IdleMessageEventArgs">
+            <summary>
+            Provides data for IMAP idle notification events, such as the NewMessage and
+            MessageDelete events.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.IdleMessageEventArgs.#ctor(System.UInt32,System.UInt32,S22.Imap.ImapClient)">
+            <summary>
+            Initializes a new instance of the IdleMessageEventArgs class and sets the
+            MessageCount attribute to the value of the <paramref name="MessageCount"/>
+            parameter.
+            </summary>
+            <param name="MessageCount">The number of messages in the selected
+            mailbox.</param>
+            <param name="MessageUID"> The unique identifier (UID) of the newest
+            message in the mailbox.</param>
+            <param name="Client">The instance of the ImapClient class that raised
+            the event.</param>
+        </member>
+        <member name="P:S22.Imap.IdleMessageEventArgs.MessageCount">
+            <summary>
+            The total number of messages in the selected mailbox.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.IdleMessageEventArgs.MessageUID">
+            <summary>
+            The unique identifier (UID) of the newest message in the mailbox. 
+            </summary>
+            <remarks>The UID can be passed to the GetMessage method in order to retrieve
+            the mail message from the server.</remarks>
+        </member>
+        <member name="P:S22.Imap.IdleMessageEventArgs.Client">
+            <summary>
+            The instance of the ImapClient class that raised the event.
+            </summary>
+        </member>
+        <member name="T:S22.Imap.Reader">
+            <summary>
+            A helper class for parsing the BODYSTRUCTURE response of an
+            IMAP FETCH command more conveniently.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.Reader.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the Reader class that reads from the
+            specified string.
+            </summary>
+            <param name="s">The string to which the Reader instance should be
+            initialized.</param>
+        </member>
+        <member name="M:S22.Imap.Reader.Read">
+            <summary>
+            Reads the next character from the input string and advances the
+            character position by one character.
+            </summary>
+            <returns>The next character from the underlying string.</returns>
+            <exception cref="T:S22.Imap.EndOfStringException">Thrown when reading is
+            attempted past the end of the underlying string.</exception>
+        </member>
+        <member name="M:S22.Imap.Reader.Peek(System.Boolean)">
+            <summary>
+            Returns the next available character but does not consume it.
+            </summary>
+            <param name="skipSpaces">Set to true to skip any preceding
+            whitespace characters.</param>
+            <returns>An integer representing the next character to be read,
+            or -1 if no more characters are available.</returns>
+        </member>
+        <member name="M:S22.Imap.Reader.SkipUntil(System.Char)">
+            <summary>
+            Advances the character position until the specified character
+            is encountered.
+            </summary>
+            <param name="character">The character to skip to.</param>
+            <exception cref="T:S22.Imap.EndOfStringException">Thrown when reading is
+            attempted past the end of the underlying string.</exception>
+        </member>
+        <member name="M:S22.Imap.Reader.SkipSpaces">
+            <summary>
+            Advances the character position over any whitespace characters
+            and subsequently ensures the next read will not return a
+            whitespace character.
+            </summary>
+            <exception cref="T:S22.Imap.EndOfStringException">Thrown when reading is
+            attempted past the end of the underlying string.</exception>
+        </member>
+        <member name="M:S22.Imap.Reader.ReadUntil(System.Char)">
+            <summary>
+            Reads characters until the specified character is encountered.
+            </summary>
+            <param name="character">The character to read up to.</param>
+            <returns>The read characters as a string value.</returns>
+            <exception cref="T:S22.Imap.EndOfStringException">Thrown when reading is
+            attempted past the end of the underlying string.</exception>
+        </member>
+        <member name="M:S22.Imap.Reader.ReadWord">
+            <summary>
+            Reads a word from the underlying string. A word in this context
+            is a literal enclosed in double-quotes.
+            </summary>
+            <returns>The read word.</returns>
+            <exception cref="T:S22.Imap.EndOfStringException">Thrown when reading is
+            attempted past the end of the underlying string.</exception>
+        </member>
+        <member name="M:S22.Imap.Reader.ReadInteger">
+            <summary>
+            Reads an integer from the underlying string.
+            </summary>
+            <returns>The read integer value.</returns>
+            <exception cref="T:S22.Imap.EndOfStringException">Thrown when reading is
+            attempted past the end of the underlying string.</exception>
+        </member>
+        <member name="M:S22.Imap.Reader.ReadList">
+            <summary>
+            Reads a list from the underlying string. A list in this context
+            is a list of attribute/value literals (enclosed in double-quotes)
+            enclosed in parenthesis.
+            </summary>
+            <returns>The read list as a dictionary with the attribute names
+            as keys and attribute values as values.</returns>
+            <exception cref="T:S22.Imap.EndOfStringException">Thrown when reading is
+            attempted past the end of the underlying string.</exception>
+        </member>
+        <member name="M:S22.Imap.Reader.ReadDisposition">
+            <summary>
+            Reads a disposition from the underlying string. A disposition in
+            this context is a list of attribute/value literals (enclosed in
+            double-quotes) preceded by a word enclosed in parenthesis.
+            </summary>
+            <returns>An initialized ContentDisposition instance representing
+            the parsed disposition.</returns>
+            <exception cref="T:S22.Imap.EndOfStringException">Thrown when reading is
+            attempted past the end of the underlying string.</exception>
+        </member>
+        <member name="T:S22.Imap.EndOfStringException">
+            <summary>
+            The exception that is thrown when reading is attempted past the end
+            of a string.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.EndOfStringException.#ctor">
+            <summary>
+            Initializes a new instance of the EndOfStringException class
+            </summary>
+        </member>
+        <member name="M:S22.Imap.EndOfStringException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the EndOfStringException class with its message
+            string set to <paramref name="message"/>.
+            </summary>
+            <param name="message">A description of the error. The content of message is intended
+            to be understood by humans.</param>
+        </member>
+        <member name="M:S22.Imap.EndOfStringException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the EndOfStringException class with its message
+            string set to <paramref name="message"/> and a reference to the inner exception that
+            is the cause of this exception.
+            </summary>
+            <param name="message">A description of the error. The content of message is intended
+            to be understood by humans.</param>
+            <param name="inner">The exception that is the cause of the current exception.</param>
+        </member>
+        <member name="M:S22.Imap.EndOfStringException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the EndOfStringException class with the specified
+            serialization and context information.
+            </summary>
+            <param name="info">An object that holds the serialized object data about the exception
+            being thrown. </param>
+            <param name="context">An object that contains contextual information about the source
+            or destination. </param>
+        </member>
+        <member name="T:S22.Imap.MessageFlag">
+            <summary>
+            Flag message attributes that can be associated with a mail message on an IMAP
+            server.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.MessageFlag.Seen">
+            <summary>
+            Indicates that the message has been read.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.MessageFlag.Answered">
+            <summary>
+            Indicates that the message has been answered.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.MessageFlag.Flagged">
+            <summary>
+            Indicates that the message is "flagged" for urgent/special attention.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.MessageFlag.Deleted">
+            <summary>
+            Indicates that the message has been marked as "deleted" and will be
+            removed upon the next call to the Expunge method.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.MessageFlag.Draft">
+            <summary>
+            Indicates that the message has not completed composition and is
+            marked as a draft.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.MessageFlag.Recent">
+            <summary>
+            Indicates that the message has recently arrived in this mailbox.
+            </summary>
+        </member>
+        <member name="T:S22.Imap.BadServerResponseException">
+            <summary>
+            The exception is thrown when an unexpected response is received from the server.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.BadServerResponseException.#ctor">
+            <summary>
+            Initializes a new instance of the BadServerResponseException class
+            </summary>
+        </member>
+        <member name="M:S22.Imap.BadServerResponseException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the BadServerResponseException class with its message
+            string set to <paramref name="message"/>.
+            </summary>
+            <param name="message">A description of the error. The content of message is intended
+            to be understood by humans.</param>
+        </member>
+        <member name="M:S22.Imap.BadServerResponseException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the BadServerResponseException class with its message
+            string set to <paramref name="message"/> and a reference to the inner exception that
+            is the cause of this exception.
+            </summary>
+            <param name="message">A description of the error. The content of message is intended
+            to be understood by humans.</param>
+            <param name="inner">The exception that is the cause of the current exception.</param>
+        </member>
+        <member name="M:S22.Imap.BadServerResponseException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the BadServerResponseException class with the specified
+            serialization and context information.
+            </summary>
+            <param name="info">An object that holds the serialized object data about the exception
+            being thrown. </param>
+            <param name="context">An object that contains contextual information about the source
+            or destination. </param>
+        </member>
+        <member name="T:S22.Imap.InvalidCredentialsException">
+            <summary>
+            This exception is thrown when the supplied credentials in a login attempt were rejected
+            by the server.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.InvalidCredentialsException.#ctor">
+            <summary>
+            Initializes a new instance of the InvalidCredentialsException class
+            </summary>
+        </member>
+        <member name="M:S22.Imap.InvalidCredentialsException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the InvalidCredentialsException class with its message
+            string set to <paramref name="message"/>.
+            </summary>
+            <param name="message">A description of the error. The content of message is intended
+            to be understood by humans.</param>
+        </member>
+        <member name="M:S22.Imap.InvalidCredentialsException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the InvalidCredentialsException class with its message
+            string set to <paramref name="message"/> and a reference to the inner exception that
+            is the cause of this exception.
+            </summary>
+            <param name="message">A description of the error. The content of message is intended
+            to be understood by humans.</param>
+            <param name="inner">The exception that is the cause of the current exception.</param>
+        </member>
+        <member name="M:S22.Imap.InvalidCredentialsException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the InvalidCredentialsException class with the specified
+            serialization and context information.
+            </summary>
+            <param name="info">An object that holds the serialized object data about the exception
+            being thrown. </param>
+            <param name="context">An object that contains contextual information about the source
+            or destination. </param>
+        </member>
+        <member name="T:S22.Imap.NotAuthenticatedException">
+            <summary>
+            This exception is thrown when a client has not authenticated with the server and
+            attempts to call a method which can only be called in an authenticated context.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.NotAuthenticatedException.#ctor">
+            <summary>
+            Initializes a new instance of the NotAuthenticatedException class
+            </summary>
+        </member>
+        <member name="M:S22.Imap.NotAuthenticatedException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the NotAuthenticatedException class with its message
+            string set to <paramref name="message"/>.
+            </summary>
+            <param name="message">A description of the error. The content of message is intended
+            to be understood by humans.</param>
+        </member>
+        <member name="M:S22.Imap.NotAuthenticatedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the NotAuthenticatedException class with its message
+            string set to <paramref name="message"/> and a reference to the inner exception that
+            is the cause of this exception.
+            </summary>
+            <param name="message">A description of the error. The content of message is intended
+            to be understood by humans.</param>
+            <param name="inner">The exception that is the cause of the current exception.</param>
+        </member>
+        <member name="M:S22.Imap.NotAuthenticatedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the NotAuthenticatedException class with the specified
+            serialization and context information.
+            </summary>
+            <param name="info">An object that holds the serialized object data about the exception
+            being thrown. </param>
+            <param name="context">An object that contains contextual information about the source
+            or destination. </param>
+        </member>
+        <member name="T:S22.Imap.ContentType">
+            <summary>
+            Possible values for the "Type" property of the Bodypart class.
+            For a detailed description of MIME Media Types refer to
+            RFC 2046.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentType.Text">
+            <summary>
+            The "text" media type is intended for sending material which
+            is principally textual in form.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentType.Image">
+            <summary>
+            A media type of "image" indicates that the body contains an image.
+            The subtype names the specific image format. 
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentType.Audio">
+            <summary>
+            A media type of "audio" indicates that the body contains audio
+            data.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentType.Video">
+            <summary>
+            A media type of "video" indicates that the body contains a
+            time-varying-picture image, possibly with color and coordinated sound.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentType.Application">
+            <summary>
+            The "application" media type is to be used for discrete data which do
+            not fit in any of the other categories, and particularly for data to
+            be processed by some type of application program.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentType.Other">
+            <summary>
+            The media type value is unknown or could not be determined.
+            </summary>
+        </member>
+        <member name="T:S22.Imap.SearchCondition">
+            <summary>
+            Chainable search conditions to be used with the Search method.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.All">
+            <summary>
+            Finds all messages in the mailbox.
+            </summary>
+            <returns>A SearchCondition object representing the "all" search criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Text(System.String)">
+            <summary>
+            Finds messages that contain the specified string in the header or body of the
+            message.
+            </summary>
+            <param name="text">String to search messages for</param>
+            <returns>A SearchCondition object representing the "text" search criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.BCC(System.String)">
+            <summary>
+            Finds messages that contain the specified string in the envelope structure's
+            BCC field.
+            </summary>
+            <param name="text">String to search the envelope structure's BCC field for</param>
+            <returns>A SearchCondition object representing the "BCC" search criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Before(System.DateTime)">
+            <summary>
+            Finds messages whose internal date (disregarding time and timezone) is
+            earlier than the specified date.
+            </summary>
+            <param name="date">Date to compare the message's internal date with</param>
+            <returns>A SearchCondition object representing the "Before" search criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Body(System.String)">
+            <summary>
+            Finds messages that contain the specified string in the body of the
+            message.
+            </summary>
+            <param name="text">String to search the message body for</param>
+            <returns>A SearchCondition object representing the "Body" search criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Cc(System.String)">
+            <summary>
+            Finds messages that contain the specified string in the envelope structure's
+            CC field.
+            </summary>
+            <param name="text">String to search the envelope structure's CC field for</param>
+            <returns>A SearchCondition object representing the "CC" search criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.From(System.String)">
+            <summary>
+            Finds messages that contain the specified string in the envelope structure's
+            FROM field.
+            </summary>
+            <param name="text">String to search the envelope structure's FROM field for</param>
+            <returns>A SearchCondition object representing the "FROM" search criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Header(System.String,System.String)">
+            <summary>
+            Finds messages that have a header with the specified field-name and that
+            contains the specified string in the text of the header.
+            </summary>
+            <param name="name">field-name of the header to search for</param>
+            <param name="text">String to search for in the text of the header</param>
+            <returns>A SearchCondition object representing the "HEADER" search
+            criterion</returns>
+            <remarks>
+            If the string to search is zero-length, this matches all messages
+            that have a header line with the specified field-name regardless of the
+            contents.
+            </remarks>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Keyword(System.String)">
+            <summary>
+            Finds messages with the specified keyword flag set.
+            </summary>
+            <param name="text">Keyword flag to search for</param>
+            <returns>A SearchCondition object representing the "KEYWORD" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Larger(System.Int64)">
+            <summary>
+            Finds messages with a size larger than the specified number of bytes.
+            </summary>
+            <param name="size">Minimum size, in bytes a message must have to be
+            included in the result set</param>
+            <returns>A SearchCondition object representing the "LARGER" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Smaller(System.Int64)">
+            <summary>
+            Finds messages with a size smaller than the specified number of bytes.
+            </summary>
+            <param name="size">Maximum size, in bytes a message must have to be
+            included in the result set</param>
+            <returns>A SearchCondition object representing the "SMALLER" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.SentBefore(System.DateTime)">
+            <summary>
+            Finds messages whose Date: header (disregarding time and timezone) is
+            earlier than the specified date.
+            </summary>
+            <param name="date">Date to compare the Date: header field with.</param>
+            <returns>A SearchCondition object representing the "SENTBEFORE" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.SentOn(System.DateTime)">
+            <summary>
+            Finds messages whose Date: header (disregarding time and timezone) is
+            within the specified date.
+            </summary>
+            <param name="date">Date to compare the Date: header field with.</param>
+            <returns>A SearchCondition object representing the "SENTON" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.SentSince(System.DateTime)">
+            <summary>
+            Finds messages whose Date: header (disregarding time and timezone) is
+            within or later than the specified date.
+            </summary>
+            <param name="date">Date to compare the Date: header field with.</param>
+            <returns>A SearchCondition object representing the "SENTSINCE" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Subject(System.String)">
+            <summary>
+            Finds messages that contain the specified string in the envelope
+            structure's SUBJECT field.
+            </summary>
+            <param name="text">String to search the envelope structure's SUBJECT
+            field for</param>
+            <returns>A SearchCondition object representing the "SUBJECT" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.To(System.String)">
+            <summary>
+            Finds messages that contain the specified string in the envelope
+            structure's TO field.
+            </summary>
+            <param name="text">String to search the envelope structure's TO
+            field for</param>
+            <returns>A SearchCondition object representing the "TO" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.UID(System.UInt32[])">
+            <summary>
+            Finds messages with unique identifiers corresponding to the specified
+            unique identifier set.
+            </summary>
+            <param name="uids">An array of unique identifiers</param>
+            <returns>A SearchCondition object representing the "UID" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Unkeyword(System.String)">
+            <summary>
+            Finds messages that do not have the specified keyword flag set.
+            </summary>
+            <param name="text">A valid IMAP keyword flag</param>
+            <returns>A SearchCondition object representing the "UNKEYWORD"
+            search criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Answered">
+            <summary>
+            Finds messages with the \Answered flag set.
+            </summary>
+            <returns>A SearchCondition object representing the "ANSWERED" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Deleted">
+            <summary>
+            Finds messages with the \Deleted flag set.
+            </summary>
+            <returns>A SearchCondition object representing the "DELETED" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Draft">
+            <summary>
+            Finds messages with the \Draft flag set.
+            </summary>
+            <returns>A SearchCondition object representing the "DRAFT" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Flagged">
+            <summary>
+            Finds messages with the \Flagged flag set.
+            </summary>
+            <returns>A SearchCondition object representing the "FLAGGED" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.New">
+            <summary>
+            Finds messages that have the \Recent flag set but not the \Seen flag.
+            </summary>
+            <returns>A SearchCondition object representing the "NEW" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Old">
+            <summary>
+            Finds messages that do not have the \Recent flag set.
+            </summary>
+            <returns>A SearchCondition object representing the "OLD" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Recent">
+            <summary>
+            Finds messages that have the \Recent flag set.
+            </summary>
+            <returns>A SearchCondition object representing the "RECENT" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Seen">
+            <summary>
+            Finds messages that have the \Seen flag set.
+            </summary>
+            <returns>A SearchCondition object representing the "SEEN" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Unanswered">
+            <summary>
+            Finds messages that do not have the \Answered flag set.
+            </summary>
+            <returns>A SearchCondition object representing the "UNANSWERED" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Undeleted">
+            <summary>
+            Finds messages that do not have the \Deleted flag set.
+            </summary>
+            <returns>A SearchCondition object representing the "UNDELETED" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Undraft">
+            <summary>
+            Finds messages that do not have the \Draft flag set.
+            </summary>
+            <returns>A SearchCondition object representing the "UNDRAFT" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Unflagged">
+            <summary>
+            Finds messages that do not have the \Flagged flag set.
+            </summary>
+            <returns>A SearchCondition object representing the "UNFLAGGED" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Unseen">
+            <summary>
+            Finds messages that do not have the \Seen flag set.
+            </summary>
+            <returns>A SearchCondition object representing the "UNSEEN" search
+            criterion</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.And(S22.Imap.SearchCondition[])">
+            <summary>
+            Logically ANDs multiple search conditions, meaning a message will only
+            be included in the search result set if all conditions are met.
+            </summary>
+            <param name="other">A search condition to logically AND this
+            SearchCondition instance with</param>
+            <returns>A new SearchCondition instance which can be further chained
+            with other search conditions.</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Not(S22.Imap.SearchCondition[])">
+            <summary>
+            Logically negates search conditions, meaning a message will only
+            be included in the search result set if the specified conditions
+            are not met.
+            </summary>
+            <param name="other">A search condition that must not be met by a
+            message for it to be included in the search result set</param>
+            <returns>A new SearchCondition instance which can be further chained
+            with other search conditions.</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.Or(S22.Imap.SearchCondition[])">
+            <summary>
+            Logically ORs multiple search conditions, meaning a message will be
+            included in the search result set if it meets at least one of the
+            conditions.
+            </summary>
+            <param name="other">A search condition to logically OR this
+            SearchCondition instance with</param>
+            <returns>A new SearchCondition instance which can be further chained
+            with other search conditions.</returns>
+        </member>
+        <member name="M:S22.Imap.SearchCondition.ToString">
+            <summary>
+            Constructs a string from this SearchCondition object using the proper syntax
+            as is required for the IMAP SEARCH command.
+            </summary>
+            <returns>A string representing this SearchCondition instance that can be
+            used with the IMAP SEARCH command.</returns>
+        </member>
+        <member name="T:S22.Imap.SafeQueue`1">
+            <summary>
+            A thread-safe Queue
+            </summary>
+        </member>
+        <member name="M:S22.Imap.SafeQueue`1.Enqueue(`0)">
+            <summary>
+            Adds an object to the end of the queue.
+            </summary>
+            <param name="item">The object to add to the queue.</param>
+        </member>
+        <member name="M:S22.Imap.SafeQueue`1.Dequeue">
+            <summary>
+            Removes and returns the object at the beginning of the queue. If
+            the queue is empty, the method blocks the calling thread until an
+            object is put into the queue by another thread.
+            </summary>
+            <returns>The object that is removed from the beginning
+            of the queue.</returns>
+        </member>
+        <member name="T:S22.Imap.MessageReader">
+            <summary>
+            A helper class for reading a mail message and building a MailMessage
+            instance out of it.
+            </summary>
+            <remarks>The MessageReader class has been deprecated as of version 2.0
+            in favor of partial fetching of mail messages.</remarks>
+        </member>
+        <member name="M:S22.Imap.MessageReader.#ctor(S22.Imap.GetResponseDelegate)">
+            <summary>
+            Initializes a new instance of the MessageReader class using the
+            specified delegate.
+            </summary>
+            <param name="Delegate">A delegate to the GetResponse method which
+            the MessageReader object invokes when it needs to read a line of
+            data from the server.</param>
+        </member>
+        <member name="M:S22.Imap.MessageReader.ReadMailMessage(System.UInt32)">
+            <summary>
+            Reads and processes the message data sent by the server and constructs
+            a new MailMessage object from it.
+            </summary>
+            <param name="uid">The UID of the mail message whose data the server is about
+            to send</param>
+            <returns>An initialized instance of the MailMessage class representing the
+            fetched mail message</returns>
+        </member>
+        <member name="M:S22.Imap.MessageReader.ReadMailHeader">
+            <summary>
+            Reads the message header of a mail message and returns it as a
+            NameValueCollection.
+            </summary>
+            <returns>A NameValueCollection containing the header fields as keys
+            with their respective values as values.</returns>
+        </member>
+        <member name="M:S22.Imap.MessageReader.ParseMIMEField(System.String)">
+            <summary>
+            Parses a MIME header field which can contain multiple 'parameter = value'
+            pairs (such as Content-Type: text/html; charset=iso-8859-1).
+            </summary>
+            <param name="field">The header field to parse</param>
+            <returns>A NameValueCollection containing the parameter names as keys
+            with the respective parameter values as values.</returns>
+            <remarks>The value of the actual field disregarding the 'parameter = value'
+            pairs is stored in the collection under the key "value" (in the above example
+            of Content-Type, this would be "text/html").</remarks>
+        </member>
+        <member name="M:S22.Imap.MessageReader.ParseAddressList(System.String)">
+            <summary>
+            Parses a mail header address-list field such as To, Cc and Bcc which
+            can contain multiple email addresses.
+            </summary>
+            <param name="list">The address-list field to parse</param>
+            <returns>An array of strings containing the parsed mail
+            addresses.</returns>
+        </member>
+        <member name="M:S22.Imap.MessageReader.ParseMessageId(System.String)">
+            <summary>
+            Parses a mail message identifier from a string.
+            </summary>
+            <param name="field">The field to parse the message id from</param>
+            <exception cref="T:System.ArgumentException">Thrown when the field
+            argument does not contain a valid message identifier.</exception>
+            <returns>The parsed message id</returns>
+            <remarks>A message identifier (msg-id) is a globally unique
+            identifier for a message.</remarks>
+        </member>
+        <member name="M:S22.Imap.MessageReader.ReadMailBody">
+            <summary>
+            Reads the plain-text message body of a mail message.
+            </summary>
+            <returns>The message body of the mail message.</returns>
+        </member>
+        <member name="M:S22.Imap.MessageReader.ReadMultipartBody(System.String,System.Boolean)">
+            <summary>
+            Reads the message body of a MIME multipart message.
+            </summary>
+            <param name="boundary">The boundary string which separates
+            the different parts which make up the multipart-message</param>
+            <param name="nested">True if recursive call</param>
+            <returns>A list of the MIME parts composing the multipart
+            message</returns>
+            <remarks>Each MIME part consists of its own set of header
+            fields and a body.</remarks>
+        </member>
+        <member name="M:S22.Imap.MessageReader.CreateMailmessage(System.Collections.Specialized.NameValueCollection,System.String,S22.Imap.MIMEPart[])">
+            <summary>
+            Creates a new instance of the MailMessage class and initializes it using
+            the specified header and body information.
+            </summary>
+            <param name="header">A collection of mail and MIME headers</param>
+            <param name="body">The mail body. May be null in case the message
+            is a MIME multi-part message in which case the MailMessage's body will
+            be set to the body of the first MIME part.</param>
+            <param name="parts">An array of MIME parts making up the message. If the
+            message is not a MIME multi-part message, this can be set to null.
+            </param>
+            <returns>An initialized instance of the MailMessage class</returns>
+        </member>
+        <member name="F:S22.Imap.MessageReader.PriorityMapping">
+            <summary>
+            A mapping to map MIME priority values to their MailPriority enum
+            counterparts.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.MessageReader.SetAddressFields(System.Net.Mail.MailMessage,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Sets the address fields (From, To, CC, etc.) of a MailMessage
+            object using the specified mail message header information.
+            </summary>
+            <param name="m">The MailMessage instance to operate on</param>
+            <param name="header">A collection of mail and MIME headers</param>
+        </member>
+        <member name="M:S22.Imap.MessageReader.AddMIMEPartsToMessage(System.Net.Mail.MailMessage,S22.Imap.MIMEPart[])">
+            <summary>
+            Adds the parts of a MIME multi-part message to an instance of the
+            MailMessage class. MIME parts are either added to the AlternateViews
+            or to the Attachments collections depending on their type.
+            </summary>
+            <param name="m">The MailMessage instance to operate on</param>
+            <param name="parts">An array of MIME parts</param>
+        </member>
+        <member name="M:S22.Imap.MessageReader.CreateAttachment(System.Collections.Specialized.NameValueCollection,System.Byte[],System.String)">
+            <summary>
+            Creates an instance of the Attachment class used by the MailMessage class
+            to store mail message attachments.
+            </summary>
+            <param name="header">The MIME part header</param>
+            <param name="bytes">An array of bytes composing the content of the
+            attachment</param>
+            <param name="name">The designated name of the attachment file</param>
+            <returns>An initialized instance of the Attachment class</returns>
+        </member>
+        <member name="M:S22.Imap.MessageReader.CreateAlternateView(System.Collections.Specialized.NameValueCollection,System.Byte[])">
+            <summary>
+            Creates an instance of the AlternateView class used by the MailMessage class
+            to store alternate views of the mail message's content.
+            </summary>
+            <param name="header">The MIME part header</param>
+            <param name="bytes">An array of bytes composing the content of the
+            alternate view</param>
+            <returns>An initialized instance of the AlternateView class</returns>
+        </member>
+        <member name="T:S22.Imap.AuthMethod">
+            <summary>
+            Defines supported means of authenticating with the IMAP server.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.AuthMethod.Login">
+            <summary>
+            Login using plaintext password authentication. This is
+            the default supported by most servers.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.AuthMethod.CRAMMD5">
+            <summary>
+            Login using the CRAM-MD5 authentication mechanism.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.AuthMethod.SaslOAuth">
+            <summary>
+            Login using the OAuth authentication mechanism over
+            the Simple Authentication and Security Layer (Sasl).
+            </summary>
+        </member>
+        <member name="T:S22.Imap.MailMessageExtension">
+            <summary>
+            Adds extension methods to the MailMessage class of the .Net Framework.
+            These are only used internally and are not visible outside of the
+            S22.Imap assembly so as to not interfere with other assemblies.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.MailMessageExtension.ToMIME822(System.Net.Mail.MailMessage)">
+            <summary>
+            Constructs a textual representation of a mail message from the specified
+            MailMessage instance compliant with the RFC822 and MIME standards.
+            </summary>
+            <param name="message">The MailMessage instance to construct the
+            textual representation from.</param>
+            <returns>An RFC822/MIME-compliant string describing a mail
+            message.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if the From
+            property is null or is not properly initialized.</exception>
+        </member>
+        <member name="M:S22.Imap.MailMessageExtension.BuildHeader(System.Net.Mail.MailMessage)">
+            <summary>
+            Builds a RFC822/MIME-compliant mail header from the specified
+            MailMessage instance and returns it as a NameValueCollection.
+            </summary>
+            <param name="m">The MailMessage instance to build the header
+            from.</param>
+            <returns>A NameValueCollection representing the RFC822/MIME
+            mail header fields.</returns>
+        </member>
+        <member name="F:S22.Imap.MailMessageExtension.PriorityMap">
+            <summary>
+            A map for mapping the values of the MailPriority enumeration to
+            their corresponding MIME priority values as defined in
+            RFC2156.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.MailMessageExtension.ImportanceMap">
+            <summary>
+            A map for mapping the values of the MailPriority enumeration to
+            their corresponding MIME importance values as defined in
+            RFC2156.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.MailMessageExtension.QEncode(System.String)">
+            <summary>
+            Takes a unicode string and encodes it using Q-encoding.
+            </summary>
+            <param name="s">The string to encode</param>
+            <returns>The input string encoded as Q-encoded string containing
+            only ASCII characters.</returns>
+        </member>
+        <member name="M:S22.Imap.MailMessageExtension.To822Address(System.Net.Mail.MailAddress)">
+            <summary>
+            Creates an address string from the specified MailAddress instance in
+            compliance with the address specification as outlined in RFC2822 under
+            section 3.4
+            </summary>
+            <param name="address">The MailAddress instance to create the address
+            string from.</param>
+            <returns>An address string as is used in RFC822 mail headers</returns>
+        </member>
+        <member name="M:S22.Imap.MailMessageExtension.GenerateContentBoundary">
+            <summary>
+            Generates a unique sequence of characters for indicating a boundary
+            between parts in a multipart message.
+            </summary>
+            <returns>A unique content boundary string</returns>
+        </member>
+        <member name="M:S22.Imap.MailMessageExtension.BuildBody(System.Net.Mail.MailMessage,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Builds an RFC822/MIME-compliant mail body from the specified
+            MailMessage instance and returns it as a formatted string.
+            </summary>
+            <param name="m">The MailMessage instance to build the mail body
+            from.</param>
+            <param name="header">The RFC822/MIME mail header to use for
+            constructing the mail body.</param>
+            <returns>An RFC822/MIME-compliant mail body as a string.
+            </returns>
+            <remarks>According to RFC2822 each line of a mail message should
+            at max be 78 characters in length excluding carriage return and
+            newline characters. This method accounts for that and ensures
+            line breaks are inserted to meet this requirement.</remarks>
+        </member>
+        <member name="M:S22.Imap.MailMessageExtension.AddBody(System.Text.StringBuilder,System.Net.Mail.MailMessage,System.Collections.Specialized.NameValueCollection,System.Boolean)">
+            <summary>
+            Adds a body part to the specified Stringbuilder object composed from
+            the Body and BodyEncoding properties of the MailMessage class.
+            </summary>
+            <param name="builder">The Stringbuilder to append the body part to.</param>
+            <param name="m">The MailMessage instance to build the body part from.</param>
+            <param name="header">The RFC822/MIME mail header to use for
+            constructing the mail body.</param>
+            <param name="addHeaders">Set to true to append body headers before
+            adding the actual body part content.</param>
+        </member>
+        <member name="M:S22.Imap.MailMessageExtension.AddAttachment(System.Text.StringBuilder,System.Net.Mail.AttachmentBase)">
+            <summary>
+            Creates a MIME body part from an entry of the AlternateView or
+            Attachments collection of a MailMessage instance and appends it
+            to the specified Stringbuilder instance.
+            </summary>
+            <param name="builder">The Stringbuilder instance to append the
+            body part to.</param>
+            <param name="view">An entry from either the AlternateView or the
+            Attachments collection of a MailMessage instance.</param>
+        </member>
+        <member name="M:S22.Imap.MailMessageExtension.AddNestedAlternative(System.Text.StringBuilder,System.Net.Mail.MailMessage,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Creates a nested multipart/alternative part which contains all entries
+            from the AlternateViews collection of the specified MailMessage instance
+            as well as the body part for the Body and BodyEncoding properties of the
+            specified MailMessage instance.
+            </summary>
+            <param name="builder">The StringBuilder instance to append to.</param>
+            <param name="m">The MailMessage instance whose AlternateView collection
+            will be added to the nested multipart/alternative part.</param>
+            <param name="header">The RFC822/MIME mail header to use for
+            constructing the mail body.</param>
+            <remarks>This is used if the MailMessage instance contains both alternative
+            views and attachments. In this case the created RFC822/MIME mail message will
+            contain nested body parts.</remarks>
+        </member>
+        <member name="M:S22.Imap.MailMessageExtension.AddNestedMixed(System.Text.StringBuilder,System.Net.Mail.MailMessage)">
+            <summary>
+            Creates a nested multipart/mixed part which contains all entries
+            from the Attachments collection of the specified MailMessage instance.
+            </summary>
+            <param name="builder">The StringBuilder instance to append to.</param>
+            <param name="m">The MailMessage instance whose Attachments collection
+            will be added to the nested multipart/mixed part.</param>
+            <remarks>This is used if the MailMessage instance contains both alternative
+            views and attachments. In this case the created RFC822/MIME mail message will
+            contain nested body parts.</remarks>
+        </member>
+        <member name="T:S22.Imap.ImapClient">
+            <summary>
+            Allows applications to communicate with a mail server by using the
+            Internet Message Access Protocol (IMAP).
+            </summary>
+        </member>
+        <member name="M:S22.Imap.ImapClient.#ctor(System.String,System.Int32,System.Boolean,System.Net.Security.RemoteCertificateValidationCallback)">
+            <summary>
+            Initializes a new instance of the ImapClient class and connects to the specified port
+            on the specified host, optionally using the Secure Socket Layer (SSL) security protocol.
+            </summary>
+            <param name="hostname">The DNS name of the server to which you intend to connect.</param>
+            <param name="port">The port number of the server to which you intend to connect.</param>
+            <param name="ssl">Set to true to use the Secure Socket Layer (SSL) security protocol.</param>
+            <param name="validate">Delegate used for verifying the remote Secure Sockets
+            Layer (SSL) certificate which is used for authentication. Set this to null if not needed</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">The port parameter is not between MinPort
+            and MaxPort.</exception>
+            <exception cref="T:System.ArgumentNullException">The hostname parameter is null.</exception>
+            <exception cref="T:System.Net.Sockets.SocketException">An error occurred while accessing the socket used for
+            establishing the connection to the IMAP server. Use the ErrorCode property to obtain the
+            specific error code</exception>
+            <exception cref="T:System.Security.Authentication.AuthenticationException">An authentication
+            error occured while trying to establish a secure connection.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if an unexpected response is received
+            from the server upon connecting.</exception>
+            <example>
+				This example shows how to establish a connection with an IMAP server
+				and print out the IMAP options, which the server supports.
+				<code>
+					/* Connect to Gmail's IMAP server on port 993 using SSL */
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, true);
+
+					/* Print out the server's capabilities */
+					foreach(string s in Client.Capabilities())
+						Console.WriteLine(s);
+
+					Client.Dispose();
+				</code>
+			</example>
+        </member>
+        <member name="M:S22.Imap.ImapClient.#ctor(System.String,System.Int32,System.String,System.String,S22.Imap.AuthMethod,System.Boolean,System.Net.Security.RemoteCertificateValidationCallback)">
+            <summary>
+            Initializes a new instance of the ImapClient class and connects to the specified port on
+            the specified host, optionally using the Secure Socket Layer (SSL) security protocol and
+            attempts to authenticate with the server using the specified authentication method and
+            credentials.
+            </summary>
+            <param name="hostname">The DNS name of the server to which you intend to connect.</param>
+            <param name="port">The port number of the server to which you intend to connect.</param>
+            <param name="username">The username with which to login in to the IMAP server.</param>
+            <param name="password">The password with which to log in to the IMAP server.</param>
+            <param name="method">The requested method of authentication. Can be one of the values
+            of the AuthMethod enumeration.</param>
+            <param name="ssl">Set to true to use the Secure Socket Layer (SSL) security protocol.</param>
+            <param name="validate">Delegate used for verifying the remote Secure Sockets Layer
+            (SSL) certificate which is used for authentication. Set this to null if not needed</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">The port parameter is not between MinPort
+            and MaxPort.</exception>
+            <exception cref="T:System.ArgumentNullException">The hostname parameter is null.</exception>
+            <exception cref="T:System.Net.Sockets.SocketException">An error occurred while accessing the socket used for
+            establishing the connection to the IMAP server. Use the ErrorCode property to obtain the
+            specific error code</exception>
+            <exception cref="T:System.Security.Authentication.AuthenticationException">An authentication
+            error occured while trying to establish a secure connection.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if an unexpected response is received
+            from the server upon connecting.</exception> 
+            <exception cref="T:S22.Imap.InvalidCredentialsException">Thrown if authentication using the
+            supplied credentials failed.</exception>
+            <example>
+				This example demonstrates how to connect and login to an IMAP server.
+				<code>
+					/* Connect to Gmail's IMAP server on port 993 using SSL */
+					try {
+						ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_Username",
+							"My_Password", true, AuthMethod.Login);
+
+						/* Check if the server supports IMAP IDLE */
+						if(Client.Supports("IDLE"))
+							Console.WriteLine("This server supports the IMAP4 IDLE specification");
+						else
+							Console.WriteLine("This server does not support IMAP IDLE");
+
+						/* release resources */
+						Client.Dispose();
+					}
+					catch(InvalidCredentialsException) {
+						Console.WriteLine("The server rejected the supplied credentials");
+					}
+				</code>
+			</example>
+        </member>
+        <member name="M:S22.Imap.ImapClient.Connect(System.String,System.Int32,System.Boolean,System.Net.Security.RemoteCertificateValidationCallback)">
+            <summary>
+            Connects to the specified port on the specified host, optionally using the Secure Socket Layer
+            (SSL) security protocol.
+            </summary>
+            <param name="hostname">The DNS name of the server to which you intend to connect.</param>
+            <param name="port">The port number of the server to which you intend to connect.</param>
+            <param name="ssl">Set to true to use the Secure Socket Layer (SSL) security protocol.</param>
+            <param name="validate">Delegate used for verifying the remote Secure Sockets
+            Layer (SSL) certificate which is used for authentication. Set this to null if not needed</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">The port parameter is not between MinPort
+            and MaxPort.</exception>
+            <exception cref="T:System.ArgumentNullException">The hostname parameter is null.</exception>
+            <exception cref="T:System.Net.Sockets.SocketException">An error occurred while accessing the socket used for
+            establishing the connection to the IMAP server. Use the ErrorCode property to obtain the
+            specific error code.</exception>
+            <exception cref="T:System.Security.Authentication.AuthenticationException">An authentication
+            error occured while trying to establish a secure connection.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if an unexpected response is received
+            from the server upon connecting.</exception>
+        </member>
+        <member name="M:S22.Imap.ImapClient.IsResponseOK(System.String,System.String)">
+            <summary>
+            Determines whether the received response is a valid IMAP OK response.
+            </summary>
+            <param name="response">A response string received from the server</param>
+            <param name="tag">A tag if the response is associated with a command</param>
+            <returns>True if the response is a valid IMAP OK response, otherwise false
+            is returned.</returns>
+        </member>
+        <member name="M:S22.Imap.ImapClient.Login(System.String,System.String,S22.Imap.AuthMethod)">
+            <summary>
+            Attempts to establish an authenticated session with the server using the specified
+            credentials.
+            </summary>
+            <param name="username">The username with which to login in to the IMAP server.</param>
+            <param name="password">The password with which to log in to the IMAP server.</param>
+            <param name="method">The requested method of authentication. Can be one of the values
+            of the AuthMethod enumeration.</param>
+            <exception cref="T:S22.Imap.InvalidCredentialsException">Thrown if authentication using the
+            supplied credentials failed.</exception>
+            <example>
+				This example demonstrates how to authenticate with an IMAP server once a connection
+				has been established. Notice that you can also connect and login in one step
+				using one of the overloaded constructors. 
+				<code>
+					/* Connect to Gmail's IMAP server on port 993 using SSL */
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, true);
+
+					try {
+						Client.Login("My_Username", "My_Password", AuthMethod.Login);
+					}
+					catch(InvalidCredentialsException) {
+						Console.WriteLine("The server rejected the supplied credentials");
+					}
+					
+					Client.Dispose();
+				</code>
+			</example>
+        </member>
+        <member name="M:S22.Imap.ImapClient.Logout">
+            <summary>
+            Logs an authenticated client out of the server. After the logout sequence has
+            been completed, the server closes the connection with the client.
+            </summary>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if an unexpected response is
+            received from the server during the logout sequence</exception>
+            <remarks>Calling Logout in a non-authenticated state has no effect</remarks>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetTag">
+            <summary>
+            Generates a unique identifier to prefix a command with, as is
+            required by the IMAP protocol.
+            </summary>
+            <returns>A unique identifier string</returns>
+        </member>
+        <member name="M:S22.Imap.ImapClient.SendCommand(System.String)">
+            <summary>
+            Sends a command string to the server. This method blocks until the command has
+            been transmitted.
+            </summary>
+            <param name="command">Command string to be sent to the server. The command string is
+            suffixed by CRLF (as is required by the IMAP protocol) prior to sending.</param>
+        </member>
+        <member name="M:S22.Imap.ImapClient.SendCommandGetResponse(System.String)">
+            <summary>
+            Sends a command string to the server and subsequently waits for a response, which is
+            then returned to the caller. This method blocks until the server response has been
+            received.
+            </summary>
+            <param name="command">Command string to be sent to the server. The command string is
+            suffixed by CRLF (as is required by the IMAP protocol) prior to sending.</param>
+            <returns>The response received by the server.</returns>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetResponse">
+            <summary>
+            Waits for a response from the server. This method blocks
+            until a response has been received.
+            </summary>
+            <returns>A response string from the server</returns>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetData(System.Int32)">
+            <summary>
+            Reads the specified amount of bytes from the server. This
+            method blocks until the specified amount of bytes has been
+            read from the network stream.
+            </summary>
+            <param name="byteCount">The number of bytes to read</param>
+            <returns>The read number of bytes as an ASCII-encoded string</returns>
+        </member>
+        <member name="M:S22.Imap.ImapClient.Capabilities">
+            <summary>
+            Returns a listing of capabilities that the IMAP server supports. All strings
+            in the returned array are guaranteed to be upper-case.
+            </summary>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if an unexpected response is received
+            from the server during the request. The message property of the exception contains the
+            error message returned by the server.</exception>
+            <returns>A listing of supported capabilities as an array of strings</returns>
+            <remarks>This is one of the few methods which can be called in a non-authenticated
+            state.</remarks>
+        </member>
+        <member name="M:S22.Imap.ImapClient.Supports(System.String)">
+            <summary>
+            Returns whether the specified capability is supported by the server.
+            </summary>
+            <param name="capability">The capability to probe for (for example "IDLE")</param>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if an unexpected response is received
+            from the server during the request. The message property of the exception contains
+            the error message returned by the server.</exception>
+            <returns>Returns true if the specified capability is supported by the server, 
+            otherwise false is returned.</returns>
+            <example>
+				This example demonstrates how to connect and login to an IMAP server.
+				<code>
+					/* Connect to Gmail's IMAP server on port 993 using SSL */
+					try {
+						ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_Username",
+							"My_Password", true, AuthMethod.Login);
+
+						/* Check if the server supports IMAP IDLE */
+						if(Client.Supports("IDLE"))
+							Console.WriteLine("This server supports the IMAP4 IDLE specification");
+						else
+							Console.WriteLine("This server does not support IMAP IDLE");
+
+						/* release resources */
+						Client.Dispose();
+					}
+					catch(InvalidCredentialsException) {
+						Console.WriteLine("The server rejected the supplied credentials");
+					}
+				</code>
+			</example>
+        </member>
+        <member name="M:S22.Imap.ImapClient.RenameMailbox(System.String,System.String)">
+            <summary>
+            Changes the name of a mailbox.
+            </summary>
+            <param name="mailbox">The mailbox to rename.</param>
+            <param name="newName">The new name the mailbox will be renamed to.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mailbox could
+            not be renamed. The message property of the exception contains the error message
+            returned by the server.</exception>
+        </member>
+        <member name="M:S22.Imap.ImapClient.DeleteMailbox(System.String)">
+            <summary>
+            Permanently removes a mailbox.
+            </summary>
+            <param name="mailbox">Name of the mailbox to remove.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mailbox could
+            not be removed. The message property of the exception contains the error message
+            returned by the server.</exception>
+        </member>
+        <member name="M:S22.Imap.ImapClient.CreateMailbox(System.String)">
+            <summary>
+            Creates a new mailbox with the given name.
+            </summary>
+            <param name="mailbox">Name of the mailbox to create.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mailbox could
+            not be created. The message property of the exception contains the error message
+            returned by the server.</exception>
+        </member>
+        <member name="M:S22.Imap.ImapClient.SelectMailbox(System.String)">
+            <summary>
+            Selects a mailbox so that messages in the mailbox can be accessed.
+            </summary>
+            <param name="mailbox">The mailbox to select. If this parameter is null, the
+            default mailbox is selected.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mailbox could
+            not be selected. The message property of the exception contains the error message
+            returned by the server.</exception>
+        </member>
+        <member name="M:S22.Imap.ImapClient.ListMailboxes">
+            <summary>
+            Retrieves a list of all available and selectable mailboxes on the server.
+            </summary>
+            <returns>A list of all available and selectable mailboxes</returns>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if a list of mailboxes
+            could not be retrieved. The message property of the exception contains the
+            error message returned by the server.</exception>
+            <remarks>The mailbox INBOX is a special name reserved to mean "the
+            primary mailbox for this user on this server"</remarks>
+        </member>
+        <member name="M:S22.Imap.ImapClient.Expunge(System.String)">
+            <summary>
+            Permanently removes all messages that have the \Deleted flag set from the
+            specified mailbox.
+            </summary>
+            <param name="mailbox">The mailbox to remove all messages from that have the
+            \Deleted flag set. If this parameter is omitted, the value of the DefaultMailbox
+            property is used to determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the expunge operation could
+            not be completed. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <seealso cref="M:S22.Imap.ImapClient.DeleteMessage(System.UInt32,System.String)"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetStatus(System.String)">
+            <summary>
+            Retrieves status information (total number of messages, number of unread
+            messages, etc.) for the specified mailbox.</summary>
+            <param name="mailbox">The mailbox to retrieve status information for. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <returns>A MailboxStatus object containing status information for the
+            mailbox.</returns>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the operation could
+            not be completed. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <remarks>Not all IMAP servers support the retrieval of quota information. If
+            it is not possible to retrieve this information, the UsedStorage and FreeStorage
+            properties of the returned MailboxStatus instance are set to 0.</remarks>
+            <example>
+				<code>
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_UsernamMe",
+						"My_Password", true, AuthMethod.Login);
+
+					MailboxStatus status = Client.GetStatus();
+
+					Console.WriteLine("Number of messages in the mailbox: " + status.Messages);
+					Console.WriteLine("Number of unread messages in the mailbox: " + status.Unread);
+
+					Client.Dispose();
+				</code>
+			</example>
+        </member>
+        <member name="M:S22.Imap.ImapClient.Search(S22.Imap.SearchCondition,System.String)">
+            <summary>
+            Searches the specified mailbox for messages that match the given
+            searching criteria.
+            </summary>
+            <param name="criteria">A search criteria expression. Only messages
+            that match this expression will be included in the result set returned
+            by this method.</param>
+            <param name="mailbox">The mailbox that will be searched. If this parameter is
+            omitted, the value of the DefaultMailbox property is used to determine the mailbox
+            to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the search could
+            not be completed. The message property of the exception contains the error
+            message returned by the server.</exception>
+            <returns>An array of unique identifier (UID) message attributes which
+            can be used with the GetMessage family of methods to download mail
+            messages.</returns>
+            <remarks>A unique identifier (UID) is a 32-bit value assigned to each
+            message which uniquely identifies the message within a mailbox. No two
+            messages in a mailbox share the the same UID.</remarks>
+            <example>
+				This example demonstrates how to use the search method to get a list of all
+				unread messages in the mailbox.
+				<code>
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_Username",
+						"My_Password", true, AuthMethod.Login);
+
+					/* get a list of unique identifiers (UIDs) of all unread messages in the mailbox */
+					uint[] uids = Client.Search( SearchCondition.Unseen() );
+					
+					/* fetch the messages and print out their subject lines */
+					foreach(uint uid in uids) {
+						MailMessage message = Client.GetMessage(uid);
+						
+						Console.WriteLine(message.Subject);
+					}
+					
+					/* free up any resources associated with this instance */
+					Client.Dispose();
+				</code>
+			</example><example>
+				This example demonstrates how to perform a search using multiple search criteria
+				<code>
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_Username",
+						"My_Password", true, AuthMethod.Login);
+
+					/* get a list of unique identifiers (UIDs) of all messages sent before the 01.04.2012
+							and that are larger than 1 Kilobyte */
+					uint[] uids = Client.Search( SearchCondition.SentBefore(new DateTime(2012, 4, 1))
+						.And( SearchCondition.Larger(1024) ));
+
+					Console.WriteLine("Found " + uids.Length + " messages");
+					
+					/* free up any resources associated with this instance */
+					Client.Dispose();
+				</code>
+			</example>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetMessage(System.UInt32,System.Boolean,System.String)">
+            <summary>
+            Retrieves a mail message by its unique identifier message attribute.
+            </summary>
+            <param name="uid">The unique identifier of the mail message to retrieve</param>
+            <param name="seen">Set this to true to set the \Seen flag for this message
+            on the server.</param>
+            <param name="mailbox">The mailbox the message will be retrieved from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail message could
+            not be fetched. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <returns>An initialized instance of the MailMessage class representing the
+            fetched mail message</returns>
+            <remarks>A unique identifier (UID) is a 32-bit value assigned to each
+            message which uniquely identifies the message within a mailbox. No two
+            messages in a mailbox share the the same UID.</remarks>
+            <example>
+				<code>
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_UsernamMe",
+						"My_Password", true, AuthMethod.Login);
+					
+					/* find all messages in the mailbox that were sent from "John.Doe@gmail.com" */
+					uint uids = Client.Search( SearchCondition.From("John.Doe@gmail.com") );
+					
+					/* fetch the first message and print it's subject and body */
+					if(uids.Length &gt; 0) {
+						MailMessage msg = Client.GetMessage(uids[0]);
+						
+						Console.WriteLine("Subject: " + msg.Subject);
+						Console.WriteLine("Body: " + msg.Body);
+					}
+					
+					Client.Dispose();
+				</code>
+			</example>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetMessage(System.UInt32,S22.Imap.FetchOptions,System.Boolean,System.String)">
+            <summary>
+            Retrieves a mail message by its unique identifier message attribute with the
+            specified fetch option.
+            </summary>
+            <param name="uid">The unique identifier of the mail message to retrieve</param>
+            <param name="options">A value from the FetchOptions enumeration which allows
+            for fetching selective parts of a mail message.</param>
+            <param name="seen">Set this to true to set the \Seen flag for this message
+            on the server.</param>
+            <param name="mailbox">The mailbox the message will be retrieved from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail message could
+            not be fetched. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <returns>An initialized instance of the MailMessage class representing the
+            fetched mail message</returns>
+            <remarks>A unique identifier (UID) is a 32-bit value assigned to each
+            message which uniquely identifies the message within a mailbox. No two
+            messages in a mailbox share the the same UID.
+            <para>If you need more fine-grained control over which parts of a mail
+            message to fetch, consider using one of the overloaded GetMessage methods.
+            </para>
+            </remarks>
+            <example>
+				This example demonstrates how to fetch only the mail message headers of
+				a mail message, instead of the entire message.
+				<code>
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_UsernamMe",
+					"My_Password", true, AuthMethod.Login);
+
+					/* find all messages in the mailbox that have "Hello" in the subject */
+					uint uids = Client.Search( SearchCondition.Subject("Hello") );
+
+					/* fetch the mail headers of the first message and print it's subject line */
+					if(uids.Length &gt; 0) {
+						MailMessage msg = Client.GetMessage(uids[0], FetchOptions.HeadersOnly);
+
+						Console.WriteLine("Subject: " + msg.Subject);
+					}
+					
+					Client.Dispose();
+				</code>
+			</example>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetMessage(System.UInt32,S22.Imap.ExaminePartDelegate,System.Boolean,System.String)">
+            <summary>
+            Retrieves a mail message by its unique identifier message attribute providing
+            fine-grained control over which message parts to retrieve.
+            </summary>
+            <param name="uid">The unique identifier of the mail message to retrieve</param>
+            <param name="callback">A delegate which will be invoked for every MIME body
+            part of the mail message to determine whether it should be fetched from the
+            server or skipped.</param>
+            <param name="seen">Set this to true to set the \Seen flag for this message
+            on the server.</param>
+            <param name="mailbox">The mailbox the message will be retrieved from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail message could
+            not be fetched. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <returns>An initialized instance of the MailMessage class representing the
+            fetched mail message</returns>
+            <remarks>A unique identifier (UID) is a 32-bit value assigned to each
+            message which uniquely identifies the message within a mailbox. No two
+            messages in a mailbox share the the same UID.</remarks>
+            <example>
+				This example demonstrates how to use the ExaminePartDelegate with the GetMessage
+				method to only download message parts with a size of 1 Megabyte or less.
+				<code>
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_UsernamMe",
+					"My_Password", true, AuthMethod.Login);
+
+					/* find all messages in the inbox */
+					uint uids = Client.Search( SearchCondition.All() );
+
+					/* Download each message but skip message parts that are larger than 1 Megabyte */
+					foreach(uint uid in uids) {
+						MailMessage msg = Client.GetMessage(uids[0], (Bodypart part) =&gt; {
+								if(part.Size &gt; (1024 * 1024))
+									return false;
+								else
+									return true;
+							}
+						);
+					}
+					
+					Client.Dispose();
+				</code>
+			</example>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetMessages(System.UInt32[],System.Boolean,System.String)">
+            <summary>
+            Retrieves a set of mail messages by their unique identifier message attributes.
+            </summary>
+            <param name="uids">An array of unique identifiers of the mail messages to
+            retrieve</param>
+            <param name="seen">Set this to true to set the \Seen flag for the fetched
+            messages on the server.</param>
+            <param name="mailbox">The mailbox the messages will be retrieved from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail messages could
+            not be fetched. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <returns>An array of initialized instances of the MailMessage class representing
+            the fetched mail messages</returns>
+            <remarks>A unique identifier (UID) is a 32-bit value assigned to each
+            message which uniquely identifies the message within a mailbox. No two
+            messages in a mailbox share the the same UID.</remarks>
+            <example>
+				<code>
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_UsernamMe",
+						"My_Password", true, AuthMethod.Login);
+
+					/* find all messages that have been sent since June the 1st */
+					uint uids = Client.Search( SearchCondition.SentSince( new DateTime(2012, 6, 1) ) );
+
+					/* fetch the messages and print out their subject lines */
+					MailMessage[] messages = Client.GetMessages( uids );
+
+					foreach(MailMessage m in messages)
+						Console.WriteLine("Subject: " + m.Subject);
+
+					Client.Dispose();
+				</code>
+			</example>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetMessages(System.UInt32[],S22.Imap.ExaminePartDelegate,System.Boolean,System.String)">
+            <summary>
+            Retrieves a set of mail messages by their unique identifier message attributes
+            providing fine-grained control over which message parts to retrieve of each
+            respective message.
+            </summary>
+            <param name="uids">An array of unique identifiers of the mail messages to
+            retrieve</param>
+            <param name="callback">A delegate which will be invoked for every MIME body
+            part of a mail message to determine whether it should be fetched from the
+            server or skipped.</param>
+            <param name="seen">Set this to true to set the \Seen flag for the fetched
+            messages on the server.</param>
+            <param name="mailbox">The mailbox the messages will be retrieved from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail messages could
+            not be fetched. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <returns>An array of initialized instances of the MailMessage class representing
+            the fetched mail messages</returns>
+            <remarks>A unique identifier (UID) is a 32-bit value assigned to each
+            message which uniquely identifies the message within a mailbox. No two
+            messages in a mailbox share the the same UID.</remarks>
+            <!-- No matching elements were found for the following include tag --><include file="Examples.xml" path="S22/Imap/ImapClient[@name=&quot;GetMessages-3&quot;]/*"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetMessages(System.UInt32[],S22.Imap.FetchOptions,System.Boolean,System.String)">
+            <summary>
+            Retrieves a set of mail messages by their unique identifier message attributes
+            with the specified fetch option.
+            </summary>
+            <param name="uids">An array of unique identifiers of the mail messages to
+            retrieve</param>
+            <param name="options">A value from the FetchOptions enumeration which allows
+            for fetching selective parts of a mail message.</param>
+            <param name="seen">Set this to true to set the \Seen flag for the fetched
+            messages on the server.</param>
+            <param name="mailbox">The mailbox the messages will be retrieved from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail messages could
+            not be fetched. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <returns>An array of initialized instances of the MailMessage class representing
+            the fetched mail messages</returns>
+            <remarks>A unique identifier (UID) is a 32-bit value assigned to each
+            message which uniquely identifies the message within a mailbox. No two
+            messages in a mailbox share the the same UID.</remarks>
+            <example>
+				<code>
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_UsernamMe",
+					"My_Password", true, AuthMethod.Login);
+
+					/* find all messages that have been sent since June the 1st */
+					uint uids = Client.Search( SearchCondition.SentSince( new DateTime(2012, 6, 1) ) );
+
+					/* Retrieve the messages and print out their subject lines. If any of the messages are multipart
+							messages, only those parts, that have a content-type of text will be fetched. */
+					MailMessage[] messages = Client.GetMessages( uids, FetchOptions.TextOnly );
+
+					foreach(MailMessage m in messages)
+						Console.WriteLine("Subject: " + m.Subject);
+
+					Client.Dispose();
+				</code>
+			</example>
+        </member>
+        <member name="M:S22.Imap.ImapClient.StoreMessage(System.Net.Mail.MailMessage,System.Boolean,System.String)">
+            <summary>
+            Stores the specified mail message on the IMAP server.
+            </summary>
+            <param name="message">The mail message to store on the server.</param>
+            <param name="seen">Set this to true to set the \Seen flag for the message
+            on the server.</param>
+            <param name="mailbox">The mailbox the message will be stored in. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to store the message in.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail message could
+            not be stored. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <returns>The unique identifier (UID) of the stored message.</returns>
+            <remarks>A unique identifier (UID) is a 32-bit value assigned to each
+            message which uniquely identifies the message within a mailbox. No two
+            messages in a mailbox share the the same UID.</remarks>
+            <seealso cref="M:S22.Imap.ImapClient.StoreMessages(System.Net.Mail.MailMessage[],System.Boolean,System.String)"/>
+            <example>
+				This example demonstrates how to store a mail message on an
+				IMAP server.
+				<code>
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_UsernamMe",
+					"My_Password", true, AuthMethod.Login);
+					
+					MailMessage message = CreateSimpleMailMessage();
+					uint uid = Client.StoreMessage(message);
+					
+					Console.WriteLine("The UID of the stored mail message is " + uid);
+					
+					Client.Dispose();
+
+					/* ........... */
+
+					/* This creates a simple mail message with a text/plain body and a PNG image
+					 * as a file attachment.
+					 * Consult the MSDN website for details on the System.Net.Mail.Mailmessage class
+					 */
+					static MailMessage CreateSimpleMailMessage() {
+						MailMessage message = new MailMessage();
+
+						message.From = new MailAddress("someone@someplace.com");
+						message.To.Add("john.doe@someplace.com");
+
+						message.Subject = "This is just a test!";
+						message.Body = "This is the text/plain body. An additional HTML body " +
+							"can optionally be attached as an alternate view";
+
+						// Add the attachment
+						Attachment attachment = new Attachment("some_image.png", "image/png");
+						attachment.Name = "my_attached_image.png";
+						message.Attachments.Add(attachment);
+
+						return message;
+					}
+				</code>
+			</example>
+        </member>
+        <member name="M:S22.Imap.ImapClient.StoreMessages(System.Net.Mail.MailMessage[],System.Boolean,System.String)">
+            <summary>
+            Stores the specified mail messages on the IMAP server.
+            </summary>
+            <param name="messages">An array of mail messages to store on the server.</param>
+            <param name="seen">Set this to true to set the \Seen flag for each message
+            on the server.</param>
+            <param name="mailbox">The mailbox the messages will be stored in. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to store the messages in.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail messages could
+            not be stored. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <returns>An array containing the unique identifiers (UID) of the stored
+            messages.</returns>
+            <remarks>A unique identifier (UID) is a 32-bit value assigned to each
+            message which uniquely identifies the message within a mailbox. No two
+            messages in a mailbox share the the same UID.</remarks>
+            <seealso cref="M:S22.Imap.ImapClient.StoreMessage(System.Net.Mail.MailMessage,System.Boolean,System.String)"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetMailHeader(System.UInt32,System.Boolean,System.String)">
+            <summary>
+            Retrieves the mail header for a mail message and returns it as a string.
+            </summary>
+            <param name="uid">The UID of the mail message to retrieve the mail
+            headers for.</param>
+            <param name="seen">Set this to true to set the \Seen flag for the fetched
+            messages on the server.</param>
+            <param name="mailbox">The mailbox the messages will be retrieved from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail header could
+            not be fetched. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <returns>A string containing the raw mail header of the mail message with the
+            specified UID.</returns>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetBodystructure(System.UInt32,System.String)">
+            <summary>
+            Retrieves the body structure for a mail message and returns it as a string.
+            </summary>
+            <param name="uid">The UID of the mail message to retrieve the body structure
+            for.</param>
+            <param name="mailbox">The mailbox the messages will be retrieved from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the body structure could
+            not be fetched. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <returns>A string containing the raw body structure of the mail message with the
+            specified UID.</returns>
+            <remarks>A body structure is a textual description of the layout of a mail message.
+            It is described in some detail in RFC 3501 under 7.4.2 FETCH response.</remarks>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetBodypart(System.UInt32,System.String,System.Boolean,System.String)">
+            <summary>
+            Retrieves the MIME body part of a multipart message with the specified
+            part number.
+            </summary>
+            <param name="uid">The UID of the mail message to retrieve a MIME body part
+            from.</param>
+            <param name="partNumber">The part number of the body part to fetch as
+            is expected by the IMAP server.</param>
+            <param name="seen">Set this to true to set the \Seen flag for the fetched
+            messages on the server.</param>
+            <param name="mailbox">The mailbox the messages will be retrieved from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the body part could
+            not be fetched. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <returns>A string containing the downloaded body part of the mail message
+            with the specified UID.</returns>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetHighestUID(System.String)">
+            <summary>
+            Retrieves the highest UID in the mailbox.
+            </summary>
+            <param name="mailbox">The mailbox to find the highest UID for. If
+            this parameter is null, the value of the DefaultMailbox property is
+            used to determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the UID could
+            not be determined. The message property of the exception contains the error
+            message returned by the server.</exception>
+            <returns>The highest unique identifier value (UID) in the mailbox</returns>
+            <remarks>The highest UID usually corresponds to the newest message in a
+            mailbox.</remarks>
+        </member>
+        <member name="M:S22.Imap.ImapClient.CopyMessage(System.UInt32,System.String,System.String)">
+            <summary>
+            Copies a mail message with the specified UID to the specified destination
+            mailbox.
+            </summary>
+            <param name="uid">The UID of the mail message that is to be copied.</param>
+            <param name="destination">The name of the mailbox to copy the message
+            into.</param>
+            <param name="mailbox">The mailbox the message will be copied from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail message could
+            not be copied to the specified destination. The message property of the
+            exception contains the error message returned by the server.</exception>
+            <seealso cref="M:S22.Imap.ImapClient.MoveMessage(System.UInt32,System.String,System.String)"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.MoveMessage(System.UInt32,System.String,System.String)">
+            <summary>
+            Moves a mail message with the specified UID to the specified destination
+            mailbox.
+            </summary>
+            <param name="uid">The UID of the mail message that is to be moved.</param>
+            <param name="destination">The name of the mailbox to move the message
+            into.</param>
+            <param name="mailbox">The mailbox the message will be moved from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail message could
+            not be moved into the specified destination. The message property of the
+            exception contains the error message returned by the server.</exception>
+            <seealso cref="M:S22.Imap.ImapClient.CopyMessage(System.UInt32,System.String,System.String)"/>
+            <seealso cref="M:S22.Imap.ImapClient.DeleteMessage(System.UInt32,System.String)"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.DeleteMessage(System.UInt32,System.String)">
+            <summary>
+            Deletes the mail message with the specified UID.
+            </summary>
+            <param name="uid">The UID of the mail message that is to be deleted.</param>
+            <param name="mailbox">The mailbox the message will be deleted from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail message could
+            not be deleted. The message property of the exception contains the error
+            message returned by the server.</exception>
+            <seealso cref="M:S22.Imap.ImapClient.MoveMessage(System.UInt32,System.String,System.String)"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetMessageFlags(System.UInt32,System.String)">
+            <summary>
+            Retrieves the IMAP message flag attributes for a mail message.
+            </summary>
+            <param name="uid">The UID of the mail message to retrieve the flag
+            attributes for.</param>
+            <param name="mailbox">The mailbox the message will be retrieved from. If this
+            parameter is omitted, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail message flags
+            could not be retrieved. The message property of the exception contains the error
+            message returned by the server.</exception>
+            <returns>A list of IMAP flags set for the message with the matching UID.</returns>
+            <seealso cref="M:S22.Imap.ImapClient.SetMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])"/>
+            <seealso cref="M:S22.Imap.ImapClient.AddMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])"/>
+            <seealso cref="M:S22.Imap.ImapClient.RemoveMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.SetMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])">
+            <summary>
+            Sets the IMAP message flag attributes for a mail message.
+            </summary>
+            <param name="uid">The UID of the mail message to set the flag
+            attributes for.</param>
+            <param name="mailbox">The mailbox that contains the mail message. If this
+            parameter is null, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <param name="flags">One or multiple message flags from the MessageFlag 
+            enumeration.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail message flags
+            could not be set. The message property of the exception contains the error
+            message returned by the server.</exception>
+            <remarks>This method replaces the current flag attributes of the message
+            with the specified new flags. If you wish to retain the old attributes, use
+            the <see cref="M:S22.Imap.ImapClient.AddMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])"/> method instead.</remarks>
+            <seealso cref="M:S22.Imap.ImapClient.GetMessageFlags(System.UInt32,System.String)"/>
+            <seealso cref="M:S22.Imap.ImapClient.AddMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])"/>
+            <seealso cref="M:S22.Imap.ImapClient.RemoveMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.AddMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])">
+            <summary>
+            Adds the specified set of IMAP message flags to the existing flag attributes
+            of a mail message.
+            </summary>
+            <param name="uid">The UID of the mail message to add the flag
+            attributes to.</param>
+            <param name="mailbox">The mailbox that contains the mail message. If this
+            parameter is null, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <param name="flags">One or multiple message flags from the MessageFlag 
+            enumeration.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail message flags
+            could not be added. The message property of the exception contains the error
+            message returned by the server.</exception>
+            <remarks>This method adds the specified set of flags to the existing set of
+            flag attributes of the message. If you wish to replace the old attributes, use
+            the <see cref="M:S22.Imap.ImapClient.SetMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])"/> method instead.</remarks>
+            <seealso cref="M:S22.Imap.ImapClient.GetMessageFlags(System.UInt32,System.String)"/>
+            <seealso cref="M:S22.Imap.ImapClient.SetMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])"/>
+            <seealso cref="M:S22.Imap.ImapClient.RemoveMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.RemoveMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])">
+            <summary>
+            Removes the specified set of IMAP message flags from the existing flag
+            attributes of a mail message.
+            </summary>
+            <param name="uid">The UID of the mail message to remove the flag
+            attributes to.</param>
+            <param name="mailbox">The mailbox that contains the mail message. If this
+            parameter is null, the value of the DefaultMailbox property is used to
+            determine the mailbox to operate on.</param>
+            <param name="flags">One or multiple message flags from the MessageFlag 
+            enumeration.</param>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the mail message flags
+            could not be removed. The message property of the exception contains the error
+            message returned by the server.</exception>
+            <remarks>This method removes the specified set of flags from the existing set of
+            flag attributes of the message. If you wish to replace the old attributes, use
+            the <see cref="M:S22.Imap.ImapClient.SetMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])"/> method instead.</remarks>
+            <seealso cref="M:S22.Imap.ImapClient.GetMessageFlags(System.UInt32,System.String)"/>
+            <seealso cref="M:S22.Imap.ImapClient.SetMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])"/>
+            <seealso cref="M:S22.Imap.ImapClient.AddMessageFlags(System.UInt32,System.String,S22.Imap.MessageFlag[])"/>
+        </member>
+        <member name="F:S22.Imap.ImapClient.messageFlagsMapping">
+            <summary>
+            A mapping to map IMAP message flag attribute values to their 
+            corresponding MessageFlag enum counterparts.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.ImapClient.StartIdling">
+            <summary>
+            Starts receiving of IMAP IDLE notifications from the IMAP server.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown if the server does
+            not support the IMAP4 IDLE command.</exception>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the IDLE operation could
+            not be completed. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <exception cref="T:System.ApplicationException">Thrown if an unexpected program condition
+            occured.</exception>
+            <remarks>Calling this method when already receiving idle notifications
+            has no effect.</remarks>
+            <seealso cref="M:S22.Imap.ImapClient.StopIdling"/>
+            <seealso cref="M:S22.Imap.ImapClient.PauseIdling"/>
+            <seealso cref="M:S22.Imap.ImapClient.ResumeIdling"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.StopIdling">
+            <summary>
+            Stops receiving of IMAP IDLE notifications from the IMAP server.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown if the server does
+            not support the IMAP4 IDLE command.</exception>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the IDLE operation could
+            not be completed. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <remarks>Calling this method when not receiving idle notifications
+            has no effect.</remarks>
+            <seealso cref="M:S22.Imap.ImapClient.StartIdling"/>
+            <seealso cref="M:S22.Imap.ImapClient.PauseIdling"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.PauseIdling">
+            <summary>
+            Temporarily pauses receiving of IMAP IDLE notifications from the IMAP
+            server.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown if the server does
+            not support the IMAP4 IDLE command.</exception>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the IDLE operation could
+            not be completed. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <remarks>To resume receiving IDLE notifications ResumeIdling must be called
+            </remarks>
+            <seealso cref="M:S22.Imap.ImapClient.StartIdling"/>
+            <seealso cref="M:S22.Imap.ImapClient.ResumeIdling"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.ResumeIdling">
+            <summary>
+            Resumes receiving of IMAP IDLE notifications from the IMAP server.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown if the server does
+            not support the IMAP4 IDLE command.</exception>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the IDLE operation could
+            not be completed. The message property of the exception contains the error message
+            returned by the server.</exception>
+            <exception cref="T:System.ApplicationException">Thrown if an unexpected program condition
+            occured.</exception>
+            <remarks>This method is usually called in response to a prior call to the
+            PauseIdling method.</remarks>
+            <seealso cref="M:S22.Imap.ImapClient.StopIdling"/>
+        </member>
+        <member name="M:S22.Imap.ImapClient.IdleLoop">
+            <summary>
+            The main idle loop. Waits for incoming IMAP IDLE notifications and dispatches
+            them as events. This runs in its own thread whenever IMAP IDLE
+            notifications are to be received.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.ImapClient.EventDispatcher">
+            <summary>
+            Blocks on a queue and wakes up whenever a new notification is put into the
+            queue. The notification is then examined and dispatched as an event.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.ImapClient.IssueNoop(System.Object,System.Timers.ElapsedEventArgs)">
+            <summary>
+            Issues a NOOP command to the IMAP server. Called in the context of a
+            System.Timer event when IDLE notifications are being received.
+            </summary>
+            <remarks>This is needed by the IMAP IDLE mechanism to give the server
+            an indication the connection is still active.
+            </remarks>
+        </member>
+        <member name="M:S22.Imap.ImapClient.GetQuota(System.String)">
+            <summary>
+            Retrieves IMAP QUOTA information for a mailbox.
+            </summary>
+            <param name="mailbox">The mailbox to retrieve QUOTA information for.
+            If this parameter is null, the value of the DefaultMailbox property is
+            used to determine the mailbox to operate on.</param>
+            <returns>A list of MailboxQuota objects describing usage and limits
+            of the quota roots for the mailbox.</returns>
+            <exception cref="T:S22.Imap.NotAuthenticatedException">Thrown if the method was called
+            in a non-authenticated state, i.e. before logging into the server with
+            valid credentials.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown if the IMAP4 QUOTA
+            extension is not supported by the server.</exception>
+            <exception cref="T:S22.Imap.BadServerResponseException">Thrown if the quota operation
+            could not be completed. The message property of the exception contains the error
+            message returned by the server.</exception>
+        </member>
+        <member name="M:S22.Imap.ImapClient.Dispose">
+            <summary>
+            Releases all resources used by this ImapClient object.
+            </summary>
+        </member>
+        <member name="P:S22.Imap.ImapClient.DefaultMailbox">
+            <summary>
+            The default mailbox to operate on, when no specific mailbox name was indicated
+            to methods operating on mailboxes. This property is initially set to "INBOX".
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The value specified for a set operation is
+            null.</exception>
+            <exception cref="T:System.ArgumentException">The value specified for a set operation is equal
+            to String.Empty ("").</exception>
+            <remarks>This property is initialized to "INBOX"</remarks>
+        </member>
+        <member name="P:S22.Imap.ImapClient.Authed">
+            <summary>
+            Indicates whether the client is authenticated with the server
+            </summary>
+        </member>
+        <member name="E:S22.Imap.ImapClient.NewMessage">
+            <summary>
+            This event is raised when a new mail message is received by the server.
+            </summary>
+            <remarks>To probe a server for IMAP IDLE support, the <see cref="M:S22.Imap.ImapClient.Supports(System.String)"/>
+            method can be used, specifying "IDLE" for the capability parameter.
+            
+            Notice that the event handler will be executed on a threadpool thread.
+            </remarks>
+            <example>
+				This example demonstrates how to receive IMAP IDLE notifications.
+				<code>
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_UsernamMe",
+						"My_Password", true, AuthMethod.Login);
+
+					/* make sure our server actually supports IMAP IDLE */
+					if(!Client.Supports("IDLE"))
+						throw new Exception("This server does not support IMAP IDLE");
+
+					/* Our event handler will be called whenever a new message is received
+					by the server. */
+					Client.NewMessage += new EventHandler&lt;IdleMessageEventArgs&gt;(OnNewMessage);
+					
+					Client.Dispose();
+					
+					/* ........ */
+					
+					void OnNewMessage(object sender, IdleMessageEventArgs e) {
+						Console.WriteLine("Received a new message!");
+						Console.WriteLine("Total number of messages in the mailbox: " +
+							e.MessageCount);
+					}
+				</code>
+			</example>
+        </member>
+        <member name="E:S22.Imap.ImapClient.MessageDeleted">
+            <summary>
+            This event is raised when a message is deleted on the server.
+            </summary>
+            <remarks>To probe a server for IMAP IDLE support, the <see cref="M:S22.Imap.ImapClient.Supports(System.String)"/>
+            method can be used, specifying "IDLE" for the capability parameter.
+            
+            Notice that the event handler will be executed on a threadpool thread.
+            </remarks>
+            <example>
+				This example demonstrates how to receive IMAP IDLE notifications.
+				<code>
+					ImapClient Client = new ImapClient("imap.gmail.com", 993, "My_UsernamMe",
+						"My_Password", true, AuthMethod.Login);
+
+					/* make sure our server actually supports IMAP IDLE */
+					if(!Client.Supports("IDLE"))
+						throw new Exception("This server does not support IMAP IDLE");
+
+					/* Our event handler will be called whenever a message is deleted on the server. */
+					Client.MessageDeleted += new EventHandler&lt;IdleMessageEventArgs&gt;(OnMessageDeleted);
+
+					Client.Dispose();
+
+					/* ........ */
+
+					void OnMessageDeleted(object sender, IdleMessageEventArgs e) {
+						Console.WriteLine("A mail message was deleted on the server!");
+						Console.WriteLine("Total number of mail messages in the mailbox: " +
+							e.MessageCount);
+					}
+				</code>
+			</example>
+        </member>
+        <member name="T:S22.Imap.ExaminePartDelegate">
+            <summary>
+            A delegate which is invoked during a call to GetMessage or GetMessages for every
+            MIME part in a multipart mail message. The delegate can examine the MIME body
+            part and decide to either include it in the returned mail message or dismiss
+            it.
+            </summary>
+            <param name="part">A MIME body part of a mail message which consists of multiple
+            parts.</param>
+            <returns>Return true to include the body part in the returned MailMessage object,
+            or false to skip it.</returns>
+        </member>
+        <member name="T:S22.Imap.MessageBuilder">
+            <summary>
+            A helper class for reading mail message data and building a MailMessage
+            instance out of it.
+            </summary>
+        </member>
+        <member name="M:S22.Imap.MessageBuilder.FromHeader(System.String)">
+            <summary>
+            Creates a new empty instance of the MailMessage class from a string
+            containing a raw mail message header.
+            </summary>
+            <param name="text">A string containing the mail header to create
+            the MailMessage instance from.</param>
+            <returns>A MailMessage instance with initialized Header fields but
+            no content</returns>
+        </member>
+        <member name="M:S22.Imap.MessageBuilder.ParseMailHeader(System.String)">
+            <summary>
+            Parses the mail header of a mail message and returns it as a
+            NameValueCollection.
+            </summary>
+            <param name="header">The mail header to parse.</param>
+            <returns>A NameValueCollection containing the header fields as keys
+            with their respective values as values.</returns>
+        </member>
+        <member name="M:S22.Imap.MessageBuilder.ParseMIMEField(System.String)">
+            <summary>
+            Parses a MIME header field which can contain multiple 'parameter = value'
+            pairs (such as Content-Type: text/html; charset=iso-8859-1).
+            </summary>
+            <param name="field">The header field to parse</param>
+            <returns>A NameValueCollection containing the parameter names as keys
+            with the respective parameter values as values.</returns>
+            <remarks>The value of the actual field disregarding the 'parameter = value'
+            pairs is stored in the collection under the key "value" (in the above example
+            of Content-Type, this would be "text/html").</remarks>
+        </member>
+        <member name="M:S22.Imap.MessageBuilder.ParseAddressList(System.String)">
+            <summary>
+            Parses a mail header address-list field such as To, Cc and Bcc which
+            can contain multiple email addresses.
+            </summary>
+            <param name="list">The address-list field to parse</param>
+            <returns>An array of strings containing the parsed mail
+            addresses.</returns>
+        </member>
+        <member name="M:S22.Imap.MessageBuilder.ParseMessageId(System.String)">
+            <summary>
+            Parses a mail message identifier from a string.
+            </summary>
+            <param name="field">The field to parse the message id from</param>
+            <exception cref="T:System.ArgumentException">Thrown when the field
+            argument does not contain a valid message identifier.</exception>
+            <returns>The parsed message id</returns>
+            <remarks>A message identifier (msg-id) is a globally unique
+            identifier for a message.</remarks>
+        </member>
+        <member name="M:S22.Imap.MessageBuilder.ParsePriority(System.String)">
+            <summary>
+            Parses the priority of a mail message which can be specified
+            as part of the header information.
+            </summary>
+            <param name="priority">The mail header priority value. The value
+            can be null in which case a "normal priority" is returned.</param>
+            <returns>A value from the MailPriority enumeration corresponding to
+            the specified mail priority. If the passed priority value is null
+            or invalid, a normal priority is assumed and MailPriority.Normal
+            is returned.</returns>
+        </member>
+        <member name="M:S22.Imap.MessageBuilder.SetAddressFields(System.Net.Mail.MailMessage,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Sets the address fields (From, To, CC, etc.) of a MailMessage
+            object using the specified mail message header information.
+            </summary>
+            <param name="m">The MailMessage instance to operate on</param>
+            <param name="header">A collection of mail and MIME headers</param>
+        </member>
+        <member name="M:S22.Imap.MessageBuilder.AddBodypart(System.Net.Mail.MailMessage,S22.Imap.Bodypart,System.String)">
+            <summary>
+            Adds a body part to an existing MailMessage instance.
+            </summary>
+            <param name="message">Extension method for the MailMessage class.</param>
+            <param name="part">The body part to add to the MailMessage instance.</param>
+            <param name="content">The content of the body part.</param>
+        </member>
+        <member name="M:S22.Imap.MessageBuilder.CreateAttachment(S22.Imap.Bodypart,System.Byte[])">
+            <summary>
+            Creates an instance of the Attachment class used by the MailMessage class
+            to store mail message attachments.
+            </summary>
+            <param name="part">The MIME body part to create the attachment from.</param>
+            <param name="bytes">An array of bytes composing the content of the
+            attachment</param>
+            <returns>An initialized instance of the Attachment class</returns>
+        </member>
+        <member name="M:S22.Imap.MessageBuilder.CreateAlternateView(S22.Imap.Bodypart,System.Byte[])">
+            <summary>
+            Creates an instance of the AlternateView class used by the MailMessage class
+            to store alternate views of the mail message's content.
+            </summary>
+            <param name="part">The MIME body part to create the alternate view from.</param>
+            <param name="bytes">An array of bytes composing the content of the
+            alternate view</param>
+            <returns>An initialized instance of the AlternateView class</returns>
+        </member>
+        <member name="T:S22.Imap.ContentTransferEncoding">
+            <summary>
+            Possible values for the "Encoding" property of the Bodypart class. The content
+            transfer encoding indicates whether or not a binary-to-text encoding
+            scheme has been used on top of the original encoding as specified within the
+            Content-Type header.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentTransferEncoding.Unknown">
+            <summary>
+            The content tranfer encoding could not be determined or is unknown.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentTransferEncoding.Bit7">
+            <summary>
+            Up to 998 bytes per line of the code range 1 - 127 with CR and LF only
+            allowed to appear as part of a CRLF line ending.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentTransferEncoding.Bit8">
+            <summary>
+            Up to 998 bytes per line with CR and LF only allowed to appear as part
+            of a CRLF line ending.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentTransferEncoding.Binary">
+            <summary>
+            Any sequence of bytes.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentTransferEncoding.QuotedPrintable">
+            <summary>
+            Byte sequence is encoded using the quoted-printable encoding.
+            </summary>
+        </member>
+        <member name="F:S22.Imap.ContentTransferEncoding.Base64">
+            <summary>
+            Byte sequence is encoded using Base64 encoding.
+            </summary>
+        </member>
+    </members>
+</doc>
