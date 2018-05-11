@@ -13,14 +13,13 @@ $popEnabled = 1 # value 1-pop enabled ; value 0 - pop disabled
 $popServer = "popserver"
 $popPort = "popport"
 
-
 #imap server configurations
 $imapEnabled = 0 # value 1-imap enabled ; value 0 - imap disabled
 $imapServer = "imapserver"
 $imapPort = "imapport"
 
 #credentials
-$userName = "username@domain.com"
+$userName = "user@domain.com"
 $password = "password"
 
 $imapStatus  = 0
@@ -40,7 +39,7 @@ if($popEnabled)
 
 		$pop = new-object OpenPop.Pop3.Pop3Client
 		$pop.Connect($popServer, $popPort, 1);
-		$pop.Authenticate($userName,$password);
+		$pop.Authenticate($userName,$password,"UsernameAndPassword");
 		$popStatus = 1;
 		$msg = "Successfully connected to the mail server via POP"
 	}
@@ -58,7 +57,7 @@ ElseIf($imapEnabled)
 
 	try
 	{
-		$imap = new-object S22.Imap.ImapClient($imapServer,$imapPort,$userName,$password,1,1)
+		$imap = new-object S22.Imap.ImapClient($imapServer,$imapPort,$userName,$password,"Login",1)
 		$imapStatus = 1;
 		$msg = "Successfully connected to the mail server via IMAP"
 	}
