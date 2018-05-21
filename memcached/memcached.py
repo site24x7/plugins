@@ -108,6 +108,8 @@ def metricCollector():
 
         if value_dict:
             for k,v in value_dict.items():
+                k = k if type(k) is str else k.decode()
+                v = v if type(v) is str else v.decode()
                 if k in BYTES_TO_MB_LIST and k in KEYS:
                     v=convertBytesToMB(v)
                     data[k]=v
