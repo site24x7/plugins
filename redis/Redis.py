@@ -143,7 +143,7 @@ class Redis(object):
             return data
 
         #stats.items() for python version greater than 3 otherwise stats.iteritems()
-        for name, value in stats.iteritems():
+        for name, value in stats.items():
             try:
                 if name in METRICS.keys() :
                     if METRICS[name] in ['used_memory_peak_human', 'used_memory_human']:
