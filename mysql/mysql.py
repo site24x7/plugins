@@ -19,7 +19,13 @@ PLUGIN_VERSION = "1"
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT="true"
 
-#Config Section:
+#Config Section: 
+#Use either True | False - enabled True will read mysql configurations from my.cnf file , Please provide the my.cnf path below
+USE_MYSQL_CONF_FILE=False
+
+#Used only when USE_MYSQL_CONF_FILE is set to True , We have provided the default path change it as it is in your server
+MY_CNF_FILE_LOCATION='/etc/mysql/my.cnf'
+
 MYSQL_HOST = "localhost"
 
 MYSQL_PORT="3306"
@@ -79,7 +85,10 @@ class MySQL(object):
     def getDbConnection(self):
         try:
             import pymysql
-            db = pymysql.connect(host=self.host, user=self.username, passwd=self.password, port=int(self.port))
+            if USE_MYSQL_CONF_FILE:
+                db = pymysql.connect(default_read_file=MY_CNF_FILE_LOCATION)
+            else:
+                db = pymysql.connect(host=self.host, user=self.username, passwd=self.password, port=int(self.port))
             self.connection = db
         except Exception as e:
             try:
