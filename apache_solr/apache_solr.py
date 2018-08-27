@@ -28,31 +28,31 @@ final_dict = {}
 
 
 def final_parser(func):
-	def wrapper():
-		try:
-			result = func()
-			if not result is None:
-				result_json = json.loads(result)
-				final_dict["status"] = 1
-				final_dict["num_of_cores"] = len(result_json["status"])
-				for core in result_json["status"]:
-					if CORES and not core in CORES:
-						continue
-					elif CALC_CORES and len(CALC_CORES) > 5 and not core in CALC_CORES:
-						continue
-					if not core in CALC_CORES:
-						CALC_CORES.append(core)
-					final_dict["{}_size_in_bytes".format(core)] = result_json["status"][core]["index"]["sizeInBytes"]
-					final_dict["{}_num_docs".format(core)] = result_json["status"][core]["index"]["numDocs"]
-					final_dict["{}_del_docs".format(core)] = result_json["status"][core]["index"]["deletedDocs"]
-					final_dict["{}_index_heap_bytes".format(core)] = result_json["status"][core]["index"]["indexHeapUsageBytes"]
-				if CALC_CORES:
-					with open(CALC_CORES_FILE_NAME, "w") as fp:
-						fp.write(json.dumps(CALC_CORES))
-		except Exception as e:
-			final_dict["status"] = 0
-			final_dict["msg"] = repr(e)
-	return wrapper
+    def wrapper():
+        try:
+            result = func()
+            if not result is None:
+                result_json = json.loads(result)
+                final_dict["status"] = 1
+                final_dict["num_of_cores"] = len(result_json["status"])
+                for core in result_json["status"]:
+                    if CORES and not core in CORES:
+                        continue
+                    elif CALC_CORES and len(CALC_CORES) > 5 and not core in CALC_CORES:
+                        continue
+                    if not core in CALC_CORES:
+                        CALC_CORES.append(core)
+                    final_dict["{}_size_in_bytes".format(core)] = result_json["status"][core]["index"]["sizeInBytes"]
+                    final_dict["{}_num_docs".format(core)] = result_json["status"][core]["index"]["numDocs"]
+                    final_dict["{}_del_docs".format(core)] = result_json["status"][core]["index"]["deletedDocs"]
+                    final_dict["{}_index_heap_bytes".format(core)] = result_json["status"][core]["index"]["indexHeapUsageBytes"]
+                if CALC_CORES:
+                    with open(CALC_CORES_FILE_NAME, "w") as fp:
+                        fp.write(json.dumps(CALC_CORES))
+        except Exception as e:
+            final_dict["status"] = 0
+            final_dict["msg"] = repr(e)
+        return wrapper
 
 
 
