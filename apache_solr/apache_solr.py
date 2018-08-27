@@ -52,7 +52,7 @@ def final_parser(func):
         except Exception as e:
             final_dict["status"] = 0
             final_dict["msg"] = repr(e)
-        return wrapper
+    return wrapper
 
 
 
