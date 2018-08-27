@@ -57,43 +57,43 @@ def final_parser(func):
 
 
 def log_decorator(func):
-	def wrapper():
-		result = None
-		try:
-			result = func()
-			if not result is str:
-				result = result.decode()
-		except Exception as e:
-			final_dict["status"] = 0
-			final_dict["msg"] = repr(e)
-		return result
-	return wrapper
+    def wrapper():
+        result = None
+        try:
+            result = func()
+            if not result is str:
+                result = result.decode()
+        except Exception as e:
+            final_dict["status"] = 0
+            final_dict["msg"] = repr(e)
+        return result
+    return wrapper
 
 
 @final_parser
 @log_decorator
 def start_data_collection():
-	request_obj = urlconnection.Request("http://{}:{}/{}".format(SOLR_HOST, SOLR_PORT, SOLR_METRICS_URL))
-	response = urlconnection.urlopen(request_obj)
-	resp_data = response.read()
-	return resp_data
+    request_obj = urlconnection.Request("http://{}:{}/{}".format(SOLR_HOST, SOLR_PORT, SOLR_METRICS_URL))
+    response = urlconnection.urlopen(request_obj)
+    resp_data = response.read()
+    return resp_data
 
 
 def pre_work():
-	global CALC_CORES
-	global CALC_BOOL_FLAG
-	global CALC_CORES_FILE_NAME
-	CALC_CORES_FILE_NAME = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "calc_cores.json")
-	content = None
-	if os.path.isfile(CALC_CORES_FILE_NAME):
-		with open(CALC_CORES_FILE_NAME, "r") as fp:
-			content = fp.read()
-	CALC_CORES = json.loads(content) if not content in [None, ""] else []
-	CALC_BOOL_FLAG = True if CALC_CORES else False
+    global CALC_CORES
+    global CALC_BOOL_FLAG
+    global CALC_CORES_FILE_NAME
+    CALC_CORES_FILE_NAME = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "calc_cores.json")
+    content = None
+    if os.path.isfile(CALC_CORES_FILE_NAME):
+        with open(CALC_CORES_FILE_NAME, "r") as fp:
+            content = fp.read()
+    CALC_CORES = json.loads(content) if not content in [None, ""] else []
+    CALC_BOOL_FLAG = True if CALC_CORES else False
 
 
 if not CORES:
-	pre_work()
+    pre_work()
 start_data_collection()
 final_dict["plugin_version"] = PLUGIN_VERSION
 final_dict["heartbeat_required"] = HEARTBEAT_REQUIRED
