@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
-import httplib
+import sys
 import json
-import urllib2
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
@@ -13,13 +12,24 @@ HEARTBEAT="true"
 #Config Section:
 NGINX_STATUS_URL = "http://localhost/status"
 
+PYTHON_MAJOR_VERSION = sys.version_info[0]
+
+if PYTHON_MAJOR_VERSION == 3:
+            import urllib
+            import urllib.request as urlconnection
+            from urllib.error import URLError, HTTPError
+            from http.client import InvalidURL
+elif PYTHON_MAJOR_VERSION == 2:
+            import urllib2 as urlconnection
+            from urllib2 import HTTPError, URLError
+            from httplib import InvalidURL
+
 class NginxPlus (object):
     def __init__(self,config):
         self.configurations=config
         self.nginx_status_url=self.configurations.get('nginx_url', 'http://localhost/status')
 
     def metricCollector(self):
-
             data = {}
             #defaults
             data['plugin_version'] = PLUGIN_VERSION
@@ -139,26 +149,20 @@ class NginxPlus (object):
 
     def getStatus(self,data):
         try:
-            
-            req = urllib2.Request(self.nginx_status_url)
-            request = urllib2.urlopen(req)
+            request = urlconnection.urlopen(self.nginx_status_url)
             response = request.read()
-
-        except urllib2.HTTPError, e:
+        except HTTPError as e:
+            data['status'] = 0
+            data['msg'] = 'Error_code : HTTP Error ' + str(e.code)
+        except URLError as e:
+            data['status'] = 0
+            data['msg'] = 'Error_code : URL Error ' + str(e.reason)
+        except InvalidURL as e:
+            data['status'] = 0
+            data['msg'] = 'Error_code : Invalid URL'
+        except Exception as e:  
             data['status']=0
-            data['msg']='HTTP error'
-            
-        except urllib2.URLError, e:
-            data['status']=0
-            data['msg']='URL error'
-
-        except httplib.HTTPException, e:
-            data['status']=0
-            data['msg']='HTTP Exception'
-
-        except Exception:
-            data['status']=0
-            data['msg']='Exception Occured'
+            data['msg']=str(traceback.format_exc())
 
         try:
             status = json.loads(response)
@@ -179,3 +183,4 @@ if __name__ == "__main__":
     
     print(json.dumps(result, indent=4, sort_keys=True))
    
+
