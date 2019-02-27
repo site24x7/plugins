@@ -113,6 +113,10 @@ class ZooKeeper(object):
                 data['latency_min'] = int(value.split('/')[0])
                 data['latency_avg'] = int(value.split('/')[1])
                 data['latency_max'] = int(value.split('/')[2])
+            elif key.startswith('Proposal sizes last/min/max'):
+                data['proposal_sizes_last'] = int(value.split('/')[0])
+                data['proposal_sizes_min'] = int(value.split('/')[1])
+                data['proposal_sizes_max'] = int(value.split('/')[2])
             else:
                 data[key.lower()] = int(value.strip())
         return data
