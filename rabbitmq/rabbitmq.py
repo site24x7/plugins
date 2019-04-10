@@ -2,8 +2,6 @@
 
 import json
 
-import requests
-
 import sys
 
 #if any changes to this plugin kindly increment the plugin version here.
