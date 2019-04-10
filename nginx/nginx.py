@@ -97,13 +97,15 @@ def metricCollector():
         conn=0
         handled=0
         requests=0
+        dropped=0
         updateDict={}    
         per_s_connections = re.search(r'\s*(\d+)\s+(\d+)\s+(\d+)', output)
         if per_s_connections:
             conn = int(per_s_connections.group(1))
             handled = int(per_s_connections.group(2))
             requests = int(per_s_connections.group(3))
-        
+            dropped = conn - handled
+
         if dictCounterValues:
             if 'request_per_s' in dictCounterValues:
                 rps = dictCounterValues['request_per_s']
@@ -113,7 +115,7 @@ def metricCollector():
                 data['connection_opened'] = (handled - conn_opened)/TIME_INTERVAL
             if 'connection_dropped' in dictCounterValues:
                 conn_dropped = dictCounterValues['connection_dropped']
-                data['connection_dropped'] = (requests - conn_dropped)/TIME_INTERVAL
+                data['connection_dropped'] = (dropped - conn_dropped)/TIME_INTERVAL
         else:
             data['request_per_s']=0
             data['connection_opened']=0
@@ -121,7 +123,7 @@ def metricCollector():
             
         updateDict['request_per_s']=conn
         updateDict['connection_opened']=handled
-        updateDict['connection_dropped']=requests
+        updateDict['connection_dropped']=dropped
         
         updateCounterValues(updateDict)
     
