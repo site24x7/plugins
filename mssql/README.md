@@ -11,8 +11,9 @@ pyodbc
 
 Installation and Configurations
 Microsoft SQL Server setup
-Refer: https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-ubuntu
-	     https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-configure-mssql-conf?view=sql-server-2017
+Refer: 
+https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-ubuntu
+https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-configure-mssql-conf?view=sql-server-2017
 
 
 FreeTDS - Driver libraries that allows programs to natively talk to Microsoft SQL Server database.
