@@ -84,4 +84,3 @@ Transactions per sec
 Log Cache Hit Ratio
 Log Flushes per sec
 
-
