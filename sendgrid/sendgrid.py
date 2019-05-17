@@ -30,6 +30,8 @@ class SendGrid:
         
     def metricsCollector(self):
         result = {}
+        result['plugin_version'] = PLUGIN_VERSION 
+        result['heartbeat_required']=HEARTBEAT
         if self.apiKey is not None:
             try:
                 with urllib.request.urlopen(self.req) as res:
