@@ -124,15 +124,15 @@ class Tomcat(object):
             if (tomcatVersion.isdigit()):
                 data['tomcat_version']=tomcatVersion
             if(tomcatStatusStr.split(' ')[0]=='OK'):
-                data['tomcat_server_status']=1
+                data['status']=1
             else:
-                data['tomcat_server_status']=0
+                data['status']=0
             xmlTreeData,xmlError = self.readXmlFromUrl(self.host,self.port,self.url,self.username,self.password)
             if (xmlError!=True):
                 if (xmlTreeData!=None):
-                    if data['tomcat_server_status']==0:
+                    if data['status']==0:
                         if xmlTreeData.tag=='status':   
-                            data['tomcat_server_status']=1
+                            data['status']=1
                     for mempool in xmlTreeData.findall('.//memorypool'):
                         name=str(mempool.get('name'))
                         name=name.replace(" ", "_")
@@ -141,7 +141,7 @@ class Tomcat(object):
                     data['msg']='Unable to collect data for the server'    
         else:
             data['msg']=serverinfoData 
-            data['tomcat_server_status']=0       
+            data['status']=0       
         return data
 
 
