@@ -25,8 +25,8 @@ def metricCollector():
         data["open_files"] = open_files
         data["total_files"] = int(max)
     except Exception as e:
-        print ("status error ",e)
-        data["error"] = str(e)
+        data["status"] = 0
+        data["msg"] = str(e)
     data["units"] = METRIC_UNITS
     return data
 
