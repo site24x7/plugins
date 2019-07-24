@@ -24,6 +24,8 @@ def metricCollector():
         open_files = int(open_nr) - int(free_nr)
         data["open_files"] = open_files
         data["total_files"] = int(max)
+        data['plugin_version'] = PLUGIN_VERSION
+        data['heartbeat_required'] = HEARTBEAT
     except Exception as e:
         data["status"] = 0
         data["msg"] = str(e)
