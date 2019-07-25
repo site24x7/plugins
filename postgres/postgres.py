@@ -1,8 +1,5 @@
 #!/usr/bin/python
 
-
-#import psycopg2
-#=======
 ### This plugin is used for monitoring PostGres Database
 ### For monitoring the performance metrics of your PostgreSQL database using Site24x7 Server Monitoring Plugins.
 ### 
@@ -18,7 +15,7 @@ db = None
 userName = None             #Change the username here
 passWord = None             #Change the authentication method
 hostName = None             #Change this value if it is a remote host
-port = None                 #Change the port number (5432 by default)
+port = 5432                 #Change the port number (5432 by default)
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
@@ -45,14 +42,17 @@ def inititializeQueries():
         str_usageIdleStat = "SELECT count(*) FROM pg_stat_activity WHERE current_query = '<IDLE>';"
     str_lockStat = "SELECT COUNT(*) FROM pg_locks;"
     str_dbStats = "SELECT sum(xact_commit) as commits, sum(xact_rollback) as rollbacks, sum(conflicts) as conflicts, (SUM(blks_hit) / SUM(blks_read)) as cache_usage_ratio FROM pg_stat_database;"
+    str_iostats = "SELECT sum(tup_inserted) as tup_inserted, sum(tup_updated) as updated ,sum(tup_deleted) as tup_deleted, sum(tup_fetched) as tup_fetched ,sum(tup_returned) as tup_returned,sum(blks_read) as reads , sum(blks_hit) as hits FROM pg_stat_database;"
     str_bgStats = "SELECT buffers_checkpoint, buffers_backend, maxwritten_clean, checkpoints_req, checkpoints_timed, buffers_alloc FROM pg_stat_bgwriter;"
+    
     #Please add any new query designed above to this dictionary also with an appropriate key name
     dict_psqlQueries = {'table_count' : str_tableStat,
                         'users_active_count' : str_usageActiveStat,
                         'users_idle_count' : str_usageIdleStat,
                         'db_stats' : str_dbStats,
                         'bg_stats' : str_bgStats,
-                        'locks_count' : str_lockStat
+                        'locks_count' : str_lockStat,
+                        'io_stats' : str_iostats
                         }
 
 class pgsql():
@@ -103,6 +103,7 @@ class pgsql():
                     self._results.setdefault('db_rollbacks',int(eachTuple[1]))
                     self._results.setdefault('db_conflicts',int(eachTuple[2]))
                     self._results.setdefault('db_cache_usage_ratio',int(eachTuple[3]))
+                    self._results.setdefault('db_transactions',int(eachTuple[0]) + int(eachTuple[1]))
             elif eachKey == 'bg_stats':
                 for eachTuple in dictResults[eachKey]:
                     self._results.setdefault('buffers_checkpoint',int(eachTuple[0]))
@@ -111,6 +112,15 @@ class pgsql():
                     self._results.setdefault('checkpoints_req',int(eachTuple[3]))
                     self._results.setdefault('checkpoints_timed',int(eachTuple[4]))
                     self._results.setdefault('buffers_alloc',int(eachTuple[5]))
+            elif eachKey == 'io_stats':
+                for eachTuple in dictResults[eachKey]:
+                    self._results.setdefault('tup_inserted',int(eachTuple[0]))
+                    self._results.setdefault('tup_updated',int(eachTuple[1]))
+                    self._results.setdefault('tup_deleted',int(eachTuple[2]))
+                    self._results.setdefault('tup_fetched',int(eachTuple[3]))
+                    self._results.setdefault('tup_returned',int(eachTuple[4]))
+                    self._results.setdefault('blocks_read',int(eachTuple[5]))
+                    self._results.setdefault('blocks_hits',int(eachTuple[6]))
             else:
                 for eachTuple in dictResults[eachKey]:
                     self._results.setdefault(eachKey,int(eachTuple[0]))
