@@ -26,6 +26,8 @@ ACTIVEMQ_USERNAME = "admin"
 
 ACTIVEMQ_PASSWORD = "admin"
 
+ACTIVEMQ_BROKER = "localhost"
+
 REALM = None
 
 # Mention the units of your metrics . If any new metrics are added, make
@@ -48,7 +50,7 @@ def metricCollector():
     data['heartbeat_required'] = HEARTBEAT
     data['units'] = METRICS_UNITS
 
-    URL = 'http://%s:%s/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost' % (ACTIVEMQ_HOST, ACTIVEMQ_PORT)
+    URL = 'http://%s:%s/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=%s' % (ACTIVEMQ_HOST, ACTIVEMQ_PORT, ACTIVEMQ_BROKER)
     try:
         if ACTIVEMQ_USERNAME and ACTIVEMQ_PASSWORD:
             password_mgr = connector.HTTPPasswordMgrWithDefaultRealm()
