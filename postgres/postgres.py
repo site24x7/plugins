@@ -34,7 +34,7 @@ def inititializeQueries():
     minor_version = int(VERSION % 100)
     #Add your queries here
     str_tableStat = "SELECT COUNT(*) AS table_count FROM pg_stat_all_tables;"
-    if (major_version >= 9 and middle_version >= 2) or (major_version>10):
+    if (major_version >= 9 and middle_version >= 2) or (major_version>=10):
         str_usageActiveStat = "SELECT count(*) - ( SELECT count(*) FROM pg_stat_activity WHERE state = 'idle' ) FROM pg_stat_activity;"
         str_usageIdleStat = "SELECT count(*) FROM pg_stat_activity WHERE state = 'idle';"
     else:
