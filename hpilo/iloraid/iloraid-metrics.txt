@@ -1,0 +1,52 @@
+Mib Required: CPQHLTH-MIB
+
+Configure the HP server hostname
+SNMP versions and read-only community string. By default mib location is specified in  /etc/snmp/snmp.conf
+mibs +ALL
+mibdirs +<FOLDER_PATH>
+
+Only the available metrics will be returned.
+
+Metrics Monitored:
+
+controller index
+drive index
+fault tolerance
+drive status
+auto reliablity delay
+Rebuild Blocks Remaining
+Has Array Accelerator Board
+Available Spares
+Logical Drive Size
+Drive IDs
+condition
+Percent Rebuild
+Stripe Size
+OS Name
+Blink Time Count
+Spare To Replacement Drive Map
+Drive Rebuilding Index
+Multi-path Access
+Number Of Parity Groups
+
+{
+  "AvailableSpares_1": "", 
+  "BlinkTimeCount_1": "0", 
+  "DriveIDs_1": "", 
+  "DriveRebuildingIndex_1": "-1", 
+  "HasArrayAcceleratorBoard_1": "unavailable", 
+  "LogicalDriveSize_1": "139979", 
+  "Multi-pathAccess_1": "notSupported", 
+  "NumberOfParityGroups_1": "-1", 
+  "OSName_1": "Disk0", 
+  "PercentRebuild_1": "4294967295", 
+  "SpareToReplacementDriveMap_1": "", 
+  "StripeSize_1": "256", 
+  "autoreliablitydelay_1": "3", 
+  "condition_1": "ok", 
+  "controllerindex_1": "0", 
+  "driveindex_1": "1", 
+  "drivestatus_1": "ok", 
+  "faulttolerance_1": "mirroring", 
+  "units": {}
+}

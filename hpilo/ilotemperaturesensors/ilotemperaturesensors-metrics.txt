@@ -1,0 +1,35 @@
+Mib Required: CPQSTDEQ-MIB
+
+Configure the HP server hostname
+SNMP versions and read-only community string. By default mib location is specified in  /etc/snmp/snmp.conf
+mibs +ALL
+mibdirs +<FOLDER_PATH>
+
+Only the available metrics will be returned.
+
+Metrics Monitored:
+
+chassis
+index
+locale
+threshold
+condition
+thresholdtype
+location
+
+{
+  "index_1": "1", 
+  "index_10": "10", 
+  "index_11": "11", 
+  "index_12": "12", 
+  "index_13": "13", 
+  "index_2": "2", 
+  "index_3": "3", 
+  "index_4": "4", 
+  "index_5": "5", 
+  "index_6": "6", 
+  "index_7": "7", 
+  "index_8": "8", 
+  "index_9": "9", 
+  "units": {}
+}

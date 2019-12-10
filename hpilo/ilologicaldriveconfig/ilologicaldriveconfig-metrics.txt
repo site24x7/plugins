@@ -1,0 +1,52 @@
+Mib Required: CPQIDA-MIB
+Configure the HP server hostname
+SNMP versions and read-only community string. By default mib location is specified in  /etc/snmp/snmp.conf
+mibs +ALL
+mibdirs +<FOLDER_PATH>
+
+Only the available metrics will be returned.
+
+Metrics Monitored:
+
+Controller Index
+Drive Index
+Model
+Firmware Revision
+Bay Location
+condition
+Location
+Placement 
+SCSI Bus Number
+Serial Number
+Type 
+SATA Version
+Media Type
+
+
+{
+  "BayLocation_0": "1", 
+  "BayLocation_1": "2", 
+  "FirmwareRevision_0": "HPDE", 
+  "FirmwareRevision_1": "HPDE", 
+  "LocationString_0": "Port1IBox1Bay1", 
+  "LocationString_1": "Port1IBox1Bay2", 
+  "Location_0": "Port1IBox1Bay1", 
+  "Location_1": "Port1IBox1Bay2", 
+  "MediaType_0": "rotatingPlatters", 
+  "MediaType_1": "rotatingPlatters", 
+  "Model_0": "HPEG0146FAWHU", 
+  "Model_1": "HPEG0146FAWHU", 
+  "Placement_0": "internal", 
+  "Placement_1": "internal", 
+  "SATAVersion_0": "other", 
+  "SATAVersion_1": "other", 
+  "SCSIBusNumber_0": "0", 
+  "SCSIBusNumber_1": "0", 
+  "SerialNumber_0": "6SD2KP200000B129M52R", 
+  "SerialNumber_1": "6SD2JNXL0000B129P128", 
+  "Type_0": "sas", 
+  "Type_1": "sas", 
+  "condition_0": "ok", 
+  "condition_1": "ok", 
+  "units": {}
+}

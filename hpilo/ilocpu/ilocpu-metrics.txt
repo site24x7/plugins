@@ -1,0 +1,86 @@
+Mib Required: CPQSTDEQ-MIB
+
+Configure the HP server hostname
+SNMP versions and read-only community string. By default mib location is specified in  /etc/snmp/snmp.conf
+mibs +ALL
+mibdirs +<FOLDER_PATH>
+
+Only the available metrics will be returned.
+
+Metrics Monitored:
+
+unitindex
+slot
+name
+speed
+step
+status
+extspeed
+desiner
+socketno
+thresholdpasses
+location
+tableptr
+powerpodstatus
+archrev
+cpucore
+serialno
+partno
+serialno mfgr
+partno mfgr
+core index
+max speed 
+core thread index
+chip gen name
+multithread status
+coremax threads
+low power status
+primary
+cire stepping step
+current performance state
+min performance state
+max performance state
+
+Sample Output:
+
+{
+  "chipgenname_0": "Xeon", 
+  "chipgenname_1": "Xeon", 
+  "coreindex_0": "0", 
+  "coreindex_1": "0", 
+  "coremaxthreads_0": "8", 
+  "coremaxthreads_1": "8", 
+  "corethreadindex_0": "0", 
+  "corethreadindex_1": "0", 
+  "cpucore_0": "4", 
+  "cpucore_1": "4", 
+  "desiner_0": "intel", 
+  "desiner_1": "intel", 
+  "extspeed_0": "133", 
+  "extspeed_1": "133", 
+  "lowpowerstatus_0": "normalpowered", 
+  "lowpowerstatus_1": "normalpowered", 
+  "maxspeed_0": "4800", 
+  "maxspeed_1": "4800", 
+  "multithreadstatus_0": "enabled", 
+  "multithreadstatus_1": "enabled", 
+  "name_0": "IntelXeon", 
+  "name_1": "IntelXeon", 
+  "primary_0": "unknown", 
+  "primary_1": "unknown", 
+  "slot_0": "0", 
+  "slot_1": "0", 
+  "socketno_0": "1", 
+  "socketno_1": "2", 
+  "speed_0": "2400", 
+  "speed_1": "2400", 
+  "status_0": "ok", 
+  "status_1": "ok", 
+  "step_0": "2", 
+  "step_1": "2", 
+  "thresholdpasses_0": "false", 
+  "thresholdpasses_1": "false", 
+  "unitindex_0": "0", 
+  "unitindex_1": "1", 
+  "units": {}
+}

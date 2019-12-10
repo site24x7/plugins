@@ -1,0 +1,48 @@
+Mib Required: CPQSM2-MIB
+
+Configure the HP server hostname
+SNMP versions and read-only community string. By default mib location is specified in  /etc/snmp/snmp.conf
+mibs +ALL
+mibdirs +<FOLDER_PATH>
+
+Only the available metrics will be returned.
+
+Metrics Monitored:
+
+Location
+{Bytes Transmitted : bytes} 
+Total Transmit Packets
+Unicast Transmit Packets
+Non-Unicast Transmit Packets
+Transmit Discarded Packets
+Error Transmit Packets
+Outstanding Packets in Transmit Queue
+{Bytes Received : bytes} 
+Total Receive Packets
+Unicast Receive Packets
+Non-Unicast Receive Packets
+Total Receive Discarded Packets
+Total Receive Error Packets
+Unknown Protocol Packets
+
+{
+  "BytesReceived_embedded": "1475086978", 
+  "BytesTransmitted_embedded": "3024509388", 
+  "ErrorTransmitPackets_embedded": "0", 
+  "Location_embedded": "embedded", 
+  "Non-UnicastReceivePackets_embedded": "0", 
+  "Non-UnicastTransmitPackets_embedded": "0", 
+  "OutstandingPacketsinTransmitQueue_embedded": "1", 
+  "TotalReceiveDiscardedPackets_embedded": "0", 
+  "TotalReceiveErrorPackets_embedded": "0", 
+  "TotalReceivePackets_embedded": "1649155112", 
+  "TotalTransmitPackets_embedded": "44585221", 
+  "TransmitDiscardedPackets_embedded": "0", 
+  "UnicastReceivePackets_embedded": "1649155112", 
+  "UnicastTransmitPackets_embedded": "0", 
+  "UnknownProtocolPackets_embedded": "0", 
+  "units": {
+    "BytesReceived_embedded": "bytes", 
+    "BytesTransmitted_embedded": "bytes"
+  }
+}

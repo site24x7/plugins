@@ -1,0 +1,169 @@
+Mib Required: CPQIDA-MIB
+
+Configure the HP server hostname
+SNMP versions and read-only community string. By default mib location is specified in  /etc/snmp/snmp.conf
+mibs +ALL
+mibdirs +<FOLDER_PATH>
+
+Only the available metrics will be returned.
+
+Metrics Monitored:
+
+Spare sectors available for remapping
+Used Reallocated Sectors
+{Reference Time : hours}
+Sectors Read (high)
+Sectors Read (low)
+Sectors Written (high)
+Sectors Written (low)
+Total Seeks (high)
+Total Seeks (low)
+Hard Read Errors
+Recovered Read Errors
+Hard Write Errors
+Recovered Write Errors
+Seek Errors (High)
+Seek Errors (low)
+{Spin up Time : decisec} 
+DRQ Timeouts 
+Other Timeouts
+Spin up Retries
+Bad Read Error
+Bad Write Error. 
+Format Error
+Power On Self Test Error
+Drive Not Ready Errors
+Reallocation Aborts 
+Hot Plug Count 
+Media Failure Count
+Hardware Error Count
+Aborted Command Failures 
+Spin-Up Failure Count
+Bad Target Count
+{Size : MB} 
+Bus Fault Count
+IRQ Deglitch Count
+Hot Plug Support Status
+Predictive Failure Monitoring
+Current Width
+Data Transfer Speed
+Failure Code
+Blink Time Count 
+S.M.A.R.T Status
+Configuration Status
+Rotational Speed
+Host Connector
+Box on Connector 
+Negotiated Link Rate
+Native Command Queueing 
+PHY Count
+Multi-path Access Status
+
+{
+  "AbortedCommandFailures_0": "0", 
+  "AbortedCommandFailures_1": "0", 
+  "BadReadError_0": "0", 
+  "BadReadError_1": "0", 
+  "BadTargetCount_0": "0", 
+  "BadTargetCount_1": "0", 
+  "BadWriteError._0": "0", 
+  "BadWriteError._1": "0", 
+  "BlinkTimeCount_0": "0", 
+  "BlinkTimeCount_1": "0", 
+  "BoxonConnector_0": "1", 
+  "BoxonConnector_1": "1", 
+  "BusFaultCount_0": "0", 
+  "BusFaultCount_1": "0", 
+  "ConfigurationStatus_0": "configured", 
+  "ConfigurationStatus_1": "configured", 
+  "CurrentWidth_0": "other", 
+  "CurrentWidth_1": "other", 
+  "DRQTimeouts_0": "0", 
+  "DRQTimeouts_1": "0", 
+  "DataTransferSpeed_0": "other", 
+  "DataTransferSpeed_1": "other", 
+  "DriveNotReadyErrors_0": "0", 
+  "DriveNotReadyErrors_1": "0", 
+  "FailureCode_0": "0", 
+  "FailureCode_1": "0", 
+  "FormatError_0": "0", 
+  "FormatError_1": "0", 
+  "HardReadErrors_0": "0", 
+  "HardReadErrors_1": "0", 
+  "HardWriteErrors_0": "0", 
+  "HardWriteErrors_1": "0", 
+  "HardwareErrorCount_0": "0", 
+  "HardwareErrorCount_1": "0", 
+  "HostConnector_0": "1I", 
+  "HostConnector_1": "1I", 
+  "HotPlugCount_0": "0", 
+  "HotPlugCount_1": "0", 
+  "HotPlugSupportStatus_0": "hotPlug", 
+  "HotPlugSupportStatus_1": "hotPlug", 
+  "IRQDeglitchCount_0": "0", 
+  "IRQDeglitchCount_1": "0", 
+  "MediaFailureCount_0": "0", 
+  "MediaFailureCount_1": "0", 
+  "Multi-pathAccessStatus_0": "notSupported", 
+  "Multi-pathAccessStatus_1": "notSupported", 
+  "NativeCommandQueueing_0": "other", 
+  "NativeCommandQueueing_1": "other", 
+  "NegotiatedLinkRate_0": "rate-6-0", 
+  "NegotiatedLinkRate_1": "rate-6-0", 
+  "OtherTimeouts_0": "0", 
+  "OtherTimeouts_1": "0", 
+  "PHYCount_0": "2", 
+  "PHYCount_1": "2", 
+  "PowerOnSelfTestError_0": "0", 
+  "PowerOnSelfTestError_1": "0", 
+  "PredictiveFailureMonitoring_0": "available", 
+  "PredictiveFailureMonitoring_1": "available", 
+  "ReallocationAborts_0": "0", 
+  "ReallocationAborts_1": "0", 
+  "RecoveredReadErrors_0": "0", 
+  "RecoveredReadErrors_1": "0", 
+  "RecoveredWriteErrors_0": "0", 
+  "RecoveredWriteErrors_1": "0", 
+  "ReferenceTime_0": "65843", 
+  "ReferenceTime_1": "65843", 
+  "RotationalSpeed_0": "rpm10K", 
+  "RotationalSpeed_1": "rpm10K", 
+  "S.M.A.R.TStatus_0": "ok", 
+  "S.M.A.R.TStatus_1": "ok", 
+  "SectorsRead(high)_0": "57", 
+  "SectorsRead(high)_1": "57", 
+  "SectorsRead(low)_0": "3845041051", 
+  "SectorsRead(low)_1": "3866350454", 
+  "SectorsWritten(high)_0": "7", 
+  "SectorsWritten(high)_1": "7", 
+  "SectorsWritten(low)_0": "2965543627", 
+  "SectorsWritten(low)_1": "2965532988", 
+  "SeekErrors(High)_0": "0", 
+  "SeekErrors(High)_1": "0", 
+  "SeekErrors(low)_0": "0", 
+  "SeekErrors(low)_1": "0", 
+  "Size_0": "140014", 
+  "Size_1": "140014", 
+  "Sparesectorsavailableforremapping_0": "-1", 
+  "Sparesectorsavailableforremapping_1": "-1", 
+  "Spin-UpFailureCount_0": "0", 
+  "Spin-UpFailureCount_1": "0", 
+  "SpinupRetries_0": "4294967295", 
+  "SpinupRetries_1": "4294967295", 
+  "SpinupTime_0": "0", 
+  "SpinupTime_1": "0", 
+  "TotalSeeks(high)_0": "0", 
+  "TotalSeeks(high)_1": "0", 
+  "TotalSeeks(low)_0": "0", 
+  "TotalSeeks(low)_1": "0", 
+  "UsedReallocatedSectors_0": "0", 
+  "UsedReallocatedSectors_1": "0", 
+  "units": {
+    "ReferenceTime_0": "hours", 
+    "ReferenceTime_1": "hours", 
+    "Size_0": "MB", 
+    "Size_1": "MB", 
+    "SpinupTime_0": "decisec", 
+    "SpinupTime_1": "decisec"
+  }
+}
