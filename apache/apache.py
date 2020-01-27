@@ -32,7 +32,6 @@ METRICS_UNITS = {'total_kbytes':'Bytes',
                  }
 
 PYTHON_MAJOR_VERSION = sys.version_info[0]
-# REQUESTS_INSTALLED = None
 if PYTHON_MAJOR_VERSION == 3:
     import urllib
     import urllib.request as urlconnection
