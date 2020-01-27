@@ -8,7 +8,7 @@ url = "http://localhost:80/server-status?auto"
 username = None
 password = None
 
-# if any impacting changes to this plugin kindly increment the plugin version here.
+# if any impacting changes to this plugin kindly increment the plugin version here
 PLUGIN_VERSION = "1"
 
 # Setting this to true will alert you when there is a communication problem while posting plugin data to server
