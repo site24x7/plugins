@@ -8,7 +8,7 @@ url = "http://localhost:80/server-status?auto"
 username = None
 password = None
 
-# if any impacting changes to this plugin kindly increment the plugin version here.
+# if any impacting changes to this plugin kindly increment the plugin version here
 PLUGIN_VERSION = "1"
 
 # Setting this to true will alert you when there is a communication problem while posting plugin data to server
@@ -32,7 +32,6 @@ METRICS_UNITS = {'total_kbytes':'Bytes',
                  }
 
 PYTHON_MAJOR_VERSION = sys.version_info[0]
-# REQUESTS_INSTALLED = None
 if PYTHON_MAJOR_VERSION == 3:
     import urllib
     import urllib.request as urlconnection
@@ -53,7 +52,7 @@ class apache():
         if (self._userName and self._userPass):
            if PYTHON_MAJOR_VERSION==2:
               self._realm=urllib2.HTTPPasswordMgrWithDefaultRealm()
-	   if PYTHON_MAJOR_VERSION==3:
+           if PYTHON_MAJOR_VERSION==3:
               self._realm=urlconnection.HTTPPasswordMgrWithDefaultRealm()
 
     def main(self):
