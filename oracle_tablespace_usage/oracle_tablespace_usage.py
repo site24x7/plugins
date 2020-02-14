@@ -62,7 +62,7 @@ class Oracle(object):
             conn = cx_Oracle.connect(user=self.username, password=self.password, dsn=dsnStr, mode=cx_Oracle.SYSDBA)
             c = conn.cursor()
             
-            c.execute('select dff.percentused,dff.tablespace_name, dtf.status from sys.dba_tablespaces dtf , (select tablespace_name,percentused from (select round((d.sizeMb-round(sum(f.bytes))/1048576)/d.maxMb*100) percentused, f.tablespace_name from dba_free_space f, (select tablespace_name, sum(MAXBYTES)/1048576 maxMb, sum(bytes)/1048576 sizeMb from dba_data_files group by tablespace_name) d where f.tablespace_name (+)=d.tablespace_name group by f.tablespace_name, d.sizeMb, d.maxMb order by percentused desc)) dff where dff.tablespace_name (+)=dtf.tablespace_name order by dff.percentused')
+            c.execute("select distinct NVL(rtrim(ltrim(to_char(used.used_bytes/total.total_bytes * 100, '999.99'))),0) usage,df.tablespace_name as name,df.status as status from sys.dba_tablespaces df,(select de.tablespace_name as name2, sum(de.bytes) used_bytes from dba_extents de group by de.tablespace_name) used,(select dd.tablespace_name as name1,sum(dd.bytes) total_bytes from sys.dba_data_files dd group by dd.tablespace_name) total where df.tablespace_name = used.name2(+) and df.tablespace_name=total.name1(+)")
             for row in c:
             	usage, name ,status= row
             	if name in TABLESPACE_NAME:
