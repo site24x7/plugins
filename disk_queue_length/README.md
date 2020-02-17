@@ -22,4 +22,4 @@ command used : iostat -xmt 1 3
 
 - By default plugin captures all the disks queue length. 
 - If any specific disk queue length needs to be captured provide the disk name in the DISKS field of disk_queue_length.py
-  for eg if 'nvme0n1' needs to be monitored configure as DISKS=['nvme0n1']
+- for eg if 'nvme0n1' needs to be monitored configure as DISKS=['nvme0n1']
