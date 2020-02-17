@@ -15,7 +15,7 @@ command used : iostat -xmt 1 3
   
   wget https://raw.githubusercontent.com/site24x7/plugins/master/disk_queue_length/disk_queue_length.py
 	
-  The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+- The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 
 
