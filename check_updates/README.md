@@ -7,7 +7,7 @@ OS Supported : Ubuntu
 ##### Linux 
 
 - Create a directory "check_updates" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/check_updates
-- Download the file "check_updates" and place it under the "check_updates" directory
+- Download the file "check_updates.py" and place it under the "check_updates" directory
   
   wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.py
 	
