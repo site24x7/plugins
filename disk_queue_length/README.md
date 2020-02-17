@@ -1,13 +1,12 @@
 # Plugin for Monitoring Disk Queue Length
 
-### Plugin installation
-
 ### PreRequisites
 
 Plugin Uses iostat command to get the disk queue length metric
 
 command used : iostat -xmt 1 3
 
+### Plugin installation
 ---
 ##### Linux 
 
