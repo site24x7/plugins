@@ -7,16 +7,16 @@ Steps to configure :
 
 #2) Create a new directory named 'nfs' under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins
 
-NFS Mounts Configuration :
-------------------------
+#3) Download the files 'nfs.py' and 'nfs_check.sh' and place it to the nfs plugin directory (/opt/site24x7/monagent/plugins/nfs)
+	cd /opt/site24x7/monagent/plugins/nfs/
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs.py
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs_check.sh
 
-#2) Copy the files 'nfs.py' and 'nfs_check.sh' from the attachement to the nfs plugin directory (/opt/site24x7/monagent/plugins/nfs)
-
-#3) Edit the file nfs.py to enter the mount points for monitoring
+#4) Edit the file nfs.py to enter the mount points for monitoring
 
 		For eg - NFS_MOUNT=["/mnt/nfs/home"] ( or ) NFS_MOUNT=["/mnt/nfs/home","/mnt/nfs/var/nfs"]
 
-#4) Restart the agent to mark the plugin for monitoring and the same can be viewed in Site24x7 Client.
+#5) The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 Plugin Explanation : 
 ------------------
