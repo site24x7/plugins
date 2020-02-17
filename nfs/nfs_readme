@@ -8,6 +8,7 @@ Steps to configure :
 #2) Create a new directory named 'nfs' under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins
 
 NFS Mounts Configuration :
+------------------------
 
 #2) Copy the files 'nfs.py' and 'nfs_check.sh' from the attachement to the nfs plugin directory (/opt/site24x7/monagent/plugins/nfs)
 
