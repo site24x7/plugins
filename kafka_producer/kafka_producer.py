@@ -77,7 +77,7 @@ class Kafka(object):
         
         except Exception as e:
             data['status']=0
-            data['msg']='Connection Error'
+            data['msg']=str(e)
         
         
         return data
