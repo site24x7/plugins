@@ -87,7 +87,7 @@ class MySQL(object):
         try:
             import pymysql
             if USE_MYSQL_CONF_FILE:
-                db = pymysql.connect(default_read_file=MY_CNF_FILE_LOCATION)
+                db = pymysql.connect(read_default_file=MY_CNF_FILE_LOCATION)
             else:
                 db = pymysql.connect(host=self.host, user=self.username, passwd=self.password, port=int(self.port))
             self.connection = db
