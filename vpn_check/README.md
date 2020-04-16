@@ -14,7 +14,7 @@
  
 ##### Windows
 
-- Create a directory "vpn_check" under Site24x7 Windows Agent plugin directory - C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins/vpn_check
+- Create a directory "vpn_check" under Site24x7 Windows Agent plugin directory - C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\vpn_check
 
 - Download the  "vpn_check.py" file and place it under the "vpn_check" directory
 	
