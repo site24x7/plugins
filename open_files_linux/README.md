@@ -13,8 +13,8 @@ For e.g. open\_files\_linux => /opt/site24x7agent/monagent/plugins/open\_files\_
 commands to perform the above steps:
 
 	cd /opt/site24x7/monagent/plugins/
-	mkdir open_file_stats
-	cd open_file_stats
+	mkdir open_files_linux
+	cd open_files_linux
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/open_files_linux/open_files_linux.py
 
 

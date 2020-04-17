@@ -1,0 +1,52 @@
+OS Supported : Linux
+
+Steps to configure :
+-------------------
+
+#1) Download and install Linux Server Monitoring Agent in the server where the directories are mounted ( commonly called as NFS Client servers )
+
+#2) Create a new directory named 'nfs' under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins
+
+#3) Download the files 'nfs.py' and 'nfs_check.sh' and place it to the nfs plugin directory (/opt/site24x7/monagent/plugins/nfs)
+	cd /opt/site24x7/monagent/plugins/nfs/
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs.py
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs_check.sh
+
+#4) Edit the file nfs.py to enter the mount points for monitoring
+
+		For eg - NFS_MOUNT=["/mnt/nfs/home"] ( or ) NFS_MOUNT=["/mnt/nfs/home","/mnt/nfs/var/nfs"]
+
+#5) The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
+Plugin Explanation : 
+------------------
+
+#1) If all the mounts configured are working properly , plugin output would be as follows :
+
+		{
+	    	"/mnt/nfs/home_status": 1, 
+    		"heartbeat_required": "true", 
+    		"plugin_version": "1"
+		}
+
+	mount point status is captured under the key <mount_point>_status. ( 1 - available | 2 - unmounted | 3 - host server is not reachable )
+
+#2) If the configured mount is unmounted , plugin output would be as follows :
+
+		{
+		    "/mnt/nfs/var/nfs_status": 2, 
+	    	"heartbeat_required": "true", 
+	    	"msg": "/mnt/nfs/var/nfs is unmounted", 
+	    	"plugin_version": "1", 
+	    	"status": 0
+		}
+
+#3) If the NFS host server is not reachable , plugin output would be as follows :
+
+		{
+		 "/mnt/nfs/var/nfs_status": 3, 
+	    	"heartbeat_required": "true", 
+	    	"msg": "/mnt/nfs/home - NFS Server Host is unreachable", 
+	    	"plugin_version": "1", 
+	    	"status": 0
+		}

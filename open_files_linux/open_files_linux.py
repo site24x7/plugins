@@ -22,7 +22,7 @@ def metricCollector():
     try:
         open_nr, free_nr, max = open(PROC_FILE).readline().split("\t")
         open_files = int(open_nr) - int(free_nr)
-        data["open_files"] = open_files
+        data["open_files"] = int(open_files)
         data["total_files"] = int(max)
         data['plugin_version'] = PLUGIN_VERSION
         data['heartbeat_required'] = HEARTBEAT
