@@ -41,10 +41,7 @@ def metric_collector(URL,vpn_data):
         vpn_data['url_status_code'] = -1
         vpn_data['url_response_time'] = -1
         vpn_data['status']=0
-        if vpn_data['vpn_status'] == 1:
-            vpn_data['msg']="cannot connect to the url. check you are connected to VPN"
-        else:
-            vpn_data['msg']=str(e)
+        vpn_data['msg']=str(e)
     return vpn_data
 
 def check_vpn():
