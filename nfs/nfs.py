@@ -25,7 +25,7 @@ def metricCollector():
 
         PLUGIN_STATUS=1
         for mounts in NFS_MOUNT:
-            NFS_COMMAND = ["/opt/site24x7/monagent/plugins/nfs_check.sh",mounts] 
+            NFS_COMMAND = ["/opt/site24x7/monagent/plugins/nfs/nfs_check.sh",mounts] 
             proc = subprocess.Popen(NFS_COMMAND,stdout=subprocess.PIPE,stderr=subprocess.PIPE,close_fds=True)
             top_output = proc.communicate()[0]
             top_output=top_output.strip()
