@@ -9,12 +9,12 @@ Configure the host, port, username and password in the python plugin to get the 
 Metrics monitored 
 =================
 
--dropped_messages
--elected
--event_queue_dispatches
--event_queue_http_requests
--event_queue_messages
--frameworks_active
--frameworks_connected
--frameworks_disconnected
--frameworks_inactive
+- dropped_messages
+- elected
+- event_queue_dispatches
+- event_queue_http_requests
+- event_queue_messages
+- frameworks_active
+- frameworks_connected
+- frameworks_disconnected
+- frameworks_inactive
