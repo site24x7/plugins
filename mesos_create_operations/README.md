@@ -9,20 +9,20 @@ Configure the host, port, username and password in the python plugin to get the 
 Metrics monitored 
 ===========
 
-dropped
-error
-failed
-finished
-gone_by_operator
-recovering
-total
-unreachable
-disk_dropped
-disk_error
-disk_failed
-disk_finished
-disk_gone_by_operator
-disk_pending
-disk_recovering
-disk_total
-disk_unreachable
+- dropped
+- error
+- failed
+- finished
+- gone_by_operator
+- recovering
+- total
+- unreachable
+- disk_dropped
+- disk_error
+- disk_failed
+- disk_finished
+- disk_gone_by_operator
+- disk_pending
+- disk_recovering
+- disk_total
+- disk_unreachable
