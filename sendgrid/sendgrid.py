@@ -30,19 +30,21 @@ class SendGrid:
         
     def metricsCollector(self):
         result = {}
-        result['plugin_version'] = PLUGIN_VERSION 
-        result['heartbeat_required']=HEARTBEAT
         if self.apiKey is not None:
             try:
                 with urllib.request.urlopen(self.req) as res:
                     stats = json.loads(res.read().decode())
                     result = stats[0]['stats'][0]['metrics']
             except Exception as e:
-                result['error'] = str(e)
+                result['status'] = 0
+                result['msg'] = str(e)
                 return result
             result['units'] = METRIC_UNITS
         else:
-            result['error'] = 'API key is absent'
+            result['status'] = 0
+            result['msg'] = 'API key is absent'
+        result['plugin_version'] = PLUGIN_VERSION 
+        result['heartbeat_required']=HEARTBEAT
         return result
 
 if __name__ == "__main__":
