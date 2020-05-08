@@ -41,7 +41,7 @@ def get_data():
 
         if file_count > THRESHOLD_COUNT and directory_count > THRESHOLD_COUNT:
             folder_checks_data['status']=0
-            folder_checks_data['msg']='Folder / Directory Counts Exceeded the threshold'
+            folder_checks_data['msg']='File / Directory Counts Exceeded the threshold'
             
     except Exception as e:
         folder_checks_data['status']=0
