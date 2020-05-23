@@ -74,7 +74,7 @@ def metricCollector():
         
         url = NGINX_STATUS_URL
         if USERNAME and PASSWORD:
-            password_mgr = urlconnection.HTTPPasswordMgr()
+            password_mgr = urlconnection.HTTPPasswordMgrWithDefaultRealm()
             password_mgr.add_password(None, url, USERNAME, PASSWORD)
             auth_handler = urlconnection.HTTPBasicAuthHandler(password_mgr)
             opener = urlconnection.build_opener(auth_handler)
