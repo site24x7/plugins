@@ -54,7 +54,7 @@ Plugin for monitoring Slack Channels
             
             mkdir /opt/site24x7/monagent/plugins/slack_channels_monitoring
 
-	    2) Download the files "slack_channels_monitoring.py" and place it under the "slack_channels_monitoring" directory
+	2) Download the files "slack_channels_monitoring.py" and place it under the "slack_channels_monitoring" directory
 
 		    wget https://raw.githubusercontent.com/site24x7/plugins/master/slack_channels_monitoring/slack_channels_monitoring.py
 
