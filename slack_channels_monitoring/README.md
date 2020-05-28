@@ -1,5 +1,5 @@
-##################################### PLUGIN FOR SLACK WEBCLIENT API ##################################################
-#  channel level slack monitor
+Plugin for monitoring Slack Channels
+
 ### Prerequisites
 
 * Make sure you have Installed python version 3.6 and above.
@@ -21,14 +21,14 @@
 
              pip3.6 install slackclient
 
-* OAuth Token of your slack account
-
+### OAuth Token of your slack account
+---
     OAuth token Generation
-        1) First, you need to create the slack app.. Refer this link  https://api.slack.com/apps 
-        2) Select the workspace that you need to access using Slack Web Api
-        3) Navigate to "Permission" and you need to configure your "workspace URL" in Redirect URL
-        4) Navigate to "Scopes" and you can see the field "User Token Scopes"
-        5) Add this below  17 scopes one by one without fail
+        * First, you need to create the slack app.. Refer this link  https://api.slack.com/apps 
+        * Select the workspace that you need to access using Slack Web Api
+        * Navigate to "Permission" and you need to configure your "workspace URL" in Redirect URL
+        * Navigate to "Scopes" and you can see the field "User Token Scopes"
+        * Add this below  17 scopes one by one without fail
                 1) users:read
                 2) files:read
                 3) groups:read
@@ -46,10 +46,9 @@
                 15) im:history
                 16) groups:history
                 17) channels:history
-        6) Finally, you can see the "Install app to Workspace" in that page..please click that button
-        7) Oauth token will be generated in that top of the page
-        8) Please copy the Oauth token and save it. This has to be configured in the plugin configuration file.
-
+        * Finally, you can see the "Install app to Workspace" in that page..please click that button
+        * Oauth token will be generated in that top of the page
+        * Please copy the Oauth token and save it. This has to be configured in the plugin configuration file.
 
 ### Plugin Installation 
 
