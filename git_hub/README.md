@@ -7,8 +7,6 @@ ___
 	
 	Please refer this link to create "Personal Access Token" with read access- https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
 
-### Supported OS ( Linux & OSX )
-
 ### Plugin configuration
 ---
 
@@ -19,23 +17,24 @@ ___
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/git_hub/git_hub.py
 
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/git_hub/git_hub.cfg
+	
 
-
-* Open git_hub.py file. Set the values for **USER_NAME**, **PERSONAL_ACCESS_TOKEN**.
-
-* Open the "git_hub.cfg" file and add repository name(s) to be monitored under keyword "repo_name" as given below.
+* Open the "git_hub.cfg" file and add the configuration details to it.
 	Sample configuration file looks like:
-	
 	#git_hub.cfg
-	
-		[repo_1]
+		
+		[display_name]
+		user_name="user@github"
+		personal_access_token="123ascejsfnkl"
 		repo_name="Sample_repo1"
 
-	where repo_1 denotes - plugin monitor name to be displayed in site24x7 client
-
+	display_name denotes - plugin monitor name to be displayed in site24x7 client
+	
+	user_name denotes - user name of the github account
+	
+	personal_access_token denotes - personal access token created for the github account 
+	
 	repo_name denotes - actual repository name to be monitored
-
-* After completing above steps please run "python git_hub.py --repo_name='Sample_repo1'" to make sure data is obtained.
 
 * If you have more than one repositories needs to be monitored create one more section and configure it as above.
 
