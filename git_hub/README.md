@@ -7,7 +7,10 @@ ___
 	
 	Please refer this link to create "Personal Access Token" with read access- https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
 
-### Steps (Linux & OSX)
+### Supported OS ( Linux & OSX )
+
+### Plugin configuration
+---
 
 * Create a directory "git_hub" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/git_hub
 
@@ -17,8 +20,7 @@ ___
 
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/git_hub/git_hub.cfg
 
-### Plugin configuration
----
+
 * Open git_hub.py file. Set the values for **USER_NAME**, **PERSONAL_ACCESS_TOKEN**.
 
 * Open the "git_hub.cfg" file and add repository name(s) to be monitored under keyword "repo_name" as given below.
