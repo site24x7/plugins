@@ -7,7 +7,7 @@ import argparse
 USER_NAME = 'user_name' 
 
 #Enter the PERSONAL_ACCESS_TOKEN of your gitHub Account
-PERSONAL_ACCESS_TOKEN = '6c51c90b6067jhbnmlgfdfghn'
+PERSONAL_ACCESS_TOKEN = ''
 
 REPO_NAME=""
 GITHUB_URL ="https://api.github.com"
@@ -28,9 +28,12 @@ class gitHub:
         global REPO_NAME
         parser = argparse.ArgumentParser()
         parser.add_argument('--repo_name')
+        parser.add_argument('--personal_access_token')
         args = parser.parse_args()
         if args.repo_name:
             REPO_NAME = args.repo_name
+        if args.personal_access_token:
+            PERSONAL_ACCESS_TOKEN = args.personal_access_token
     
     def construct_urls(self):
         self.count_request_map['notifications']=GITHUB_URL+"/repos"+"/"+USER_NAME+"/"+REPO_NAME+"/notifications"
