@@ -3,7 +3,7 @@
 ## Plugin installation
 ___
 ### Prerequisites
-* To monitor your github account we need an username and a Personal Access Token.
+* To monitor your github account we need an username , repository name and a Personal Access Token.
 	
 	Please refer this link to create "Personal Access Token" with read access- https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
 
