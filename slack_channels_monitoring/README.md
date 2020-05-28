@@ -17,13 +17,11 @@ Plugin for monitoring Slack Channels
 
 * slackclient developer kit
        
-       --> kindly install the slackclient module by using below command
+         pip3.6 install slackclient
 
-             pip3.6 install slackclient
-
-### OAuth Token of your slack account
----
-    OAuth token Generation
+* OAuth Token of your slack account
+    ### OAuth token Generation
+    ---
         * First, you need to create the slack app.. Refer this link  https://api.slack.com/apps 
         * Select the workspace that you need to access using Slack Web Api
         * Navigate to "Permission" and you need to configure your "workspace URL" in Redirect URL
