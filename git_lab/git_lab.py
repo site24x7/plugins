@@ -4,9 +4,10 @@ import json
 import argparse
 
 
-# provide the gitlab host URL and PRIVATE_TOKEN  of your account.
+# provide the gitlab host URL and Personal Access Token  of your account.
 GIT_URL = "https://gitlab.com"
-PRIVATE_TOKEN = '9LdYrk1ju3avs-Xth&jkQyu'
+
+PERSONAL_ACCESS_TOKEN = ''
 
 PROJECT_ID=""
 
@@ -22,18 +23,22 @@ result_json = {}
 class gitLab:
     count_request_map={}
     keys_list=[]
-    private_token={
-        "PRIVATE-TOKEN" : PRIVATE_TOKEN
-        }
- 
+    private_token = {}
+    
     def read_args(self):
         global PROJECT_ID
         parser = argparse.ArgumentParser()
         parser.add_argument('--project_id')
+        parser.add_argument('--personal_access_token')
         args = parser.parse_args()
         if args.project_id:
             PROJECT_ID = str(args.project_id)
-      
+        if args.personal_access_token:
+            PERSONAL_ACCESS_TOKEN=args.personal_access_token
+        self.private_token={
+        "PRIVATE-TOKEN" : PERSONAL_ACCESS_TOKEN
+        }
+        
     def construct_urls(self):
         self.count_request_map['merge_requests']=API_URL+"/projects/"+PROJECT_ID+"/merge_requests"
         self.count_request_map['issues_statistics']=API_URL+"/projects/"+PROJECT_ID+"/issues_statistics"
