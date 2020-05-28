@@ -1,8 +1,5 @@
 # Plugin for monitoring GitLab
 
-## Plugin installation
-___
-
 ### Prerequisites
 * To monitor your gitlab account we need Private token of the gitlab account.
 	
@@ -20,7 +17,7 @@ ___
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/git_lab/git_lab.cfg
 
 
-* Open the "git_lab.cfg" file and add project id(s) to be monitored under keyword "project_id" as given below.
+* Open the "git_lab.cfg" file and add the configuration details to it. Sample configuration file looks like: #git_lab.cfg
 	
 	Sample configuration file looks like:
 	#git_lab.cfg
