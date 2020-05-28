@@ -1,4 +1,4 @@
-Plugin for monitoring Slack Channels
+### Plugin for monitoring Slack Channels
 
 ### Prerequisites
 
