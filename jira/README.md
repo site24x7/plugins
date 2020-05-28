@@ -30,7 +30,6 @@ On-Premise Solution for Atlassian Jira
 
 
 ## Plugin installation
-___
 
 ### Linux
 * Create a directory "jira" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/jira
