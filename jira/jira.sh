@@ -1,0 +1,23 @@
+#!/bin/bash
+
+HOST="127.0.0.1"
+PORT=8099
+PLUGIN_VERSION=1
+HEARTBEAT_REQUIRED="true"
+RMI_UNAME=""
+RMI_PASSWORD=""
+
+export RMI_UNAME
+export RMI_PASSWORD
+
+#JAVA_HOME="/lib/jdk8/jdk/bin" 
+
+PLUGIN_FOLDER_NAME="jira"
+
+PLUGIN_PATH="/opt/site24x7/monagent/plugins/"$PLUGIN_FOLDER_NAME
+
+$JAVA_HOME/javac -d $PLUGIN_PATH $PLUGIN_PATH"/Jira.java"
+
+data=$($JAVA_HOME/java -cp $PLUGIN_PATH "Jira" $HOST $PORT $PLUGIN_VERSION $HEARTBEAT_REQUIRED)
+
+echo "$data"
