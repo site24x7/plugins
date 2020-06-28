@@ -1,0 +1,11 @@
+#Only First 25 metics will be monitored with 4 digit precision
+#MBean-Definition(mandatory) Attribute-Type(optional) Label(mandatory)
+#Can Include all valid regexs in MBean Definitions. 
+#Attribute Type is optional. You can specify Mean,Value,95Percentile to get the specified type for the key.
+#Label Supports Regex to include the type,scope,name,keyspace etc defined in the mBean to be substituted in the monitored metrics
+
+#kafka.*:type=*,name=* <type>.<name>
+
+# KSQLDB METRICS
+
+io.confluent.ksql.metrics:type=_confluent-ksql-default_ksql-engine-query-stats <CREATED-queries|ERROR-queries|NOT_RUNNING-queries|PENDING_SHUTDOWN-queries|REBALANCING-queries|RUNNING-queries|bytes-consumed-total|error-rate|liveness-indicator|messages-consumed-avg|messages-consumed-max|messages-consumed-min|messages-consumed-per-sec|messages-consumed-total|messages-produced-per-sec|num-active-queries|num-idle-queries|num-persistent-queries> <type>

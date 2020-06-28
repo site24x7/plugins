@@ -1,0 +1,77 @@
+#Only First 25 metics will be monitored with 4 digit precision
+#MBean-Definition(mandatory) Attribute-Type(optional) Label(mandatory)
+#Can Include all valid regexs in MBean Definitions. 
+#Attribute Type is optional. You can specify Mean,Value,95Percentile to get the specified type for the key.
+#Label Supports Regex to include the type,scope,name,keyspace etc defined in the mBean to be substituted in the monitored metrics
+
+#kafka.*:type=*,name=* <type>.<name>
+
+
+# KAFKA SERVER METRICS
+
+
+#Number of under-replicated partitions
+kafka.server:type=ReplicaManager,name=UnderReplicatedPartitions <type>.<name>
+
+#Number of partitions that don’t have an active leader and are hence not writable or readable.
+kafka.controller:type=KafkaController,name=OfflinePartitionsCount <type>.<name>
+
+#Number of active controllers in the cluster.
+kafka.controller:type=KafkaController,name=ActiveControllerCount <type>.<name>
+
+
+#KAFKA BROKER METRICS
+
+
+#Aggregate incoming message rate.
+kafka.server:type=BrokerTopicMetrics,name=MessagesInPerSec <Count> <type>.<name>
+
+#Aggregate incoming byte rate.
+kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec <Count> <type>.<name>
+
+#Aggregate outgoing byte rate.
+kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec <Count> <type>.<name>
+
+#Request rate.
+kafka.network:type=RequestMetrics,name=RequestsPerSec,request=Produce|FetchConsumer|FetchFollower,* <Count> <type>.<name> 
+kafka.network:type=RequestMetrics,name=RequestsPerSec,request=FetchConsumer,* <Count> <type>.<name> 
+kafka.network:type=RequestMetrics,name=RequestsPerSec,request=FetchFollower,* <Count> <type>.<name> 
+
+
+#Log flush rate and time.
+kafka.log:type=LogFlushStats,name=LogFlushRateAndTimeMs <type>.<name> 
+
+#Leader election rate and latency.
+kafka.controller:type=ControllerStats,name=LeaderElectionRateAndTimeMs <LatencyUnit|Count> <type>.<name> 
+
+#Unclean leader election rate.
+kafka.controller:type=ControllerStats,name=UncleanLeaderElectionsPerSec <Count> <type>.<name> 
+
+#Number of partitions on this broker.
+kafka.server:type=ReplicaManager,name=PartitionCount <type>.<name> 
+
+#Number of leaders on this broker.
+kafka.server:type=ReplicaManager,name=LeaderCount <type>.<name> 
+
+#ISR Shrink Rate(Usually 0)
+kafka.server:type=ReplicaManager,name=IsrShrinksPerSec <Count> <type>.<name> 
+
+
+kafka.server:type=ReplicaManager,name=IsrExpandsPerSec <Count> <type>.<name> 
+
+#Maximum lag in messages between the follower and leader replicas
+kafka.server:type=ReplicaFetcherManager,name=MaxLag,clientId=Replica <type>.<name> 
+
+#Lag in number of messages per follower replica
+kafka.server:type=FetcherLagMetrics,name=ConsumerLag,clientId=([-.\w]+),topic=([-.\w]+),partition=([0-9]+) <type>.<name>.<clientId>.<topic>.<partition>
+
+#Total time in ms to serve the specified request.
+kafka.network:type=RequestMetrics,name=TotalTimeMs,request=Produce <Count> <type>.<name>
+kafka.network:type=RequestMetrics,name=TotalTimeMs,request=FetchConsumer <Count> <type>.<name> 
+kafka.network:type=RequestMetrics,name=TotalTimeMs,request=FetchFollower <Count> <type>.<name> 
+
+#Number of requests waiting in the producer purgatory.
+kafka.server:type=ProducerRequestPurgatory,name=PurgatorySize <type>.<name> 
+
+#Number of requests waiting in the fetch purgatory. 
+kafka.server:type=FetchRequestPurgatory,name=PurgatorySize <type>.<name>

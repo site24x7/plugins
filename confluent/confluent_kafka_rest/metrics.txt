@@ -1,0 +1,18 @@
+#Only First 25 metics will be monitored with 4 digit precision
+#MBean-Definition(mandatory) Attribute-Type(optional) Label(mandatory)
+#Can Include all valid regexs in MBean Definitions. 
+#Attribute Type is optional. You can specify Mean,Value,95Percentile to get the specified type for the key.
+#Label Supports Regex to include the type,scope,name,keyspace etc defined in the mBean to be substituted in the monitored metrics
+
+#kafka.*:type=*,name=* <type>.<name>
+
+#KAFKA REST METRICS
+
+#Global metrics
+#Total number of active TCP connections, The average rate per second of opened/closed TCP connections
+kafka.rest:type=jetty-metrics <connections-active|connections-opened-rate|connections-closed-rate> KafkaRestProxy.<type>
+
+#Per Endpoint Metrics :
+#To monitor per end point metrics : Uncomment the following and replace the <endpoint> with the one you need to monitor.End Points can be configured from any of the options given : https://docs.confluent.io/current/kafka-rest/monitoring.html#per-endpoint-metrics
+
+#kafka.rest:type=jersey-metrics <<endpoint>.request-error-rate|<endpoint>.request-latency-avg|<endpoint>.request-latency-max|<endpoint>.request-rate|<endpoint>.request-size-avg|<endpoint>.request-size-max|<endpoint>.response-byte-rate|<endpoint>.response-rate|<endpoint>.response-size-avg|<endpoint>.response-size-max>

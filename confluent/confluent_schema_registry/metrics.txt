@@ -1,0 +1,20 @@
+#Only First 25 metics will be monitored with 4 digit precision
+#MBean-Definition(mandatory) Attribute-Type(optional) Label(mandatory)
+#Can Include all valid regexs in MBean Definitions. 
+#Attribute Type is optional. You can specify Mean,Value,95Percentile to get the specified type for the key.
+#Label Supports Regex to include the type,scope,name,keyspace etc defined in the mBean to be substituted in the monitored metrics
+
+#kafka.*:type=*,name=* <type>.<name>
+
+# SCHEMA REGISTRY METRICS
+
+#Global metrics - total number of active TCP connections, average rate per second of opened TCP connections, average rate per second of closed TCP connections
+kafka.schema.registry:type=jetty-metrics <connections-active|connections-opened-rate|connections-closed-rate> <type>
+
+#current role of this Schema Registry instance
+kafka.schema.registry:type=master-slave-role <master-slave-role> <type>.<name>
+
+#Per-Endpoint Metrics
+
+#Specify the required endpoints as the second argument. Leaving this empty will fetch data for the first 25 endpoint metrics.
+#kafka.schema.registry:type=jersey-metrics <type>
