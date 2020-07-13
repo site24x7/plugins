@@ -3,6 +3,9 @@
 """
 Site24x7 Varnish Plugin
 
+author: selvakumar.cs
+Edited to support all types of data from varnish cache
+
 """
 import importlib
 import json
@@ -35,12 +38,12 @@ class VarnishCache(object):
         data = {
             'plugin_version': PLUGIN_VERSION, 'heartbeat_required': HEARTBEAT
         }
-	    
+        
         varnish_command = ['varnishstat', '-1', '-j']
 
         if VARNISH_INSTANCE != "":
-	        varnish_command.append('-n')
-	        varnish_command.append(VARNISH_INSTANCE)	
+            varnish_command.append('-n')
+            varnish_command.append(VARNISH_INSTANCE)    
 
         output = subprocess.check_output(varnish_command)
         j = json.loads(output.decode())
@@ -53,11 +56,11 @@ class VarnishCache(object):
             data['sess_pipe_overflow'] = j['sess_pipe_overflow']['value']
             data['units'] = METRICS_UNITS_V3
         else:
-            data['cache_hit'] = j['MAIN.cache_hit']['value']
-            data['cache_miss'] = j['MAIN.cache_miss']['value']
-            data['threads_created'] = j['MAIN.threads_created']['value']
-            data['thread_queue_len'] = j['MAIN.thread_queue_len']['value']
-            data['sess_pipe_overflow'] = j['MAIN.sess_pipe_overflow']['value']
+            for key,value in j.items():            
+                if '.' in key:
+                    key_name=key.split('.');
+                    if key_name[1] in METRICS_UNITS_V4:
+                        data[key_name[1]]=value['value']
             data['units'] = METRICS_UNITS_V4
         return data
     def get_major_version(self):
@@ -70,3 +73,4 @@ if __name__ == "__main__":
     varnish_plugins = VarnishCache(configurations)
     result = varnish_plugins.metric_collector()
     print(json.dumps(result, indent=4, sort_keys=True))
+
