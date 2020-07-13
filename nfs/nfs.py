@@ -26,9 +26,10 @@ def metricCollector():
         PLUGIN_STATUS=1
         for mounts in NFS_MOUNT:
             NFS_COMMAND = ["/opt/site24x7/monagent/plugins/nfs/nfs_check.sh",mounts] 
-            proc = subprocess.Popen(NFS_COMMAND,stdout=subprocess.PIPE,stderr=subprocess.PIPE,close_fds=True)
+            proc = subprocess.Popen(NFS_COMMAND,stdout=subprocess.PIPE,stderr=subprocess.PIPE,close_fds=True,shell=True)
             top_output = proc.communicate()[0]
             top_output=top_output.strip()
+            top_output=top_output.decode("utf-8")
             if '%%' in top_output:
                 s=top_output.split('%%')
                 data[mounts+'_status']=1
@@ -42,13 +43,12 @@ def metricCollector():
                     ERROR_MSG.append('and '+mounts+' - NFS Server Host is not reachable')
                 else:
                     ERROR_MSG.append(mounts+'- NFS Server Host is not reachable')
-		PLUGIN_STATUS=-1
+                    PLUGIN_STATUS=-1
         if PLUGIN_STATUS==-1:
-	     data['status']=0
-	if ERROR_MSG:
+            data['status']=0
+        if ERROR_MSG:
             data['msg']= " ".join(str(x) for x in ERROR_MSG)
     except Exception as exception:
-        traceback.print_exc()
         data['status']=0
         data['msg']=str(exception)
     
@@ -57,5 +57,5 @@ def metricCollector():
 
 if __name__ == '__main__':
     
-    print json.dumps(metricCollector(), indent=4, sort_keys=True)
+    print(json.dumps(metricCollector(), indent=4, sort_keys=True))
 
