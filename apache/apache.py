@@ -38,7 +38,7 @@ if PYTHON_MAJOR_VERSION == 3:
     from urllib.error import URLError, HTTPError
     from http.client import InvalidURL
 elif PYTHON_MAJOR_VERSION == 2:
-    import urllib2
+    import urllib2 as urlconnection
     from urllib2 import HTTPError, URLError
     from httplib import InvalidURL
 
@@ -48,31 +48,20 @@ class apache():
         self._userPass = password
         self._url = url
         self.dictApacheData = {}
-        self._realm=None
-        if (self._userName and self._userPass):
-           if PYTHON_MAJOR_VERSION==2:
-              self._realm=urllib2.HTTPPasswordMgrWithDefaultRealm()
-           if PYTHON_MAJOR_VERSION==3:
-              self._realm=urlconnection.HTTPPasswordMgrWithDefaultRealm()
 
     def main(self):
-        if PYTHON_MAJOR_VERSION == 3:
-            self.metricCollector3()
-        elif PYTHON_MAJOR_VERSION == 2:
-            self.metricCollector2()
-        else:
-            self.dictApacheData['status'] = 0
-            self.dictApacheData['msg'] = 'Unknown python version : ' + str(PYTHON_MAJOR_VERSION)
+        self.metric_collector()
         print(str(json.dumps(self.dictApacheData)))
-    def metricCollector2(self):
+    
+    def metric_collector(self):
         try:
-            if (self._userName and self._userPass):
-                    password_mgr = urllib2.HTTPPasswordMgr()
-                    password_mgr.add_password(self._realm, self._url, self._userName, self._userPass)
-                    auth_handler = urllib2.HTTPBasicAuthHandler(password_mgr)
-                    opener = urllib2.build_opener(auth_handler)
-                    urllib2.install_opener(opener)
-            response = urllib2.urlopen(self._url, timeout=10)
+            if self._userName and self._userPass:
+                password_mgr = urlconnection.HTTPPasswordMgrWithDefaultRealm()
+                password_mgr.add_password(None, url, self._userName, self._userPass)
+                auth_handler = urlconnection.HTTPBasicAuthHandler(password_mgr)
+                opener = urlconnection.build_opener(auth_handler)
+                urlconnection.install_opener(opener)
+            response = urlconnection.urlopen(url, timeout=10)
             if response.getcode() == 200:
                 byte_responseData = response.read()
                 str_responseData = byte_responseData.decode('UTF-8')
@@ -92,34 +81,7 @@ class apache():
         except Exception as e:
             self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Exception occured in collecting data : ' + str(e)
-    def metricCollector3(self):
-        try:
-            if (self._userName and self._userPass):
-                    password_mgr = urlconnection.HTTPPasswordMgr()
-                    password_mgr.add_password(self._realm, self._url, self._userName, self._userPass)
-                    auth_handler = urlconnection.HTTPBasicAuthHandler(password_mgr)
-                    opener = urlconnection.build_opener(auth_handler)
-                    urlconnection.install_opener(opener)
-            response = urlconnection.urlopen(self._url, timeout=10)
-            if response.status == 200:
-                byte_responseData = response.read()
-                str_responseData = byte_responseData.decode('UTF-8')
-                self._parseStats(str_responseData)
-            else:
-                self.dictApacheData['status'] = 0
-                self.dictApacheData['msg'] = 'Error_code' + str(response.status)
-        except HTTPError as e:
-            self.dictApacheData['status'] = 0
-            self.dictApacheData['msg'] = 'Error_code : HTTP Error ' + str(e.code)
-        except URLError as e:
-            self.dictApacheData['status'] = 0
-            self.dictApacheData['msg'] = 'Error_code : URL Error ' + str(e.reason)
-        except InvalidURL as e:
-            self.dictApacheData['status'] = 0
-            self.dictApacheData['msg'] = 'Error_code : Invalid URL'
-        except Exception as e:
-            self.dictApacheData['status'] = 0
-            self.dictApacheData['msg'] = 'Exception occured in collecting data : ' + str(e)
+    
     def _parseStats(self, str_responseData):
         try:
             # dictApacheData = {}
@@ -140,7 +102,7 @@ class apache():
             self.dictApacheData['status'] = 0
             self.dictApacheData['msg'] = 'Exception in _parse stats' + str(e)
             # print(str(json.dumps({'Error_code':str(e)})))
-    
+
 if __name__ == '__main__':
     ap = apache()
     ap.main()
