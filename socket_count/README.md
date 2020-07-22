@@ -2,6 +2,7 @@ Plugin for Monitoring the TCP/UDP Port counts
 ==============================================
 
 ### PreRequisites
+- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/help/admin/adding-a-monitor/linux-server-monitoring.html#add-linux-server-monitor) in the server where you plan to run the plugin. 
 
 - Plugin Uses "ss -s" command to get the tcp / udp count	
 	
