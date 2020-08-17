@@ -28,7 +28,7 @@ class pgp_expiry_monitoring:
         cur_date = datetime.datetime.utcnow()
         gpg = gnupg.GPG(gnupghome=self.gpg_location)
         public_keys = gpg.list_keys()        
-        keyset = open( self.keys_to_check, "r").read().split(',')
+        keyset = self.keys_to_check.split(',')
         for key in public_keys:
             keyid = key["keyid"] ## Public Key
             if keyid in keyset :
