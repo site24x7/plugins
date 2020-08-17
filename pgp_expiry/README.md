@@ -32,16 +32,15 @@ For more details on the python-gnupg driver , refer https://pypi.org/project/pyt
 
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/pgp_expiry/pgp_expiry.py
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/pgp_expiry/pgp_expiry.cfg
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/pgp_expiry/input.checks
 	
-- Configure keys for which you have to monitor in input.checks file. 
+- Configure the keys to be monitored, as mentioned in the configuration section below.
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ### Configurations
 ---
 
-	keys_to_check - the absolute path of file name containing the gpg public keys to check
+	keys_to_check - comma separated keys to check for expiry
 	key_server - key server name - default : "keyserver.ubuntu.com"
 	gpg_location - gpg location - default "/home/local/.gnupg"
 	plugin_version = 1
