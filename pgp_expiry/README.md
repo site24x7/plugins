@@ -35,11 +35,11 @@ For more details on the python-gnupg driver , refer https://pypi.org/project/pyt
 ### Configurations
 ---
 
-keys_to_check - the absolute path of file name containing the gpg public keys to check
-key_server - key server name - default : "keyserver.ubuntu.com"
-gpg_location - gpg location - default "/home/local/.gnupg"
-plugin_version = 1
-heartbeat = True
+	keys_to_check - the absolute path of file name containing the gpg public keys to check
+	key_server - key server name - default : "keyserver.ubuntu.com"
+	gpg_location - gpg location - default "/home/local/.gnupg"
+	plugin_version = 1
+	heartbeat = True
 
 ### Metrics Captured
 ---
