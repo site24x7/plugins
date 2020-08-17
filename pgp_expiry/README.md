@@ -18,20 +18,25 @@ To monitor the number of days to expire for the public keys in PGP. For more det
 For more details on the python-gnupg driver , refer https://pypi.org/project/python-gnupg/#description. If pip command not present kindly install using the below section
 
 - How to install pip :
-      curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-      python get-pip.py
+	
+		curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+		python get-pip.py
 
 ### Plugin installation
 ---
 ##### Linux 
 
-- Create a directory "internet_speed_check" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/internet_speed_check
+- Create a directory "pgp_expiry" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/pgp_expiry
 
-- Download the file "internet_speed_check.py" and place it under the "internet_speed_check" directory
-  
-  wget https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/internet_speed_check.py
+- Download all the files in "pgp_expiry" folder and place it under the "pgp_expiry" directory
+
+	  wget https://raw.githubusercontent.com/site24x7/plugins/master/pgp_expiry/pgp_expiry.py
+	  wget https://raw.githubusercontent.com/site24x7/plugins/master/pgp_expiry/pgp_expiry.cfg
+	  wget https://raw.githubusercontent.com/site24x7/plugins/master/pgp_expiry/input.checks
 	
-  The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+- Configure keys for which you have to monitor in input.checks file. 
+
+The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ### Configurations
 ---
@@ -44,4 +49,4 @@ For more details on the python-gnupg driver , refer https://pypi.org/project/pyt
 
 ### Metrics Captured
 ---
-    keyname - No of days for expiry from today
+    	keyname - No of days for expiry from today
