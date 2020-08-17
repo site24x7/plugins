@@ -10,9 +10,10 @@ To monitor the number of days to expire for the public keys in PGP. For more det
 - Plugin Uses "python-gnupg driver" python module.
 
 - How to install python-gnupg :
-      default:    /usr/bin/python -m pip install python-gnupg
-      python2:    python -m pip install python-gnupg
-      python3:    python3 -m pip install python-gnupg
+
+		default:    /usr/bin/python -m pip install python-gnupg
+		python2:    python -m pip install python-gnupg
+		python3:    python3 -m pip install python-gnupg
 
 For more details on the python-gnupg driver , refer https://pypi.org/project/python-gnupg/#description. If pip command not present kindly install using the below section
 
