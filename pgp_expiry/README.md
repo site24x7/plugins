@@ -35,6 +35,11 @@ For more details on the python-gnupg driver , refer https://pypi.org/project/pyt
 	
 - Configure the keys to be monitored, as mentioned in the configuration section below.
 
+- Execute the below command with appropriate arguments to check for the valid json output.  
+
+		python pgp_expiry.py --keys_to_check "key1,key2,key3" --key_server "keyserver.ubuntu.com" --gpg_location "/home/local/hostname/.gnupg" --plugin-version 1 --heartbeat True
+
+
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ### Configurations
