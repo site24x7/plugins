@@ -132,8 +132,8 @@ def getNodes(data):
         str_responseData = byte_responseData.decode('UTF-8')
 
         rabbit_nodes_dict = json.loads(str_responseData)
-    	nodes_dict=rabbit_nodes_dict[0]
-	if nodes_dict:
+        nodes_dict=rabbit_nodes_dict[0]
+        if nodes_dict:
             if 'mem_used' in nodes_dict:
                 value = convertBytesToMB(nodes_dict['mem_used'])
                 data['mem_used']=value
@@ -165,3 +165,4 @@ def getNodes(data):
 if __name__ == "__main__":
     
     print(json.dumps(metricCollector(), indent=4, sort_keys=True))
+
