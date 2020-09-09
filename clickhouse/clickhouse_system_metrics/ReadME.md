@@ -7,6 +7,7 @@ Clickhouse Python Driver
 https://clickhouse-driver.readthedocs.io/en/latest/installation.html
 
 To install the driver, execute the command :
+    
     pip install clickhouse-driver
 
 ### Configurations
