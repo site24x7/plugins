@@ -129,4 +129,4 @@ if __name__ == "__main__":
    
     result = zookeeper_plugin.metricCollector()
 
-    print json.dumps(result, indent=4, sort_keys=True)
+    print(json.dumps(result, indent=4, sort_keys=True))
