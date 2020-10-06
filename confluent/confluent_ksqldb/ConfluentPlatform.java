@@ -26,7 +26,7 @@ import javax.management.remote.JMXServiceURL;
 
 public class ConfluentPlatform {
  
- public static String pluginVerion="1"
+ public static String pluginVersion="1";
  private String host="127.0.0.1";
  private String port="9990";
  private String filePath="metrics.txt";
