@@ -1,7 +1,10 @@
 #!/usr/bin/python
 
 import json
-import urllib2
+try:
+    import urllib2
+except Exception as e:
+    import urllib.request as urllib2
 
 ### For monitoring the performance metrics of your Elasticsearch cluster using Site24x7 Server Monitoring Plugins.
 
@@ -87,14 +90,14 @@ class Elasticsearch():
                 if _ in KEYS.keys():
                     key = key+"_"+_ 
                     if _ == 'status' : 
-                        if data[_] is 'red' : self.data[key] = 0 
-                        if data[_] is "yellow" : self.data[key] = 2
-                        elif data[_] : self.data[key] = 1
+                        if data[_] == 'red' : self.data[key] = 0 
+                        elif data[_] == "yellow" : self.data[key] = 2
+                        else: self.data[key] = 1
                          
                     else : self.data[key] = str(data[_])
                     
         except Exception as e:
-            print e
+            print(e)
             self.data['msg'] = str(e) 
             self.status = 0
         
