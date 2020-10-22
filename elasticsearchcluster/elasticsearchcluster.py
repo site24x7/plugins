@@ -96,8 +96,7 @@ class Elasticsearch():
                          
                     else : self.data[key] = str(data[_])
                     
-        except Exception as e:
-            print(e)
+        except Exception as e:            
             self.data['msg'] = str(e) 
             self.status = 0
         
