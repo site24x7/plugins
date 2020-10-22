@@ -74,11 +74,11 @@ class Elasticsearch():
                 
             else:
                 self.data['msg'] = str(response.getcode())
-                self.status = 0
+                self.data['status'] = 0
         
         except Exception as e:
             self.data['msg'] = str(e)
-            self.status = 0
+            self.data['status'] = 0
         
         return self.data
     
@@ -98,7 +98,7 @@ class Elasticsearch():
                     
         except Exception as e:            
             self.data['msg'] = str(e) 
-            self.status = 0
+            self.data['status'] = 0
         
         return self.data    
     
