@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
-import json
-import urllib2
+import json,sys
 
 ### This plugin in python monitors the performance metrics of Lighttpd servers
 
@@ -38,44 +37,57 @@ KEYS = {'Total Accesses':'accesses', # number of requests handled
 }
 
 ### Attribute Units
-UNITS = {'traffic':'KB',
-         'uptime':'seconds'
-}
+UNITS = {'traffic':'KB','uptime':'seconds'}
+
+
+PYTHON_MAJOR_VERSION = sys.version_info[0]
+if PYTHON_MAJOR_VERSION == 3:
+    import urllib
+    import urllib.request as urlconnection
+    from urllib.error import URLError, HTTPError
+    from http.client import InvalidURL
+elif PYTHON_MAJOR_VERSION == 2:
+    import urllib2 as urlconnection
+    from urllib2 import HTTPError, URLError
+    from httplib import InvalidURL
 
 class Lighttp():
     def __init__(self):
         self.data = {}
+        self._userName = USERNAME
+        self._userPass = PASSWORD
         self.data['plugin_version'] = PLUGIN_VERSION
         self.data['heartbeat_required'] = HEARTBEAT
         
     def getData(self):
         try:
-            ### Create Authentication Handler for the HTTP Request
-            pwdmgr = urllib2.HTTPPasswordMgr()
-            pwdmgr.add_password(None, URL, USERNAME, PASSWORD)
-            auth = urllib2.HTTPBasicAuthHandler(pwdmgr)
-            
-            ### Create Proxy Handler for the HTTP Request
-            proxy = urllib2.ProxyHandler({}) # Uses NO Proxy
-            
-            ### Create a HTTP Request with the authentication and proxy handlers
-            opener = urllib2.build_opener(proxy, auth)
-            urllib2.install_opener(opener)
-            
-            ### Get HTTP Response
-            response = urllib2.urlopen(URL, timeout=10)
-            
-            ### Parse the response data
+            if self._userName and self._userPass:
+                password_mgr = urlconnection.HTTPPasswordMgrWithDefaultRealm()
+                password_mgr.add_password(None, URL, self._userName, self._userPass)
+                auth_handler = urlconnection.HTTPBasicAuthHandler(password_mgr)
+                opener = urlconnection.build_opener(auth_handler)
+                urlconnection.install_opener(opener)
+            response = urlconnection.urlopen(URL, timeout=10)
             if response.getcode() == 200:
-                bytedata = response.read()
-                output = bytedata.decode('UTF-8')
-                self.data = self.parseData(output)
+                byte_responseData = response.read()
+                str_responseData = byte_responseData.decode('UTF-8')
+                self.data = self.parseData(str_responseData)
                 self.data['units'] = UNITS
             else:
-                self.data['msg'] = str(response.getcode())
-        
+                self.data['status'] = 0
+                self.data['msg'] = 'Error_code' + str(response.getcode())
+        except HTTPError as e:
+            self.data['status'] = 0
+            self.data['msg'] = 'Error_code : HTTP Error ' + str(e.code)
+        except URLError as e:
+            self.data['status'] = 0
+            self.data['msg'] = 'Error_code : URL Error ' + str(e.reason)
+        except InvalidURL as e:
+            self.data['status'] = 0
+            self.data['msg'] = 'Error_code : Invalid URL'
         except Exception as e:
-            self.data['msg'] = str(e)
+            self.data['status'] = 0
+            self.data['msg'] = 'Exception occured in collecting data : ' + str(e)
         
         return self.data
     
