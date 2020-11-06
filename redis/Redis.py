@@ -19,8 +19,6 @@ REDIS_HOST = "localhost"
 
 REDIS_PORT = "6379"
 
-REDIS_USERNAME = "root"
-
 REDIS_PASSWORD = ""
 
 REDIS_DBS = "0"
@@ -142,29 +140,26 @@ class Redis(object):
         for name, value in stats.items():
             if type(value)==dict:
                total_keys+=value['keys']
-	    try:
+            try:
                 if name in METRICS.keys() :
                     if METRICS[name] == 'used memory':
-		       value = value / 1024
+                        value = value / 1024
                     data[METRICS[name]] = value
             except (ValueError, TypeError) as e:
                 data[name] = value
+            
         total_key_stats = data['keyspace hits'] + data['keyspace misses']
-	if total_key_stats == 0:
-           data['hit ratio']=0
-	else:
-	   data['hit ratio'] = data['keyspace hits'] / total_key_stats
-	data['total_keys']=total_keys
-        data['units']=METRICS_UNITS
+        if total_key_stats == 0:
+            data['hit ratio']=0
+        else:
+            data['hit ratio'] = data['keyspace hits'] / total_key_stats
+            data['total_keys']=total_keys
+            data['units']=METRICS_UNITS
         return data
 
 
 if __name__ == '__main__':
     
-    if len(sys.argv) > 1:
-        REDIS_USERNAME = sys.argv[1]
-        REDIS_PASSWORD = sys.argv[2]
-
     configuration = {'host': REDIS_HOST,'port': REDIS_PORT,'dbs': REDIS_DBS,'password': REDIS_PASSWORD,'queues': REDIS_QUEUES}
 
     redis_plugin = Redis(configuration)
