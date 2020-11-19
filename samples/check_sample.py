@@ -11,15 +11,15 @@ PLUGIN_VERSION = "1"
 HEARTBEAT="true"
 
 #Mention the units of your metrics . If any new metrics are added, make an entry here for its unit if needed.
-METRICS_UNITS={'attribute_1':'MB', 'attribute_2':'ms'}
+METRICS_UNITS={'metric_1':'MB', 'metric_2':'ms'}
 
 def metricCollector():
 	  data = {}
 	  data['plugin_version'] = PLUGIN_VERSION
 	  data['heartbeat_required'] = HEARTBEAT
-	  data['attribute_1']=randint(0,1000)
-	  data['attribute_2']=randint(0,500)
-	  data['attribute_3']=randint(0,100)
+	  data['metric_1']=randint(0,1000)
+	  data['metric_2']=randint(0,500)
+	  data['metric_3']=randint(0,100)
 	  data['units']=METRICS_UNITS
 	  return data
 
