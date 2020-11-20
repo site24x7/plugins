@@ -27,7 +27,7 @@ Plugin for Monitoring File metadata
 
         python file_monitoring.py --file "filename"
 
-- Copy-paste the process_uptime folder to the agent's plugin directory  under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
+- Copy-paste the file_monitoring folder to the agent's plugin directory  under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
 
 - The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center
 
