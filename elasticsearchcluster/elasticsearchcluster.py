@@ -17,17 +17,25 @@ except Exception as e:
 ### Language : Python
 ### Tested in Ubuntu
 
-# Change the Elasticsearch stats accordingly here.
+'''
+This is Default configuration. 
+Change the Elasticsearch configuration accordingly
+in the configuration file elasticsearchnodes.cfg.
+
+Configuration File will have more Priority
+'''
+
 HOST='localhost'
 PORT='9200'
 USERNAME = None
 PASSWORD = None
-CLUSTERURL =  "http://"+HOST+':'+PORT+"/_cluster/health"
+TIMEOUT=10
+
 # If any changes done in the plugin, plugin_version must be incremented by 1. For. E.g 2,3,4.. 
 PLUGIN_VERSION = "1"
 
 # Setting this to true will alert you when there is a communication problem while posting plugin data to server
-HEARTBEAT = "true"
+HEARTBEAT =True
 
 ### Attribute Names
 KEYS = {'active_primary_shards':'active_primary_shards', # number of primary shards in the cluster
@@ -44,16 +52,17 @@ KEYS = {'active_primary_shards':'active_primary_shards', # number of primary sha
    
 
 class Elasticsearch():
-    def __init__(self):
+    def __init__(self,host_name,port,username,password):
         self.data = {}
-        self.data['plugin_version'] = PLUGIN_VERSION
-        self.data['heartbeat_required'] = HEARTBEAT
-        
+        self._url = "http://"+host_name+':'+port+"/_cluster/health"
+        self._userName = username
+        self._userPass = password
+                        
     def getData(self):
         try:
             ### Create Authentication Handler for the HTTP Request
             pwdmgr = urllib2.HTTPPasswordMgr()
-            pwdmgr.add_password(None, CLUSTERURL, USERNAME, PASSWORD)
+            pwdmgr.add_password(None, self._url, self._userName, self._userPass)
             auth = urllib2.HTTPBasicAuthHandler(pwdmgr)
             
             ### Create Proxy Handler for the HTTP Request
@@ -64,7 +73,7 @@ class Elasticsearch():
             urllib2.install_opener(opener)
             
             ### Get HTTP Response
-            response = urllib2.urlopen(CLUSTERURL, timeout=10)
+            response = urllib2.urlopen(self._url, timeout=TIMEOUT)
             
             ### Parse the response data
             if response.getcode() == 200:
@@ -104,6 +113,26 @@ class Elasticsearch():
     
  
 if __name__ == '__main__':
-    es = Elasticsearch()
+    
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', help='Host to be monitored',nargs='?', default=HOST)
+    parser.add_argument('--port', help='port number', type=int,  nargs='?', default=PORT)
+    parser.add_argument('--username', help='user name of the elasticsearch', nargs='?', default=USERNAME)
+    parser.add_argument('--password', help='password of the elasticsearch', nargs='?', default=PASSWORD)
+    
+    parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=PLUGIN_VERSION)
+    parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=HEARTBEAT)
+    args = parser.parse_args()
+    
+    host_name=args.host
+    port=str(args.port)
+    username=args.username
+    password=args.password
+        
+    es = Elasticsearch(host_name,port,username,password)    
     result = es.getData()
+    result['plugin_version'] = args.plugin_version
+    result['heartbeat_required'] = args.heartbeat
+    
     print(json.dumps(result, indent=4, sort_keys=True))

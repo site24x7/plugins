@@ -12,13 +12,16 @@
 ### Tested in Ubuntu
 
 
-import json, os
+import json, os,sys
 import time
-import urllib2 as urlconnection
-from urllib2 import HTTPError,URLError
-from httplib import InvalidURL
 
+'''
+This is Default configuration. 
+Change the Elasticsearch configuration accordingly
+in the configuration file elasticsearch.cfg.
 
+Configuration File will have more Priority
+'''
 HOST='localhost'
 PORT='9200'
 USERNAME = None   #Add the username if any authentication is set for ES stats api
@@ -29,7 +32,7 @@ PASSWORD = None   #Add the password if any authentication is set for ES stats ap
 PLUGIN_VERSION = "1"
 
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
-HEARTBEAT = "true"
+HEARTBEAT = True
 
 METRICS_UNITS = { 'jvm_gc_old_coll_time':'ms',
                   'jvm_mem_pool_old_used_perc' : '%'
@@ -41,12 +44,21 @@ dictStatusValue = { 'yellow' : '2', 'green' : '1', 'red' : '0' }
 
 
 
+PYTHON_MAJOR_VERSION = sys.version_info[0]
+if PYTHON_MAJOR_VERSION == 3:
+    import urllib.request as urlconnection
+    from urllib.request import HTTPError,URLError
+    from http.client import InvalidURL 
+elif PYTHON_MAJOR_VERSION == 2:
+    import urllib2 as urlconnection
+    from urllib2 import HTTPError,URLError
+    from httplib import InvalidURL
 
 class escluster():
-    def __init__(self):
-        self._url = 'http://'+HOST+':'+PORT
-        self._userName = USERNAME
-        self._userPass = PASSWORD
+    def __init__(self,host_name,port,username,password):
+        self._url = 'http://'+host_name+':'+port
+        self._userName = username
+        self._userPass = password
         self._realm = None
         self.dictEsPluginData = {}
         self.dictCounterValues = {}
@@ -77,9 +89,7 @@ class escluster():
         str_clusterData = self._openURL2('/_cluster/health')
         if str_clusterData:
             self.parseClusterData(str_clusterData)
-        self.dictEsPluginData['units'] = METRICS_UNITS
-        self.dictEsPluginData['plugin_version'] = PLUGIN_VERSION
-        self.dictEsPluginData['heartbeat_required'] = HEARTBEAT
+        self.dictEsPluginData['units'] = METRICS_UNITS        
         
         return self.dictEsPluginData
     
@@ -214,6 +224,26 @@ class escluster():
             self.dictEsPluginData['unassigned_shards'] = dictClusterData['unassigned_shards']
     
 if __name__ == '__main__':
-    esc = escluster()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', help='Host to be monitored',nargs='?', default=HOST)
+    parser.add_argument('--port', help='port number', type=int,  nargs='?', default=PORT)
+    parser.add_argument('--username', help='user name of the elasticsearch', nargs='?', default=USERNAME)
+    parser.add_argument('--password', help='password of the elasticsearch', nargs='?', default=PASSWORD)
+    
+    parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=PLUGIN_VERSION)
+    parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=HEARTBEAT)
+    args = parser.parse_args()
+    
+    host_name=args.host
+    port=str(args.port)
+    username=args.username
+    password=args.password
+    
+    
+    esc = escluster(host_name,port,username,password)
     result = esc.metricCollector()
+    result['plugin_version'] = args.plugin_version
+    result['heartbeat_required'] = args.heartbeat
+    
     print(json.dumps(result, indent=4, sort_keys=True))
