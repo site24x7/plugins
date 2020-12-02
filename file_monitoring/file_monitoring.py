@@ -25,7 +25,7 @@ import time
 import json
 import argparse
 import datetime
-
+import mmap
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--file', help='file to be monitored', nargs='?', default = __file__)
@@ -75,6 +75,17 @@ data['read_access'] = 1 if os.access(file, os.R_OK) else 0# Check for read acces
 data['write_access'] = 1 if os.access(file, os.W_OK) else 0# Check for read access
 data['execution_access'] = 1 if os.access(file, os.X_OK) else 0# Check for read access
 
+
+### Content checks
+if search_text is not None :
+	f = open(file, 'r')
+	s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
+	if s.find(search_text) != -1: data['content_match'] = "True"
+	else : data['content_match'] = "False"
+else :
+	data['content_match'] = "no search key"
+
+ 
 # Print the data for monitoring
 print(json.dumps(data, indent=2, sort_keys=True))
 
