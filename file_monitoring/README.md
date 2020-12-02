@@ -21,7 +21,8 @@ Plugin for Monitoring File metadata
 	
 - Edit the file file_monitoring.cfg and provide the file to be monitored
 
-	Provide the absolute path of the file with the filename as input
+	Provide the absolute path of the file with the filename as input. 
+	Provide the content to match in search_text. Set it to None, if you dont need to do any content check.
 
 - To make sure plugin is providing the correct output
 
@@ -50,3 +51,5 @@ last_modified_time - last file modified time
 time_since_last_accessed - hours before the file was accessed last 
 
 time_since_last_modified - hours before the file was modified last 
+
+content_match - If search_text value is set to None, it will skip content search else will return True if there is a match and false if there is no match
