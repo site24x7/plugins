@@ -18,7 +18,7 @@ VERSION_QUERY = 'SELECT VERSION()'
 PLUGIN_VERSION = "1"
 
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
-HEARTBEAT="true"
+HEARTBEAT=True
 
 #Config Section: 
 #Use either True | False - enabled True will read mysql configurations from my.cnf file , Please provide the my.cnf path below
@@ -27,9 +27,18 @@ USE_MYSQL_CONF_FILE=False
 #Used only when USE_MYSQL_CONF_FILE is set to True , We have provided the default path change it as it is in your server
 MY_CNF_FILE_LOCATION='/etc/mysql/my.cnf'
 
+'''
+1.This is Default configuration.
+2.For password encryption or Need to monitor more than one host 
+use configuration file mysql.cfg 
+3.Change the mysql configuration accordingly
+in the configuration file mysql.cfg.
+4.Configuration File will have more Priority
+'''
+
 MYSQL_HOST = "localhost"
 
-MYSQL_PORT="3306"
+MYSQL_PORT=3306
 
 MYSQL_USERNAME="root"
 
@@ -40,6 +49,45 @@ MYSQL_SOCKET = "/tmp/mysql.sock"
 #Mention the units of your metrics in this python dictionary. If any new metrics are added make an entry here for its unit.
 METRICS_UNITS={'connection_usage':'%'}
 
+METRICS_JSON={
+    "Uptime":"uptime",
+    "Open_tables":"open_tables",
+    "Slow_queries":"slow_queries",
+    "Threads_connected":"threads_connected",
+    "Threads_running":"threads_running",
+    "max_connections":"max_connections",
+    "Max_used_connections":"max_used_connections",
+    "Max_used_connections":"max_used_connections",
+    # Buffer pool
+    "Innodb_buffer_pool_pages_total":"buffer_pool_pages_total",
+    "Innodb_buffer_pool_pages_free":"buffer_pool_pages_free",
+    "Innodb_buffer_pool_pages_dirty":"buffer_pool_pages_dirty",
+    "Innodb_buffer_pool_pages_data":"buffer pool pages data",
+    #Innodb_buffer_pool_wait_free
+    "Innodb_buffer_pool_wait_free":"innodb_buffer_pool_wait_free",
+    # Query cache items
+    "Qcache_hits":"qcache_hits",
+    "Qcache_free_memory":"qcache_free_memory",
+    "Qcache_not_cached":"qcache_not_cached",
+    "Qcache_queries_in_cache":"qcache_in_cache",
+    # Aborted connections and clients
+    "Aborted_clients":"aborted_clients",
+    "Aborted_connects":"aborted_connects",
+    # Created temporary tables in memory and on disk
+    "Created_tmp_tables":"created_tmp_tables",
+    "Created_tmp_disk_tables":"created_tmp_tables_on_disk",
+    
+    "Select_full_join":"select_full_join",
+    
+    # open files
+    "Open_files":"open_files",
+    "open_files_limit":"open_files_limit",
+    
+    "Table_locks_waited":"table_locks_waited",
+    "Key_reads":"key_reads"
+    }
+
+             
 class MySQL(object):
     
     def __init__(self,config):
@@ -121,10 +169,7 @@ class MySQL(object):
         return bool_result,data
 
     def metricCollector(self):
-        data = {}
-        data['plugin_version'] = PLUGIN_VERSION
-        data['heartbeat_required']=HEARTBEAT
-
+        data = {}        
         bool_result,data = self.checkPreRequisites(data)
         
         if bool_result==False:
@@ -156,99 +201,51 @@ class MySQL(object):
     
                 global_metrics = self.executeQuery(con, 'SHOW GLOBAL STATUS')
                 
-                global_variables = self.executeQuery(con, 'SHOW VARIABLES')
+                global_variables = self.executeQuery(con, 'SHOW VARIABLES')                
     
                 cursor.close()
 
                 con.close()
                 
-                data['uptime'] = global_metrics['Uptime']
-                
-                data['open_tables'] = global_metrics['Open_tables']
-                
-                data['slow_queries'] = global_metrics['Slow_queries']
-                
-                data['threads_connected'] = global_metrics['Threads_connected']
-                
-                data['threads_running'] = global_metrics['Threads_running']
-                
-                
-                data['max_connections'] = global_variables['max_connections']
-                
-                data['max_used_connections'] = global_metrics['Max_used_connections']
-                
-                data['connection_usage'] = ((data['threads_running'] /data['max_connections'])*100)
-                
-                # Buffer pool
-                data['buffer_pool_pages_total'] = global_metrics['Innodb_buffer_pool_pages_total']
-                
-                data['buffer_pool_pages_free'] = global_metrics['Innodb_buffer_pool_pages_free']
-                
-                data['buffer_pool_pages_dirty'] = global_metrics['Innodb_buffer_pool_pages_dirty']
-                
-                data['buffer pool pages data'] = global_metrics['Innodb_buffer_pool_pages_data']
-    
-                # Query cache items
-                data['qcache_hits'] = global_metrics['Qcache_hits']
-                
-                data['qcache_free_memory'] = global_metrics['Qcache_free_memory']
-                
-                data['qcache_not_cached'] = global_metrics['Qcache_not_cached']
-                
-                data['qcache_in_cache'] = global_metrics['Qcache_queries_in_cache']
+                for attribute_keys in METRICS_JSON:
+                    if attribute_keys in global_metrics:
+                        data[METRICS_JSON[attribute_keys]]=global_metrics[attribute_keys]  
+                                                              
+                if 'threads_running' in data and  'max_connections' in data:
+                    data['connection_usage'] = ((data['threads_running'] /data['max_connections'])*100)                                                                                                                                                                                        
     
                 #no of reads & writes
-                writes = (global_metrics['Com_insert'] +global_metrics['Com_replace'] +global_metrics['Com_update'] +global_metrics['Com_delete'])
-                data['writes'] = writes
+                if 'Com_insert' in global_metrics and  'Com_replace' in global_metrics and 'Com_update' in global_metrics and  'Com_delete' in global_metrics:
+                    writes = (global_metrics['Com_insert'] +global_metrics['Com_replace'] +global_metrics['Com_update'] +global_metrics['Com_delete'])
+                    data['writes'] = writes
     
                 # reads
-                reads = global_metrics['Com_select'] + data['qcache_hits']
-                data['reads'] = reads
+                if 'Com_select' in global_metrics and  'qcache_hits' in data:
+                    reads = global_metrics['Com_select'] + data['qcache_hits']
+                    data['reads'] = reads
     
                 try:
                     data['rw ratio'] = reads/writes
                 except ZeroDivisionError:
                     data['rw ratio'] = 0
+                except Exception as e:
+                    traceback.format_exc()
     
                 # transactions
-                transactions = (global_metrics['Com_commit'] +global_metrics['Com_rollback'])
-                data['transactions'] = transactions
-    
-                # Aborted connections and clients
-                data['aborted_clients'] = global_metrics['Aborted_clients']
-                data['aborted_connects'] = global_metrics['Aborted_connects']
-    
-                # Created temporary tables in memory and on disk
-                data['created_tmp_tables'] = global_metrics['Created_tmp_tables']
-                data['created_tmp_tables_on_disk'] = global_metrics['Created_tmp_disk_tables']
-                
-                # select_full_join
-                data['select_full_join'] = global_metrics['Select_full_join']
-                
+                if 'Com_commit' in global_metrics and  'Com_rollback' in global_metrics:
+                    transactions = (global_metrics['Com_commit'] +global_metrics['Com_rollback'])
+                    data['transactions'] = transactions
+                                                                                                                                            
                 # slave_running
-                result = global_metrics['Slave_running']
-                if result == 'OFF':
-                    result = 0
-                else:
-                    result = 1
-                data['slave_running'] = result
-                
-                # open files
-                data['open_files'] = global_metrics['Open_files']
-                data['open_files_limit'] = global_variables['open_files_limit']
-                
-    
-                # table_locks_waited
-                data['table_locks_waited'] = global_metrics['Table_locks_waited']
-                
-                #key reads
-                data['key_reads'] = global_metrics['Key_reads']
-                
-                #Innodb_buffer_pool_wait_free
-                data['innodb_buffer_pool_wait_free'] = global_metrics['Innodb_buffer_pool_wait_free']
-    
+                if 'Slave_running' in global_metrics:
+                    result = global_metrics['Slave_running']
+                    if result == 'OFF':
+                        result = 0
+                    else:
+                        result = 1
+                    data['slave_running'] = result                                                                                                                                                                   
             except Exception as e:
-                traceback.format_exc()
+                data['msg']=str(e)
     
     
             data['units']=METRICS_UNITS
@@ -256,11 +253,29 @@ class MySQL(object):
         return data
 
 if __name__ == "__main__":
+    
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', help='Host to be monitored',nargs='?', default=MYSQL_HOST)
+    parser.add_argument('--port', help='port number', type=int,  nargs='?', default=MYSQL_PORT)
+    parser.add_argument('--username', help='user name of the elasticsearch', nargs='?', default=MYSQL_USERNAME)
+    parser.add_argument('--password', help='password of the elasticsearch', nargs='?', default=MYSQL_PASSWORD)
+    
+    parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=PLUGIN_VERSION)
+    parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=HEARTBEAT)
+    args = parser.parse_args()
+    
+    host_name=args.host
+    port=str(args.port)
+    username=args.username
+    password=args.password                
 
-    configurations = {'host': MYSQL_HOST, 'port': MYSQL_PORT, 'user': MYSQL_USERNAME, 'password': MYSQL_PASSWORD}
+    configurations = {'host': host_name, 'port': port, 'user': username, 'password': password}
 
     mysql_plugins = MySQL(configurations)
     
     result = mysql_plugins.metricCollector()
+    result['plugin_version'] = args.plugin_version
+    result['heartbeat_required'] = args.heartbeat
     
     print(json.dumps(result, indent=4, sort_keys=True))
