@@ -62,19 +62,19 @@ if __name__ == '__main__':
         '''
             System memory details
         '''
-        memory_params = conn.getMemoryParameters()
-        for param in memory_params:
-            data[param] = memory_params[param] 
+        #memory_params = conn.getMemoryParameters()
+        #for param in memory_params:
+        #    data[param] = memory_params[param] 
             
         mem_stats = conn.getMemoryStats(libvirt.VIR_NODE_MEMORY_STATS_ALL_CELLS)
         for param in mem_stats:
             data[param+'_memory'] = mem_stats[param] 
             
-        memlist = conn.getCellsFreeMemory(0, numa_node_count)
-        cell = 0
-        for cellfreemem in memlist:
-            data['node_'+str(cell)+'_free_mem_in_kb'] = cellfreemem
-            cell += 1
+        #memlist = conn.getCellsFreeMemory(0, numa_node_count)
+        #cell = 0
+        #for cellfreemem in memlist:
+        #    data['node_'+str(cell)+'_free_mem_in_kb'] = cellfreemem
+        #    cell += 1
         
         
         '''
