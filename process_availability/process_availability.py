@@ -5,7 +5,7 @@ import subprocess
 
 
 def get_process_details(process_name):
-    process_cmd = "ps -eo ruser,pid,args  | grep -wiE '"+process_name+"' | grep -v grep"
+    process_cmd = "ps -eo ruser,pid,args  | grep -wiE '"+process_name+"' | grep -v grep | grep -v process_availability "
     p = subprocess.Popen(process_cmd, stdout=subprocess.PIPE, shell=True)
     (output, err) = p.communicate()
     p_status = p.wait()
@@ -26,7 +26,12 @@ if __name__ == "__main__":
     process_data['plugin_version'] = args.plugin_version
     process_data['heartbeat_required'] = args.heartbeat
     process_data['process_name'] = process_name
-    process_cmd_output = str(get_process_details(process_name))
+    process_cmd_output = get_process_details(process_name)
+    
+    if type(process_cmd_output) != str :
+        process_cmd_output = process_cmd_output.decode("utf-8") 
+    
+    
     
     users = []
     count = 0
