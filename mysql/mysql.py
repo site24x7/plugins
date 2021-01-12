@@ -264,8 +264,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', help='Host to be monitored',nargs='?', default=MYSQL_HOST)
     parser.add_argument('--port', help='port number', type=int,  nargs='?', default=MYSQL_PORT)
-    parser.add_argument('--username', help='user name of the elasticsearch', nargs='?', default=MYSQL_USERNAME)
-    parser.add_argument('--password', help='password of the elasticsearch', nargs='?', default=MYSQL_PASSWORD)
+    parser.add_argument('--username', help='user name', nargs='?', default=MYSQL_USERNAME)
+    parser.add_argument('--password', help='password', nargs='?', default=MYSQL_PASSWORD)
     
     parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=PLUGIN_VERSION)
     parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=HEARTBEAT)
