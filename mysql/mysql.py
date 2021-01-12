@@ -47,7 +47,7 @@ MYSQL_PASSWORD=""
 MYSQL_SOCKET = "/tmp/mysql.sock"
 
 #Mention the units of your metrics in this python dictionary. If any new metrics are added make an entry here for its unit.
-METRICS_UNITS={'connection_usage':'%'}
+METRICS_UNITS={'connection_usage':'%','uptime':'seconds','open_files_usage':'%'}
 
 METRICS_JSON={
     "Uptime":"uptime",
@@ -56,8 +56,7 @@ METRICS_JSON={
     "Threads_connected":"threads_connected",
     "Threads_running":"threads_running",
     "max_connections":"max_connections",
-    "Max_used_connections":"max_used_connections",
-    "Max_used_connections":"max_used_connections",
+    "Max_used_connections":"max_used_connections",    
     # Buffer pool
     "Innodb_buffer_pool_pages_total":"buffer_pool_pages_total",
     "Innodb_buffer_pool_pages_free":"buffer_pool_pages_free",
@@ -65,7 +64,8 @@ METRICS_JSON={
     "Innodb_buffer_pool_pages_data":"buffer pool pages data",
     #Innodb_buffer_pool_wait_free
     "Innodb_buffer_pool_wait_free":"innodb_buffer_pool_wait_free",
-    # Query cache items
+    # Query cache items    
+    # The query cache is deprecated as of MySQL 5.7.20, and is removed in MySQL 8.0. Deprecation
     "Qcache_hits":"qcache_hits",
     "Qcache_free_memory":"qcache_free_memory",
     "Qcache_not_cached":"qcache_not_cached",
@@ -81,7 +81,7 @@ METRICS_JSON={
     
     # open files
     "Open_files":"open_files",
-    "open_files_limit":"open_files_limit",
+    #"open_files_limit":"open_files_limit",
     
     "Table_locks_waited":"table_locks_waited",
     "Key_reads":"key_reads"
@@ -209,10 +209,16 @@ class MySQL(object):
                 
                 for attribute_keys in METRICS_JSON:
                     if attribute_keys in global_metrics:
-                        data[METRICS_JSON[attribute_keys]]=global_metrics[attribute_keys]  
+                        data[METRICS_JSON[attribute_keys]]=global_metrics[attribute_keys]
+                    elif attribute_keys in global_variables:
+                        data[METRICS_JSON[attribute_keys]]=global_variables[attribute_keys]
+                
                                                               
-                if 'threads_running' in data and  'max_connections' in data:
-                    data['connection_usage'] = ((data['threads_running'] /data['max_connections'])*100)                                                                                                                                                                                        
+                if 'threads_running' in data and  'max_connections' in global_variables:
+                    data['connection_usage'] = ((data['threads_running'] /global_variables['max_connections'])*100)
+                
+                if 'open_files' in data and  'open_files_limit' in global_variables:
+                    data['open_files_usage'] = ((data['open_files'] /global_variables['open_files_limit'])*100)                                                                                                                                                                                        
     
                 #no of reads & writes
                 if 'Com_insert' in global_metrics and  'Com_replace' in global_metrics and 'Com_update' in global_metrics and  'Com_delete' in global_metrics:
@@ -258,8 +264,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', help='Host to be monitored',nargs='?', default=MYSQL_HOST)
     parser.add_argument('--port', help='port number', type=int,  nargs='?', default=MYSQL_PORT)
-    parser.add_argument('--username', help='user name of the elasticsearch', nargs='?', default=MYSQL_USERNAME)
-    parser.add_argument('--password', help='password of the elasticsearch', nargs='?', default=MYSQL_PASSWORD)
+    parser.add_argument('--username', help='user name', nargs='?', default=MYSQL_USERNAME)
+    parser.add_argument('--password', help='password', nargs='?', default=MYSQL_PASSWORD)
     
     parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=PLUGIN_VERSION)
     parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=HEARTBEAT)
