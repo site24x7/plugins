@@ -1,6 +1,6 @@
 # Plugin for Monitoring Software Updates Count
 
-OS Supported : Ubuntu
+OS Supported : Ubuntu , Centos
 
 ### Plugin installation
 ---
@@ -15,9 +15,17 @@ OS Supported : Ubuntu
 
 ### Configuration
 
+ ##### Ubuntu
+ 
 - Plugin fetches software update count from the file "/var/lib/update-notifier/updates-available"
   
   If it is different kindly specify the same in FILE_PATH of check_updates.py.
+ 
+ ##### Centos
+
+- Plugin needs "yum-plugin-security" package to get the count of software updates.
+
+  If not installed kindly install using command "yum -y install yum-plugin-security"
 
 
 ### Metrics Captured
