@@ -11,7 +11,7 @@ data={}
 data['plugin_version'] = PLUGIN_VERSION
 data['heartbeat_required']=HEARTBEAT
 
-commands = {'packages_to_be_updated':'yum updateinfo list available | wc -l','security_updates':'yum updateinfo list security all | wc -l'}
+command="yum check-update --security | grep -i 'needed for security'"
 
 os_info = platform.linux_distribution()[0].lower()
 
@@ -22,13 +22,21 @@ def get_command_output(command):
     return output
 
 if 'centos' in os_info or 'red hat' in os_info:
-    for each_cmd,each_val in commands.items():
-        out = get_command_output(each_val)
+        out = get_command_output(command)
         if out:
             out = out.rstrip()
-            out = int(out) - 7
-            data[each_cmd] = out
-else:
+            count = out.split("needed for security")
+            security_count = count[0].split()[0]
+            if security_count == 'No':
+            	data['security_updates'] = 0
+            else:
+               data['security_updates'] = security_count
+            packages_count = count[1].split()
+            for each in packages_count:
+                 if each.isdigit():
+                     data['packages_to_be_updated']=each
+                
+else:	
     FILE_PATH='/var/lib/update-notifier/updates-available'
     lines = [line.strip('\n') for line in open(FILE_PATH)]
     for line in lines:
