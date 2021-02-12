@@ -28,7 +28,7 @@ if 'centos' in os_info or 'red hat' in os_info:
             count = out.split("needed for security")
             security_count = count[0].split()[0]
             if security_count == 'No':
-            	data['security_updates'] = 0
+                data['security_updates'] = 0
             else:
                data['security_updates'] = security_count
             packages_count = count[1].split()
@@ -36,12 +36,13 @@ if 'centos' in os_info or 'red hat' in os_info:
                  if each.isdigit():
                      data['packages_to_be_updated']=each
                 
-else:	
-    FILE_PATH='/var/lib/update-notifier/updates-available'
-    lines = [line.strip('\n') for line in open(FILE_PATH)]
+else:    
+    file_path='/var/lib/update-notifier/updates-available'
+    lines = [line.strip('\n') for line in open(file_path)]
     for line in lines:
-        if 'packages can be updated' in line:
-            data['packages_to_be_updated'] = line.split()[0]
-        if 'updates are security updates' in line:
-            data['security_updates'] = line.split()[0]
+        if line:
+            if ( 'packages can be updated' in line ) or ('can be installed immediately' in line ):
+                data['packages_to_be_updated'] = line.split()[0]
+            if 'updates are security updates' in line:
+                data['security_updates'] = line.split()[0]
 print(json.dumps(data))
