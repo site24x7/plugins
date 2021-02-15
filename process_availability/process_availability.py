@@ -33,7 +33,6 @@ if __name__ == "__main__":
     
     
     
-    users = []
     count = 0
     if process_cmd_output:
         process_data['status'] = 0
@@ -41,7 +40,6 @@ if __name__ == "__main__":
         for line in process_cmd_output.split("\n") :
             count = count+1
             data = line.split()
-            users.append(data[0])
     else:
         process_data['status'] = 1
         process_data['msg'] = "Process {} : Not Running".format(process_name)

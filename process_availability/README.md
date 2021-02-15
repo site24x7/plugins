@@ -1,5 +1,5 @@
-Plugin for monitoring the availability monitoring
-=================================================
+Plugin for monitoring the process availability 
+==============================================
 
 This plugin monitors if the specified process is running in the current machine and alert it as down and return the number of processes. If no specified process is running, it will alert as up.
 
