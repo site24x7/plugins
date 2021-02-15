@@ -1,7 +1,7 @@
 Plugin for monitoring the availability monitoring
 =================================================
 
-This plugin monitors if the specified process is running in the current machine and return the number of processes.
+This plugin monitors if the specified process is running in the current machine and alert it as down and return the number of processes. If no specified process is running, it will alert as up.
 
 ### Prerequisites
 
@@ -32,7 +32,6 @@ The agent will automatically execute the plugin within five minutes and send per
 
 ### Configurations
 ---
-
 	process = Process to be monitored.
 	plugin_version = 1
 	heartbeat = True
