@@ -65,9 +65,10 @@ For e.g. mysql => /opt/site24x7agent/monagent/plugins/mysql-replication.py/mysql
 #Config Section:
 	MYSQL_HOST = "localhost"
 	MYSQL_PORT="3306"
-	MYSQL_USERNAME="root"
+	MYSQL_USERNAME="test"
 	MYSQL_PASSWORD=""
 	
+For Multiple Configurations in a Single Plugin Script use configuration file mysql-replication.cfg
 
 MySQL Replication Plugin Attributes:
 ==================================== 
