@@ -18,7 +18,7 @@ VERSION_QUERY = 'SELECT VERSION()'
 PLUGIN_VERSION = "1"
 
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
-HEARTBEAT="true"
+HEARTBEAT=True
 
 #Config Section: 
 #Use either True | False - enabled True will read mysql configurations from my.cnf file , Please provide the my.cnf path below
@@ -31,7 +31,7 @@ MYSQL_HOST = "localhost"
 
 MYSQL_PORT="3306"
 
-MYSQL_USERNAME="root"
+MYSQL_USERNAME="test"
 
 MYSQL_PASSWORD=""
 
@@ -123,10 +123,7 @@ class MySQL(object):
         return bool_result,data
 
     def metricCollector(self):
-        data = {}
-        data['plugin_version'] = PLUGIN_VERSION
-        data['heartbeat_required']=HEARTBEAT
-
+        data = {}        
         bool_result,data = self.checkPreRequisites(data)
         
         if bool_result==False:
@@ -218,11 +215,28 @@ class MySQL(object):
         return data
 
 if __name__ == "__main__":
-
-    configurations = {'host': MYSQL_HOST, 'port': MYSQL_PORT, 'user': MYSQL_USERNAME, 'password': MYSQL_PASSWORD}
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', help='Host to be monitored',nargs='?', default=MYSQL_HOST)
+    parser.add_argument('--port', help='port number', type=int,  nargs='?', default=MYSQL_PORT)
+    parser.add_argument('--username', help='user name', nargs='?', default=MYSQL_USERNAME)
+    parser.add_argument('--password', help='password', nargs='?', default=MYSQL_PASSWORD)
+    
+    parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=PLUGIN_VERSION)
+    parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=HEARTBEAT)
+    args = parser.parse_args()
+    
+    host_name=args.host
+    port=str(args.port)
+    username=args.username
+    password=args.password
+    
+    configurations = {'host': host_name, 'port': port, 'user': username, 'password': password}
 
     mysql_plugins = MySQL(configurations)
     
     result = mysql_plugins.metricCollector()
+    result['plugin_version'] = args.plugin_version
+    result['heartbeat_required'] = args.heartbeat
     
     print(json.dumps(result, indent=4, sort_keys=True))
