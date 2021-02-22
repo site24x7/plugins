@@ -11,15 +11,15 @@ data={}
 data['plugin_version'] = PLUGIN_VERSION
 data['heartbeat_required']=HEARTBEAT
 
-command="yum check-update --security | grep -i 'needed for security'"
+command="yum check-update --security | grep -i 'security' | grep -i 'needed'"
 
 os_info = platform.linux_distribution()[0].lower()
 
 def get_command_output(command):
-    p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     (output, err) = p.communicate()
     p_status = p.wait()
-    return output
+    return output or err
 
 if 'centos' in os_info or 'red hat' in os_info:
         out = get_command_output(command)
