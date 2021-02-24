@@ -1,0 +1,5 @@
+#### Only First 25 metics will be monitored with  digit precision
+#### Format
+#### MBean-Definition(mandatory)
+#### It will take all the metrics from the mbean
+java.lang:type=OperatingSystem
