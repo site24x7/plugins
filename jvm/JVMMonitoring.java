@@ -89,6 +89,7 @@ public class JVMMonitoring {
 			keymap.put("UnloadedClassCount", "Classes Unloaded");
 			keymap.put("FreePhysicalMemorySize", "Runtime Free Memory");//MB
 			keymap.put("TotalPhysicalMemorySize", "Runtime Total Memory");//MB
+			keymap.put("TotalCompilationTime", "Compilation Time");//ms
 			
 			keymap.put("DaemonThreadCount", "Daemon threads");
 			keymap.put("ThreadCount", "Live threads");
