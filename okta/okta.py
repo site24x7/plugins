@@ -1,4 +1,3 @@
-#!/usr/bin/python
 """
 
 Site24x7 Okta Logs Plugin
