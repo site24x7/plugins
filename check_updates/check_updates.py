@@ -10,6 +10,8 @@ HEARTBEAT="true"
 data={}
 data['plugin_version'] = PLUGIN_VERSION
 data['heartbeat_required']=HEARTBEAT
+data['packages_to_be_updated']=0
+data['security_updates']=0
 
 command="yum check-update --security | grep -i 'needed for security'"
 
