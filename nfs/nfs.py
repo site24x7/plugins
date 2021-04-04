@@ -8,7 +8,7 @@ import os
 import argparse
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
-PLUGIN_VERSION = "4"
+PLUGIN_VERSION = "1"
 
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT="true"
