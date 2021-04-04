@@ -18,7 +18,7 @@ check(){
                                 if ps -p $DFPID > /dev/null ; then
 					sleep 1
                                 else
-                                        break
+                                       break
                                 fi
                         done
                         if ps -p $DFPID > /dev/null ; then
@@ -28,11 +28,15 @@ check(){
                         else 
                                 output=$(rpcinfo -u "$line" nfs | egrep -i "ready|waiting")
                                 #echo "$output"
+                                varr=$(findmnt | grep -w $path)
+                                disk=$(df $path | grep -w $path)
+                                disp="$varr@@@@@@$disk"
+                                
                                 if [ "$output" ]
                                 then
-                                        echo "$line%%1"
+                                        echo "$disp%%1"
                                 else
-                                        echo "$line%%0"
+                                        echo "$disp%%0"
                                 fi
                         fi
                 done
