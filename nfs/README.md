@@ -27,10 +27,6 @@ This plugin monitors the performance metrics of NFS mount point status, IP addre
 
 	  [display_name]
 	  mount_folder = “<your_mount_folder_path>”
-    
-- Change the plugin_time_out under <site24x7_inastallation_directory>/site24x7/monagent/conf/monagent.cfg, as mentioned below.
-
-	  plugin_time_out = 70
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
