@@ -14,8 +14,7 @@ This plugin monitors the performance metrics of NFS mount point status, IP addre
 
 - Create a directory "nfs" under Site24x7 Linux Agent plugin directory : 
 
-      Linux (Root)      ->   /opt/site24x7/monagent/plugins/nfs
-      Linux (Non Root)  ->   /home/<user_name>/site24x7/monagent/plugins/nfs
+      Linux       ->   /<site24x7_installation_directory>/site24x7/monagent/plugins/nfs
 
 - Open a terminal inside the nfs folder created on the above step and execute the below mentioned commands to download the plugin files.
 
