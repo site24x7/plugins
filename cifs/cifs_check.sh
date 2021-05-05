@@ -3,7 +3,7 @@ check(){
 	#echo "check"
 	#echo $1
         path=$1
-	ipaddr=$(mount -l -t nfs,nfs4,nfs2,nfs3 | grep -w "$path" | awk -F'[(|,|=|)]' '{ for(i=1;i<=NF;i++) if ($i == "addr") print $(i+1) }')
+	ipaddr=$(mount -l -t cifs | grep -w "$path" | awk -F'[(|,|=|)]' '{ for(i=1;i<=NF;i++) if ($i == "addr") print $(i+1) }')
 	#echo $ipaddr
         if [ "$ipaddr" ]
         then
@@ -26,8 +26,6 @@ check(){
                                 #echo 'stale error'
                                 echo "-2"
                         else 
-                                output=$(rpcinfo -u "$line" nfs | egrep -i "ready|waiting")
-                                #echo "$output"
                                 varr=$(findmnt | grep -w $path)
                                 disk=$(df $path | grep -w $path)
                                 disp="$varr@@@@@@$disk"
