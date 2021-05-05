@@ -68,20 +68,19 @@ class pgsql():
         try: 
             self._results.setdefault('plugin_version' , str(plugin_version))
             self._results.setdefault('heartbeat_required' , str(heartbeat))
-            try:
-                import psycopg2
-            except Exception as e:
-                self._results.setdefault('status',0)
-                self._results.setdefault('msg', 'psycopg2 not installed')
+            import psycopg2
             self._conn = psycopg2.connect( dbname = self._db, user = self._uname , password = self._pwd, host = self._hostname, port = self._port )
             VERSION = self._conn.server_version
             inititializeQueries()
             self._results.setdefault('VERSION',str(VERSION))
             self._results.setdefault('db_name',str(self._db))
             self.metricCollector()
+        except ImportError as e:
+            self._results.setdefault('status',0)
+            self._results.setdefault('msg', 'psycopg2 not installed')
         except Exception as e:
             self._results.setdefault('status',0)
-            self._results.setdefault('msg', str(e)[:50]+ ' ...')
+            self._results.setdefault('msg', str(e))
         finally:
             if self._conn:
                 self._conn.close()
@@ -148,4 +147,3 @@ if __name__ == '__main__':
         
     psql = pgsql(host_name,port,username,password,db)
     psql.main(plugin_version,heartbeat)
-    
