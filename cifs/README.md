@@ -14,13 +14,13 @@ This plugin monitors the performance metrics of CIFS mount point status, IP addr
 
 - Create a directory "cifs" under Site24x7 Linux Agent plugin directory : 
 
-      Linux       ->   /<site24x7_installation_directory>/site24x7/monagent/plugins/cifs
+      Linux       ->   /opt/site24x7/monagent/plugins/cifs
 
 - Open a terminal inside the nfs folder created on the above step and execute the below mentioned commands to download the plugin files.
 
-	  wget https://raw.githubusercontent.com/mrkksparrow/plugins/master/cifs/cifs.py
-	  wget https://raw.githubusercontent.com/mrkksparrow/plugins/master/cifs/cifs.cfg
-	  wget https://raw.githubusercontent.com/mrkksparrow/plugins/master/cifs/cifs_check.sh
+	  wget https://raw.githubusercontent.com/site24x7/plugins/master/cifs/cifs.py
+	  wget https://raw.githubusercontent.com/site24x7/plugins/master/cifs/cifs.cfg
+	  wget https://raw.githubusercontent.com/site24x7/plugins/master/cifs/cifs_check.sh
 	
 - Configure the mount point to be monitored in the cifs.cfg file, as mentioned below.
 
