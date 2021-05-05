@@ -26,7 +26,7 @@ Follow the below steps to configure the ActiveMQ plugin and the monitoring metri
 
 - Create a folder "activemq" under Site24x7 Linux Agent plugin directory : 
 
-      Linux            ->   /<site24x7_installation_directory>/site24x7/monagent/plugins/activemq
+      Linux            ->   /opt/site24x7/monagent/plugins/activemq
 
 ##### Windows 
 
@@ -38,14 +38,14 @@ Follow the below steps to configure the ActiveMQ plugin and the monitoring metri
 
 - Download all the files in "activemq" folder and place it under the "activemq" directory
 
-	  wget https://raw.githubusercontent.com/mrkksparrow/plugins/master/activemq/activemq.py
-	  wget https://raw.githubusercontent.com/mrkksparrow/plugins/master/activemq/activemq.cfg
+	  wget https://raw.githubusercontent.com/site24x7/plugins/master/activemq/activemq.py
+	  wget https://raw.githubusercontent.com/site24x7/plugins/master/activemq/activemq.cfg
 	
 - Configure the keys to be monitored, as mentioned in the configuration section below.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python activemq.py –-host_name=localhost -–port=1099 -–broker_name=<your_broker_name> --destination_name=<your_destination_name>
+		python activemq.py –-host_name=localhost -–port=1099 -–broker_name=<your_broker_name> --destination_name=<your_queue_name>
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
