@@ -3,7 +3,6 @@
 ### This plugin is used for monitoring PostGres Database
 ### For monitoring the performance metrics of your PostgreSQL database using Site24x7 Server Monitoring Plugins.
 ### 
-### Author: Tarun, Zoho Corp
 ### Language : Python
 ### Tested in Ubuntu
 
@@ -11,17 +10,17 @@ import psycopg2
 import json
 from collections import OrderedDict
 
-db = None
-userName = None             #Change the username here
-passWord = None             #Change the authentication method
-hostName = None             #Change this value if it is a remote host
-port = 5432                 #Change the port number (5432 by default)
+DB = 'postgres'                   #Change the DB name here
+USERNAME = 'postgres'             #Change the username here
+PASSWORD = None                   #Change the authentication method
+HOSTNAME = 'localhost'            #Change this value if it is a remote host
+PORT = 5432                       #Change the port number (5432 by default)
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
 
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
-HEARTBEAT="true"
+HEARTBEAT=True
 
 VERSION = None
 
@@ -56,19 +55,19 @@ def inititializeQueries():
                         }
 
 class pgsql():
-    def __init__(self):
+    def __init__(self,host_name,port,username,password,db):
         self._conn = None
-        self._uname = userName
-        self._pwd = passWord
+        self._uname = username
+        self._pwd = password
         self._db = db
-        self._hostname = hostName
+        self._hostname = host_name
         self._port = port
         self._results = {}
-    def main(self):
+    def main(self,plugin_version,heartbeat):
         global VERSION
         try: 
-            self._results.setdefault('plugin_version' , str(PLUGIN_VERSION))
-            self._results.setdefault('heartbeat_required' , str(HEARTBEAT))
+            self._results.setdefault('plugin_version' , str(plugin_version))
+            self._results.setdefault('heartbeat_required' , str(heartbeat))
             try:
                 import psycopg2
             except Exception as e:
@@ -78,6 +77,7 @@ class pgsql():
             VERSION = self._conn.server_version
             inititializeQueries()
             self._results.setdefault('VERSION',str(VERSION))
+            self._results.setdefault('db_name',str(self._db))
             self.metricCollector()
         except Exception as e:
             self._results.setdefault('status',0)
@@ -127,5 +127,25 @@ class pgsql():
         #self._results.setdefault('Error occured','0')
     
 if __name__ == '__main__':
-    psql = pgsql()
-    psql.main()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', help='Host to be monitored',nargs='?', default=HOSTNAME)
+    parser.add_argument('--port', help='port number', type=int,  nargs='?', default=PORT)
+    parser.add_argument('--username', help='user name', nargs='?', default=USERNAME)
+    parser.add_argument('--password', help='password', nargs='?', default=PASSWORD)
+    parser.add_argument('--db', help='database name', nargs='?', default=DB)
+    parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=PLUGIN_VERSION)
+    parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=HEARTBEAT)
+    args = parser.parse_args()
+        
+    host_name=args.host
+    port=str(args.port)
+    username=args.username
+    password=args.password
+    db=args.db
+    plugin_version=args.plugin_version
+    heartbeat=args.heartbeat
+        
+    psql = pgsql(host_name,port,username,password,db)
+    psql.main(plugin_version,heartbeat)
+    
