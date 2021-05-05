@@ -1,24 +1,24 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 import json
 import argparse
 
 # if any impacting changes to this plugin kindly increment the plugin version here.
-PLUGIN_VERSION = 1
+PLUGIN_VERSION = 3
 
 # Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT = "true"
 
-# Enter the host name configures for the Solr JMX
+# Enter the host name configures for the Activemq JMX host
 HOST_NAME = ""
 
-# Enter the port configures for the Solr JMX
+# Enter the port configures for the Activemq JMX port
 PORT = ""
 
-# Enter the Broker name to be monitored from your Apache Solr
+# Enter the Broker name to be monitored from your Activemq broker
 BROKER_NAME = ""
 
-# Enter the Destination name to be monitored from your Apache Solr
+# Enter the Destination name to be monitored from your Activemq Queue name
 DESTINATION_NAME = ""
 
 URL = ""
@@ -84,6 +84,7 @@ def mbean_attributes(jmxconnection, QUERY, javax, metric_arg):
 
 # JMX url is defined and JMX connection is established, Query and metric keys are passed to process
 def get_output():
+    result = {}
     URL = "service:jmx:rmi:///jndi/rmi://" + HOST_NAME + ":" + PORT + "/jmxrmi"
     try:
         import jpype
@@ -97,19 +98,19 @@ def get_output():
         jmxconnection = jmxsoc.getMBeanServerConnection()
 
         QUERY = "org.apache.activemq:type=Broker,brokerName=" + BROKER_NAME
-        result_json = mbean_attributes(jmxconnection, QUERY, javax, metric_map["broker_metrics"])
+        result = mbean_attributes(jmxconnection, QUERY, javax, metric_map["broker_metrics"])
 
         QUERY = "org.apache.activemq:type=Broker,brokerName=" + BROKER_NAME + ",destinationType=Queue,destinationName=" + DESTINATION_NAME
-        result_json.update(mbean_attributes(jmxconnection, QUERY, javax, metric_map["queue_metrics"]))
+        result.update(mbean_attributes(jmxconnection, QUERY, javax, metric_map["queue_metrics"]))
 
-        result_json["broker_name"] = BROKER_NAME
-        result_json["queue_name"] = DESTINATION_NAME
+        result["broker_name"] = BROKER_NAME
+        result["queue_name"] = DESTINATION_NAME
 
     except Exception as e:
-        result_json["status"] = 0
-        result_json["msg"] = str(e)
+        result["status"] = 0
+        result["msg"] = str(e)
 
-    return result_json
+    return result
 
 
 # arguments are parsed from activemq.cfg file and assigned with the variables
