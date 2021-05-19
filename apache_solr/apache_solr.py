@@ -1,100 +1,205 @@
 #!/usr/bin/python
 
-'''
-Created on 24-August-2018
-
-@author: giri
-'''
-
-
-import six.moves.urllib.request as urlconnection
-import traceback
 import json
-import os
-import sys
+import argparse
 
-SOLR_HOST = "127.0.0.1" #solr host
-SOLR_PORT = "8983" #solr port
-SOLR_METRICS_URL = "solr/admin/cores?action=status"
+# if any impacting changes to this plugin kindly increment the plugin version here.
+PLUGIN_VERSION = 1
 
-PLUGIN_VERSION = "1"
+# Setting this to true will alert you when there is a communication problem while posting plugin data to server
+HEARTBEAT = "true"
 
-CORES = [] #mention the core names as needed
+# Enter the host name configures for the Solr JMX
+HOST_NAME = ""
 
-HEARTBEAT_REQUIRED = "true"
+# Enter the port configures for the Solr JMX
+PORT = ""
 
-final_dict = {}
+# Enter the domain name configures for the Solr Instance
+DOMAIN = ""
 
+URL = ""
+QUERY = ""
 
-
-def final_parser(func):
-    def wrapper():
-        try:
-            result = func()
-            if not result is None:
-                result_json = json.loads(result)
-                final_dict["status"] = 1
-                final_dict["num_of_cores"] = len(result_json["status"])
-                for core in result_json["status"]:
-                    if CORES and not core in CORES:
-                        continue
-                    elif CALC_CORES and len(CALC_CORES) > 5 and not core in CALC_CORES:
-                        continue
-                    if not core in CALC_CORES:
-                        CALC_CORES.append(core)
-                    final_dict["{}_size_in_bytes".format(core)] = result_json["status"][core]["index"]["sizeInBytes"]
-                    final_dict["{}_num_docs".format(core)] = result_json["status"][core]["index"]["numDocs"]
-                    final_dict["{}_del_docs".format(core)] = result_json["status"][core]["index"]["deletedDocs"]
-                    final_dict["{}_index_heap_bytes".format(core)] = result_json["status"][core]["index"]["indexHeapUsageBytes"]
-                if CALC_CORES:
-                    with open(CALC_CORES_FILE_NAME, "w") as fp:
-                        fp.write(json.dumps(CALC_CORES))
-        except Exception as e:
-            final_dict["status"] = 0
-            final_dict["msg"] = repr(e)
-    return wrapper
+result_json = {}
 
 
-
-def log_decorator(func):
-    def wrapper():
-        result = None
-        try:
-            result = func()
-            if not result is str:
-                result = result.decode()
-        except Exception as e:
-            final_dict["status"] = 0
-            final_dict["msg"] = repr(e)
-        return result
-    return wrapper
-
-
-@final_parser
-@log_decorator
-def start_data_collection():
-    request_obj = urlconnection.Request("http://{}:{}/{}".format(SOLR_HOST, SOLR_PORT, SOLR_METRICS_URL))
-    response = urlconnection.urlopen(request_obj)
-    resp_data = response.read()
-    return resp_data
-
-
-def pre_work():
-    global CALC_CORES
-    global CALC_BOOL_FLAG
-    global CALC_CORES_FILE_NAME
-    CALC_CORES_FILE_NAME = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "calc_cores.json")
-    content = None
-    if os.path.isfile(CALC_CORES_FILE_NAME):
-        with open(CALC_CORES_FILE_NAME, "r") as fp:
-            content = fp.read()
-    CALC_CORES = json.loads(content) if not content in [None, ""] else []
-    CALC_BOOL_FLAG = True if CALC_CORES else False
+METRIC_UNITS = {
+    "document_cache_evictions": "evictions/second",
+    "document_cache_hits": "hits/second",
+    "document_cache_inserts": "sets/second",
+    "document_cache_lookups": "gets/second",
+    "filter_cache_evictions": "evictions/second",
+    "filter_cache_hits": "hits/second",
+    "filter_cache_inserts": "sets/second",
+    "filter_cache_lookups": "gets/second",
+    "query_result_cache_evictions": "evictions/second",
+    "query_result_cache_hits": "hits/second",
+    "query_result_cache_inserts": "sets/second",
+    "query_result_cache_lookups": "gets/second",
+    "cache_evictions": "evictions/second",
+    "cache_hits": "hits/second",
+    "cache_inserts": "sets/second",
+    "cache_lookups": "gets/second",
+    "searcher_maxdoc": "documents",
+    "searcher_numdocs": "documents",
+    "searcher_warmup_time": "documents",
+    "request_times_50percentile": "requests/second",
+    "request_times_75percentile": "requests/second",
+    "request_times_95percentile": "requests/second",
+    "request_times_98percentile": "requests/second",
+    "request_times_999percentile": "requests/second",
+    "request_times_99percentile": "requests/second",
+    "request_times_mean": "milliseconds/request",
+    "request_times_mean_rate": "requests/second",
+    "request_times_one_minute_rate": "requests/second"
+}
 
 
-if not CORES:
-    pre_work()
-start_data_collection()
-final_dict["plugin_version"] = PLUGIN_VERSION
-final_dict["heartbeat_required"] = HEARTBEAT_REQUIRED
-print(json.dumps(final_dict))
+metric_map = {
+    "maxDoc" : {
+        "Value": "searcher_maxdoc",
+    },
+    "numDoc" : {
+        "Value": "searcher_numdocs",
+    },
+    "warmupTime" : {
+        "Value": "searcher_warmup_time",
+    },
+    "documentCache" : {
+        "lookups" : "document_cache_lookups",
+        "hits" : "document_cache_hits",
+        "inserts" : "document_cache_inserts",
+        "evictions" : "document_cache_evictions",
+    },
+    "queryResultCache" : {
+        "lookups" : "query_result_cache_lookups",
+        "hits" : "query_result_cache_hits",
+        "inserts" : "query_result_cache_inserts",
+        "evictions" : "query_result_cache_evictions",
+    },
+    "filterCache" : {
+        "lookups" : "filter_cache_lookups",
+        "hits" : "filter_cache_hits",
+        "inserts" : "filter_cache_inserts",
+        "evictions" : "filter_cache_evictions",
+    },
+    "requests" : {
+        "Count": "query_requests",
+    },
+    "timeouts" : {
+        "Count": "query_timeouts",
+    },
+    "errors" : {
+        "Count": "query_errors",
+    },
+    "totalTime" : {
+        "Count": "query_time",
+    },
+    "requestTimes" : {
+        "Mean" : "query_request_times_mean",
+        "MeanRate" : "query_request_times_mean_rate",
+        "50thPercentile" : "query_request_times_50thpercent",
+        "75thPercentile" : "query_request_times_75thpercent",
+        "95thPercentile" : "query_request_times_95thpercent",
+        "98thPercentile" : "query_request_times_98thpercent",
+        "99thPercentile" : "query_request_times_99thpercent",
+        "999thPercentile" : "query_request_times_999thpercent",
+        "OneMinuteRate" : "query_request_times_oneminuterate",
+    },
+}
+
+
+# JMX Query is executed and getting the Performance metric data after filtering the output
+def get_metrics_from_jmx(jmxconnection, QUERY, javax, metric_arg):
+    result = {}
+    try:
+        for metric in metric_arg:
+            output = jmxconnection.getAttribute(javax.management.ObjectName(QUERY), metric)
+            result[metric_arg[metric]] = output
+
+    except Exception as e:
+        result["status"] = 0
+        result["msg"] = str(e)
+
+    return result
+
+
+# JMX url is defined and JMX connection is established, Query and metric keys are passed to process
+def get_output():
+    result = {}
+    URL = "service:jmx:rmi:///jndi/rmi://" + HOST_NAME + ":" + PORT + "/jmxrmi"
+    try:
+        import jpype
+        from jpype import java
+        from jpype import javax
+        
+        jpype.startJVM(convertStrings=False)
+        
+        jhash = java.util.HashMap()
+        jmxurl = javax.management.remote.JMXServiceURL(URL)
+        jmxsoc = javax.management.remote.JMXConnectorFactory.connect(jmxurl, jhash)
+        jmxconnection = jmxsoc.getMBeanServerConnection()
+        
+        QUERY = "solr:dom1=core,dom2=" + DOMAIN + ",category=SEARCHER,scope=searcher,name=maxDoc"
+        result = get_metrics_from_jmx(jmxconnection, QUERY, javax, metric_map["maxDoc"])
+
+        QUERY = "solr:dom1=core,dom2=" + DOMAIN + ",category=SEARCHER,scope=searcher,name=numDocs"
+        result.update(get_metrics_from_jmx(jmxconnection, QUERY, javax, metric_map["numDoc"]))
+            
+        QUERY = "solr:dom1=core,dom2=" + DOMAIN + ",category=SEARCHER,scope=searcher,name=warmupTime"
+        result.update(get_metrics_from_jmx(jmxconnection, QUERY, javax, metric_map["warmupTime"]))
+            
+        QUERY = "solr:dom1=core,dom2=" + DOMAIN + ",category=CACHE,scope=searcher,name=documentCache"
+        result.update(get_metrics_from_jmx(jmxconnection, QUERY, javax, metric_map["documentCache"]))
+        
+        QUERY = "solr:dom1=core,dom2=" + DOMAIN + ",category=CACHE,scope=searcher,name=queryResultCache"
+        result.update(get_metrics_from_jmx(jmxconnection, QUERY, javax, metric_map["queryResultCache"]))
+        
+        QUERY = "solr:dom1=core,dom2=" + DOMAIN + ",category=CACHE,scope=searcher,name=filterCache"
+        result.update(get_metrics_from_jmx(jmxconnection, QUERY, javax, metric_map["filterCache"]))
+        
+        QUERY = "solr:dom1=core,dom2=" + DOMAIN + ",category=QUERY,scope=/query,name=requestTimes"
+        result.update(get_metrics_from_jmx(jmxconnection, QUERY, javax, metric_map["requestTimes"]))
+        
+        QUERY = "solr:dom1=core,dom2=" + DOMAIN + ",category=QUERY,scope=/query,name=requests"
+        result.update(get_metrics_from_jmx(jmxconnection, QUERY, javax, metric_map["requests"]))
+        
+        QUERY = "solr:dom1=core,dom2=" + DOMAIN + ",category=QUERY,scope=/query,name=timeouts"
+        result.update(get_metrics_from_jmx(jmxconnection, QUERY, javax, metric_map["timeouts"]))
+        
+        QUERY = "solr:dom1=core,dom2=" + DOMAIN + ",category=QUERY,scope=/query,name=errors"
+        result.update(get_metrics_from_jmx(jmxconnection, QUERY, javax, metric_map["errors"]))
+        
+        QUERY = "solr:dom1=core,dom2=" + DOMAIN + ",category=QUERY,scope=/query,name=totalTime"
+        result.update(get_metrics_from_jmx(jmxconnection, QUERY, javax, metric_map["totalTime"]))
+
+    except Exception as e:
+        result["status"] = 0
+        result["msg"] = str(e)
+
+    return result
+
+
+# arguments are parsed from solr.cfg file and assigned with the variables
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host_name', help="solr host_name", type=str)
+    parser.add_argument('--port', help="solr port", type=str)
+    parser.add_argument('--domain_name', help="solr domain", type=str)
+    args = parser.parse_args()
+    if args.host_name:
+        HOST_NAME = args.host_name
+    if args.port:
+        PORT = args.port
+    if args.domain_name:
+        DOMAIN = args.domain_name
+
+    result_json = get_output()
+
+    result_json['plugin_version'] = PLUGIN_VERSION
+    result_json['heartbeat_required'] = HEARTBEAT
+    result_json['units'] = METRIC_UNITS
+
+    print(json.dumps(result_json, indent=4, sort_keys=True))
