@@ -42,7 +42,7 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python solr.py –-host_name=localhost -–port=18983 -–domain_name=<your_domain_name>
+		python apache_solr.py --host_name=localhost --port=18983 --domain_name=<your_domain_name>
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
