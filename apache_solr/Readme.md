@@ -56,14 +56,6 @@ The agent will automatically execute the plugin within five minutes and send per
 
 ### Metrics Captured
 ---
-	cache_evictions - metric calculate the number of cache evictions across all caches since this node has been running in your Apache Solr Setup. [eviction]
-
-	cache_hits - metric calculate the number of cache hits across all caches since this node has been running in your Apache Solr Setup. [hit]
-
-	cache_insertst - metric calculate the number of cache insertions across all caches since this node has been running in your Apache Solr Setup. [set]
-
-	cache_lookups - metric calculate the number of cache lookups across all caches since this node has been running in your Apache Solr Setup. [get]
-
 	document_cache_evictions - metric calculate the number of cache evictions across document caches since this node has been running in your Apache Solr Setup. [eviction]
 
 	document_cache_hits - metric calculate the number of cache hits across document caches since this node has been running in your Apache Solr Setup. [hit]
@@ -111,3 +103,11 @@ The agent will automatically execute the plugin within five minutes and send per
 	searcher_numdocs - metric calculate the total number of indexed documents that can be searched in your Apache Solr Setup. [document]
 
 	searcher_warmup_time - metric calculate the total time spent on warming up the cache by pre-populating some cache items in your Apache Solr Setup. [millisecond]
+	
+	query_requests - metric calculate the total number of requests per second processed by the query handler. [request]
+	
+	query_timeouts - metric calculate the total number of responses per second received with partial results. [request]
+	
+	query_time - metric calculate the sum of all requests processing times. [millisecond]
+	
+	query_errors - metric calculate the number of errors per second encountered by the handler. [erroe]
