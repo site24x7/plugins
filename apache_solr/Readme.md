@@ -33,7 +33,7 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
       
 ---
 
-- Download all the files in "Site24x7_Solr" folder and place it under the "solr" directory
+- Download all the files in "solr" folder and place it under the "solr" directory
 
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_solr/apache_solr.py
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_solr/apache_solr.cfg
