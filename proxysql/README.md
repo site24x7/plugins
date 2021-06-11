@@ -22,12 +22,6 @@ Follow the below steps to configure the ProxySQL plugin and the monitoring metri
 
       Linux            ->   /opt/site24x7/monagent/plugins/proxysql
 
-##### Windows 
-
-- Create a folder "proxysql" under Site24x7 Windows Agent plugin directory : 
-
-      Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\proxysql
-      
 ---
 
 - Download all the files in "activemq" folder and place it under the "activemq" directory
