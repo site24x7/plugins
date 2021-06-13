@@ -1,51 +1,35 @@
-Plugin for ActiveMQ Monitoring 
+Plugin for Kong Monitoring 
 ==============================================
 
-Apache ActiveMQ enables easy processing of messages from various applications and communicates them across your infrastructure. Install and configure the ActiveMQ plugin to get a detailed view of how your systems and services are performing, all in a single, intuitive dashboard.
+Kong is API gateway with enterprise functionality. As part of Kong Konnect, the gateway brokers an organization’s information across all services by allowing customers to manage the full lifecycle of services and APIs. On top of that, it enables users to simplify the management of APIs and microservices across hybrid-cloud and multi-cloud deployments.
 
-Follow the below steps to configure the ActiveMQ plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of Apache ActiveMQ instances.
+Follow the below steps to configure the Kong plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of Apache Kong service instances.
 
 ### Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
-
-- Plugin Uses "JPype" python library. This module is used to execute the jmx query and get data. Execute the below command to install python JPype modeule in your server.  
-
-		pip install JPype1
-		
-- JMX connection should be enabled in the Apache ActiveMQ installation folder. To enable the JMX connection follow the below steps: Open conf/activemq.xml inside the installation folder of Apache ActiveMQ and change the following attributes
-
-		<managementContext>
-    		     <managementContext createConnector="true" connectorPort="1099"/>
-		</managementContext>
 
 
 ### Plugin installation
 ---
 ##### Linux 
 
-- Create a folder "activemq" under Site24x7 Linux Agent plugin directory : 
+- Create a folder "Kong" under Site24x7 Linux Agent plugin directory : 
 
-      Linux            ->   /opt/site24x7/monagent/plugins/activemq
+      Linux            ->   /opt/site24x7/monagent/plugins/Kong
 
-##### Windows 
-
-- Create a folder "activemq" under Site24x7 Windows Agent plugin directory : 
-
-      Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\activemq
-      
 ---
 
-- Download all the files in "activemq" folder and place it under the "activemq" directory
+- Download all the files in "Kong" folder and place it under the "Kong" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/activemq/activemq.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/activemq/activemq.cfg
+	  wget https://raw.githubusercontent.com/site24x7/plugins/master/Kong/Kong.py
+	  wget https://raw.githubusercontent.com/site24x7/plugins/master/Kong/Kong.cfg
 	
 - Configure the keys to be monitored, as mentioned in the configuration section below.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python activemq.py –-host_name=localhost -–port=1099 -–broker_name=<your_broker_name> --destination_name=<your_queue_name>
+		python Kong.py --host_name=localhost --port=8001 --service_name=<service-name>
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
@@ -54,38 +38,63 @@ The agent will automatically execute the plugin within five minutes and send per
 ---
 	[display_name]
 	host_name=“<your_host_name>”
-	port=“1099”
-	broker_name=“<your_broker_name>”
-	destination_name=“<your_destination_name>”
+	port=“8001”
+	service_name="<service_name"
 
 ### Metrics Captured
 ---
-	memory_percent_usage -> metric calculates the percentage of memory used by the given Broker in your ActiveMQ Setup. [percent]
+	proxysql_uptime -> metric calculates the percentage of memory used by the given Broker in your ActiveMQ Setup. [percent]
 
-	storage_percent_usage -> metric calculates the percentage of storage used by the given Broker in your ActiveMQ Setup. [percent]
+	sqlite3_memory_bytes -> metric calculates the percentage of storage used by the given Broker in your ActiveMQ Setup. [percent]
 
-	temp_percent_usage -> metric calculates the percentage of temp used by the given Broker in your ActiveMQ Setup. [percent]
+	active_transactions -> metric calculates the percentage of temp used by the given Broker in your ActiveMQ Setup. [percent]
 
-	avg_enqueue_time -> metric calculate the average amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	client_connections_aborted -> metric calculate the average amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
 
-	min_enqueue_time -> metric calculate the minimum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	client_connections_connected -> metric calculate the minimum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
 
-	max_enqueue_time -> metric calculate the maximum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	client_connections_created -> metric calculate the maximum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
 
-	dequeue_count -> metric calculate the number of messages that remained dequeued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	server_connections_aborted -> metric calculate the number of messages that remained dequeued in the queue of the given Broker of your ActiveMQ Setup. [message]
 	
-	enqueue_count -> metric calculate the number of messages that remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	server_connections_connected -> metric calculate the number of messages that remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [message]
 
-	consumer_count -> metric counts and records the number of consumers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+	server_connections_created -> metric counts and records the number of consumers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
 
-	producer_count -> metric counts and records the number of producers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+	client_connections_non_idle -> metric counts and records the number of producers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
 
-	dispatch_count -> metric counts and records the number of messages that have been dispatched in the queue of the given Broker of your ActiveMQ Setup. [message]
+	backend_query_time_nsec -> metric counts and records the number of messages that have been dispatched in the queue of the given Broker of your ActiveMQ Setup. [message]
 
-	queue_size -> metric calculate the number of messages that remained in the queue of the given Broker of your ActiveMQ Setup. [message]
+	mysql_backend_buffers_bytes -> metric calculate the number of messages that remained in the queue of the given Broker of your ActiveMQ Setup. [message]
 
-	memory_percent -> metric calculate the percentage of memory currently used in the queue of the given Broker of your ActiveMQ Setup. [percent]
+	mysql_frontend_buffers_bytes -> metric calculate the percentage of memory currently used in the queue of the given Broker of your ActiveMQ Setup. [percent]
 
-	expired_count -> metric calculate the number of messages that have been expired in the queue of the given Broker of your ActiveMQ Setup. [message]
+	mysql_session_internal_bytes -> metric calculate the number of messages that have been expired in the queue of the given Broker of your ActiveMQ Setup. [message]
 
-	in_flight_count -> metric calculate the number of messages that have been in flight in the queue of the given Broker of your ActiveMQ Setup. [message]		
+	mysql_thread_workers -> metric calculate the number of messages that have been in flight in the queue of the given Broker of your ActiveMQ Setup. [message]		
+
+	mysql_monitor_workers -> metric calculates the percentage of temp used by the given Broker in your ActiveMQ Setup. [percent]
+
+	client_connections_aborted -> metric calculate the average amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+
+	client_connections_connected -> metric calculate the minimum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+
+	client_connections_created -> metric calculate the maximum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+
+	server_connections_aborted -> metric calculate the number of messages that remained dequeued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	
+	server_connections_connected -> metric calculate the number of messages that remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [message]
+
+	server_connections_created -> metric counts and records the number of consumers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+
+	client_connections_non_idle -> metric counts and records the number of producers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+
+	backend_query_time_nsec -> metric counts and records the number of messages that have been dispatched in the queue of the given Broker of your ActiveMQ Setup. [message]
+
+	mysql_backend_buffers_bytes -> metric calculate the number of messages that remained in the queue of the given Broker of your ActiveMQ Setup. [message]
+
+	mysql_frontend_buffers_bytes -> metric calculate the percentage of memory currently used in the queue of the given Broker of your ActiveMQ Setup. [percent]
+
+	mysql_session_internal_bytes -> metric calculate the number of messages that have been expired in the queue of the given Broker of your ActiveMQ Setup. [message]
+
+	mysql_thread_workers -> metric calculate the number of messages that have been in flight in the queue of the given Broker of your ActiveMQ Setup. [message]		
