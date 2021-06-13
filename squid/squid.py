@@ -2,6 +2,7 @@
 
 
 import json
+import sys
 import argparse
 import os.path
 import time
@@ -12,13 +13,19 @@ import urllib.request as urlconnection
 PLUGIN_VERSION = 1
 
 # Setting this to true will alert you when there is a communication problem while posting plugin data to server
-HEARTBEAT = ""
+HEARTBEAT = "true"
 
 # Enter the host name configures for the Kong
 HOST_NAME = ""
 
 # Enter the port configured for the Kong
 PORT = ""
+
+# Check whether the os is Windows or Linux for path of plugin
+if sys.platform == "linux":
+    FILE_PATH = "/opt/site24x7/monagent/plugins/squid/squid_metrics.json"
+elif sys.platform == "win32":
+    FILE_PATH = "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\squid\squid_metrics.json"
 
 URL = ""
 result_json = {}
@@ -133,7 +140,7 @@ def calculate_persecond(previous_data, current_data):
         result["status"] = 0
         result["msg"] = str(e)
             
-    with open('/opt/site24x7/monagent/plugins/squid/squid_metrics.json', 'w') as outfile:
+    with open(FILE_PATH, 'w') as outfile:
         json.dump(current_data, outfile)
         
     return result
@@ -144,13 +151,13 @@ def collect_data():
     try:
         output = get_squid_counter()
         if not output[0]:
-            if os.path.exists('/opt/site24x7/monagent/plugins/squid/squid_metrics.json'):
-                os.remove('/opt/site24x7/monagent/plugins/squid/squid_metrics.json')
+            if os.path.exists('/squid_metrics.json'):
+                os.remove(FILE_PATH)
             result['status'] = 0
             result['msg'] = output[1]
         else:
-            if os.path.exists('/opt/site24x7/monagent/plugins/squid/squid_metrics.json'):
-                with open('/opt/site24x7/monagent/plugins/squid/squid_metrics.json') as json_file:
+            if os.path.exists(FILE_PATH):
+                with open(FILE_PATH) as json_file:
                     previous_data = json.load(json_file)
         
             else:
