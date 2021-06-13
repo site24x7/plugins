@@ -1,7 +1,7 @@
-Plugin for Kong Monitoring 
+Plugin for Squid Proxy Monitoring 
 ==============================================
 
-Kong is API gateway with enterprise functionality. As part of Kong Konnect, the gateway brokers an organization’s information across all services by allowing customers to manage the full lifecycle of services and APIs. On top of that, it enables users to simplify the management of APIs and microservices across hybrid-cloud and multi-cloud deployments.
+Squid Proxy is a fully-featured HTTP/1.0 proxy which is almost a fully-featured HTTP/1.1 proxy. Squid offers a rich access control, authorization and logging environment to develop web proxy and content serving applications. Squid offers a rich set of traffic optimization options, most of which are enabled by default for simpler installation and high performance.
 
 Follow the below steps to configure the Kong plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of Apache Kong service instances.
 
@@ -14,22 +14,28 @@ Follow the below steps to configure the Kong plugin and the monitoring metrics f
 ---
 ##### Linux 
 
-- Create a folder "kong" under Site24x7 Linux Agent plugin directory : 
+- Create a folder "squid" under Site24x7 Linux Agent plugin directory : 
 
-      Linux            ->   /opt/site24x7/monagent/plugins/kong
+      Linux            ->   /opt/site24x7/monagent/plugins/squid
 
+##### Windows 
+
+- Create a folder "squid" under Site24x7 Windows Agent plugin directory : 
+
+      Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\squid
+      
 ---
 
-- Download all the files in "kong" folder and place it under the "kong" directory
+- Download all the files in "squid" folder and place it under the "squid" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/kong/kong.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/kong/kong.cfg
+	  wget https://raw.githubusercontent.com/site24x7/plugins/master/squid/squid.py
+	  wget https://raw.githubusercontent.com/site24x7/plugins/master/squid/squid.cfg
 	
 - Configure the keys to be monitored, as mentioned in the configuration section below.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python kong.py --host_name=localhost --port=8001 --service_name=<service-name>
+		python squid.py --host_name=localhost --port=3128
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
@@ -38,8 +44,7 @@ The agent will automatically execute the plugin within five minutes and send per
 ---
 	[display_name]
 	host_name=“<your_host_name>”
-	port=“8001”
-	service_name="<service_name"
+	port=“3128”
 
 ### Metrics Captured
 ---
