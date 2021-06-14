@@ -56,58 +56,58 @@ The agent will automatically execute the plugin within five minutes and send per
 
 ### Metrics Captured
 ---
-	document_cache_evictions - metric calculate the number of cache evictions across document caches since this node has been running in your Apache Solr Setup. [eviction]
+	document_cache_evictions -> metric calculate the number of cache evictions across document caches since this node has been running in your Apache Solr Setup. [eviction]
 
-	document_cache_hits - metric calculate the number of cache hits across document caches since this node has been running in your Apache Solr Setup. [hit]
+	document_cache_hits -> metric calculate the number of cache hits across document caches since this node has been running in your Apache Solr Setup. [hit]
 
-	document_cache_inserts - metric calculate the number of cache insertions across document caches since this node has been running in your Apache Solr Setup. [set]
+	document_cache_inserts -> metric calculate the number of cache insertions across document caches since this node has been running in your Apache Solr Setup. [set]
 
-	document_cache_lookups - metric calculate the number of cache lookups across document caches since this node has been running in your Apache Solr Setup. [get]
+	document_cache_lookups -> metric calculate the number of cache lookups across document caches since this node has been running in your Apache Solr Setup. [get]
 
-	filter_cache_evictions - metric calculate the number of cache evictions across filter caches since this node has been running in your Apache Solr Setup. [eviction]
+	filter_cache_evictions -> metric calculate the number of cache evictions across filter caches since this node has been running in your Apache Solr Setup. [eviction]
 
-	filter_cache_hits - metric calculate the number of cache hits across filter caches since this node has been running in your Apache Solr Setup. [hit]
+	filter_cache_hits -> metric calculate the number of cache hits across filter caches since this node has been running in your Apache Solr Setup. [hit]
 
-	filter_cache_inserts - metric calculate the number of cache insertions across filter caches since this node has been running in your Apache Solr Setup. [set]
+	filter_cache_inserts -> metric calculate the number of cache insertions across filter caches since this node has been running in your Apache Solr Setup. [set]
 
-	filter_cache_lookups - metric calculate the number of cache lookups across filter caches since this node has been running in your Apache Solr Setup. [get]
+	filter_cache_lookups -> metric calculate the number of cache lookups across filter caches since this node has been running in your Apache Solr Setup. [get]
 
-	query_result_cache_evictions - metric calculate the number of cache evictions across query result caches since this node has been running in your Apache Solr Setup. [eviction]
+	query_result_cache_evictions -> metric calculate the number of cache evictions across query result caches since this node has been running in your Apache Solr Setup. [eviction]
 
-	query_result_cache_hits - metric calculate the number of cache hits across query result caches since this node has been running in your Apache Solr Setup. [hit]
+	query_result_cache_hits -> metric calculate the number of cache hits across query result caches since this node has been running in your Apache Solr Setup. [hit]
 
-	query_result_cache_inserts - metric calculate the number of cache insertions across query result caches since this node has been running in your Apache Solr Setup. [set]
+	query_result_cache_inserts -> metric calculate the number of cache insertions across query result caches since this node has been running in your Apache Solr Setup. [set]
 
-	query_result_cache_lookups - metric calculate the number of cache lookups across query result caches since this node has been running in your Apache Solr Setup. [get]
+	query_result_cache_lookups -> metric calculate the number of cache lookups across query result caches since this node has been running in your Apache Solr Setup. [get]
 
-	query_request_times_50thpercent - metric calculate the request processing time for the request which belongs to the 50th Percentile. E.g., if 100 requests are received, then the 50th fastest request time will be reported by this statistic. [request]
+	query_request_times_50thpercent -> metric calculate the request processing time for the request which belongs to the 50th Percentile. E.g., if 100 requests are received, then the 50th fastest request time will be reported by this statistic. [request]
 
-	query_request_times_75thpercent - metric calculate the request processing time for the request which belongs to the 75th Percentile. E.g., if 100 requests are received, then the 75th fastest request time will be reported by this statistic. [request]
+	query_request_times_75thpercent -> metric calculate the request processing time for the request which belongs to the 75th Percentile. E.g., if 100 requests are received, then the 75th fastest request time will be reported by this statistic. [request]
 
-	query_request_times_95thpercent - metric calculate the request processing time for the request which belongs to the 95th Percentile. E.g., if 100 requests are received, then the 95th fastest request time will be reported by this statistic. [request]
+	query_request_times_95thpercent -> metric calculate the request processing time for the request which belongs to the 95th Percentile. E.g., if 100 requests are received, then the 95th fastest request time will be reported by this statistic. [request]
 
-	query_request_times_98thpercent - metric calculate the request processing time for the request which belongs to the 98th Percentile. E.g., if 100 requests are received, then the 98th fastest request time will be reported by this statistic. [request]
+	query_request_times_98thpercent -> metric calculate the request processing time for the request which belongs to the 98th Percentile. E.g., if 100 requests are received, then the 98th fastest request time will be reported by this statistic. [request]
 
-	query_request_times_99thpercent - metric calculate the request processing time for the request which belongs to the 99th Percentile. E.g., if 100 requests are received, then the 99th fastest request time will be reported by this statistic. [request]
+	query_request_times_99thpercent -> metric calculate the request processing time for the request which belongs to the 99th Percentile. E.g., if 100 requests are received, then the 99th fastest request time will be reported by this statistic. [request]
 
-	query_request_times_999thpercent - metric calculate the request processing time for the request which belongs to the 99.9th Percentile. E.g., if 1000 requests are received, then the 999th fastest request time will be reported by this statistic. [request]
+	query_request_times_999thpercent -> metric calculate the request processing time for the request which belongs to the 99.9th Percentile. E.g., if 1000 requests are received, then the 999th fastest request time will be reported by this statistic. [request]
 
-	query_request_times_mean - metric calculate the mean of all the request processing time since this node has been running in your Apache Solr Setup. [request/second]
+	query_request_times_mean -> metric calculate the mean of all the request processing time since this node has been running in your Apache Solr Setup. [request/second]
 
-	query_request_times_mean_rate - metric calculate the average number of requests received per second since the Solr core was first created in your Apache Solr Setup. [request/second]
+	query_request_times_mean_rate -> metric calculate the average number of requests received per second since the Solr core was first created in your Apache Solr Setup. [request/second]
 
-	query_request_times_oneminuterate - metric calculate the number of requests per second received over the past one minute since this node has been running in your Apache Solr Setup. [request/second]
+	query_request_times_oneminuterate -> metric calculate the number of requests per second received over the past one minute since this node has been running in your Apache Solr Setup. [request/second]
 	
-	searcher_maxdoc - metric calculate the number of updates that have occurred since the last commit in your Apache Solr Setup. [document]
+	searcher_maxdoc -> metric calculate the number of updates that have occurred since the last commit in your Apache Solr Setup. [document]
 
-	searcher_numdocs - metric calculate the total number of indexed documents that can be searched in your Apache Solr Setup. [document]
+	searcher_numdocs -> metric calculate the total number of indexed documents that can be searched in your Apache Solr Setup. [document]
 
-	searcher_warmup_time - metric calculate the total time spent on warming up the cache by pre-populating some cache items in your Apache Solr Setup. [millisecond]
+	searcher_warmup_time -> metric calculate the total time spent on warming up the cache by pre-populating some cache items in your Apache Solr Setup. [millisecond]
 	
-	query_requests - metric calculate the total number of requests per second processed by the query handler. [request]
+	query_requests -> metric calculate the total number of requests per second processed by the query handler. [request]
 	
-	query_timeouts - metric calculate the total number of responses per second received with partial results. [request]
+	query_timeouts -> metric calculate the total number of responses per second received with partial results. [request]
 	
-	query_time - metric calculate the sum of all requests processing times. [millisecond]
+	query_time -> metric calculate the sum of all requests processing times. [millisecond]
 	
-	query_errors - metric calculate the number of errors per second encountered by the handler. [erroe]
+	query_errors -> metric calculate the number of errors per second encountered by the handler. [erroe]
