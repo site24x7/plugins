@@ -110,4 +110,4 @@ The agent will automatically execute the plugin within five minutes and send per
 	
 	query_time -> metric calculate the sum of all requests processing times. [millisecond]
 	
-	query_errors -> metric calculate the number of errors per second encountered by the handler. [erroe]
+	query_errors -> metric calculate the number of errors per second encountered by the handler. [error]
