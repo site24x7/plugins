@@ -23,12 +23,11 @@ METRIC_UNITS = {
     "active_unit" : "Unit",
     "failed_unit" : "Unit",
     "inactive_unit" : "Unit",
-    "deactiving_unit" : "Unit",
+    "deactivating_unit" : "Unit",
     "activating_unit" : "Unit",
     "monitored_unit" : "Unit",
-    "system_version" : "",
+    "systemd_version" : "",
     "systemd_uptime" : "",
-    "system_health" : ""
 }
 
 
@@ -39,10 +38,10 @@ cmd_dictionary = {
     "active_unit" : "systemctl --state active | grep -i 'loaded units listed'",
     "failed_unit" : "systemctl --state failed | grep -i 'loaded units listed'",
     "inactive_unit" : "systemctl --state inactive | grep -i 'loaded units listed'",
-    "deactiving_unit" : "systemctl --state deactivating | grep -i 'loaded units listed'",
+    "deactivating_unit" : "systemctl --state deactivating | grep -i 'loaded units listed'",
     "activating_unit" : "systemctl --state activating | grep -i 'loaded units listed'",
     "monitored_unit" : "systemctl --state monitored | grep -i 'loaded units listed'",
-    "system_version" : "systemctl --version | grep -i 'systemd'",
+    "systemd_version" : "systemctl --version | grep -i 'systemd'",
     "systemd_uptime" : "systemctl status colord | grep -Po '.*; \K(.*)(?: ago)'",
     #"system_health" : "systemctl --version | grep -i 'systemd'",
 }
