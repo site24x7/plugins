@@ -48,58 +48,52 @@ The agent will automatically execute the plugin within five minutes and send per
 
 ### Metrics Captured
 ---
-	proxysql_uptime -> metric calculates the percentage of memory used by the given Broker in your ActiveMQ Setup. [percent]
+	client_http.requests -> metric calculates the number of HTTP requests received from clients. [request]
 
-	sqlite3_memory_bytes -> metric calculates the percentage of storage used by the given Broker in your ActiveMQ Setup. [percent]
+	client_http.hits -> metric calculates the number of cache hits in response to client requests. [hit]
 
-	active_transactions -> metric calculates the percentage of temp used by the given Broker in your ActiveMQ Setup. [percent]
+	client_http.errors -> metric calculates the number of client transactions that resulted in an error. [error]
 
-	client_connections_aborted -> metric calculate the average amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	client_http.kbytes_in -> metric calculate the amount of traffic received from clients in their requests. [kibibyte]
 
-	client_connections_connected -> metric calculate the minimum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	client_http.kbytes_out -> metric calculate the amount of traffic sent to clients in responses. [kibibyte]
 
-	client_connections_created -> metric calculate the maximum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	client_http.hit_kbytes_out -> metric calculate the amount of traffic sent to clients in responses that are cache hits. [kibibyte]
 
-	server_connections_aborted -> metric calculate the number of messages that remained dequeued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	server.all.requests -> metric calculate the number of requests forwarded to origin servers (or neighbor caches) for all server-side protocols. [request]
 	
-	server_connections_connected -> metric calculate the number of messages that remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	server.all.errors -> metric calculate the number of server-side requests (all protocols) that resulted in some kind of error. [error]
 
-	server_connections_created -> metric counts and records the number of consumers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+	server.all.kbytes_in -> metric calculate the amount of traffic read from the server-side for all protocols. [kibibyte]
 
-	client_connections_non_idle -> metric counts and records the number of producers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+	server.all.kbytes_out -> metric calculate the amount of traffic written to origin servers and/or neighbor caches for server-side requests. [kibibyte]
 
-	backend_query_time_nsec -> metric counts and records the number of messages that have been dispatched in the queue of the given Broker of your ActiveMQ Setup. [message]
+	server.http.requests -> metric calculate the number of server-side requests to HTTP servers, including neighbor caches. [request]
 
-	mysql_backend_buffers_bytes -> metric calculate the number of messages that remained in the queue of the given Broker of your ActiveMQ Setup. [message]
+	server.http.errors -> metric calculate the number of server-side HTTP requests that resulted in an error. [error]
 
-	mysql_frontend_buffers_bytes -> metric calculate the percentage of memory currently used in the queue of the given Broker of your ActiveMQ Setup. [percent]
+	server.http.kbytes_in -> metric calculate the amount of traffic read from HTTP origin servers and neighbor caches. [kibibyte]
 
-	mysql_session_internal_bytes -> metric calculate the number of messages that have been expired in the queue of the given Broker of your ActiveMQ Setup. [message]
+	server.http.kbytes_out -> metric calculate the amount of traffic written to HTTP origin servers and neighbor caches. [kibibyte]
 
-	mysql_thread_workers -> metric calculate the number of messages that have been in flight in the queue of the given Broker of your ActiveMQ Setup. [message]		
+	server.ftp.requests -> metric calculate the number of requests sent to FTP servers. [request]		
 
-	mysql_monitor_workers -> metric calculates the percentage of temp used by the given Broker in your ActiveMQ Setup. [percent]
+	server.ftp.errors -> metric calculates the number of requests sent to FTP servers that resulted in an error. [error]
 
-	client_connections_aborted -> metric calculate the average amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	server.ftp.kbytes_in -> metric calculate the amount of traffic read from FTP servers, including control channel trafficp. [kibibyte]
 
-	client_connections_connected -> metric calculate the minimum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	server.ftp.kbytes_out -> metric calculate the amount of traffic written to FTP servers, including control channel traffic. [kibibyte]
 
-	client_connections_created -> metric calculate the maximum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	server.other.requests -> metric calculate the number of "other" server-side requests. Currently, the other protocols are Gopher, WAIS, and SSL. [request]
 
-	server_connections_aborted -> metric calculate the number of messages that remained dequeued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	server.other.errors -> metric calculate the number of Gopher, WAIS, and SSL requests that resulted in an error. [error]
 	
-	server_connections_connected -> metric calculate the number of messages that remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	server.other.kbytes_in -> metric calculate the amount of traffic read from Gopher, WAIS, and SSL servers. [kibibyte]
 
-	server_connections_created -> metric counts and records the number of consumers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+	server.other.kbytes_out -> metric calculate the amount of traffic written to Gopher, WAIS, and SSL servers. [kibibyte]
 
-	client_connections_non_idle -> metric counts and records the number of producers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+	unlink.requests -> metric calculate the number of unlink requests given to the (optional) unlinkd process. [request]
 
-	backend_query_time_nsec -> metric counts and records the number of messages that have been dispatched in the queue of the given Broker of your ActiveMQ Setup. [message]
+	page_faults -> metric calculate the number of (major) page faults as reported by getrusage( ). [fault]
 
-	mysql_backend_buffers_bytes -> metric calculate the number of messages that remained in the queue of the given Broker of your ActiveMQ Setup. [message]
-
-	mysql_frontend_buffers_bytes -> metric calculate the percentage of memory currently used in the queue of the given Broker of your ActiveMQ Setup. [percent]
-
-	mysql_session_internal_bytes -> metric calculate the number of messages that have been expired in the queue of the given Broker of your ActiveMQ Setup. [message]
-
-	mysql_thread_workers -> metric calculate the number of messages that have been in flight in the queue of the given Broker of your ActiveMQ Setup. [message]		
+	aborted_requests -> metric calculate the number of server-side HTTP requests aborted due to client-side aborts. [request]
