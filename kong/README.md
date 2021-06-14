@@ -1,4 +1,4 @@
-Plugin for Kong Monitoring 
+Plugin for Monitoring Kong 
 ==============================================
 
 Kong is API gateway with enterprise functionality. As part of Kong Konnect, the gateway brokers an organization’s information across all services by allowing customers to manage the full lifecycle of services and APIs. On top of that, it enables users to simplify the management of APIs and microservices across hybrid-cloud and multi-cloud deployments.
