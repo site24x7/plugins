@@ -84,13 +84,7 @@ The agent will automatically execute the plugin within five minutes and send per
 
 	query_request_times_75thpercent -> metric calculate the request processing time for the request which belongs to the 75th Percentile. E.g., if 100 requests are received, then the 75th fastest request time will be reported by this statistic. [request]
 
-	query_request_times_95thpercent -> metric calculate the request processing time for the request which belongs to the 95th Percentile. E.g., if 100 requests are received, then the 95th fastest request time will be reported by this statistic. [request]
-
-	query_request_times_98thpercent -> metric calculate the request processing time for the request which belongs to the 98th Percentile. E.g., if 100 requests are received, then the 98th fastest request time will be reported by this statistic. [request]
-
 	query_request_times_99thpercent -> metric calculate the request processing time for the request which belongs to the 99th Percentile. E.g., if 100 requests are received, then the 99th fastest request time will be reported by this statistic. [request]
-
-	query_request_times_999thpercent -> metric calculate the request processing time for the request which belongs to the 99.9th Percentile. E.g., if 1000 requests are received, then the 999th fastest request time will be reported by this statistic. [request]
 
 	query_request_times_mean -> metric calculate the mean of all the request processing time since this node has been running in your Apache Solr Setup. [request/second]
 
