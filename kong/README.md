@@ -43,58 +43,42 @@ The agent will automatically execute the plugin within five minutes and send per
 
 ### Metrics Captured
 ---
-	proxysql_uptime -> metric calculates the percentage of memory used by the given Broker in your ActiveMQ Setup. [percent]
+	connections_waiting -> metric calculate the current number of connections where nginx is writing the response back to the client. [connection]
 
-	sqlite3_memory_bytes -> metric calculates the percentage of storage used by the given Broker in your ActiveMQ Setup. [percent]
+	connections_accepted -> metric calculates the total number of accepted client connections. [connection]
 
-	active_transactions -> metric calculates the percentage of temp used by the given Broker in your ActiveMQ Setup. [percent]
+	connections_handled -> metric calculates the total number of handled connections. Generally, the parameter value is the same as accepts unless some resource limits have been reached. [connection]
 
-	client_connections_aborted -> metric calculate the average amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	connections_active -> metric calculate the acurrent number of active client connections including Waiting connections. [connection]
 
-	client_connections_connected -> metric calculate the minimum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	connections_reading -> metric calculate the current number of connections where Kong is reading the request header. [connection]
 
-	client_connections_created -> metric calculate the maximum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	total_requests -> metric calculate the total number of client requests. [connection]
 
-	server_connections_aborted -> metric calculate the number of messages that remained dequeued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	connections_writing -> metric calculate the current number of connections where nginx is writing the response back to the client. [connection]
 	
-	server_connections_connected -> metric calculate the number of messages that remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	kong_bandwidth.egress -> metric calculate the total bandwidth (egress->upload) in bytes consumed by the service in Kong [byte]
 
-	server_connections_created -> metric counts and records the number of consumers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+	kong_bandwidth.ingress -> metric calculate the total bandwidth (ingress->download) in bytes consumed by the service in Kong [byte]
 
-	client_connections_non_idle -> metric counts and records the number of producers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+	kong_datastore_reachable -> metric shows whether the kong server datastore is reachable or not (SAFE/CRITICAL). [connectivity]
 
-	backend_query_time_nsec -> metric counts and records the number of messages that have been dispatched in the queue of the given Broker of your ActiveMQ Setup. [message]
+	kong_http_status -> metric shows the status code for customer per service/route in Kong [code]
 
-	mysql_backend_buffers_bytes -> metric calculate the number of messages that remained in the queue of the given Broker of your ActiveMQ Setup. [message]
+	kong_latency_bucket.kong -> metric calculate the latency bucket added by kong latnecy for each service/route in Kong. [millisecond]
 
-	mysql_frontend_buffers_bytes -> metric calculate the percentage of memory currently used in the queue of the given Broker of your ActiveMQ Setup. [percent]
+	kong_latency_bucket.request -> metric calculate the latency bucket added by request latnecy for each service/route in Kong. [millisecond]
 
-	mysql_session_internal_bytes -> metric calculate the number of messages that have been expired in the queue of the given Broker of your ActiveMQ Setup. [message]
+	kong_latency_bucket.upstream -> metric calculate the latency bucket added by upstream latnecy for each service/route in Kong. [millisecond]
 
-	mysql_thread_workers -> metric calculate the number of messages that have been in flight in the queue of the given Broker of your ActiveMQ Setup. [message]		
+	kong_latency_count.kong -> metric calculate the latency count added by kong latnecy for each service/route in Kong. [millisecond]		
 
-	mysql_monitor_workers -> metric calculates the percentage of temp used by the given Broker in your ActiveMQ Setup. [percent]
+	kong_latency_count.request -> metric calculate the latency count added by request latnecy for each service/route in Kong. [millisecond]
 
-	client_connections_aborted -> metric calculate the average amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	kong_latency_count.upstream -> metric calculate the latency count added by upstream latnecy for each service/route in Kong. [millisecond]
 
-	client_connections_connected -> metric calculate the minimum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	kong_latency_sum.kong -> metric calculate the latency sum added by kong latnecy for each service/route in Kong. [millisecond]
 
-	client_connections_created -> metric calculate the maximum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	kong_latency_sum.request -> metric calculate the latency sum added by request latnecy for each service/route in Kong. [millisecond]
 
-	server_connections_aborted -> metric calculate the number of messages that remained dequeued in the queue of the given Broker of your ActiveMQ Setup. [message]
-	
-	server_connections_connected -> metric calculate the number of messages that remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [message]
-
-	server_connections_created -> metric counts and records the number of consumers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
-
-	client_connections_non_idle -> metric counts and records the number of producers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
-
-	backend_query_time_nsec -> metric counts and records the number of messages that have been dispatched in the queue of the given Broker of your ActiveMQ Setup. [message]
-
-	mysql_backend_buffers_bytes -> metric calculate the number of messages that remained in the queue of the given Broker of your ActiveMQ Setup. [message]
-
-	mysql_frontend_buffers_bytes -> metric calculate the percentage of memory currently used in the queue of the given Broker of your ActiveMQ Setup. [percent]
-
-	mysql_session_internal_bytes -> metric calculate the number of messages that have been expired in the queue of the given Broker of your ActiveMQ Setup. [message]
-
-	mysql_thread_workers -> metric calculate the number of messages that have been in flight in the queue of the given Broker of your ActiveMQ Setup. [message]		
+	kong_latency_sum.upstream -> metric calculate the latency sum added by upstream latnecy for each service/route in Kong. [millisecond]		
