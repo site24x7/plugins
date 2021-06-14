@@ -48,52 +48,54 @@ The agent will automatically execute the plugin within five minutes and send per
 
 ### Metrics Captured
 ---
-	proxysql_uptime -> metric calculates the percentage of memory used by the given Broker in your ActiveMQ Setup. [percent]
+	active_transactions -> metric calculates the number of client connections currently processing a transaction. [transaction]
 
-	sqlite3_memory_bytes -> metric calculates the percentage of storage used by the given Broker in your ActiveMQ Setup. [percent]
+	sqlite3_memory_bytes -> metric calculates the memory used by the embedded SQLite. [byte]
 
-	active_transactions -> metric calculates the percentage of temp used by the given Broker in your ActiveMQ Setup. [percent]
+	client_connections_aborted -> metric calculate the number of client failed or improperly closed connections per second. [connection]
 
-	client_connections_aborted -> metric calculate the average amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	client_connections_connected -> metric calculate the number of client connections that are currently connected. [connection]
 
-	client_connections_connected -> metric calculate the minimum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	client_connections_created -> metric calculate the number of client connections created per second. [connection]
 
-	client_connections_created -> metric calculate the maximum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
-
-	server_connections_aborted -> metric calculate the number of messages that remained dequeued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	server_connections_aborted -> metric calculate the number of backend failed or improperly closed connections per second. [connection]
 	
-	server_connections_connected -> metric calculate the number of messages that remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	server_connections_connected -> metric calculate the number of backend connections that are currently connected. [connection]
 
-	server_connections_created -> metric counts and records the number of consumers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+	server_connections_created -> metric calculate the number of backend connections created per second. [connection]
 
-	client_connections_non_idle -> metric counts and records the number of producers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+	client_connections_non_idle -> metric calculate the number of client connections that are currently handled by the main worker threads. [connection]
 
-	backend_query_time_nsec -> metric counts and records the number of messages that have been dispatched in the queue of the given Broker of your ActiveMQ Setup. [message]
+	backend_query_time_nsec -> metric calculate the time spent (as a percentage of total time) making network calls to communicate with the backends. [message]
 
-	mysql_backend_buffers_bytes -> metric calculate the number of messages that remained in the queue of the given Broker of your ActiveMQ Setup. [message]
+	mysql_backend_buffers_bytes -> metric calculate the memory use of buffers related to backend connections. [byte]
 
-	mysql_frontend_buffers_bytes -> metric calculate the percentage of memory currently used in the queue of the given Broker of your ActiveMQ Setup. [percent]
+	mysql_frontend_buffers_bytes -> metric calculate the memory use of buffers related to frontend connections (read/write buffers and other queues). [byte]
 
-	mysql_session_internal_bytes -> metric calculate the number of messages that have been expired in the queue of the given Broker of your ActiveMQ Setup. [message]
+	mysql_thread_workers -> metric calculate the number of MySQL Thread workers i.e. 'mysql-threads'. [worker]		
 
-	mysql_thread_workers -> metric calculate the number of messages that have been in flight in the queue of the given Broker of your ActiveMQ Setup. [message]		
+	mysql_monitor_workers -> metric calculates the number of monitor threads. [worker]
 
-	mysql_monitor_workers -> metric calculates the percentage of temp used by the given Broker in your ActiveMQ Setup. [percent]
+	connpool_get_conn_success -> metric calculate the number of requests per second where a connection was already available in the connection pool. [connection]
 
-	client_connections_aborted -> metric calculate the average amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
+	connpool_get_conn_immediate -> metric calculate the number of connections per second that a MySQL Thread obtained from its own local connection pool cache. [connection]
 
-	client_connections_connected -> metric calculate the minimum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
-
-	client_connections_created -> metric calculate the maximum amount of time, the messages remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [millisecond]
-
-	server_connections_aborted -> metric calculate the number of messages that remained dequeued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	questions -> metric calculate the number of client requests / statements executed per second. [question]
 	
-	server_connections_connected -> metric calculate the number of messages that remained enqueued in the queue of the given Broker of your ActiveMQ Setup. [message]
+	slow_queries -> metric calculate the number of queries per second with an execution time greater than 'mysql-long_query_time' milliseconds. [query]
 
-	server_connections_created -> metric counts and records the number of consumers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+	connpool_memory_bytes -> metric calculate the memory used by the connection pool to store connections metadata. [byte]
 
-	client_connections_non_idle -> metric counts and records the number of producers connected in the queue of the given Broker of your ActiveMQ Setup. [count]
+	stmt_client_active_total -> metric calculate the number of prepared statements that are in use by clients. [unit]
 
-	backend_query_time_nsec -> metric counts and records the number of messages that have been dispatched in the queue of the given Broker of your ActiveMQ Setup. [message]
+	stmt_client_active_unique -> metric calculate the number of unique prepared statements currently in use by clients. [unit]
 
-	mysql_backend_buffers_bytes -> metric calculate the number of messages that remained in the queue of the given Broker of your ActiveMQ Setup. [message]
+	stmt_server_active_total -> metric calculate the number of prepared statements currently available across all backend connections. [unit]
+
+	stmt_server_active_total -> metric calculate the number of prepared statements currently available across all backend connections. [unit]
+	
+	stmt_server_active_unique -> metric calculate the number of unique prepared statements currently available across all backend connections. [unit]
+
+	stmt_cached -> metric calculate the number of global prepared statements for which proxysql has metadata. [unit]
+
+	query_processor_time_nsec -> metric calculate the time (as a percentage of total time) spent inside the query processor determining the action to take with the query. [percent]
