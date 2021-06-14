@@ -1,4 +1,4 @@
-Plugin for monitoring the Apache Solr 
+Plugin for monitoring Apache Solr 
 ==============================================
 
 This plugin monitors the collection of detailed performance-oriented metrics throughout the life cycle of Solr service and its various components.
