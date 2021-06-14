@@ -97,9 +97,3 @@ The agent will automatically execute the plugin within five minutes and send per
 	backend_query_time_nsec -> metric counts and records the number of messages that have been dispatched in the queue of the given Broker of your ActiveMQ Setup. [message]
 
 	mysql_backend_buffers_bytes -> metric calculate the number of messages that remained in the queue of the given Broker of your ActiveMQ Setup. [message]
-
-	mysql_frontend_buffers_bytes -> metric calculate the percentage of memory currently used in the queue of the given Broker of your ActiveMQ Setup. [percent]
-
-	mysql_session_internal_bytes -> metric calculate the number of messages that have been expired in the queue of the given Broker of your ActiveMQ Setup. [message]
-
-	mysql_thread_workers -> metric calculate the number of messages that have been in flight in the queue of the given Broker of your ActiveMQ Setup. [message]
