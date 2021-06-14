@@ -47,8 +47,6 @@ METRIC_UNITS = {
     "query_request_times_50thpercent": "milliseconds",
     "query_request_times_75thpercent": "milliseconds",
     "query_request_times_95thpercent": "milliseconds",
-    "query_request_times_98thpercent": "milliseconds",
-    "query_request_times_999thpercent": "milliseconds",
     "query_request_times_99thpercent": "milliseconds",
     "query_request_times_mean": "milliseconds",
     "query_request_times_mean_rate": "requests/second",
@@ -102,9 +100,7 @@ metric_map = {
         "50thPercentile" : "query_request_times_50thpercent",
         "75thPercentile" : "query_request_times_75thpercent",
         "95thPercentile" : "query_request_times_95thpercent",
-        "98thPercentile" : "query_request_times_98thpercent",
         "99thPercentile" : "query_request_times_99thpercent",
-        "999thPercentile" : "query_request_times_999thpercent",
         "OneMinuteRate" : "query_request_times_oneminuterate",
     },
 }
