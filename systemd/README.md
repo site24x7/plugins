@@ -1,4 +1,4 @@
-Plugin for Systemd Monitoring 
+Plugin for Monitoring Systemd 
 ==============================================
 
 Systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID and starts the rest of the system.
