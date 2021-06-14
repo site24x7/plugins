@@ -1,9 +1,9 @@
 Plugin for Systemd Monitoring 
 ==============================================
 
-ProxySQL is a high performance, high availability, protocol aware proxy for MySQL and forks (like Percona Server and MariaDB). ProxySQL runs as a daemon watched by a monitoring process.
+Systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID and starts the rest of the system.
 
-Follow the below steps to configure the ProxySQL plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of ProxySQL.
+Follow the below steps to configure the Systemd plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of Systemd.
 
 ### Prerequisites
 
