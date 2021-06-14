@@ -1,4 +1,4 @@
-Plugin for ProxySQL Monitoring 
+Plugin for Monitoring ProxySQL
 ==============================================
 
 ProxySQL is a high performance, high availability, protocol aware proxy for MySQL and forks (like Percona Server and MariaDB). ProxySQL runs as a daemon watched by a monitoring process.
