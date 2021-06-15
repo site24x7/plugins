@@ -39,7 +39,7 @@ The agent will automatically execute the plugin within five minutes and send per
 	[display_name]
 	host_name=“<your_host_name>”
 	port=“8001”
-	service_name="<service_name"
+	service_name="<service_name>"
 
 ### Metrics Captured
 ---
