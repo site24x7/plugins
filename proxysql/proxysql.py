@@ -137,7 +137,7 @@ if __name__ == "__main__":
     if args.host_name:
         HOST_NAME = args.host_name
     if args.port:
-        PORT = args.port
+        PORT = int(args.port, base=10)
     if args.user:
         USER = args.user
     if args.password:
