@@ -24,7 +24,7 @@ Follow the below steps to configure the ProxySQL plugin and the monitoring metri
 
 ---
 
-- Download all the files in "activemq" folder and place it under the "activemq" directory
+- Download all the files in "proxysql" folder and place it under the "proxysql" directory
 
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/proxysql/proxysql.py
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/proxysql/proxysql.cfg
