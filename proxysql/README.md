@@ -66,7 +66,7 @@ The agent will automatically execute the plugin within five minutes and send per
 
 	client_connections_non_idle -> metric calculate the number of client connections that are currently handled by the main worker threads. [connection]
 
-	backend_query_time_nsec -> metric calculate the time spent (as a percentage of total time) making network calls to communicate with the backends. [message]
+	backend_query_time_nsec -> metric calculate the time spent making network calls to communicate with the backends. [message]
 
 	mysql_backend_buffers_bytes -> metric calculate the memory use of buffers related to backend connections. [byte]
 
@@ -98,4 +98,4 @@ The agent will automatically execute the plugin within five minutes and send per
 
 	stmt_cached -> metric calculate the number of global prepared statements for which proxysql has metadata. [unit]
 
-	query_processor_time_nsec -> metric calculate the time (as a percentage of total time) spent inside the query processor determining the action to take with the query. [percent]
+	query_processor_time_nsec -> metric calculate the time spent inside the query processor determining the action to take with the query. [percent]
