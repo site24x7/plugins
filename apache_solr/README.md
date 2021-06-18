@@ -21,19 +21,19 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 ---
 ##### Linux 
 
-- Create a directory "solr" under Site24x7 Linux Agent plugin directory : 
+- Create a directory "apache_solr" under Site24x7 Linux Agent plugin directory : 
 
       Linux             ->   /opt/site24x7/monagent/plugins/apache_solr
 
 ##### Windows 
 
-- Create a directory "solr" under Site24x7 Windows Agent plugin directory : 
+- Create a directory "apache_solr" under Site24x7 Windows Agent plugin directory : 
 
       Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\apache_solr
       
 ---
 
-- Download all the files in "solr" folder and place it under the "solr" directory
+- Download all the files in "apache_solr" folder and place it under the "apache_solr" directory
 
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_solr/apache_solr.py
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_solr/apache_solr.cfg
