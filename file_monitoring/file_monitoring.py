@@ -29,6 +29,7 @@ import mmap
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--file', help='file to be monitored', nargs='?', default = __file__)
+parser.add_argument('--search_text', help='Text needs to be searched', nargs='?', default=None)
 parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=1)
 parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=True)
 args = parser.parse_args() 
@@ -37,6 +38,7 @@ args = parser.parse_args()
 file = args.file 
 heartbeat = args.heartbeat
 version = args.plugin_version
+search_text=args.search_text
 
 now = time.time()
 date_format = "%a %b %d %H:%M:%S %Y"
