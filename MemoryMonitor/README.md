@@ -2,6 +2,8 @@
 
 Plugin to monitor memory related metric like CommittedBytes,PercentCommittedBytesInUse,SystemCacheResidentBytes etc
 
+#### OS Supported : Windows ####
+
 #### Attributes ####
 
 * CommitLimit - The amount of virtual memory that can be committed without having to extend the paging file(s)
@@ -23,9 +25,6 @@ Plugin to monitor memory related metric like CommittedBytes,PercentCommittedByte
 * SystemCodeResidentBytes - The size, in bytes, of the pageable operating system code that is currently resident and active in physical memory.
 * SystemCodeTotalBytes - The size, in bytes, of the pageable operating system code currently mapped into the system virtual address space.
 * SystemDriverResidentBytes - The size, in bytes, of the pageable physical memory being used by device drivers.
-
-
-#### OS Supported : Windows ####
 
 ## Plugin installation ##
 
