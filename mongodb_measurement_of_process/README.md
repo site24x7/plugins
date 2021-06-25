@@ -24,7 +24,7 @@ This plugin monitors the metrics of MongoDb processes.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python mongodb_cluster.py --group_id=<your_group_id> --host=<your_host_name> --port=27017 --public_key=<your_public_key> --private_key=<your_private_key>
+		python mongodb_measurement_of_process.py --group_id=<your_group_id> --host=<your_host_name> --port=27017 --public_key=<your_public_key> --private_key=<your_private_key>
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
