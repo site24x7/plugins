@@ -1,11 +1,8 @@
 #!/usr/bin/python3
 
 import sys
-import time
 import json
 import requests
-import subprocess
-import os
 import argparse
 from requests.auth import HTTPDigestAuth
 
@@ -25,13 +22,13 @@ heartbeat_required = "true"
 resultjson={}
 
 metric_units={
-    "diskSize":"GB"
+    "disksize":"GB"
 }
 
 
-public_key = "jifqsfrc"
-private_key = "80d11231-0482-4387-8107-ea0336380452"
-group_id="6080fc32b449622900b6612e"
+public_key = ""
+private_key = ""
+group_id= ""
 
 
 def metrics_collector():
@@ -41,27 +38,27 @@ def metrics_collector():
         data=json.loads((requests.get(url, auth=HTTPDigestAuth(public_key, private_key)).content))
         
         new_data = {}
-        new_data["clusterType"]=data["clusterType"]
-        new_data["diskSize"]=data["diskSizeGB"]
-        new_data["mongoDBMajorVersion"]=data["mongoDBMajorVersion"]
-        new_data["mongoDBVersion"]=data["mongoDBVersion"]
-        new_data["mongoURIUpdated"]=data["mongoURIUpdated"]
+        new_data["clustertype"]=data["clusterType"]
+        new_data["disksize"]=data["diskSizeGB"]
+        new_data["mongodb.majorversion"]=data["mongoDBMajorVersion"]
+        new_data["mongodb.version"]=data["mongoDBVersion"]
+        new_data["mongo.uri.updated"]=data["mongoURIUpdated"]
         new_data["name"]=data["name"]
-        new_data["numShards"]=data["numShards"]
-        new_data["pitEnabled"]=data["pitEnabled"]
-        new_data["providerBackupEnabled"]=data["providerBackupEnabled"]
-        new_data["providerName"]=data["providerSettings"]["providerName"]
-        new_data["maxInstanceSize"]=data["providerSettings"]["autoScaling"]["compute"]["maxInstanceSize"]
-        new_data["minInstanceSize"]=data["providerSettings"]["autoScaling"]["compute"]["minInstanceSize"]
-        new_data["replicationFactor"]=data["replicationFactor"]
-        new_data["analyticsNodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["analyticsNodes"]
-        new_data["electableNodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["electableNodes"]
+        new_data["numshards"]=data["numShards"]
+        new_data["pitenabled"]=data["pitEnabled"]
+        new_data["provider.backup.enabled"]=data["providerBackupEnabled"]
+        new_data["providername"]=data["providerSettings"]["providerName"]
+        new_data["maxinstance.size"]=data["providerSettings"]["autoScaling"]["compute"]["maxInstanceSize"]
+        new_data["mininstance.size"]=data["providerSettings"]["autoScaling"]["compute"]["minInstanceSize"]
+        new_data["replication.factor"]=data["replicationFactor"]
+        new_data["analytics.nodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["analyticsNodes"]
+        new_data["electable.nodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["electableNodes"]
         new_data["priority"]=data["replicationSpec"]["ASIA_SOUTH_1"]["priority"]
-        new_data["readOnlyNodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["readOnlyNodes"]
-        new_data["zoneName"]=data["replicationSpecs"][0]["zoneName"]
-        new_data["rootCertType"]=data["rootCertType"]
-        new_data["srvAddress"]=data["srvAddress"]
-        new_data["stateName"]=data["stateName"]
+        new_data["readonly.nodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["readOnlyNodes"]
+        new_data["zonename"]=data["replicationSpecs"][0]["zoneName"]
+        new_data["rootcert.type"]=data["rootCertType"]
+        new_data["srvaddress"]=data["srvAddress"]
+        new_data["statename"]=data["stateName"]
        
         return new_data
 
@@ -82,9 +79,9 @@ if __name__ == '__main__':
     import argparse
     parser=argparse.ArgumentParser()
 
-    parser.add_argument('--group_id',help="group ID for mongodb_org_event",type=str)
-    parser.add_argument('--public_key',help="public key of mongodb_org_event",type=str)
-    parser.add_argument('--private_key',help="Private key for mongodb_org_event",type=str)
+    parser.add_argument('--group_id',help="group ID for mongodb_cluster",type=str)
+    parser.add_argument('--public_key',help="public key of mongodb_cluster",type=str)
+    parser.add_argument('--private_key',help="Private key for mongodb_cluster",type=str)
     args=parser.parse_args()
 	
 
