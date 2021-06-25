@@ -7,7 +7,7 @@ This plugin monitors the metrics of MongoDb Cluster.
 
 - Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 		
-- Create a cluster in https://www.mongodb.com and get your public_key and private_key to access API.
+- Create a cluster in https://www.mongodb.com and get your public_key and private_key from access manager and add your current IP address to enable API access.
 
 ### Plugin Installation
 
