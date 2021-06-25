@@ -7,7 +7,7 @@ This plugin monitors the metrics of MongoDb processes.
 
 - Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 		
-- Create a cluster in https://www.mongodb.com and get your public_key and private_key to access API.
+- Create a cluster in https://www.mongodb.com and get your public_key and private_key from access manager and add your current IP address to enable API access.
 
 ### Plugin Installation
 
@@ -48,15 +48,15 @@ private_key=<your_private_key>
 	start                   ->	Timestamp in date and time format in UTC when to start retrieving measurements.
 	end                     ->	Timestamp in date and time format in UTC when to stop retrieving measurements.
 	connections             ->	Number of connections to a MongoDB process found 
-	NETWORK_BYTES_IN        ->	The total number of bytes that the server has received over network connections initiated by clients or other mongod instances.
-	NETWORK_BYTES_OUT       ->	The total number of bytes that the server has sent over network connections initiated by clients or other mongod instances.
-	NETWORK_NUM_REQUESTS    ->	The total number of distinct requests that the server has received.
-	OPCOUNTER_CMD           ->	The total number of commands issued to the database since the mongod instance last started.
-	OPCOUNTER_QUERY         ->	The total number of queries received since the mongod instance last started.
-	OPCOUNTER_UPDATE        ->	The total number of update operations received since the mongod instance last started.
-	OPCOUNTER_DELETE        ->	The total number of delete operations since the mongod instance last started.
-	OPCOUNTER_GETMORE       ->	The total number of getMore operations since the mongod instance last started.
-	OPCOUNTER_INSERT        ->	The total number of insert operations received since the mongod instance last started
-	LOGICAL_SIZE            ->	Size in GB
+	network.in              ->	The total number of bytes that the server has received over network connections initiated by clients or other mongod instances.
+	network.out             ->	The total number of bytes that the server has sent over network connections initiated by clients or other mongod instances.
+	network.request         ->	The total number of distinct requests that the server has received.
+	opcounter.cmd           ->	The total number of commands issued to the database since the mongod instance last started.
+	opcounter.query         ->	The total number of queries received since the mongod instance last started.
+	opcounter.update        ->	The total number of update operations received since the mongod instance last started.
+	opcounter.delete        ->	The total number of delete operations since the mongod instance last started.
+	opcounter.getmore       ->	The total number of getMore operations since the mongod instance last started.
+	opcounter.insert        ->	The total number of insert operations received since the mongod instance last started
+	logicalsize             ->	Size in GB
 
 
