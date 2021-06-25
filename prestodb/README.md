@@ -34,9 +34,9 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 
 - Download all the files in "prestodb" folder and place it under the "prestodb" directory
 
-  wget
-  wget
-
+      wget https://raw.githubusercontent.com/site24x7/plugins/master/prestodb/prestodb.py
+      wget https://raw.githubusercontent.com/site24x7/plugins/master/prestodb/prestodb.cfg
+  
 - Configure the keys to be monitored, as mentioned in the configuration section below.
 
 - Execute the below command with appropriate arguments to check for the valid json output.
