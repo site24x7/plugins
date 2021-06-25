@@ -10,7 +10,7 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 
       pip install JPype1
 
-- JMX connection port should be specified in the PrestoDB installation folder. To specify the JMX connection port follow the below steps: Open etc/config.properties inside the installation folder of PrestoDB and add the following attributes
+- Configure the JMX Port in the /etc/config.properties file in the PresodDB installation folder
 
       jmx.rmiregistry.port=36799
 
@@ -23,14 +23,6 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 - Create a directory "prestodb" under Site24x7 Linux Agent plugin directory :
 
       Linux             ->   /opt/site24x7/monagent/plugins/prestodb
-
-##### Windows
-
-- Create a directory "prestodb" under Site24x7 Windows Agent plugin directory :
-
-      Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\prestodb
-
----
 
 - Download all the files in "prestodb" folder and place it under the "prestodb" directory
 
