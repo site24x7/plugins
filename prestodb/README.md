@@ -10,7 +10,7 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 
       pip install JPype1
 
-- Configure the JMX Port in the /etc/config.properties file in the PresodDB installation folder
+- Configure the JMX Port in the etc/config.properties file in the PresodDB installation folder
 
       jmx.rmiregistry.port=36799
 
