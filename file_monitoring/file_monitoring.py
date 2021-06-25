@@ -1,91 +1,166 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
-'''
-Created on 18-Nov-2020
-
-This Plugin is to monitor server file checks
-
-metrics monitored are
-
-1. size                       : size of the file in KB
-2. read access enabled        : read_access
-3. write access enabled       : write_access
-4. execution access enabled   : execution_access
-5. last_access_time           : last file accessed time
-6. last file modified time    : last file modified time
-7. hours before the file was accessed last    : time_since_last_accessed
-8. hours before the file was modified last    : time_since_last_modified
-
-@author: anita-1372
-
-'''
-
-import os.path
-import time
 import json
-import argparse
+import os
+import hashlib
+import time
 import datetime
-import mmap
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--file', help='file to be monitored', nargs='?', default = __file__)
-parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=1)
-parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=True)
-args = parser.parse_args() 
+plugin_version="1"
+heartbeat="true"
 
+metric_units={"file_size":"bytes","time_since_last_accessed":"hours","time_since_last_modified":"hours"}
 
-file = args.file 
-heartbeat = args.heartbeat
-version = args.plugin_version
+def get_data(file_name,hash_type,search_text,case_sensitive, plugin_version, heartbeat):
+    data={}
+    data['plugin_version']=plugin_version
+    data['heartbeat_required']=heartbeat
+    data['units']=metric_units
+    try:
+    	if (file_name==""):
+    		raise Exception("File not given")
+    	hash_storage_path="./hash_value_storage_unit_file_monitoring.txt"
+    	data["file_size"]=os.stat(file_name).st_size
+    	previous_hash_value=""
+    	hash_value_changed=0
+    	if hash_type=="blake2b":
+    		hashing=hashlib.blake2b(open(file_name,'rb').read()).hexdigest()
+    	elif hash_type=="blake2s":
+    		hashing=hashlib.blake2s(open(file_name,'rb').read()).hexdigest()
+    	elif hash_type=="md5":
+    		hashing=hashlib.md5(open(file_name,'rb').read()).hexdigest()
+    	elif hash_type=="sha1":
+    		hashing=hashlib.sha1(open(file_name,'rb').read()).hexdigest()
+    	elif hash_type=="sha224":
+    		hashing=hashlib.sha224(open(file_name,'rb').read()).hexdigest()
+    	elif hash_type=="sha256":
+    		hashing=hashlib.sha256(open(file_name,'rb').read()).hexdigest()
+    	elif hash_type=="sha384":
+    		hashing=hashlib.sha384(open(file_name,'rb').read()).hexdigest()
+    	elif hash_type=="sha3_224":
+    		hashing=hashlib.sha3_224(open(file_name,'rb').read()).hexdigest()
+    	elif hash_type=="sha3_256":
+    		hashing=hashlib.sha3_256(open(file_name,'rb').read()).hexdigest()
+    	elif hash_type=="sha3_384":
+    		hashing=hashlib.sha3_384(open(file_name,'rb').read()).hexdigest()
+    	elif hash_type=="sha3_512":
+    		hashing=hashlib.sha3_512(open(file_name,'rb').read()).hexdigest()
+    	elif hash_type=="sha512":
+    		hashing=hashlib.sha512(open(file_name,'rb').read()).hexdigest()
+    	else:
+    		raise Exception("hash_type is not valid")
+    	if(os.path.exists(hash_storage_path)):
+    		file_object=open(hash_storage_path)
+    		previous_hash_reference=file_object.readlines()
+    		previous_hash_value=""
+    		line_number=-1
+    		for i in previous_hash_reference:
+    			name,value=i.split(":")
+    			name=name.strip()
+    			if name==file_name:
+    				previous_hash_value=value.strip()
+    				line_number=previous_hash_reference.index(i)
+    		file_object.close()
+    	if (previous_hash_value!="" and previous_hash_value!=hashing.strip()):
+    		hash_value_changed=1
+    	if(previous_hash_value==""):
+    		file_object=open(hash_storage_path,'a+')
+    		file_object.write(file_name+":"+hashing)
+    		file_object.write('\n')
+    		file_object.close()
+    	if previous_hash_value!="" and previous_hash_value!=hashing.strip():
+    		file_object=open(hash_storage_path,'w')
+    		previous_hash_reference[line_number]=file_name+":"+hashing
+    		file_object.writelines(previous_hash_reference)
+    		file_object.write('\n')
+    		file_object.close()
+    	data["hash_value_changed"]=hash_value_changed
+    	now=time.time()
+    	date_format="%a %b %d %H:%M:%S %Y"
+    	
+    	data["file_index"]=os.stat(file_name).st_ino
+    		
+    	data["file_owner_id"]=os.stat(file_name).st_uid
+    	
+    	access_time=time.ctime(os.path.getatime(file_name))
+    	data["last_access_time"]=access_time
+    	
+    	last_access_time=time.mktime(datetime.datetime.strptime(access_time,date_format).timetuple())
+    	accessed_minute_difference=int((now-last_access_time)/3600)
+    	data["time_since_last_accessed"]=accessed_minute_difference
+    	
+    	modified_time=time.ctime(os.path.getmtime(file_name))
+    	data['last_modified_time']=modified_time
+    	
+    	last_modified_time=time.mktime(datetime.datetime.strptime(modified_time,date_format).timetuple())
+    	modified_minute_difference=int((now-last_modified_time)/3600)
+    	data["time_since_last_modified"]=modified_minute_difference
+    	
+    	data["read_access"]=1 if os.access(file_name,os.R_OK) else 0
+    	data["write_access"]=1 if os.access(file_name,os.W_OK) else 0
+    	data["execution_access"]=1 if os.access(file_name,os.X_OK) else 0
+    	
+    	if search_text!="" and search_text is not None:
+    		data["content_match"]="False"
+    		file_object=open(file_name,"r")
+    		file_contents=file_object.readlines()
+    		content_count=0
+    		if case_sensitive=="False":
+    			for i in file_contents:
+    				content=i.lower()
+    				content=content.replace('\n',"")
+    				content=content.split(" ")
+    				for j in content:
+    					if search_text.lower() in j:
+    						data["content_match"]="True"
+    						content_count+=1
+    		else:
+    			for i in file_contents:
+    				content=i.replace('\n',"")
+    				content=content.split(" ")
+    				for j in content:
+    					if search_text in j:
+    						data["content_match"]="True"
+    						content_count+=1
+    		file_object.close()
+    		data["content_occurance_count"]=content_count
+    	else:
+    		data["content_match"]="No Search Key"
+    		data["content_occurance_count"]=0
+    		
+    	
+    except Exception as e:
+    	data["msg"]=str(e)
+    	data["status"]=0
+    return data
+if __name__=="__main__":
+    import argparse
+    parser=argparse.ArgumentParser()
+    file_name=""
+    hash_type="md5"
+    search_text=""
+    case_sensitive="False"
+    parser.add_argument('--filename',help="file to monitor",type=str,nargs='?')
+    parser.add_argument('--hashtype',help="type of the hash",type=str,default="md5")
+    parser.add_argument('--search_text',help="Text to check whether the content is present",type=str,default="")
+    parser.add_argument('--case_sensitive',help="Give True When Searching Content needs to be case sensitive",type=str,default="False")
+    parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=1)
+    parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=True)
+    args=parser.parse_args()
+    
+    if args.filename:
+    	file_name=args.filename
+    if args.hashtype:
+    	hash_type=args.hashtype
+    if args.search_text:
+    	search_text=args.search_text
+    if args.case_sensitive:
+    	case_sensitive=args.case_sensitive
+    if args.plugin_version:
+    	plugin_version=args.plugin_version
+    if args.heartbeat:
+    	heartbeat=args.heartbeat
+    hash_type=hash_type.lower()
 
-now = time.time()
-date_format = "%a %b %d %H:%M:%S %Y"
-data = {}
-data['units'] = {}
-
-data['heartbeat_required'] = heartbeat
-data['plugin_version'] = version
-
-### Size Check: When the specified file's size exceeds the given threshold
-data['size'] = os.path.getsize(file) 
-data['units']['size'] = 'kb'
- 
-### Access Check: When the configured file is accessed
-access_time = time.ctime(os.path.getatime(file))
-data['last_access_time'] =  access_time
-
-last_access_time = time.mktime(datetime.datetime.strptime(access_time, date_format).timetuple())
-accessed_minute_diff = int((now - last_access_time) / 60 / 60)
-data['time_since_last_accessed'] = accessed_minute_diff
-data['units']['last_accessed'] = 'hours'
-
-
-### Last Modified Check: When there is a change in the file status
-modified_time = time.ctime(os.path.getmtime(file))
-data['last_modified_time'] = modified_time  
-
-last_modified_time = time.mktime(datetime.datetime.strptime(modified_time, date_format).timetuple())
-modified_minute_diff = int((now - last_modified_time)/ 60 / 60)
-data['time_since_last_modified'] = modified_minute_diff
-data['units']['last_modified'] = 'hours'
-
-
-### Permission checks
-data['read_access'] = 1 if os.access(file, os.R_OK) else 0# Check for read access
-data['write_access'] = 1 if os.access(file, os.W_OK) else 0# Check for read access
-data['execution_access'] = 1 if os.access(file, os.X_OK) else 0# Check for read access
-
-
-### Content checks
-if search_text is not None :
-	f = open(file, 'r')
-	s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
-	if s.find(search_text) != -1: data['content_match'] = "True"
-	else : data['content_match'] = "False"
-else :
-	data['content_match'] = "no search key"
-
- 
-# Print the data for monitoring
-print(json.dumps(data, indent=2, sort_keys=True))
-
+    data=get_data(file_name,hash_type,search_text,case_sensitive,plugin_version,heartbeat)
+    print(json.dumps(data,indent=4))
