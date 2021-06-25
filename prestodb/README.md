@@ -29,7 +29,7 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
       wget https://raw.githubusercontent.com/site24x7/plugins/master/prestodb/prestodb.py
       wget https://raw.githubusercontent.com/site24x7/plugins/master/prestodb/prestodb.cfg
   
-- Configure the keys to be monitored, as mentioned in the configuration section below.
+- Configure the host and port of the prestodb to be montiored in prestodb.cfg, as mentioned in the configuration section below..
 
 - Execute the below command with appropriate arguments to check for the valid json output.
 
