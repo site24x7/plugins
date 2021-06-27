@@ -64,6 +64,7 @@ metric_units={
 
 user=""
 passw=""
+result={}
 
 
 def metric_collector(url):
