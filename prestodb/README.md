@@ -42,7 +42,7 @@ The agent will automatically execute the plugin within five minutes and send per
 ---
 
     [display_name]
-    host_name = “<your_host_name>”
+    host = “<your_host_name>”
     port = “<port number you mentioned in etc/config.properties>”
 
 ### Metrics Captured
