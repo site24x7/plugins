@@ -23,28 +23,10 @@ def get_data(file_name,hash_type,search_text,case_sensitive, plugin_version, hea
     	data["file_size"]=os.stat(file_name).st_size
     	previous_hash_value=""
     	hash_value_changed=0
-    	if hash_type=="blake2b":
-    		hashing=hashlib.blake2b(open(file_name,'rb').read()).hexdigest()
-    	elif hash_type=="blake2s":
-    		hashing=hashlib.blake2s(open(file_name,'rb').read()).hexdigest()
-    	elif hash_type=="md5":
+    	if hash_type=="md5":
     		hashing=hashlib.md5(open(file_name,'rb').read()).hexdigest()
-    	elif hash_type=="sha1":
-    		hashing=hashlib.sha1(open(file_name,'rb').read()).hexdigest()
-    	elif hash_type=="sha224":
-    		hashing=hashlib.sha224(open(file_name,'rb').read()).hexdigest()
     	elif hash_type=="sha256":
     		hashing=hashlib.sha256(open(file_name,'rb').read()).hexdigest()
-    	elif hash_type=="sha384":
-    		hashing=hashlib.sha384(open(file_name,'rb').read()).hexdigest()
-    	elif hash_type=="sha3_224":
-    		hashing=hashlib.sha3_224(open(file_name,'rb').read()).hexdigest()
-    	elif hash_type=="sha3_256":
-    		hashing=hashlib.sha3_256(open(file_name,'rb').read()).hexdigest()
-    	elif hash_type=="sha3_384":
-    		hashing=hashlib.sha3_384(open(file_name,'rb').read()).hexdigest()
-    	elif hash_type=="sha3_512":
-    		hashing=hashlib.sha3_512(open(file_name,'rb').read()).hexdigest()
     	elif hash_type=="sha512":
     		hashing=hashlib.sha512(open(file_name,'rb').read()).hexdigest()
     	else:
