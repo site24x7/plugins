@@ -27,6 +27,7 @@ This plugin monitors the collection of File metrics.
 - Download all the files using the following commands and place it under the "file_monitoring" directory
 
   	wget https://raw.githubusercontent.com/site24x7/plugins/master/file_monitoring/file_monitoring.py
+      
   	wget https://raw.githubusercontent.com/site24x7/plugins/master/file_monitoring/file_monitoring.cfg
 
 - Configure the keys to be monitored, as mentioned in the configuration section below.
