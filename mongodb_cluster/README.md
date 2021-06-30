@@ -19,8 +19,8 @@ This plugin monitors the metrics of MongoDb Cluster.
       
 - Download all the files in "mongodb_cluster" folder and place it under the "mongodb_cluster" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_cluster/mongodb_cluster.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_cluster/mongodb_cluster.cfg
+	  wget https://raw.githubusercontent.com/sathvika-a/plugins/master/mongodb_cluster/mongodb_cluster.py
+	  wget https://raw.githubusercontent.com/sathvika-a/plugins/master/mongodb_cluster/mongodb_cluster.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
