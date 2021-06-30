@@ -19,8 +19,8 @@ This plugin monitors the metrics of MongoDb processes.
       
 - Download all the files in "mongodb_measurement_of_process" folder and place it under the "mongodb_measurement_of_process" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_measurement_of_process/mongodb_measurement_of_process.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_measurement_of_process/mongodb_measurement_of_process.cfg
+	  wget https://raw.githubusercontent.com/sathvika-a/plugins/master/mongodb_measurement_of_process/mongodb_measurement_of_process.py
+	  wget https://raw.githubusercontent.com/sathvika-a/plugins/master/mongodb_measurement_of_process/mongodb_measurement_of_process.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
