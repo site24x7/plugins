@@ -15,7 +15,7 @@ Plugin for Monitoring the Postfix Mail Queue Count
 
 - Download the file "postfix_mailq_count.py" and place it under the "postfix_mailq_count" directory
   
-  wget https://raw.githubusercontent.com/site24x7/plugins/master/postfix_mailq_count/postfix_mailq_count.sh
+  	wget https://raw.githubusercontent.com/site24x7/plugins/master/postfix_mailq_count/postfix_mailq_count.sh
 	
   The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
@@ -23,10 +23,10 @@ Plugin for Monitoring the Postfix Mail Queue Count
 ### Metrics Captured
 ---
 
-mailq_count       - Total Number of messages present in mailq
-deferred_count    - Total Number of deferred messages present in postfix
-active_count      - Total Number of active messages present in postfix
-hold_count        - Total Number of hold messages present in postfix
-incoming_count    - Total Number of incoming messages present in postfix
-bounce_count      - Total Number of bounce messages present in postfix
-corrupt_count     - Total Number of corrupted messages present in postfix
+	mailq_count       - Total Number of messages present in mailq
+	deferred_count    - Total Number of deferred messages present in postfix
+	active_count      - Total Number of active messages present in postfix
+	hold_count        - Total Number of hold messages present in postfix
+	incoming_count    - Total Number of incoming messages present in postfix
+	bounce_count      - Total Number of bounce messages present in postfix
+	corrupt_count     - Total Number of corrupted messages present in postfix
