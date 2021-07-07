@@ -1,0 +1,8 @@
+{
+  "display_name": {
+    "path": "<provide the path to the certificate with forward('/') as shown below>"
+  },
+  "certificate_1": {
+    "path": "Cert:/LocalMachine/AuthRoot/D1EB23A46D17D68FD92564C2F1F1601764D8E349"
+  }
+}
