@@ -18,8 +18,8 @@ This plugin monitors the certificates in windows certificate store
 
 - Download the files "certificate_monitoring.py" and "certificate_monitoring.json" and place them under the "certificate_monitoring" directory
 
-      wget https://raw.githubusercontent.com/sasank1/certificate_monitoring/main/certificate_monitoring/certificate_monitoring.ps1
-      wget https://raw.githubusercontent.com/sasank1/certificate_monitoring/main/certificate_monitoring/certificate_monitoring.json
+      wget https://raw.githubusercontent.com/site24x7/plugins/master/certificate_monitoring/certificate_monitoring.ps1
+      wget https://raw.githubusercontent.com/site24x7/plugins/master/certificate_monitoring/certificate_monitoring.json
 
 - Provide the absolute path of the certificate(provide path with forward "/") that needs to be monitored in certificate_monitoring.json, multiple certificates can also be monitoried using the same plugin by adding multiple configurations as given in the certificate_monitoring.json.
 
