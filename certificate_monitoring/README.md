@@ -18,9 +18,9 @@ This plugin monitors the certificates in windows certificate store
 
 - Download the files "certificate_monitoring.ps1" and "certificate_monitoring.cfg".
 
-- Configure the path of the certificate store and the name of the certificate that needs to be monitored in certificate_monitoring.cfg as given below, multiple certificates can be monitoried by providing multiple configurations in certificate_monitoring.cfg.
+- Configure the path of the certificate store and the name of the certificate that needs to be monitored in certificate_monitoring.cfg as mentioned in the configuration section below, multiple certificates can be monitoried by providing multiple configurations in certificate_monitoring.cfg.
 
-- place "certificate_monitoring.ps1" and "certificate_monitoring.cfg" files under the "certificate_monitoring"
+- Place "certificate_monitoring.ps1" and "certificate_monitoring.cfg" files under the "certificate_monitoring" directory
 
 - Execute the below command with appropriate arguments to check for the valid json output.
 
@@ -28,7 +28,7 @@ This plugin monitors the certificates in windows certificate store
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
-### Configurations
+### Configuration
 ---
        [display_name]
        certPath=<cerificate path>
