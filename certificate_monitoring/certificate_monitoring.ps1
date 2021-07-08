@@ -1,14 +1,23 @@
-param([string]$path)
+param([string]$certPath , [string]$certName)
 
 $version = 1 
 $heartbeat = "true"
 
-# $path = "Cert:/LocalMachine/AuthRoot/51501FBFCE69189D609CFAF140C576755DCC1FDF"
-$cert_info = Get-ChildItem -path $path
-$displayname = "$($cert_info.FriendlyName) certificate_monitoring"
+$displayname = $certName + " certificate_monitoring"
 
 Function Get-Data() 
 {    
+    param([string]$certpath , [string]$certName)
+    $certificates = Get-ChildItem -path $certpath
+    $cert_info = $null
+    foreach($cert in $certificates)
+    {
+        if($cert.FriendlyName -eq $certName)
+        {
+            $cert_info = $cert
+            break;
+        }
+    }
     # Version , Signature algorithm ,Valid from,valid to ,Friendly name, how many day left , Subject Name, the certificate is expired
     $data = @{}
     $data.Add("certificate_version", $cert_info.Version)
@@ -17,6 +26,7 @@ Function Get-Data()
     $data.Add("friendly_name", $cert_info.FriendlyName)
     $data.Add("valid_from", $cert_info.NotBefore.DateTime)
     $data.Add("valid_to", $cert_info.NotAfter.DateTime)
+    $data.Add("verified", $cert_info.Verify())
 
     $is_the_certificate_expired = $true
     $present_date = Get-Date
@@ -37,5 +47,6 @@ $mainJson = @{}
 $mainJson.Add("plugin_version", $version)
 $mainJson.Add("heartbeat_required", $heartbeat)
 $mainJson.Add("displayname", $displayname) 
-$mainJson.Add("data", (Get-Data)) 
+$mainJson.Add("data", (Get-Data $certPath $certName)) 
 return $mainJson | ConvertTo-Json
+
