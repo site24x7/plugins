@@ -18,7 +18,7 @@ This plugin monitors the certificates in windows certificate store
 
 - Download the files "certificate_monitoring.ps1" and "certificate_monitoring.cfg".
 
-- Configure the path of the certificate store and the name of the certificate that needs to be monitored in certificate_monitoring.cfg as mentioned in the configuration section below, multiple certificates can be monitoried by providing multiple configurations in certificate_monitoring.cfg.
+- Configure the path of the certificate store and the name of the certificate that needs to be monitored in "certificate_monitoring.cfg" as mentioned in the configuration section below, multiple certificates can be monitoried by providing multiple configurations.
 
 - Place "certificate_monitoring.ps1" and "certificate_monitoring.cfg" files under the "certificate_monitoring" directory
 
