@@ -40,8 +40,8 @@ The agent will automatically execute the plugin within five minutes and send per
 
       certificate_version                           ->      Version of the certificate
       signature_algorithm                           ->      Algorithm used to sign certificate
-      valid_from                                    ->      certificate is valid from
-      valid_to                                      ->      certificate expiry date
+      valid_from                                    ->      certificate is valid from (DD-MM-YYYY)
+      valid_to                                      ->      certificate expiry date (DD-MM-YYYY)
       friendly_name                                 ->      Friendly name of the certificate
       days_left                                     ->      Number of days left before the certificate expires
       subject_name                                  ->      Subject name of the certificate
