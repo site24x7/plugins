@@ -24,8 +24,8 @@ Function Get-Data()
     $data.Add("signature_algorithm", $cert_info.SignatureAlgorithm.FriendlyName)
     $data.Add("subject_name", $cert_info.Subject)
     $data.Add("friendly_name", $cert_info.FriendlyName)
-    $data.Add("valid_from", $cert_info.NotBefore.DateTime)
-    $data.Add("valid_to", $cert_info.NotAfter.DateTime)
+    $data.Add("valid_from", ($cert.NotBefore.Day.ToString() + "-" + $cert.NotBefore.Month.ToString() + "-" + $cert.NotBefore.Year.ToString()))
+    $data.Add("valid_to", $($cert.NotAfter.Day.ToString() + "-" + $cert.NotAfter.Month.ToString() + "-" + $cert.NotAfter.Year.ToString()))
     $data.Add("verified", $cert_info.Verify())
 
     $is_the_certificate_expired = $true
@@ -35,7 +35,7 @@ Function Get-Data()
     if( $days_left -gt 0)
     {
         $is_the_certificate_expired = $false
-        $data.Add("days_left", $days_left)
+        $data.Add("days_left", ([math]::round($days_left,2)))
     }
 
     $data.Add("is_the_certificate_expired", $is_the_certificate_expired)
