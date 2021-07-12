@@ -24,7 +24,7 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 
       Linux             ->   /opt/site24x7/monagent/plugins/prestodb
 
-- Download all the files in "prestodb" folder and place it under the "prestodb" directory
+- Download the files in "prestodb.py" and "prestodb.cfg" and place them under the "prestodb" directory
 
       wget https://raw.githubusercontent.com/site24x7/plugins/master/prestodb/prestodb.py
       wget https://raw.githubusercontent.com/site24x7/plugins/master/prestodb/prestodb.cfg
@@ -33,7 +33,7 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 
 - Execute the below command with appropriate arguments to check for the valid json output.
 
-      python prestodb.py --host=localhost --port=36799
+      python prestodb.py --host=<your_host_name> --port=port number specified in etc/config.properties>
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
@@ -43,7 +43,7 @@ The agent will automatically execute the plugin within five minutes and send per
 
     [display_name]
     host = “<your_host_name>”
-    port = “<port number you mentioned in etc/config.properties>”
+    port = “<port number specified in etc/config.properties>”
 
 ### Metrics Captured
 
