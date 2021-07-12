@@ -33,7 +33,7 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 
 - Execute the below command with appropriate arguments to check for the valid json output.
 
-      python prestodb.py --host=<your_host_name> --port=port number specified in etc/config.properties>
+      python prestodb.py --host=<your_host_name> --port=<port number specified in etc/config.properties>
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
