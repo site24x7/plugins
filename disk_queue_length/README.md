@@ -25,7 +25,7 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output.
 
-      python disk_queue_length.py
+      python disk_queue_length.py --disks="<disks that you want to monitor sepearated by commas>"
       
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
