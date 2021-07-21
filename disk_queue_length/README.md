@@ -1,5 +1,6 @@
 # Plugin for Monitoring Disk Queue Length
 
+This plugin monitors the queue length of disks on server.
 
 ### Prerequisites
 
@@ -21,20 +22,15 @@
       wget https://raw.githubusercontent.com/site24x7/plugins/master/disk_queue_length/disk_queue_length.py
       wget https://raw.githubusercontent.com/site24x7/plugins/master/disk_queue_length/disk_queue_length.cfg
 
-- Configure the disks to be monitored in "disk_queue_length.cfg" as mentioned in the configuration section below, by default the plugin will capture the queue length of all disks
+      
+- Configure the disks to be monitored in "disk_queue_length.cfg", as mentioned below. for monitoring multiple disks seperate the disks by commas (disks="nvme0n1,dm-0"), by default, the plugin will capture the queue length of all disks
+
+	  [display_name]
+	  disks = “<your_disk_names>”
 
 - Execute the below command with appropriate arguments to check for the valid json output.
 
-      python disk_queue_length.py --disks="<disks that you want to monitor sepearated by commas>"
+      python disk_queue_length.py --disks="<your_disk_names>"
       
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
-### Configuration
----
-       [display_name]
-       disks="<disks that you want to monitor sepearated by commas>"
-
-- Example
-
-      [server-3873]
-      disks="nvme0n1,dm-0"
