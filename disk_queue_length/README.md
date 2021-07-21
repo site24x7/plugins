@@ -28,7 +28,7 @@ This plugin monitors the queue length of disks on server.
 	  [display_name]
 	  disks = “<your_disk_names>”
 
-- Execute the below command with appropriate arguments to check for the valid json output.
+- Execute the below command with appropriate arguments to check for the valid json output. for default ( --disks="")
 
       python disk_queue_length.py --disks="<your_disk_names>"
       
