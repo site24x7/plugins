@@ -23,10 +23,11 @@ This plugin monitors the queue length of disks on server.
       wget https://raw.githubusercontent.com/site24x7/plugins/master/disk_queue_length/disk_queue_length.cfg
 
       
-- Configure the disks to be monitored in "disk_queue_length.cfg", as mentioned below. for monitoring multiple disks seperate the disks by commas (disks="nvme0n1,dm-0"), by default, the plugin will capture the queue length of all disks
+-  By default, the plugin will capture the queue length of all disks,  If any specific disk queue length needs to be monitored, provide the disks name seperated by commas in the 'disks' field present in the 'disk_queue_length.cfg' file.
 
-	  [display_name]
-	  disks = “<your_disk_names>”
+- For example, if 'nvme0n1' and  'dm-0' needs to be monitored, configure as:
+
+      disks = "nvme0n1,dm-0"
 
 - Execute the below command with appropriate arguments to check for the valid json output. for default ( --disks="")
 
