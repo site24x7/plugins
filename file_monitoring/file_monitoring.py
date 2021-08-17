@@ -7,7 +7,7 @@ This Plugin is to monitor server file checks
 
 metrics monitored are 
 
-1. file_size                              ->      Size of the File in bytes
+1. file_size                              ->      Size of the File in kb
 2. file_index                             ->      Inode Number of the File 
 3. file_owner_id                          ->      User Identifier of the File
 4. hash_value_changed                     ->      Boolean value that returns 1 when the hash value of the file changes else 0
