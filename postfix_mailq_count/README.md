@@ -22,8 +22,8 @@ Plugin for Monitoring the Postfix Mail Queue Count
 
 ### Metrics Captured
 ---
-
-	mailq_count       - Total Number of messages present in mailq
+  
+  mailq_count       - Total Number of messages present in mailq
 	deferred_count    - Total Number of deferred messages present in postfix
 	active_count      - Total Number of active messages present in postfix
 	hold_count        - Total Number of hold messages present in postfix

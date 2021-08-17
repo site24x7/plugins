@@ -30,14 +30,6 @@ import hashlib
 import time
 import datetime
 
-plugin_version="1"
-heartbeat="true"
-
-file_name = ""
-hash_type="md5"
-search_text=""
-case_sensitive="False"
-
 metric_units={"file_size":"kb","time_since_last_accessed":"hours","time_since_last_modified":"hours"}
 
 def get_data(file_name,hash_type,search_text,case_sensitive, plugin_version, heartbeat):
