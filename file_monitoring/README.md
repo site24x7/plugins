@@ -1,55 +1,68 @@
-Plugin for Monitoring File metadata
-===================================
+# Plugin for monitoring File metadata
 
-### PreRequisites
+This plugin monitors the collection of File metrics.
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/help/admin/adding-a-monitor/linux-server-monitoring.html#add-linux-server-monitor) in the server where you plan to run the plugin. 
+### Prerequisites
 
-- Plugin uses "os" python module.
+- Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 ### Plugin installation
+
 ---
-##### Linux 
 
-- Create a directory "file_monitoring"
+##### Linux
 
-- Download the files "file_monitoring.py", "file_monitoring.cfg" and place it under the "file_monitoring" directory
-  
-  wget https://raw.githubusercontent.com/site24x7/plugins/master/file_monitoring/file_monitoring.py
+- Create a directory "file_monitoring" under Site24x7 Linux Agent plugin directory :
 
-  wget https://raw.githubusercontent.com/site24x7/plugins/master/file_monitoring/file_monitoring.cfg
-	
-- Edit the file file_monitoring.cfg and provide the file to be monitored
+      Linux             ->   /opt/site24x7/monagent/plugins/file_monitoring
 
-	Provide the absolute path of the file with the filename as input. 
-	Provide the content to match in search_text. Set it to None, if you dont need to do any content check.
+##### Windows
 
-- To make sure plugin is providing the correct output
+- Create a directory "file_monitoring" under Site24x7 Windows Agent plugin directory :
 
-        python file_monitoring.py --file "filename"
+      Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\file_monitoring
 
-- Copy-paste the file_monitoring folder to the agent's plugin directory  under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
+---
 
-- The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center
+- Download all the files using the following commands and place it under the "file_monitoring" directory
 
+  	wget https://raw.githubusercontent.com/site24x7/plugins/master/file_monitoring/file_monitoring.py
+      
+  	wget https://raw.githubusercontent.com/site24x7/plugins/master/file_monitoring/file_monitoring.cfg
+
+- Configure the keys to be monitored, as mentioned in the configuration section below.
+
+- Execute the below command with appropriate arguments to check for the valid json output.
+
+      python file_monitoring.py --filename="<YOUR FILE NAME>" --hashtype="<HASH TYPE OF YOUR CHOICE>" --search_text="<SEARCH TEXT OF YOUR CHOICE>" --case_sensitive="True"
+
+The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
+### Configurations
+
+---
+
+    [display_name]
+    filename = "<YOUR FILE NAME>"
+    hashtype = "<HASH TYPE OF YOUR CHOICE (OPTIONAL)>"
+    search_text = "<SEARCH TEXT OF YOUR CHOICE (OPTIONAL)>"
+    case_sensitive = "<True (OPTIONAL - By default 'False')>"
 
 ### Metrics Captured
+
 ---
 
-size - size of the file in KB
-
-read_access - read access enabled 
-
-write_access - write access enabled 
-
-execution_access - execution access enabled 
-
-last_access_time - last file accessed time
-
-last_modified_time - last file modified time
-
-time_since_last_accessed - hours before the file was accessed last 
-
-time_since_last_modified - hours before the file was modified last 
-
-content_match - If search_text value is set to None, it will skip content search else will return True if there is a match and false if there is no match
+      file_size                              ->      Size of the File in KB
+      file_index                             ->      Inode Number of the File 
+      file_owner_id                          ->      User Identifier of the File
+      hash_value_changed                     ->      Boolean value that returns 1 when the hash value of the file changes else 0
+      content_match                          ->      If search_text value is None, it will skip content searching, else will return True if there is a match and false if there is no match
+      content_occurrence_count               ->      Count of number of times the content occurred
+      read_access                            ->      Read Access Enabled
+      write_access                           ->      Write Access Enabled
+      execution_access                       ->      Execution Access Enabled
+      last_access_time                       ->      Last File Accessed Time
+      last_modified_time                     ->      Last File Modified Time
+      time_since_last_accessed               ->      hours before the file was accessed
+      time_since_last_modified               ->      hours before the file was modified
+      
