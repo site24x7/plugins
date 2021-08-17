@@ -52,7 +52,7 @@ The agent will automatically execute the plugin within five minutes and send per
 
 ---
 
-      file_size                              ->      Size of the File in bytes
+      file_size                              ->      Size of the File in KB
       file_index                             ->      Inode Number of the File 
       file_owner_id                          ->      User Identifier of the File
       hash_value_changed                     ->      Boolean value that returns 1 when the hash value of the file changes else 0
