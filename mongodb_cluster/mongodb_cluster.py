@@ -21,7 +21,7 @@ heartbeat_required = "true"
 
 resultjson={}
 
-metric_units={
+metrics_units={
     "disksize":"GB"
 }
 
@@ -95,5 +95,5 @@ if __name__ == '__main__':
     resultjson=metrics_collector() 
     resultjson['plugin_version'] = plugin_version
     resultjson['heartbeat_required'] = heartbeat_required
-    resultjson['units'] = metric_units
+    resultjson['units'] = metrics_units
 print(json.dumps(resultjson, indent=4, sort_keys=True))
