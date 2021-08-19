@@ -2,18 +2,20 @@
 
 import sys
 import json
-import requests
 import argparse
-from requests.auth import HTTPDigestAuth
 
 
 PYTHON_MAJOR_VERSION = sys.version_info[0]
 
 if PYTHON_MAJOR_VERSION == 3:
     import urllib
-    import urllib.request as connector
+    import urllib.request as urlconnection
+    from urllib.error import URLError, HTTPError
+    from urllib.request import ProxyHandler
 elif PYTHON_MAJOR_VERSION == 2:
-    import urllib2 as connector
+    import urllib2 as urlconnection
+    from urllib2 import HTTPError, URLError
+    from httplib import InvalidURL
 
 plugin_version = 1
 
@@ -35,7 +37,8 @@ def metrics_collector():
     resultjson={}
     try:
         url = "https://cloud.mongodb.com/api/atlas/v1.0/groups/"+group_id+"/clusters/Cluster0?pretty=true" 
-        data=json.loads((requests.get(url, auth=HTTPDigestAuth(public_key, private_key)).content))
+        auth_handler = urlconnection.HTTPBasicAuthHandler((urlconnection.HTTPPasswordMgrWithDefaultRealm()). add_password(None, url, public_key, private_key) )
+        data = (urlconnection.urlopen(url)).read().decode('UTF-8')
         
         new_data = {}
         new_data["clustertype"]=data["clusterType"]
