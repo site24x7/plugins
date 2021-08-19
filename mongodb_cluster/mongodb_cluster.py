@@ -39,7 +39,7 @@ def metrics_collector():
         url = "https://cloud.mongodb.com/api/atlas/v1.0/groups/"+group_id+"/clusters/Cluster0?pretty=true" 
         auth_handler = urlconnection.HTTPBasicAuthHandler((urlconnection.HTTPPasswordMgrWithDefaultRealm()). add_password(None, url, public_key, private_key) )
         data = (urlconnection.urlopen(url)).read().decode('UTF-8')
-        
+        data=json.loads(data)
         new_data = {}
         new_data["clustertype"]=data["clusterType"]
         new_data["disksize"]=data["diskSizeGB"]
