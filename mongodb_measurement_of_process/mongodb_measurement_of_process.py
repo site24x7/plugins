@@ -88,11 +88,11 @@ def metrics_collector():
 if __name__ == '__main__':
     import argparse
     parser=argparse.ArgumentParser()
-    parser.add_argument('--group_id',help="group ID of mongodb_measurement_of_processes",type=str)
-    parser.add_argument('--host',help="host name for mongodb_measurement_of_processes",type=str)
-    parser.add_argument('--port',help="port name for mongodb_measurement_of_processes",type=str)
-    parser.add_argument('--public_key',help="public key of mongodb_measurement_of_processes",type=str)
-    parser.add_argument('--private_key',help="Private key for mongodb_measurement_of_processes",type=str)
+    parser.add_argument('--group_id',help="group ID of mongodb_altlas_cluster",type=str)
+    parser.add_argument('--host',help="host name for mongodb_atlas",type=str)
+    parser.add_argument('--port',help="port name for mongodb_atlas",type=str)
+    parser.add_argument('--public_key',help="public key of mongodb_atlas",type=str)
+    parser.add_argument('--private_key',help="Private key for mongodb_atlas",type=str)
     args=parser.parse_args()
 	
     if args.group_id:
