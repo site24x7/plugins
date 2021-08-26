@@ -27,9 +27,9 @@ import hashlib
 import time
 import datetime
 
+
 plugin_version="1"
 heartbeat="true"
-
 file_name = ""
 hash_type="md5"
 search_text=""
@@ -54,8 +54,6 @@ def update_hash_value(previous_hash_values):
 	
 
 def check_hash_value():
-	
-	
 	hash_value_changed=0
 	if hash_type=="md5":
 		hashing=hashlib.md5(open(file_name,'rb').read()).hexdigest()
@@ -67,7 +65,6 @@ def check_hash_value():
 	#Checking for hash value changes and updating in the hash_storage_path if any change occurred
 	if(os.path.exists(hash_storage_path)):
 		previous_hash_values = get_hash_value()
-		
 		if file_name in previous_hash_values:
 			previous_value = previous_hash_values[file_name]
 		else:
@@ -76,8 +73,7 @@ def check_hash_value():
 		if previous_value != hashing:
 			hash_value_changed = 1
 			previous_hash_values[file_name] = hashing
-			update_hash_value(previous_hash_values)
-				
+			update_hash_value(previous_hash_values)		
 	else:
 		hash_value_changed = 1
 		previous_hash_values = {}
@@ -86,9 +82,6 @@ def check_hash_value():
 		
 	return hash_value_changed
 	
-	
-	
-
 def get_data():
     data={}
     data['plugin_version']=plugin_version

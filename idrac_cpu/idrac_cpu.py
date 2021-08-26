@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
-import commands
 import json
-import sys
-import re
 import SNMPUtil
+import argparse
 
 ### Monitoring iDRAC Servers - CPU Performance
 
@@ -17,12 +15,6 @@ import SNMPUtil
 ### Tested in Ubuntu
 ### Tested for snmp version 2c
 
-### iDRAC Server Configuration Details
-HOST = 'IDRAC_SERVER'
-VERSION = '2c' 
-COMMUNITY = 'public'
-MIB = 'MIB LOCATION'
-
 ### OIDS for Getting CPU Details
 OIDS = {'cpu' : ['processorDeviceTable']}
 ### OID Attributes
@@ -32,7 +24,12 @@ names = {'cpu' : ['state','status','cores','threads']}
 
 
 class HardwareParser:
-    def __init__(self):
+    def __init__(self, hostname, snmp_version, snmp_community_str, mib_location):
+        self.hostname = hostname
+        self.snmp_version = snmp_version
+        self.snmp_community_str = snmp_community_str
+        self.mib_location = mib_location
+
         self.hardware = ''
         self.oids = ''
         self.pattern = ''
@@ -46,12 +43,15 @@ class HardwareParser:
             self.oids = OIDS[self.hardware]
             
             for _ in self.oids:
-                ### SNMPUtil module is used to get the snmp output for the input OIDS
-                snmpdata = SNMPUtil.SNMPPARSER('snmpwalk',HOST,VERSION,COMMUNITY,_,MIB,hardware[self.hardware])
-                ### get Raw SNMP Output as a dict
-                self.snmp_data = snmpdata.getRawData()
-                ### Method to parse the SNMP command output data
-                output_data = self.parseSNMPData(output_data)
+                try: 
+                    ### SNMPUtil module is used to get the snmp output for the input OIDS
+                    snmpdata = SNMPUtil.SNMPPARSER('snmpwalk',self.hostname, self.snmp_version, self.snmp_community_str,_, self.mib_location, hardware[self.hardware])
+                    ### get Raw SNMP Output as a dict
+                    self.snmp_data = snmpdata.getRawData()
+                    ### Method to parse the SNMP command output data
+                    output_data = self.parseSNMPData(output_data)
+                except Exception as e:
+                    raise Exception(e)
                 
         return output_data
     
@@ -98,13 +98,24 @@ class HardwareParser:
 
 if __name__ == '__main__':
     
-    parser = HardwareParser()
     result = {}
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--hostname', help='hostname', nargs='?', default='localhost')
+    parser.add_argument('--snmp_version', help='snmp version', type=str, nargs='?', default="2c")
+    parser.add_argument('--snmp_community_str', help='snmp community version',  nargs='?', default='public')
+    parser.add_argument('--idrac_mib_file_locn', help='idrac mib file location',  nargs='?', default='')
+    parser.add_argument('--plugin_version', help='plugin template version',  nargs='?', default='1')
+    parser.add_argument('--heartbeat_required', help='Enable heartbeat for monitoring',  nargs='?', default="true")
+    args = parser.parse_args()
+    
     try:
+        parser = HardwareParser(args.hostname, args.snmp_version, args.snmp_community_str, args.idrac_mib_file_locn)
         output = parser.getData()
         result = output['data']
         result['units'] = output['units']
     except ValueError as e:
         result['msg'] = str(e)
-    print(json.dumps(result, indent=2, sort_keys=True))
     
+    result['plugin_version'] = args.plugin_version
+    result['heartbeat_required'] = args.heartbeat_required
+    print(json.dumps(result, indent=2, sort_keys=True))

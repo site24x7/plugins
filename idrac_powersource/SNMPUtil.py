@@ -1,8 +1,7 @@
 
-import commands
 import sys
-import json
 import re
+import subprocess
 
 
 ### Monitoring iDRAC Servers - SNMPUtil
@@ -14,8 +13,6 @@ import re
 ### Language : Python
 ### Tested in Ubuntu
 ### Tested for snmp version 2c
-
-run = commands.getstatusoutput
 
 # Utility class to execute snmp commands
 class SNMPPARSER: 
@@ -36,30 +33,34 @@ class SNMPPARSER:
         self.data = {}
     
     
-    def executeSNMPCommand(self):
+    def get_snmp_output(self, snmp_command):
+        
         try:
-            snmp_command = self.command+ ' -O q -v '+ self.snmp_version + ' -c ' + self.snmp_community +' '+ self.host +' '+ self.oids  +' -m '+ self.mibs
-            #print(snmp_command)
-            status, output = run(snmp_command)  # query snmp data
-            
-            if status != 0:
-                if 'Unknown Object Identifier' in output:
-                    print('your MIB may out of dated!')
-                elif 'Timeout:' in output:
-                    print('SNMP timeout!')
-                else:
-                    print(output)
-                sys.exit(1)
-            else:
-                pass
-        except:
-            print('Exception!!!!' , sys.exc_info()[0])
-             
-        if self.command == 'snmpget' :
-            return output
-        else :
-            return output.split('\n') 
+            p = subprocess.Popen(snmp_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            (output, err) = p.communicate()
+            p_status = p.wait()
+            output = output.rstrip()
+            if type(output) != str : output = output.decode("utf-8") 
+            return p_status, output, err
+        
+        except Exception as e:
+            print("snmp ", e) 
+            raise ValueError(e)
     
+    def executeSNMPCommand(self):
+        
+        snmp_command = self.command+ ' -O q -v '+ self.snmp_version + ' -c ' + self.snmp_community +' '+ self.host +' '+ self.oids  +' -m '+ self.mibs
+        #print(snmp_command)
+        status, output, err = self.get_snmp_output(snmp_command)
+        
+        if status != 0:
+            if 'Unknown Object Identifier' in output: raise ValueError('Unable to connect.Please check configurations.')
+            elif 'Timeout:' in output: raise ValueError('SNMP timeout!')
+            else: raise ValueError(err.decode("utf-8"))
+        else:
+            if self.command == 'snmpget' : return output
+            else : return output.split('\n') 
+        
     # Parsing snmpget data
     def parseGetData(self):
         value = ''.join(self.output.split()[1:])
@@ -74,7 +75,7 @@ class SNMPPARSER:
         elif self.command == 'snmpwalk':#retrieving lots of data at once
             self.output = self.executeSNMPCommand()
         else:
-            print(self.command+" Not Supported") 
+            raise Exception(self.command+" Not Supported") 
         return self.output
     
     # Parsing snmpget,snmpwalk data
