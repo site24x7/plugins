@@ -2,7 +2,6 @@
 
 import sys
 import json
-import argparse
 
 
 PYTHON_MAJOR_VERSION = sys.version_info[0]
@@ -82,9 +81,9 @@ if __name__ == '__main__':
     import argparse
     parser=argparse.ArgumentParser()
 
-    parser.add_argument('--group_id',help="group ID for mongodb_cluster",type=str)
-    parser.add_argument('--public_key',help="public key of mongodb_cluster",type=str)
-    parser.add_argument('--private_key',help="Private key for mongodb_cluster",type=str)
+    parser.add_argument('--group_id',help="group ID for mongodb_atlas_cluster",type=str)
+    parser.add_argument('--public_key',help="public key of mongodb_atlas",type=str)
+    parser.add_argument('--private_key',help="Private key for mongodb_atlas",type=str)
     args=parser.parse_args()
 	
 
