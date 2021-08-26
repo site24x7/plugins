@@ -2,11 +2,8 @@
 
 '''
 Created on 18-Nov-2020
-
 This Plugin is to monitor server file checks
-
 metrics monitored are 
-
 1. file_size                              ->      Size of the File in kb
 2. file_index                             ->      Inode Number of the File 
 3. file_owner_id                          ->      User Identifier of the File
@@ -30,6 +27,9 @@ import hashlib
 import time
 import datetime
 
+
+plugin_version="1"
+heartbeat="true"
 file_name = ""
 hash_type="md5"
 search_text=""
@@ -37,7 +37,52 @@ case_sensitive="False"
 
 metric_units={"file_size":"kb","time_since_last_accessed":"hours","time_since_last_modified":"hours"}
 
-def get_data(file_name,hash_type,search_text,case_sensitive, plugin_version, heartbeat):
+hash_storage_path = "./hash_value_storage_unit.json"
+
+def get_hash_value():
+	file_object = open(hash_storage_path,)
+	data = json.loads(file_object.read())
+	file_object.close()
+	if data==None:
+		data = {}
+	return data
+	
+def update_hash_value(previous_hash_values):
+	file_object = open(hash_storage_path,'w+')
+	json.dump(previous_hash_values, file_object)
+	file_object.close()
+	
+
+def check_hash_value():
+	hash_value_changed=0
+	if hash_type=="md5":
+		hashing=hashlib.md5(open(file_name,'rb').read()).hexdigest()
+	elif hash_type=="sha256":
+		hashing=hashlib.sha256(open(file_name,'rb').read()).hexdigest()
+	else:
+		raise Exception("hash_type is not valid")
+		
+	#Checking for hash value changes and updating in the hash_storage_path if any change occurred
+	if(os.path.exists(hash_storage_path)):
+		previous_hash_values = get_hash_value()
+		if file_name in previous_hash_values:
+			previous_value = previous_hash_values[file_name]
+		else:
+			previous_value = ""
+		
+		if previous_value != hashing:
+			hash_value_changed = 1
+			previous_hash_values[file_name] = hashing
+			update_hash_value(previous_hash_values)		
+	else:
+		hash_value_changed = 1
+		previous_hash_values = {}
+		previous_hash_values[file_name]=hashing
+		update_hash_value(previous_hash_values)
+		
+	return hash_value_changed
+	
+def get_data():
     data={}
     data['plugin_version']=plugin_version
     data['heartbeat_required']=heartbeat
@@ -45,47 +90,13 @@ def get_data(file_name,hash_type,search_text,case_sensitive, plugin_version, hea
     try:
     	if (file_name==""):
     		raise Exception("File not given")
-    	hash_storage_path="./hash_value_storage_unit_file_monitoring.txt"
+    	
     	
     	#Size Check: When the specified file's size exceeds the given threshold
     	data["file_size"]=os.path.getsize(file_name)
     	
     	#Hash Value Changed Check: Checks whether the hash value of the file is changed or not.
-    	previous_hash_value=""
-    	hash_value_changed=0
-    	if hash_type=="md5":
-    		hashing=hashlib.md5(open(file_name,'rb').read()).hexdigest()
-    	elif hash_type=="sha256":
-    		hashing=hashlib.sha256(open(file_name,'rb').read()).hexdigest()
-    	elif hash_type=="sha512":
-    		hashing=hashlib.sha512(open(file_name,'rb').read()).hexdigest()
-    	else:
-    		raise Exception("hash_type is not valid")
-    	if(os.path.exists(hash_storage_path)):
-    		file_object=open(hash_storage_path)
-    		previous_hash_reference=file_object.readlines()
-    		previous_hash_value=""
-    		line_number=-1
-    		for i in previous_hash_reference:
-    			name,value=i.split(":")
-    			name=name.strip()
-    			if name==file_name:
-    				previous_hash_value=value.strip()
-    				line_number=previous_hash_reference.index(i)
-    		file_object.close()
-    	if (previous_hash_value!="" and previous_hash_value!=hashing.strip()):
-    		hash_value_changed=1
-    	if(previous_hash_value==""):
-    		file_object=open(hash_storage_path,'a+')
-    		file_object.write(file_name+":"+hashing)
-    		file_object.write('\n')
-    		file_object.close()
-    	if previous_hash_value!="" and previous_hash_value!=hashing.strip():
-    		file_object=open(hash_storage_path,'w')
-    		previous_hash_reference[line_number]=file_name+":"+hashing
-    		file_object.writelines(previous_hash_reference)
-    		file_object.write('\n')
-    		file_object.close()
+    	hash_value_changed = check_hash_value()
     	data["hash_value_changed"]=hash_value_changed
     	
     	
@@ -164,19 +175,19 @@ if __name__=="__main__":
     args=parser.parse_args()
     
     if args.filename:
-    	file_name=args.filename
+    	file_name = args.filename
     if args.hashtype:
-    	hash_type=args.hashtype
+    	hash_type = args.hashtype
     if args.search_text:
-    	search_text=args.search_text
+    	search_text = args.search_text
     if args.case_sensitive:
-    	case_sensitive=args.case_sensitive
+    	case_sensitive = args.case_sensitive
     if args.plugin_version:
-    	plugin_version=args.plugin_version
+    	plugin_version = args.plugin_version
     if args.heartbeat:
-    	heartbeat=args.heartbeat
-    hash_type=hash_type.lower()
-
-    data=get_data(file_name,hash_type,search_text,case_sensitive,plugin_version,heartbeat)
+    	heartbeat = args.heartbeat
+    	
+    hash_type = hash_type.lower()
+    
+    data = get_data()
     print(json.dumps(data,indent=4))
-
