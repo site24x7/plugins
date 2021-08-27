@@ -1,30 +1,30 @@
                                          
-                                                                                               JENKINS PLUGIN
+#### JENKINS PLUGIN
                                                                                                
-========================================================================================================================================================================================== 
+=======================================================================
 
-##What is Jenkins?
+## What is Jenkins?
 	
-	Jenkins is an open source automation server written in Java. It helps to execute a series of actions to achieve a continuous integration process. 
+ Jenkins is an open source automation server written in Java. It helps to execute a series of actions to achieve a continuous integration process. 
 
 
 
-##How it's used for Developers?
+## How it's used for Developers?
 
-	Jenkins enables developers around the world to reliably build, test, package, stage and deploy their software.
+ Jenkins enables developers around the world to reliably build, test, package, stage and deploy their software.
 
-	With Jenkins, multiple developers from different modules can integrate the code change in a single project. 
+ With Jenkins, multiple developers from different modules can integrate the code change in a single project. 
 
-##How does it accelerate the development and test process 
+## How does it accelerate the development and test process 
 
-	With Jenkins, DevOps can accelerate the software development and testing process thru automation. Once the code is committed by the developer, next the code will be built and tested.
+ With Jenkins, DevOps can accelerate the software development and testing process thru automation. Once the code is committed by the developer, next the code will be built and tested.
 
-       If the test is passed, then the build will be tested for deployment. After deployment is successful, it's pushed to production.
-
-
+ If the test is passed, then the build will be tested for deployment. After deployment is successful, it's pushed to production.
 
 
-##Importance of monitoring Jenkins:
+
+
+## Importance of monitoring Jenkins:
 
 To run the Jenkins effectively, DevOps team is required to monitor the significant metrics of Jenkins. The continuous monitoring Jenkins will allow DevOps team to view below features.
 
@@ -50,49 +50,46 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 
 - Create a directory "jenkins_job" under Site24x7 Linux Agent plugin directory : 
 
-	Linux             ->   /opt/site24x7/monagent/plugins/jenkins_job
----
+		Linux             ->   /opt/site24x7/monagent/plugins/jenkins_job
+
       
 - Download all the files in "jenkins_job" folder and place it under the "jenkins_job" directory
 
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_job/jenkins_job.py
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_job/jenkins_job.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_job/jenkins_job.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_job/jenkins_job.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-	python jenkins_job.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --apikey=<apikey>
+		python jenkins_job.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --apikey=<apikey>
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 
 ### Configurations
+
+		[jenkins_job]
+		host = <host_name>
+		port = <port_number>
+		username = <username>
+		password = <password>
+		apikey = <apikey>
+		
 ---
-
-host=<host_name>
--
-port=<port_number>
--
-username=<your_username>
--
-password=<your_password>
--
-apikey=<your_api_key>
----
-####Jenkins job Monitoring:
+#### Jenkins job Monitoring:
 
 
-METRICs                                            DESCRIPTION
+		METRICs                                            DESCRIPTION
 
 
-Job Count                                           Number of jobs
-Jobs scheduled Rate                                 The rate at which the jobs are scheduled (events/minute) 
-Jobs Blocked Duration                               The time taken by the jobs in the build queue in the blocked state (sec)
-Jobs Buildable Duration                             The time taken by the jobs in the build queue in the buildable state (sec)
-Jobs Execution Time                                 Time taken for job execution (sec)
-Jobs Queuing Duration                               Time taken by the job in the build queue (sec)
-Jobs Total Duration                                 Time taken by the job from entering the build queue to completing building (sec)
-Jobs Waiting Duration                               Time taken by the jobs to spend in their quiet period (sec)
+		Job Count                                           Number of jobs
+		Jobs scheduled Rate                                 The rate at which the jobs are scheduled (events/minute) 
+		Jobs Blocked Duration                               The time taken by the jobs in the build queue in the blocked state (sec)
+		Jobs Buildable Duration                             The time taken by the jobs in the build queue in the buildable state (sec)
+		Jobs Execution Time                                 Time taken for job execution (sec)
+		Jobs Queuing Duration                               Time taken by the job in the build queue (sec)
+		Jobs Total Duration                                 Time taken by the job from entering the build queue to completing building (sec)
+		Jobs Waiting Duration                               Time taken by the jobs to spend in their quiet period (sec)
 
 
 
