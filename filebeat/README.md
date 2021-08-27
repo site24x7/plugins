@@ -38,12 +38,12 @@ This plugin monitors the performance of Filebeat.
       
 - Download all the files in "filebeat" folder and place it under the "filebeat" directory
 
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/filebeat/filebeat.py
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/filebeat/filebeat.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/filebeat/filebeat.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/filebeat/filebeat.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-	python filebeat.py --host=<your_host_name> --port=<port_number>
+		python filebeat.py --host=<your_host_name> --port=<port_number>
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
