@@ -14,8 +14,7 @@ This plugin monitors the performance of Filebeat.
 - ssh <root_name>@<server_ip>
    
 - sudo nano /etc/elasticsearch/elasticsearch.yml
-      
-      Add the following lines in the elasticsearch.yml
+  Add the following lines in the elasticsearch.yml
       
       . . .
       network.host: 0.0.0.0
