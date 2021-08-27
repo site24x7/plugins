@@ -37,7 +37,9 @@ The agent will automatically execute the plugin within five minutes and send per
 ---
 - Configure this set up in your cfg file.  
 
-                [mongodb_atlas_perf_metrics]
+                
+		
+		[mongodb_atlas_perf_metrics]
 		group_id=<your_group_id> 
 		host=<your_host_name> 
 		port=<port_number> 
