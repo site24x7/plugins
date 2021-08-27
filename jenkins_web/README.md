@@ -1,30 +1,30 @@
                                          
-                                                                                               JENKINS PLUGIN
+#### JENKINS PLUGIN
                                                                                                
-========================================================================================================================================================================================== 
+====================================================================
 
-##What is Jenkins?
+## What is Jenkins?
 	
-	Jenkins is an open source automation server written in Java. It helps to execute a series of actions to achieve a continuous integration process. 
+ Jenkins is an open source automation server written in Java. It helps to execute a series of actions to achieve a continuous integration process. 
 
 
 
-##How it's used for Developers?
+## How it's used for Developers?
 
-	Jenkins enables developers around the world to reliably build, test, package, stage and deploy their software.
+ Jenkins enables developers around the world to reliably build, test, package, stage and deploy their software.
 
-	With Jenkins, multiple developers from different modules can integrate the code change in a single project. 
+ With Jenkins, multiple developers from different modules can integrate the code change in a single project. 
 
-##How does it accelerate the development and test process 
+## How does it accelerate the development and test process 
 
-	With Jenkins, DevOps can accelerate the software development and testing process thru automation. Once the code is committed by the developer, next the code will be built and tested.
+ With Jenkins, DevOps can accelerate the software development and testing process thru automation. Once the code is committed by the developer, next the code will be built and tested.
 
-       If the test is passed, then the build will be tested for deployment. After deployment is successful, it's pushed to production.
-
-
+ If the test is passed, then the build will be tested for deployment. After deployment is successful, it's pushed to production.
 
 
-##Importance of monitoring Jenkins:
+
+
+## Importance of monitoring Jenkins:
 
 To run the Jenkins effectively, DevOps team is required to monitor the significant metrics of Jenkins. The continuous monitoring Jenkins will allow DevOps team to view below features.
 
@@ -50,50 +50,48 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 
 - Create a directory "jenkins_web" under Site24x7 Linux Agent plugin directory : 
 
-	Linux             ->   /opt/site24x7/monagent/plugins/jenkins_web
----
+		Linux             ->   /opt/site24x7/monagent/plugins/jenkins_web
       
 - Download all the files in "jenkins_web" folder and place it under the "jenkins_web" directory
 
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_web/jenkins_web.py
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_web/jenkins_web.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_web/jenkins_web.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_web/jenkins_web.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-	python jenkins_web.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --apikey=<apikey>
+		python jenkins_web.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --apikey=<apikey>
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
+---
 
 ### Configurations
+
+		[jenkins_web]
+		host=<host_name> 
+		port=<port_number> 
+		username=<username> 
+		password=<password> 
+		apikey=<apikey>
+		
 ---
 
-host=<host_name>
--
-port=<port_number>
--
-username=<your_username>
--
-password=<your_password>
--
-apikey=<your_api_key>
----
-####Jenkins web Monitoring:
+#### Jenkins web Monitoring:
 
 
-METRICs                                            DESCRIPTION
+		METRICs                                            DESCRIPTION
 
 
-Total ActiveRequests                               The total number of requests that are currently active
-Total BadRequest                                   The total number of request with HTTP/400 status code
-Total Responsecode Created                         The total number of request with HTTP/201 status code
-Total Forbidden Responsecode                       The total number of request with HTTP/403 status code
-NoContent Responsecode                             The total number of request with HTTP/204 status code
-NotFound Responsecode                              The total number of request with HTTP/404 status code
-Unmodified Responsecode                            The total number of request with HTTP/304 status code
-Success Responsecpde                               The total number of request with HTTP/200 status code
-Non Informational Responsecode                     The total number of request with a non information status code
-ServerError Responsecode                           The total number of request with HTTP/500 status code
-Service Unavailable                                The total number of request with HTTP/503 status code
-Request Duration                                   Time taken to generate the corresponding code
+		Total ActiveRequests                               The total number of requests that are currently active
+		Total BadRequest                                   The total number of request with HTTP/400 status code
+		Total Responsecode Created                         The total number of request with HTTP/201 status code
+		Total Forbidden Responsecode                       The total number of request with HTTP/403 status code
+		NoContent Responsecode                             The total number of request with HTTP/204 status code
+		NotFound Responsecode                              The total number of request with HTTP/404 status code
+		Unmodified Responsecode                            The total number of request with HTTP/304 status code
+		Success Responsecpde                               The total number of request with HTTP/200 status code
+		Non Informational Responsecode                     The total number of request with a non information status code
+		ServerError Responsecode                           The total number of request with HTTP/500 status code
+		Service Unavailable                                The total number of request with HTTP/503 status code
+		Request Duration                                   Time taken to generate the corresponding code
