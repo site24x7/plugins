@@ -13,9 +13,8 @@ This plugin monitors the performance of Filebeat.
 
 - ssh <root_name>@<server_ip>
    
-- sudo nano /etc/elasticsearch/elasticsearch.yml
-      
-      Add the following lines in the elasticsearch.yml
+- sudo nano /etc/elasticsearch/elasticsearch.yml .
+  Add the following lines in the elasticsearch.yml
       
       . . .
       network.host: 0.0.0.0
@@ -57,13 +56,13 @@ The agent will automatically execute the plugin within five minutes and send per
 ### Configurations
 ---
 
-host =<your_host_name>
-
-port =<port_number>
+		[filebeat]
+		host = <host_name>
+		port = <port_number>
 
 ---
 
-#Metrics monitored
+### Metrics monitored
 
 ---
 
