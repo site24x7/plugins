@@ -35,7 +35,8 @@ The agent will automatically execute the plugin within five minutes and send per
 ### Configurations
 
 - Configure this set up in your cfg file 
-
+                
+		[mongodb_atlas]
 		group_id = <group_id> 
 		public_key = <public_key>
 		private_key = <your_private_key>
