@@ -33,12 +33,11 @@ The agent will automatically execute the plugin within five minutes and send per
 
 
 ### Configurations
----
 
 group_id =<your_group_id>
--
+
 public_key =<your_public_key>
--
+
 private_key =<your_private_key>
 
 #Metrics monitored
