@@ -35,20 +35,16 @@ The agent will automatically execute the plugin within five minutes and send per
 
 ### Configurations
 ---
+- Configure this set up in your cfg file.  
 
-group_id=<your_group_id>
--
-host=<your_host_name>
--
-port=<port_number>
--
-public_key=<your_public_key>
--
-private_key=<your_private_key>
----
+                [mongodb_atlas_perf_metrics]
+		group_id=<your_group_id> 
+		host=<your_host_name> 
+		port=<port_number> 
+		public_key=<your_public_key> 
+		private_key=<your_private_key>
 
-#Metrics monitored
-
+### Metrics Monitored
 ---
 
 	groupid                 ->	Unique 24-hexadecimal digit string that identifies the project that owns this Atlas MongoDB process.
