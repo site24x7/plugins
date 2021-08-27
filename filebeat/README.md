@@ -9,8 +9,6 @@ This plugin monitors the performance of Filebeat.
 		
 - Run the following command to install metricbeat on your system
 
----
-
 - ssh <root_name>@<server_ip>
    
 - sudo nano /etc/elasticsearch/elasticsearch.yml .
@@ -37,8 +35,6 @@ This plugin monitors the performance of Filebeat.
 - Create a directory "filebeat" under Site24x7 Linux Agent plugin directory : 
 
         Linux             ->   /opt/site24x7/monagent/plugins/filebeat
-
----
       
 - Download all the files in "filebeat" folder and place it under the "filebeat" directory
 
@@ -54,17 +50,15 @@ The agent will automatically execute the plugin within five minutes and send per
 
 
 ### Configurations
----
 
 		[filebeat]
 		host = <host_name>
 		port = <port_number>
 
----
 
 ### Metrics monitored
 
----
+
 
 		network.name                    ->	 Name of the network
 		network.in                      ->	 Total Networks in (bytes)
