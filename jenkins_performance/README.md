@@ -1,25 +1,25 @@
                                          
- JENKINS PLUGIN
+ #### JENKINS PLUGIN
                                                                                                
-=====================================================
+==========================================================================================================================
 
 ## What is Jenkins?
 	
-	Jenkins is an open source automation server written in Java. It helps to execute a series of actions to achieve a continuous integration process. 
+ Jenkins is an open source automation server written in Java. It helps to execute a series of actions to achieve a continuous integration process. 
 
 
 
 ## How it's used for Developers?
 
-	Jenkins enables developers around the world to reliably build, test, package, stage and deploy their software.
+ Jenkins enables developers around the world to reliably build, test, package, stage and deploy their software.
 
-	With Jenkins, multiple developers from different modules can integrate the code change in a single project. 
+  With Jenkins, multiple developers from different modules can integrate the code change in a single project. 
 
 ## How does it accelerate the development and test process 
 
-	With Jenkins, DevOps can accelerate the software development and testing process thru automation. Once the code is committed by the developer, next the code will be built and tested.
+  With Jenkins, DevOps can accelerate the software development and testing process thru automation. Once the code is committed by the developer, next the code will be built and tested.
 
-       If the test is passed, then the build will be tested for deployment. After deployment is successful, it's pushed to production.
+  If the test is passed, then the build will be tested for deployment. After deployment is successful, it's pushed to production.
 
 
 
