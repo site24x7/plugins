@@ -40,7 +40,8 @@ The agent will automatically execute the plugin within five minutes and send per
 		public_key = <public_key>
 		private_key = <your_private_key>
 
-###Metrics monitored
+### Metrics Monitored
+
 
 ---
 
