@@ -83,15 +83,15 @@ The agent will automatically execute the plugin within five minutes and send per
 		METRICs                                            DESCRIPTION
 
 
-		Total ActiveRequests                               The total number of requests that are currently active
-		Total BadRequest                                   The total number of request with HTTP/400 status code
-		Total Responsecode Created                         The total number of request with HTTP/201 status code
-		Total Forbidden Responsecode                       The total number of request with HTTP/403 status code
-		NoContent Responsecode                             The total number of request with HTTP/204 status code
-		NotFound Responsecode                              The total number of request with HTTP/404 status code
-		Unmodified Responsecode                            The total number of request with HTTP/304 status code
-		Success Responsecpde                               The total number of request with HTTP/200 status code
-		Non Informational Responsecode                     The total number of request with a non information status code
-		ServerError Responsecode                           The total number of request with HTTP/500 status code
-		Service Unavailable                                The total number of request with HTTP/503 status code
-		Request Duration                                   Time taken to generate the corresponding code
+		total_activerequests                               The total number of requests that are currently active
+		total_badrequest                                   The total number of request with HTTP/400 status code
+		total_responsecode_created                         The total number of request with HTTP/201 status code
+		total_forbidden_responsecode                       The total number of request with HTTP/403 status code
+		noContent_responsecode                             The total number of request with HTTP/204 status code
+		notFound_responsecode                              The total number of request with HTTP/404 status code
+		unmodified_responsecode                            The total number of request with HTTP/304 status code
+		success_responsecpde                               The total number of request with HTTP/200 status code
+		non_informational_responsecode                     The total number of request with a non information status code
+		servererror_responsecode                           The total number of request with HTTP/500 status code
+		service_unavailable                                The total number of request with HTTP/503 status code
+		request_duration                                   Time taken to generate the corresponding code
