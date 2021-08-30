@@ -14,15 +14,15 @@ heartbeat_required = "true"
 resultjson={}
 
 metric_units={
-    "network.in":"bytes/second",
-    "network.out":"bytes/second",
-    "network.request":"count/second",
-    "opcounter.cmd":"count/second",
-    "opcounter.query":"count/second",
-    "opcounter.update":"count/second",
-    "opcounter.delete":"count/second",
-    "opcounter.getmore":"count/second",
-    "opcounter.insert":"count/second",
+    "network_in":"bytes/second",
+    "network_out":"bytes/second",
+    "network_request":"count/second",
+    "opcounter_cmd":"count/second",
+    "opcounter_query":"count/second",
+    "opcounter_update":"count/second",
+    "opcounter_delete":"count/second",
+    "opcounter_getmore":"count/second",
+    "opcounter_insert":"count/second",
     "logicalsize":"bytes"
 }
 
@@ -54,15 +54,15 @@ def metrics_collector():
         new_data["start"]=data["start"]
         new_data["end"]=data["end"]
         new_data["connections"] = data["measurements"][0]["dataPoints"][0]["value"]
-        new_data["network.in"]=data["measurements"][1]["dataPoints"][0]["value"]
-        new_data["network.out"]=data["measurements"][2]["dataPoints"][0]["value"]
-        new_data["network.request"]=data["measurements"][3]["dataPoints"][0]["value"]
-        new_data["opcounter.cmd"]=data["measurements"][4]["dataPoints"][0]["value"]
-        new_data["opcounter.query"]=data["measurements"][5]["dataPoints"][0]["value"]
-        new_data["opcounter.update"]=data["measurements"][6]["dataPoints"][0]["value"]
-        new_data["opcounter.delete"]=data["measurements"][7]["dataPoints"][0]["value"]
-        new_data["opcounter.getmore"]=data["measurements"][8]["dataPoints"][0]["value"]
-        new_data["opcounter.insert"]=data["measurements"][9]["dataPoints"][0]["value"]
+        new_data["network_in"]=data["measurements"][1]["dataPoints"][0]["value"]
+        new_data["network_out"]=data["measurements"][2]["dataPoints"][0]["value"]
+        new_data["network_request"]=data["measurements"][3]["dataPoints"][0]["value"]
+        new_data["opcounter_cmd"]=data["measurements"][4]["dataPoints"][0]["value"]
+        new_data["opcounter_query"]=data["measurements"][5]["dataPoints"][0]["value"]
+        new_data["opcounter_update"]=data["measurements"][6]["dataPoints"][0]["value"]
+        new_data["opcounter_delete"]=data["measurements"][7]["dataPoints"][0]["value"]
+        new_data["opcounter_getmore"]=data["measurements"][8]["dataPoints"][0]["value"]
+        new_data["opcounter_insert"]=data["measurements"][9]["dataPoints"][0]["value"]
         new_data["logicalsize"]=data["measurements"][10]["dataPoints"][0]["value"]
         
         return new_data
