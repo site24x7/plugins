@@ -80,13 +80,13 @@ The agent will automatically execute the plugin within five minutes and send per
 		METRICS                                       DESCRIPTION
 
 
-		Build Count                                   Number of Builds in the job
-		Job Lastbuild Queueid                         Queue Id of the last build 
-		Job Lastbuild Duration                        Time taken for last build(in ms)
-		Job Lastbuild EstimatedDuration               Estimated time for last build(in ms)
-		Job LastbuildId                               Id of the last build
-		Job LastbuildNumber                           Last build's Number in the job
-		Build Failed                                  Number of builds failed
-		Build Success                                 Number of successful builds
-		Build Aborted                                 Number of builds aborted
+		build_count                                   Number of Builds in the job
+		job_lastbuild_queueid                         Queue Id of the last build 
+		job_lastbuild_duration                        Time taken for last build(in ms)
+		job_lastbuild_estimated_duration               Estimated time for last build(in ms)
+		job_lastbuildid                               Id of the last build
+		job_lastbuild_number                           Last build's Number in the job
+		build_failed                                  Number of builds failed
+		build_success                                 Number of successful builds
+		build_aborted                                 Number of builds aborted
 
