@@ -1,9 +1,16 @@
 #!/usr/bin/python
 
+import sys
 import json
-import platform
 import subprocess
 
+PYTHON_MAJOR_VERSION = sys.version_info[0]
+if PYTHON_MAJOR_VERSION == 3:
+            import distro as platform
+elif PYTHON_MAJOR_VERSION == 2:
+            import platform 
+            
+os_info = platform.linux_distribution()[0].lower()
 PLUGIN_VERSION = "1"
 HEARTBEAT="true"
 
@@ -14,8 +21,6 @@ data['packages_to_be_updated']=0
 data['security_updates']=0
 
 command="yum check-update --security | grep -i 'needed for security'"
-
-os_info = platform.linux_distribution()[0].lower()
 
 def get_command_output(command):
     p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
@@ -43,8 +48,8 @@ else:
     lines = [line.strip('\n') for line in open(file_path)]
     for line in lines:
         if line:
-            if ( 'packages can be updated' in line ) or ('can be installed immediately' in line ):
+            if ( 'packages can be updated' in line ) or ('can be installed immediately' in line ) or ('can be applied immediately' in line):
                 data['packages_to_be_updated'] = line.split()[0]
-            if 'updates are security updates' in line:
+            if ('updates are security updates' in line) or ('updates are standard security updates' in line):
                 data['security_updates'] = line.split()[0]
 print(json.dumps(data))
