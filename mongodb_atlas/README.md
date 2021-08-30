@@ -46,24 +46,24 @@ The agent will automatically execute the plugin within five minutes and send per
 
 ---
 
-	analytics.nodes          ->	Number of analytics nodes in the region.
+	analytics_nodes          ->	Number of analytics nodes in the region.
 	clustertype              ->	Type of the cluster
 	disksize                 ->	Capacity, in gigabytes, of the host's root volume. 
-	electable.nodes          ->	Number of electable nodes in the region.
-	maxinstance.size         ->	Maximum instance size to which your cluster can automatically scale.
-	mininstanc.size          ->	Minimum instance size to which your cluster can automatically scale.
-	mongodb.majorversion     ->	Major version of MongoDB the cluster runs
-	mongodb.version          ->	Version of MongoDB the cluster runs
-	mongo.uri.updated        ->	Timestamp in date and time format in UTC when the connection string was last updated. 
+	electable_nodes          ->	Number of electable nodes in the region.
+	maxinstance_size         ->	Maximum instance size to which your cluster can automatically scale.
+	mininstanc_size          ->	Minimum instance size to which your cluster can automatically scale.
+	mongodb_majorversion     ->	Major version of MongoDB the cluster runs
+	mongodb_version          ->	Version of MongoDB the cluster runs
+	mongo_uri_updated        ->	Timestamp in date and time format in UTC when the connection string was last updated. 
 	name                     ->	Name of the cluster to retrieve.
 	numshards                ->	Positive integer that specifies the number of shards for a sharded cluster.
 	pitenabled               ->	Flag that indicates if the cluster uses Continuous Cloud Backup backups.
 	priority                 ->	Election priority of the region. 
-	provider.backup.enabled  ->	Flag that indicates if the cluster uses Cloud Backups for backups.
+	provider_backup_enabled  ->	Flag that indicates if the cluster uses Cloud Backups for backups.
 	providername             ->	Cloud service provider on which Atlas provisioned the hosts.
-	readonly.nodes           ->	Number of read-only nodes in the region.
-	replication.factor       ->	Number of replica set members
-	rootcert.type            ->	Certificate Authority that MongoDB Atlas clusters use.
+	readonly_nodes           ->	Number of read-only nodes in the region.
+	replication_factor       ->	Number of replica set members
+	rootcert_type            ->	Certificate Authority that MongoDB Atlas clusters use.
 	srvaddress               ->	Connection string for connecting to the Atlas cluster. 
 	statename                ->	Current state of the cluster. 
 	zonename                 ->	Name for the zone.
