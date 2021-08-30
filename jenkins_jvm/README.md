@@ -82,24 +82,24 @@ The agent will automatically execute the plugin within five minutes and send per
 
 		METRICs                                            DESCRIPTION
 	
-		Blocked Count                                      Number of threads that are currently blocked
-		Total Count                                        Total thread count
-		Deadlock Count                                     The number of threads that have a currently detected deadlock 
-		File descriptor Ratio                              The ratio of used to total file descriptors. 
-		Heap Memory Commited                               The amount of memory, in the heap (bytes)
-		Heap Memory Initiated                              The amount of memory, in the heap that has been newly initiated (bytes)
-		Maximum Heap Memory                                The maximum amount of memory, in the heap, that is used (bytes)
-		Heap Memory Used                                   The amount of memory, in the heap that is currently in use (bytes)
-		Non-Heap Memory Commited                           The amount of memory, outside the heap (bytes)
-		Non-Heap Memory Initiated                          The amount of memory, outside the heap that has been newly initiated (bytes)
-		Maximum Non-Heap Memory                            The maximum amount of memory, outside the heap, that is used (bytes)
-		Non-Heap Memory Used                               The amount of memory, outside the heap that is currently in use (bytes)
-		Total Memory Commited                              The total amount of memory (bytes)
-		Total Memory Initiated                             The total amount of memory, that has been newly initiated (bytes)
-		Total Maximum Memory                               The maximum amount of memory (bytes)
-		Total Memory Used                                  The total amount of memory used (bytes)
-		New Threads                                        The number of threads that have not currently started execution
-		Running Threads                                    The total number of threads that are currently in execution
-		Terminated Threads                                 The total number of threads that have completed execution
-		Suspended Threads                                  The total number of threads that have suspended execution
-		Waiting Threads                                    The total number of threads that are waiting for execution
+		blocked_count                                      Number of threads that are currently blocked
+		total_count                                        Total thread count
+		deadlock_count                                     The number of threads that have a currently detected deadlock 
+		file_descriptor_ratio                              The ratio of used to total file descriptors. 
+		heap_memory_commited                               The amount of memory, in the heap (bytes)
+		heap_memory_initiated                              The amount of memory, in the heap that has been newly initiated (bytes)
+		maximum_heap_memory                                The maximum amount of memory, in the heap, that is used (bytes)
+		heap_memory_used                                   The amount of memory, in the heap that is currently in use (bytes)
+		non-heap_memory_commited                           The amount of memory, outside the heap (bytes)
+		non-heap_memory_initiated                          The amount of memory, outside the heap that has been newly initiated (bytes)
+		maximum_non-heap_memory                            The maximum amount of memory, outside the heap, that is used (bytes)
+		non-heap_memory_used                               The amount of memory, outside the heap that is currently in use (bytes)
+		total_memory_commited                              The total amount of memory (bytes)
+		total_memory_initiated                             The total amount of memory, that has been newly initiated (bytes)
+		total_maximum_memory                               The maximum amount of memory (bytes)
+		total_memory_used                                  The total amount of memory used (bytes)
+		new_threads                                        The number of threads that have not currently started execution
+		running_threads                                    The total number of threads that are currently in execution
+		terminated_threads                                 The total number of threads that have completed execution
+		suspended_threads                                  The total number of threads that have suspended execution
+		waiting_threads                                    The total number of threads that are waiting for execution
