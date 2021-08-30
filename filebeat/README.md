@@ -60,22 +60,22 @@ The agent will automatically execute the plugin within five minutes and send per
 
 
 
-		network.name                    ->	 Name of the network
-		network.in                      ->	 Total Networks in (bytes)
-		network.out                     ->	 Total Networks out (bytes)
-		network.in.errors               ->	 Error occured in the networks in (bytes)
-		network.out.errors              ->	 Error occured in the networks out (bytes)
-		network.out.dropped             ->	 Network drops in out networks (bytes)
-		syn.recv                        ->	 Syn received in bytes
-		syn.sent                        ->	 Syn sent in bytes
-		tcp.closing                     ->	 tcp closing (bytes)
-		tcp.count                       ->	 tcp count
-		tcp.established                 ->	 tcp established (bytes)
-		tcp.listening                   ->	 tcp listening (bytes)
-		total.files                     ->	 Total file count
-		total.freespace                 ->	 Total free space (bytes)
-		total.space                     ->	 Total space available (bytes)
-		total.spaceused                 ->	 Total space used (bytes)
+		network_name                    ->	 Name of the network
+		network_in                      ->	 Total Networks in (bytes)
+		network_out                     ->	 Total Networks out (bytes)
+		network_in_errors               ->	 Error occured in the networks in (bytes)
+		network_out_errors              ->	 Error occured in the networks out (bytes)
+		network_out_dropped             ->	 Network drops in out networks (bytes)
+		syn_recv                        ->	 Syn received in bytes
+		syn_sent                        ->	 Syn sent in bytes
+		tcp_closing                     ->	 tcp closing (bytes)
+		tcp_count                       ->	 tcp count
+		tcp_established                 ->	 tcp established (bytes)
+		tcp_listening                   ->	 tcp listening (bytes)
+		total_files                     ->	 Total file count
+		total_freespace                 ->	 Total free space (bytes)
+		total_space                     ->	 Total space available (bytes)
+		total_spaceused                 ->	 Total space used (bytes)
 
 
 
