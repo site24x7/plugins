@@ -8,9 +8,9 @@ HEARTBEAT="true"
 port=""
 master_name=""
 
-metric_units={"sentinel_masters":"count","sentinel_running_scripts":"count","sentinel_scripts_queue_length":"count","link_pending_commands":"count","num_slaves":"count","num_other_sentinels":"count","down_after_milliseconds":"ms","role_reported_time":"ms"}
+metric_units={"sentinel_masters":"count","sentinel_running_scripts":"count","sentinel_scripts_queue_length":"count","link_pending_commands":"count","num_slaves":"count","num_other_sentinels":"count","role_reported_time":"ms"}
 
-required_metrics={"sentinel_masters":"int","sentinel_tilt":"int","sentinel_running_scripts":"int","sentinel_scripts_queue_length":"int","sentinel_simulate_failure_flags":"int","link_pending_commands":"int","link_refcount":"int","last_ping_sent":"int","last_ok_ping_reply":"int","last_ping_reply":"int","down_after_milliseconds":"int","role_reported":"str","role_reported_time":"int","num_slaves":"int","num_other_sentinels":"int","quorum":"int","failover_timeout":"int","parallel_syncs":"int"}
+required_metrics={"sentinel_masters":"int","sentinel_running_scripts":"int","sentinel_scripts_queue_length":"int","sentinel_simulate_failure_flags":"int","link_pending_commands":"int","last_ping_sent":"int","last_ok_ping_reply":"int","last_ping_reply":"int","role_reported_time":"int","num_slaves":"int","num_other_sentinels":"int","quorum":"int"}
 
 def get_data():
 	try:
