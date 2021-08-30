@@ -54,13 +54,13 @@ The agent will automatically execute the plugin within five minutes and send per
 	start                   ->	Timestamp in date and time format in UTC when to start retrieving measurements.
 	end                     ->	Timestamp in date and time format in UTC when to stop retrieving measurements.
 	connections             ->	Number of connections to a MongoDB process found 
-	network.in              ->	The total number of bytes that the server has received over network connections initiated by clients or other mongod instances.
-	network.out             ->	The total number of bytes that the server has sent over network connections initiated by clients or other mongod instances.
-	network.request         ->	The total number of distinct requests that the server has received.
-	opcounter.cmd           ->	The total number of commands issued to the database since the mongod instance last started.
-	opcounter.query         ->	The total number of queries received since the mongod instance last started.
-	opcounter.update        ->	The total number of update operations received since the mongod instance last started.
-	opcounter.delete        ->	The total number of delete operations since the mongod instance last started.
-	opcounter.getmore       ->	The total number of getMore operations since the mongod instance last started.
-	opcounter.insert        ->	The total number of insert operations received since the mongod instance last started
+	network_in              ->	The total number of bytes that the server has received over network connections initiated by clients or other mongod instances.
+	network_out             ->	The total number of bytes that the server has sent over network connections initiated by clients or other mongod instances.
+	network_request         ->	The total number of distinct requests that the server has received.
+	opcounter_cmd           ->	The total number of commands issued to the database since the mongod instance last started.
+	opcounter_query         ->	The total number of queries received since the mongod instance last started.
+	opcounter_update        ->	The total number of update operations received since the mongod instance last started.
+	opcounter_delete        ->	The total number of delete operations since the mongod instance last started.
+	opcounter_getmore       ->	The total number of getMore operations since the mongod instance last started.
+	opcounter_insert        ->	The total number of insert operations received since the mongod instance last started
 	logicalsize             ->	Size in GB
