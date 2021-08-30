@@ -8,8 +8,8 @@ from urllib.request import ProxyHandler
 
 
 metric_units={
-    "Job Lastbuild Duration":"ms",
-    "Job Lastbuild EstimatedDuration":"ms"
+    "job_lastbuild_duration":"ms",
+    "job_lastbuild_estimated_duration":"ms"
 }
 
 
@@ -44,14 +44,14 @@ class Jenkins(object):
         try:
             url="http://"+self.host+":"+self.port+"/job/"+self.jobname+"/lastBuild/api/json"
             data=self.url_data_collector(url)
-            self.resultjson["Job Lastbuild Queueid"]=data["queueId"]
-            self.resultjson["Job Lastbuild Duration"]=data["duration"]
-            self.resultjson["Job Lastbuild EstimatedDuration"]=data["estimatedDuration"]
-            self.resultjson["Job LastbuildId"]=data["id"]
-            self.resultjson["Job LastbuildNumber"]=data["number"]
+            self.resultjson["job_lastbuild_queueid"]=data["queueId"]
+            self.resultjson["job_lastbuild_duration"]=data["duration"]
+            self.resultjson["job_lastbuild_estimated_duration"]=data["estimatedDuration"]
+            self.resultjson["job_lastbuildid"]=data["id"]
+            self.resultjson["job_lastbuildnumber"]=data["number"]
             url="http://"+self.host+":"+self.port+"/job/"+self.jobname+"/api/json?tree=builds[*]"
             data=self.url_data_collector(url)
-            self.resultjson["Build Count"]=len(data["builds"])
+            self.resultjson["build_count"]=len(data["builds"])
             for build in  (data["builds"]):
                 if(build["result"]=="SUCCESS"):
                     successful_build=successful_build+1
@@ -60,9 +60,9 @@ class Jenkins(object):
                 else:
                     aborted_build=aborted_build+1
                     
-            self.resultjson["Build Failed"]=failed_build
-            self.resultjson["Build Success"]=successful_build
-            self.resultjson["Build Aborted"]=aborted_build
+            self.resultjson["build_failed"]=failed_build
+            self.resultjson["build_success"]=successful_build
+            self.resultjson["build_aborted"]=aborted_build
             
         except Exception as e:
             self.resultjson["msg"]=str(e)
