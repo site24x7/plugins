@@ -82,30 +82,30 @@ The agent will automatically execute the plugin within five minutes and send per
 		METRICS                                             DESCRIPTION
 
 
-		NodeCount                                           Number of node
-		Health-check Count                                  The number of health checks associated
-		Health-check Duration                               The rate at which the health checks are running (sec)
-		Nodes Offline                                       Number of offline nodes
-		Nodes Online                                        Number of online nodes
-		Projects Count                                      Project count
-		Projects Disabled                                   Number of disabled projects
-		Projects Enabled                                    Number of enabled projects
-		Queue Size                                          Number of jobs in queue
-		Executor Count                                      Number of executors available for Jenkins
-		Executors Free Count                                Number of executors available for Jenkins that are not currently in use
-		Executors Inuse Count                               Number of executors in use
-		Queues Pending                                      Number of pending jobs in the queue
-		Queues Stuck                                        Number of stucked jobs in the queue
-		Queues Blocked                                      Number of jobs that are blocked in the queue
-		Jobs in Queue                                       Number of buildable items in queue
-		Plugins Active                                      Number of active plugins
-		Plugins Failed                                      Number of plugins failed
-		Plugins Inactive                                    Number of inactive plugins
-		Plugins Withupdate                                  Number of plugins with update
-		Builds Blocked duration                             Time taken by the jobs in blocked state (sec)
-		Build Creation Time                                 Time taken by the build to complete (sec)
-		Builds Execution Duration                           Build execution time (sec)
-		Builds Queuing Duration                             Build queuing time (sec)
-		Builds Waiting Duration                             Time taken by the build by waiting in a queue (sec)
+		node_count                                          Number of node
+		health-check_count                                  The number of health checks associated
+		health-check_duration                               The rate at which the health checks are running (sec)
+		nodes_offline                                       Number of offline nodes
+		nodes_online                                        Number of online nodes
+		projects_count                                      Project count
+		projects_disabled                                   Number of disabled projects
+		projects_enabled                                    Number of enabled projects
+		queue_size                                          Number of jobs in queue
+		executor_count                                      Number of executors available for Jenkins
+		executors_free_count                                Number of executors available for Jenkins that are not currently in use
+		executors_inuse_count                               Number of executors in use
+		queues_pending                                      Number of pending jobs in the queue
+		queues_stuck                                        Number of stucked jobs in the queue
+		queues_blocked                                      Number of jobs that are blocked in the queue
+		jobs_in_queue                                       Number of buildable items in queue
+		plugins_active                                      Number of active plugins
+		plugins_failed                                      Number of plugins failed
+		plugins_inactive                                    Number of inactive plugins
+		plugins_withupdate                                  Number of plugins with update
+		builds_blocked_duration                             Time taken by the jobs in blocked state (sec)
+		build_creation_time                                 Time taken by the build to complete (sec)
+		builds_execution_duration                           Build execution time (sec)
+		builds_queuing_duration                             Build queuing time (sec)
+		builds_waiting_duration                             Time taken by the build by waiting in a queue (sec)
 
 
