@@ -36,20 +36,20 @@ class Jenkins(object):
             response = (urlconnection.urlopen(url)).read().decode('UTF-8')
             response=json.loads(response)
             data=response["counters"]
-            self.resultjson["Total ActiveRequests"]=data["http.activeRequests"]["count"]
+            self.resultjson["total_activerequests"]=data["http.activeRequests"]["count"]
             data=response["meters"]
-            self.resultjson["Total BadRequest"]=data["http.responseCodes.badRequest"]["count"]
-            self.resultjson["Total Responsecode Created"]=data["http.responseCodes.created"]["count"]
-            self.resultjson["Total Forbidden Responsecode"]=data["http.responseCodes.forbidden"]["count"]
-            self.resultjson["NoContent Responsecode"]=data["http.responseCodes.noContent"]["count"]
-            self.resultjson["NotFound Responsecode"]=data["http.responseCodes.notFound"]["count"]
-            self.resultjson["Unmodified Responsecode"]=data["http.responseCodes.notModified"]["count"]
-            self.resultjson["Success Responsecpde"]=data["http.responseCodes.ok"]["count"]
-            self.resultjson["Non Informational Responsecode"]=data["http.responseCodes.other"]["count"]
-            self.resultjson["ServerError Responsecode"]=data["http.responseCodes.serverError"]["count"]
-            self.resultjson["Service Unavailable"]=data["http.responseCodes.serviceUnavailable"]["count"]
+            self.resultjson["total_badrequest"]=data["http.responseCodes.badRequest"]["count"]
+            self.resultjson["total_responsecode_created"]=data["http.responseCodes.created"]["count"]
+            self.resultjson["total_forbidden_responsecode"]=data["http.responseCodes.forbidden"]["count"]
+            self.resultjson["nocontent_responsecode"]=data["http.responseCodes.noContent"]["count"]
+            self.resultjson["notfound_responsecode"]=data["http.responseCodes.notFound"]["count"]
+            self.resultjson["unmodified_responsecode"]=data["http.responseCodes.notModified"]["count"]
+            self.resultjson["success_responsecpde"]=data["http.responseCodes.ok"]["count"]
+            self.resultjson["non_informational_responsecode"]=data["http.responseCodes.other"]["count"]
+            self.resultjson["servererror_responsecode"]=data["http.responseCodes.serverError"]["count"]
+            self.resultjson["service_unavailable"]=data["http.responseCodes.serviceUnavailable"]["count"]
             data=response["timers"]
-            self.resultjson["Request Duration"]=data["http.requests"]["mean"]
+            self.resultjson["request_duration"]=data["http.requests"]["mean"]
             
         except Exception as e:
             self.resultjson["msg"]=str(e)
