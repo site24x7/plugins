@@ -82,14 +82,14 @@ The agent will automatically execute the plugin within five minutes and send per
 		METRICs                                            DESCRIPTION
 
 
-		Job Count                                           Number of jobs
-		Jobs scheduled Rate                                 The rate at which the jobs are scheduled (events/minute) 
-		Jobs Blocked Duration                               The time taken by the jobs in the build queue in the blocked state (sec)
-		Jobs Buildable Duration                             The time taken by the jobs in the build queue in the buildable state (sec)
-		Jobs Execution Time                                 Time taken for job execution (sec)
-		Jobs Queuing Duration                               Time taken by the job in the build queue (sec)
-		Jobs Total Duration                                 Time taken by the job from entering the build queue to completing building (sec)
-		Jobs Waiting Duration                               Time taken by the jobs to spend in their quiet period (sec)
+		job_count                                           Number of jobs
+		jobs_scheduled_rate                                 The rate at which the jobs are scheduled (events/minute) 
+		jobs_blocked_duration                               The time taken by the jobs in the build queue in the blocked state (sec)
+		jobs_buildable_duration                             The time taken by the jobs in the build queue in the buildable state (sec)
+		jobs_execution_time                                 Time taken for job execution (sec)
+		jobs_queuing_duration                               Time taken by the job in the build queue (sec)
+		jobs_total_duration                                 Time taken by the job from entering the build queue to completing building (sec)
+		jobs_waiting_duration                               Time taken by the jobs to spend in their quiet period (sec)
 
 
 
