@@ -53,7 +53,7 @@ def metrics_collector():
         new_data["mininstance_size"]=data["providerSettings"]["autoScaling"]["compute"]["minInstanceSize"]
         new_data["replication_factor"]=data["replicationFactor"]
         new_data["analytics_nodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["analyticsNodes"]
-        new_data["electable-nodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["electableNodes"]
+        new_data["electable_nodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["electableNodes"]
         new_data["priority"]=data["replicationSpec"]["ASIA_SOUTH_1"]["priority"]
         new_data["readonly_nodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["readOnlyNodes"]
         new_data["zonename"]=data["replicationSpecs"][0]["zoneName"]
