@@ -9,12 +9,12 @@ from urllib.request import ProxyHandler
 
 
 metric_units={
-    "Health-check Duration":"sec",
-    "Builds Blocked Duration":"sec",
-    "Builds Buildable Duration":"sec",
-    "Builds Execution Duration":"sec",
-    "Builds Queuing Duration":"sec",
-    "Builds Waiting Duration":"sec"
+    "health-check_duration":"sec",
+    "builds_blocked_duration":"sec",
+    "builds_buildable_duration":"sec",
+    "builds_execution_duration":"sec",
+    "builds_queuing_duration":"sec",
+    "builds_waiting_duration":"sec"
 }
 
 class Jenkins(object):
@@ -41,32 +41,32 @@ class Jenkins(object):
             data = (urlconnection.urlopen(url)).read().decode('UTF-8')
             data=json.loads(data)
             data1=data["gauges"]
-            self.resultjson["Total Executors Count"]=data1["jenkins.executor.count.value"]["value"]
-            self.resultjson["Executors Free Count"]=data1["jenkins.executor.free.value"]["value"]
-            self.resultjson["Executors inuse Count"]=data1["jenkins.executor.in-use.value"]["value"]
-            self.resultjson["NodeCount"]=data1["jenkins.node.count.value"]["value"]
-            self.resultjson["Nodes Offline"]=data1["jenkins.node.offline.value"]["value"]
-            self.resultjson["Nodes Online"]=data1["jenkins.node.online.value"]["value"]
-            self.resultjson["Projects Count"]=data1["jenkins.project.count.value"]["value"]
-            self.resultjson["Projects Disabled"]=data1["jenkins.project.disabled.count.value"]["value"]
-            self.resultjson["Projects Enabled"]=data1["jenkins.project.disabled.count.value"]["value"]
-            self.resultjson["Queues Blocked"]=data1["jenkins.queue.blocked.value"]["value"]
-            self.resultjson["Jobs in Queue"]=data1["jenkins.queue.buildable.value"]["value"]
-            self.resultjson["Queues Pending"]=data1["jenkins.queue.pending.value"]["value"]
-            self.resultjson["Queues Size"]=data1["jenkins.queue.size.value"]["value"]
-            self.resultjson["Queues Stuck"]=data1["jenkins.queue.stuck.value"]["value"]
-            self.resultjson["Health-check Count"]=data1["jenkins.health-check.count"]["value"]
-            self.resultjson["Plugins Active"]=data1["jenkins.plugins.active"]["value"]
-            self.resultjson["Plugins Failed"]=data1["jenkins.plugins.failed"]["value"]
-            self.resultjson["Plugins Inactive"]=data1["jenkins.plugins.inactive"]["value"]
-            self.resultjson["Plugins Withupdate"]=data1["jenkins.plugins.withUpdate"]["value"]
+            self.resultjson["total_executors_count"]=data1["jenkins.executor.count.value"]["value"]
+            self.resultjson["executors_free_count"]=data1["jenkins.executor.free.value"]["value"]
+            self.resultjson["executors_inuse_count"]=data1["jenkins.executor.in-use.value"]["value"]
+            self.resultjson["node_count"]=data1["jenkins.node.count.value"]["value"]
+            self.resultjson["nodes_offline"]=data1["jenkins.node.offline.value"]["value"]
+            self.resultjson["nodes_online"]=data1["jenkins.node.online.value"]["value"]
+            self.resultjson["projects_count"]=data1["jenkins.project.count.value"]["value"]
+            self.resultjson["projects_disabled"]=data1["jenkins.project.disabled.count.value"]["value"]
+            self.resultjson["projects_enabled"]=data1["jenkins.project.disabled.count.value"]["value"]
+            self.resultjson["queues_blocked"]=data1["jenkins.queue.blocked.value"]["value"]
+            self.resultjson["jobs_in_queue"]=data1["jenkins.queue.buildable.value"]["value"]
+            self.resultjson["queues_pending"]=data1["jenkins.queue.pending.value"]["value"]
+            self.resultjson["queues_size"]=data1["jenkins.queue.size.value"]["value"]
+            self.resultjson["queues_stuck"]=data1["jenkins.queue.stuck.value"]["value"]
+            self.resultjson["health-check_count"]=data1["jenkins.health-check.count"]["value"]
+            self.resultjson["plugins_active"]=data1["jenkins.plugins.active"]["value"]
+            self.resultjson["plugins_failed"]=data1["jenkins.plugins.failed"]["value"]
+            self.resultjson["plugins_inactive"]=data1["jenkins.plugins.inactive"]["value"]
+            self.resultjson["plugins_withupdate"]=data1["jenkins.plugins.withUpdate"]["value"]
             data1=data["timers"]
-            self.resultjson["Health-check Duration"]=data1["jenkins.health-check.duration"]["mean"]
-            self.resultjson["Builds Blocked Duration"]=data1["jenkins.task.blocked.duration"]["mean"]
-            self.resultjson["Build Creation Time"]=data1["jenkins.task.buildable.duration"]["mean"]
-            self.resultjson["Builds Execution Duration"]=data1["jenkins.task.execution.duration"]["mean"]
-            self.resultjson["Builds Queuing Duration"]=data1["jenkins.task.queuing.duration"]["mean"]
-            self.resultjson["Builds Waiting Duration"]=data1["jenkins.task.waiting.duration"]["mean"]
+            self.resultjson["health-check_duration"]=data1["jenkins.health-check.duration"]["mean"]
+            self.resultjson["builds_blocked_duration"]=data1["jenkins.task.blocked.duration"]["mean"]
+            self.resultjson["build_creation_time"]=data1["jenkins.task.buildable.duration"]["mean"]
+            self.resultjson["builds_execution_duration"]=data1["jenkins.task.execution.duration"]["mean"]
+            self.resultjson["builds_queuing_duration"]=data1["jenkins.task.queuing.duration"]["mean"]
+            self.resultjson["builds_waiting_duration"]=data1["jenkins.task.waiting.duration"]["mean"]
             
         
         except Exception as e:
