@@ -9,7 +9,7 @@ from urllib.request import ProxyHandler
 
 
 metric_units={
-    "Request Duration":"seconds"
+    "request_duration":"seconds"
 }
 
 class Jenkins(object):
@@ -33,23 +33,23 @@ class Jenkins(object):
         try:
             url="http://"+self.host+":"+self.port+"/metrics/"+self.apikey+"/metrics?pretty=true"
             auth_handler = urlconnection.HTTPBasicAuthHandler((urlconnection.HTTPPasswordMgrWithDefaultRealm()). add_password(None, url, self.username, self.password) )
-            data = (urlconnection.urlopen(url)).read().decode('UTF-8')
-            data=json.loads(data)
-            data1=data["counters"]
-            self.resultjson["Total ActiveRequests"]=data1["http.activeRequests"]["count"]
-            data1=data["meters"]
-            self.resultjson["Total BadRequest"]=data1["http.responseCodes.badRequest"]["count"]
-            self.resultjson["Total Responsecode Created"]=data1["http.responseCodes.created"]["count"]
-            self.resultjson["Total Forbidden Responsecode"]=data1["http.responseCodes.forbidden"]["count"]
-            self.resultjson["NoContent Responsecode"]=data1["http.responseCodes.noContent"]["count"]
-            self.resultjson["NotFound Responsecode"]=data1["http.responseCodes.notFound"]["count"]
-            self.resultjson["Unmodified Responsecode"]=data1["http.responseCodes.notModified"]["count"]
-            self.resultjson["Success Responsecpde"]=data1["http.responseCodes.ok"]["count"]
-            self.resultjson["Non Informational Responsecode"]=data1["http.responseCodes.other"]["count"]
-            self.resultjson["ServerError Responsecode"]=data1["http.responseCodes.serverError"]["count"]
-            self.resultjson["Service Unavailable"]=data1["http.responseCodes.serviceUnavailable"]["count"]
-            data1=data["timers"]
-            self.resultjson["Request Duration"]=data1["http.requests"]["mean"]
+            response = (urlconnection.urlopen(url)).read().decode('UTF-8')
+            response=json.loads(response)
+            data=response["counters"]
+            self.resultjson["Total ActiveRequests"]=data["http.activeRequests"]["count"]
+            data=response["meters"]
+            self.resultjson["Total BadRequest"]=data["http.responseCodes.badRequest"]["count"]
+            self.resultjson["Total Responsecode Created"]=data["http.responseCodes.created"]["count"]
+            self.resultjson["Total Forbidden Responsecode"]=data["http.responseCodes.forbidden"]["count"]
+            self.resultjson["NoContent Responsecode"]=data["http.responseCodes.noContent"]["count"]
+            self.resultjson["NotFound Responsecode"]=data["http.responseCodes.notFound"]["count"]
+            self.resultjson["Unmodified Responsecode"]=data["http.responseCodes.notModified"]["count"]
+            self.resultjson["Success Responsecpde"]=data["http.responseCodes.ok"]["count"]
+            self.resultjson["Non Informational Responsecode"]=data["http.responseCodes.other"]["count"]
+            self.resultjson["ServerError Responsecode"]=data["http.responseCodes.serverError"]["count"]
+            self.resultjson["Service Unavailable"]=data["http.responseCodes.serviceUnavailable"]["count"]
+            data=response["timers"]
+            self.resultjson["Request Duration"]=data["http.requests"]["mean"]
             
         except Exception as e:
             self.resultjson["msg"]=str(e)
