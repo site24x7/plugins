@@ -9,13 +9,13 @@ from urllib.request import ProxyHandler
 
 
 metric_units={
-    "Jobs scheduled Rate":"events/minute",
-    "Jobs Buildable Duration":"sec",
-    "Jobs Blocked Duration":"sec",
-    "Jobs Execution Time":"sec",
-    "Jobs Queuing Duration":"sec",
-    "Jobs Total Duration":"sec",
-    "Jobs Waiting Duration":"sec"
+    "jobs_scheduled_rate":"events/minute",
+    "jobs_buildable_duration":"sec",
+    "jobs_blocked_duration":"sec",
+    "jobs_execution_time":"sec",
+    "jobs_queuing_duration":"sec",
+    "jobs_total_duration":"sec",
+    "jobs_waiting_duration":"sec"
 }
 
 class Jenkins(object):
@@ -39,19 +39,19 @@ class Jenkins(object):
         try:
             url="http://"+self.host+":"+self.port+"/metrics/"+self.apikey+"/metrics?pretty=true"
             auth_handler = urlconnection.HTTPBasicAuthHandler((urlconnection.HTTPPasswordMgrWithDefaultRealm()). add_password(None, url, self.username, self.password) )
-            data = (urlconnection.urlopen(url)).read().decode('UTF-8')
-            data=json.loads(data)
-            data1=data["gauges"]
-            self.resultjson["Jobs Count"]=data1["jenkins.job.count.value"]["value"]
-            data1=data["meters"]
-            self.resultjson["Jobs scheduled Rate"]=data1["jenkins.job.scheduled"]["mean_rate"]
-            data1=data["timers"]
-            self.resultjson["Jobs Blocked Duration"]=data1["jenkins.job.blocked.duration"]["mean"]
-            self.resultjson["Jobs Buildable Duration"]=data1["jenkins.job.buildable.duration"]["mean"]
-            self.resultjson["Jobs Execution Time"]=data1["jenkins.job.execution.time"]["mean"]
-            self.resultjson["Jobs Queuing Duration"]=data1["jenkins.job.queuing.duration"]["mean"]
-            self.resultjson["Jobs Total Duration"]=data1["jenkins.job.total.duration"]["mean"]
-            self.resultjson["Jobs Waiting Duration"]=data1["jenkins.job.waiting.duration"]["mean"]
+            response = (urlconnection.urlopen(url)).read().decode('UTF-8')
+            response=json.loads(response)
+            data=response["gauges"]
+            self.resultjson["jobs_count"]=data["jenkins.job.count.value"]["value"]
+            data=response["meters"]
+            self.resultjson["jobs_scheduled_rate"]=data1["jenkins.job.scheduled"]["mean_rate"]
+            data=response["timers"]
+            self.resultjson["jobs_blocked_duration"]=data["jenkins.job.blocked.duration"]["mean"]
+            self.resultjson["jobs_buildable_duration"]=data["jenkins.job.buildable.duration"]["mean"]
+            self.resultjson["jobs_execution_time"]=data["jenkins.job.execution.time"]["mean"]
+            self.resultjson["jobs_queuing_duration"]=data["jenkins.job.queuing.duration"]["mean"]
+            self.resultjson["jobs_total_duration"]=data["jenkins.job.total.duration"]["mean"]
+            self.resultjson["jobs_waiting_duration"]=data["jenkins.job.waiting.duration"]["mean"]
 
         
         except Exception as e:
