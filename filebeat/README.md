@@ -8,9 +8,11 @@ This plugin monitors the performance of Filebeat.
 - Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 		
 - Run the following command to install metricbeat on your system
-
-- ssh <root_name>@<server_ip>
    
+- Make sure that elasticsearch and metricbeat are properly installed and configured on your server.
+
+---
+## To install and configure metricbeat
 - sudo nano /etc/elasticsearch/elasticsearch.yml .
   Add the following lines in the elasticsearch.yml
       
@@ -23,8 +25,6 @@ This plugin monitors the performance of Filebeat.
 - sudo apt install metricbeat
 
 - sudo metricbeat setup --template -E 'output.elasticsearch.hosts=["localhost:9200"]'
-
-- sudo metricbeat setup -e -E output.elasticsearch.hosts=['localhost:9200'] -E setup.kibana.host=localhost:5601
 
 - sudo systemctl start metricbeat
    
