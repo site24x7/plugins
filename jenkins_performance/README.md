@@ -1,36 +1,16 @@
                                          
- #### JENKINS PLUGIN
+ # Jenkins Performance Monitoring
                                                                                                
-================================================================================
+Jenkins is an open source automation server. It helps automate the parts of software development related to building, testing, and deploying, facilitating continuous integration and continuous delivery. Since its been used in the DevOps operations, in case of any performance issue it will affect the entire development life cycle process and stall the release of issues and new feaures. 
 
-## What is Jenkins?
-	
- Jenkins is an open source automation server written in Java. It helps to execute a series of actions to achieve a continuous integration process. 
+## Importance of monitoring Jenkins Performance :
 
-
-
-## How it's used for Developers?
-
- Jenkins enables developers around the world to reliably build, test, package, stage and deploy their software.
-
-  With Jenkins, multiple developers from different modules can integrate the code change in a single project. 
-
-## How does it accelerate the development and test process 
-
-  With Jenkins, DevOps can accelerate the software development and testing process thru automation. Once the code is committed by the developer, next the code will be built and tested.
-
-  If the test is passed, then the build will be tested for deployment. After deployment is successful, it's pushed to production.
-
-
-
-
-## Importance of monitoring Jenkins:
-
-To run the Jenkins effectively, DevOps team is required to monitor the significant metrics of Jenkins. The continuous monitoring Jenkins will allow DevOps team to view below features.
+To run the Jenkins effectively, DevOps team is required to monitor the performance of Jenkins. The continuous monitoring Jenkins will allow DevOps team to view below performance trend of Jenkins.
 
 - Analyse trends - Successful build has gone out today, Failure builds which was in the queue.
-- Comparison of feature releases between weeks.
-- Jenkins latency shot up.
+- Health check - Jenkins latency shot up
+- No.of projects assoicated
+- Plugins used 
 - Instant alert when any entity has broken.
 
 
@@ -76,7 +56,7 @@ The agent will automatically execute the plugin within five minutes and send per
 		apikey = <apikey>
 	
 ---
-#### Jenkins performance monitoring:
+#### Jenkins performance metrics:
 
 
 		METRICS                                             DESCRIPTION
