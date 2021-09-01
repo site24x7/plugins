@@ -1,7 +1,7 @@
                                          
  # Jenkins Performance Monitoring
                                                                                                
-Jenkins is an open source automation server. It helps automate the parts of software development related to building, testing, and deploying, facilitating continuous integration and continuous delivery. Since its been used in the DevOps operations, in case of any performance issue it will affect the entire development life cycle process and stall the release of issues and new feaures. 
+Jenkins is an open source automation server. It helps automate the parts of software development related to building, testing, and deploying, facilitating continuous integration and continuous delivery. Since its been used in the DevOps operations, in case of any performance issue it will affect the entire development life cycle process and stall the release of issues fix and new feaures. 
 
 ## Importance of monitoring Jenkins Performance :
 
