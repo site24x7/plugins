@@ -12,7 +12,7 @@ This plugin monitors the performance of Filebeat.
 - Make sure that elasticsearch and metricbeat are properly installed and configured on your server.
 
 ---
-## To install and configure metricbeat
+## To Install and configure metricbeat 
 - sudo nano /etc/elasticsearch/elasticsearch.yml .
   Add the following lines in the elasticsearch.yml
       
