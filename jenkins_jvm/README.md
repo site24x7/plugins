@@ -24,15 +24,13 @@
 
 
 
-## Importance of monitoring Jenkins:
+## Importance of monitoring Jenkins JVM:
 
 To run the Jenkins effectively, DevOps team is required to monitor the significant metrics of Jenkins. The continuous monitoring Jenkins will allow DevOps team to view below features.
 
-- Analyse trends - Successful build has gone out today, Failure builds which was in the queue.
-- Comparison of feature releases between weeks.
-- Jenkins latency shot up.
-- Instant alert when any entity has broken.
-
+- Total number of bytes used by heap memory, non-heap memory , total memory.
+- Total threads.
+- Running thread , terminated threads.
 
 ---
 
