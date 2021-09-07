@@ -256,14 +256,14 @@ class MySQL(object):
             
         return data
         
-def run(param):
-    configurations = {'host': param['host'], 'port': param['port'], 'user': param['username'], 'password': param['password']}
+def run(config):
+    configurations = {'host': config['host'], 'port': config['port'], 'user': config['username'], 'password': config['password']}
 
     mysql_plugins = MySQL(configurations)
     
     result = mysql_plugins.metricCollector()
-    result['plugin_version'] = param["plugin_version"]
-    result['heartbeat_required'] = param["heartbeat_required"]
+    result['plugin_version'] = config["plugin_version"]
+    result['heartbeat_required'] = config["heartbeat_required"]
     
     return result
     
@@ -281,7 +281,7 @@ if __name__ == "__main__":
     parser.add_argument('--heartbeat_required', help='alert if monitor does not send data', type=bool, nargs='?', default=HEARTBEAT)
     args = parser.parse_args()
     
-    param = {
+    config = {
         'host' : args.host,
         'port' : str(args.port),
         'username' : args.username,
@@ -290,6 +290,6 @@ if __name__ == "__main__":
         'heartbeat_required' : args.heartbeat_required,
     }             
 
-    result = run(param)
+    result = run(config)
     
     print(json.dumps(result, indent=4, sort_keys=True))
