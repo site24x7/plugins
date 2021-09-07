@@ -1,5 +1,7 @@
 #!/usr/bin/python
-
+"""
+Site24x7 MySql Plugin
+"""
 import traceback
 import re
 import json
@@ -10,9 +12,11 @@ import sys
 
 VERSION_QUERY = 'SELECT VERSION()'
 
-PLUGIN_VERSION = None
+#if any impacting changes to this plugin kindly increment the plugin version here.
+PLUGIN_VERSION = "1"
 
-HEARTBEAT = None
+#Setting this to true will alert you when there is a communication problem while posting plugin data to server
+HEARTBEAT=True
 
 #Config Section: 
 #Use either True | False - enabled True will read mysql configurations from my.cnf file , Please provide the my.cnf path below
@@ -30,11 +34,11 @@ in the configuration file mysql.cfg.
 4.Configuration File will have more Priority
 '''
 
-MYSQL_HOST = ""
+MYSQL_HOST = "localhost"
 
-MYSQL_PORT=None
+MYSQL_PORT=3306
 
-MYSQL_USERNAME=""
+MYSQL_USERNAME="test"
 
 MYSQL_PASSWORD=""
 
@@ -155,7 +159,7 @@ class MySQL(object):
             data['status']=0
             data['msg']='pymysql module not installed'
             bool_result=False
-            pymysql_returnVal=0
+            pymysql_returnVal=os.system('pip install pymysql >/dev/null 2>&1')
             if pymysql_returnVal==0:
                 bool_result=True
                 data.pop('status')
@@ -252,15 +256,14 @@ class MySQL(object):
             
         return data
         
-def run(param):
-    #print(param)
-    #configurations = {'host': param['host'], 'port': param['port'], 'user': param['user'], 'password': param['password']}
+def run(config):
+    configurations = {'host': config['host'], 'port': config['port'], 'user': config['username'], 'password': config['password']}
 
-    mysql_plugins = MySQL(param)
+    mysql_plugins = MySQL(configurations)
     
     result = mysql_plugins.metricCollector()
-    result['plugin_version'] = param["plugin_version"]
-    result['heartbeat_required'] = param["heartbeat_required"]
+    result['plugin_version'] = config["plugin_version"]
+    result['heartbeat_required'] = config["heartbeat_required"]
     
     return result
     
@@ -270,7 +273,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', help='Host to be monitored',nargs='?', default=MYSQL_HOST)
-    parser.add_argument('--port', help='port number',  nargs='?', default=MYSQL_PORT)
+    parser.add_argument('--port', help='port number', type=int,  nargs='?', default=MYSQL_PORT)
     parser.add_argument('--username', help='user name', nargs='?', default=MYSQL_USERNAME)
     parser.add_argument('--password', help='password', nargs='?', default=MYSQL_PASSWORD)
     
@@ -278,7 +281,7 @@ if __name__ == "__main__":
     parser.add_argument('--heartbeat_required', help='alert if monitor does not send data', type=bool, nargs='?', default=HEARTBEAT)
     args = parser.parse_args()
     
-    ditc = {
+    config = {
         'host' : args.host,
         'port' : str(args.port),
         'username' : args.username,
@@ -287,7 +290,6 @@ if __name__ == "__main__":
         'heartbeat_required' : args.heartbeat_required,
     }             
 
-    
-    result = run(ditc)
+    result = run(config)
     
     print(json.dumps(result, indent=4, sort_keys=True))
