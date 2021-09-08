@@ -2,6 +2,11 @@
 
 import json,os,time
 
+METRIC_UNITS={
+    "directory_size":"MB"
+}
+
+
 PLUGIN_VERSION="1"
 
 HEARTBEAT="true"
@@ -14,11 +19,13 @@ FOLDER_NAME="/"
 FILE_THRESHOLD_COUNT=10
 
 DIR_THRESHOLD_COUNT=10
-
+    
 def get_data(FOLDER_NAME,FILE_THRESHOLD_COUNT,DIR_THRESHOLD_COUNT):
     folder_checks_data = {}
+    size = 0
     folder_checks_data['plugin_version'] = PLUGIN_VERSION
     folder_checks_data['heartbeat_required'] = HEARTBEAT
+    folder_checks_data['units'] = METRIC_UNITS
     try:
         if INCLUDE_RECURSIVE_FILES:
             file_count = sum([len(files) for r, d, files in os.walk(FOLDER_NAME)])
@@ -29,6 +36,14 @@ def get_data(FOLDER_NAME,FILE_THRESHOLD_COUNT,DIR_THRESHOLD_COUNT):
             directory_count = len(dirs)
         folder_checks_data['file_count'] = file_count
         folder_checks_data['directory_count'] = directory_count
+        
+        for path, dirs, files in os.walk(FOLDER_NAME):
+            for f in files:
+                fp = os.path.join(path, f)
+                # skip if it is symbolic link
+                if not os.path.islink(fp):
+                    size += os.path.getsize(fp)
+        folder_checks_data['directory_size']=round(size/float(1000*1000),2)
         
         #logical conditions
         if file_count > FILE_THRESHOLD_COUNT:
