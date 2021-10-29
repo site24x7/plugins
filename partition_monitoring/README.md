@@ -44,8 +44,8 @@ The agent will automatically execute the plugin within five minutes and send per
 ---
 
       file_system 			->	The name of the file system
-      size 				->	The total size of the file system
-      used_size			->	The total amount of space allocated to existing files in the file system
+      size 				      ->	The total size of the file system
+      used_size			      ->	The total amount of space allocated to existing files in the file system
       available_size			->	The total amount of space available within the file system for the creation of new files
       used_percentage			->	The percentage of the space which is currently allocated to all files on the file system
-      mounted_on			->	The directory below which the file system hierarchy appears
+      mounted_on			      ->	The directory below which the file system hierarchy appears
