@@ -51,7 +51,7 @@ def check_url_connectivity (url, username, password):
 		except Exception as e:
 			data["msg"]=str(e)
 			data["status"]=0
-	data["heartbeat"]=HEARTBEAT
+	data["heartbeat_required"]=HEARTBEAT
 
 
 if __name__ == "__main__":
