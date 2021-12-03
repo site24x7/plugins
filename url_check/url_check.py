@@ -1,48 +1,70 @@
 #!/usr/bin/python
 
-import sys,json,time
+import sys
+import time
+import json
 
-#sample ['http://localhost:80','http://testserver:9090/index.html','https://plus.site24x7.com']
-URLS_TO_BE_MONITORED=[]
+#if any changes to this plugin kindly increment the plugin version here.
+PLUGIN_VERSION=1
 
-#kindly choose the display name for your url. it will be easier to identify in site24x7 client
-#sample :: {'http://localhost:1000':'apache_localhost','https://plus.site24x7.com':'plus_server'}
-URLS_VS_DISPLAY_NAME={}
+#Setting this to true will alert you when there is a network problem while posting plugin data to server
+HEARTBEAT="true"
 
-# if any impacting changes to this plugin kindly increment the plugin version here.
-PLUGIN_VERSION = "1"
+url=None
+username=None
+password=None
+realm=None
 
-# Setting this to true will alert you when there is a communication problem while posting plugin data to server
-HEARTBEAT = "true"
+METRIC_UNITS={"response_time":"ms"}
 
 PYTHON_MAJOR_VERSION = sys.version_info[0]
+
 if PYTHON_MAJOR_VERSION == 3:
-    import urllib.request as urlconnection
-    from urllib.error import URLError, HTTPError
-    from http.client import InvalidURL
+    import urllib
+    import urllib.request as connector
 elif PYTHON_MAJOR_VERSION == 2:
-    import urllib2 as urlconnection
-    from urllib2 import HTTPError, URLError
-    from httplib import InvalidURL
+    import urllib2 as connector
 
-def metric_collector(url_data):
-    for each_url in URLS_TO_BE_MONITORED:
-        try:
-            start_time = time.time() * 1000
-            response = urlconnection.urlopen(each_url, timeout=5)
-            latency = round(((time.time() * 1000) - start_time))
-            url_data[URLS_VS_DISPLAY_NAME[each_url]+'_response_time']=latency
-            url_data[URLS_VS_DISPLAY_NAME[each_url]+'_status']=1
-            http_status_code = response.getcode()
-            if  http_status_code >= 400:
-                url_data[URLS_VS_DISPLAY_NAME[each_url]+'_'+'status'] = 0
-            url_data[URLS_VS_DISPLAY_NAME[each_url]+'_status_code'] = http_status_code
-        except Exception as e:
-            url_data[URLS_VS_DISPLAY_NAME[each_url]+'_status']=0
-            url_data[URLS_VS_DISPLAY_NAME[each_url]+'_status_code']=-1
 
-url_data = {}
-url_data['plugin_version'] = PLUGIN_VERSION
-url_data['heartbeat_required'] = HEARTBEAT
-metric_collector(url_data)
-print((json.dumps(url_data)))
+data={}
+
+
+def check_url_connectivity (url, username, password):
+	if (url==None):
+		data["msg"]="url cant be none, provide url"
+		data["status"]=0
+	else:
+		try:
+			if username and password:
+				password_mgr = connector.HTTPPasswordMgrWithDefaultRealm()
+				password_mgr.password(realm, url, username, password)
+				auth_handler = connector.HTTPBasicAuthHandler(password_mgr)
+				opener = connector.build_opener(opener)
+			start= time.time()
+			response=connector.urlopen(url)
+			end=time.time()
+			response_time=round((end-start)*1000)
+			data["response_time"]=response_time
+			data["status_code"]=response.code
+			data["metric_units"]=METRIC_UNITS
+			data["plugin_version"]=PLUGIN_VERSION
+		except Exception as e:
+			data["msg"]=str(e)
+			data["status"]=0
+	data["heartbeat_required"]=HEARTBEAT
+
+
+if __name__ == "__main__":
+	import argparse
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--url', help="url to monitor",type=str)
+	parser.add_argument('--username', help="provide username to url",type=str)
+	parser.add_argument('--password',help="provide password to url",type=str)
+	args = parser.parse_args()
+	if args.url:
+		url=args.url
+		username=args.username
+		password=args.password
+	check_url_connectivity(url,username,password)
+	print(json.dumps(data, indent=4, sort_keys=True))
+
