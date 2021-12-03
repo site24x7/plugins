@@ -26,7 +26,7 @@ Follow the below steps to configure the URL Check plugin and the monitoring metr
       
 ---
 
-- Download all the files in "activemq" folder and place it under the "activemq" directory
+- Download all the files in "url_check" folder and place it under the "url_check" directory
 
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/url_check/url_check.py
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/url_check/url_check.cfg
