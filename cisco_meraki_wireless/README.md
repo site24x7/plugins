@@ -2,7 +2,7 @@
 ---
 
 ### Prerequisites
-* The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+* Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 * Make sure you have installed Java installed in your server.
 * Collect the **BASEURL** **APIKEY** **NETWORKID** informations using the following link : https://developer.cisco.com/meraki/api/#!getting-started
 
