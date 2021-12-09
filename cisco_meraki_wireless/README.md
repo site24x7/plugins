@@ -6,10 +6,13 @@
 * Collect the **BASEURL** **APIKEY** **NETWORKID** informations using the following link : https://developer.cisco.com/meraki/api/#!getting-started
 
 ### Linux
-* Create a directory "cisco_meraki_wireless" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/cisco_meraki_wireless
+* Create a directory "cisco_meraki_wireless" under Site24x7 Linux Agent plugin directory using the command:
+ 
     mkdir /opt/site24x7/monagent/plugins/cisco_meraki_wireless
 
-* Download the files "cisco_meraki_wireless.sh" , "MerakiDataCollector.java", "json.jar", "httpcore-4.4.10.jar", "httpclient-4.5.6.jar", "commons-logging-1.2.jar", "commons-codec-1.10.jar" and place it under the "cisco_meraki_wireless" directory
+* Download the files "cisco_meraki_wireless.sh" , "MerakiDataCollector.java", "json.jar", "httpcore-4.4.10.jar", "httpclient-4.5.6.jar", "commons-logging-1.2.jar", "commons-codec-1.10.jar" and place it under the "cisco_meraki_wireless" directory using following commands :
+
+     cd /opt/site24x7/monagent/plugins/cisco_meraki_wireless
     
     `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/cisco_meraki_wireless.sh`
     
