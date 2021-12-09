@@ -46,6 +46,7 @@
 ### Plugin configuration
 * Open cisco_meraki_wireless.cfg file and set the values for **APIKEY**, **NETWORKID**, **BASEURL**, **JAVA_HOME**
 * Run the commaand- `which java`. Copy the output you get and paste it in the **JAVA_HOME** field. Make sure to paste the path to bin directory and not the path to java.
+* Once configured the agent will automatically execute the plugin in five minutes interval and send performance data to the Site24x7 data center.
 
 
 ### Demo mode
