@@ -8,14 +8,23 @@
 ### Linux
 * Create a directory "cisco_meraki_wireless" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/cisco_meraki_wireless
     mkdir /opt/site24x7/monagent/plugins/cisco_meraki_wireless
+
 * Download the files "cisco_meraki_wireless.sh" , "MerakiDataCollector.java", "json.jar", "httpcore-4.4.10.jar", "httpclient-4.5.6.jar", "commons-logging-1.2.jar", "commons-codec-1.10.jar" and place it under the "cisco_meraki_wireless" directory
+    
     `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/cisco_meraki_wireless.sh`
+    
     `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/cisco_meraki_wireless.cfg`
+    
     `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/MerakiDataCollector.java`
+    
     `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/json.jar`
+    
     `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/httpcore-4.4.10.jar`
+    
     `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/httpclient-4.5.6.jar`
+    
     `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/commons-logging-1.2.jar`
+    
     `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/commons-codec-1.10.jar`
 
 
