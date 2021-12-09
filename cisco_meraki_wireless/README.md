@@ -2,6 +2,7 @@
 ---
 
 ### Prerequisites
+* The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 * Make sure you have installed Java installed in your server.
 * Collect the **BASEURL** **APIKEY** **NETWORKID** informations using the following link : https://developer.cisco.com/meraki/api/#!getting-started
 
