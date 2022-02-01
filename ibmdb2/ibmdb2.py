@@ -43,11 +43,11 @@ METRICS_UNITS={'no_of_bufferpools':'count',
 class DB2(object):
     
     def __init__(self,args):
-        self.DB2_HOST=args.DB2_HOST
-        self.DB2_PORT=args.DB2_PORT
-        self.DB2_USERNAME=args.DB2_USERNAME
-        self.DB2_PASSWORD=args.DB2_PASSWORD
-        self.DB2_SAMPLE_DB=args.DB2_SAMPLE_DB
+        self.DB2_HOST=args.host
+        self.DB2_PORT=args.port
+        self.DB2_USERNAME=args.username
+        self.DB2_PASSWORD=args.password
+        self.DB2_SAMPLE_DB=args.sample_db
         self.connection = None
 
     def getDbConnection(self):
@@ -149,11 +149,11 @@ if __name__ == "__main__":
 
     import argparse
     parser=argparse.ArgumentParser()
-    parser.add_argument('--DB2_HOST',help="Host Name",nargs='?', default= "localhost")
-    parser.add_argument('--DB2_PORT',help="Port",nargs='?', default= "50000")
-    parser.add_argument('--DB2_USERNAME',help="username", default= "db2")
-    parser.add_argument('--DB2_PASSWORD',help="Password", default= "db2")
-    parser.add_argument('--DB2_SAMPLE_DB' ,help="Sample db",nargs='?', default= "SAMPLE")
+    parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
+    parser.add_argument('--port',help="Port",nargs='?', default= "50000")
+    parser.add_argument('--username',help="username", default= "db2")
+    parser.add_argument('--password',help="Password", default= "db2")
+    parser.add_argument('--sample_db' ,help="Sample db",nargs='?', default= "SAMPLE")
     args=parser.parse_args()
     	
     db2_plugins = DB2(args)
