@@ -15,22 +15,13 @@ import re
 import json
 import os
 import ibm_db
+import traceback
+import sys
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
 
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT="true"
-
-#Config Section:Change DB2 Host,Port,Username,Password and Database name of DB2 server. 
-DB2_HOST = "localhost"
-
-DB2_PORT="50000"
-
-DB2_USERNAME="db2"
-
-DB2_PASSWORD="db2"
-
-DB2_SAMPLE_DB="SAMPLE"
 
 #Mention the units of your metrics in this python dictionary. If any new metrics are added make an entry here for its unit.
 #Attribute units
@@ -51,13 +42,17 @@ METRICS_UNITS={'no_of_bufferpools':'count',
 
 class DB2(object):
     
-    def __init__(self,config):
-        self.configurations = config
+    def __init__(self,args):
+        self.DB2_HOST=args.host
+        self.DB2_PORT=args.port
+        self.DB2_USERNAME=args.username
+        self.DB2_PASSWORD=args.password
+        self.DB2_SAMPLE_DB=args.sample_db
         self.connection = None
 
     def getDbConnection(self):
         try:
-            url="DATABASE="+DB2_SAMPLE_DB+";HOSTNAME="+DB2_HOST+";PORT="+DB2_PORT+";PROTOCOL=TCPIP;UID="+DB2_USERNAME+";PWD="+DB2_PASSWORD+";"
+            url="DATABASE="+self.DB2_SAMPLE_DB+";HOSTNAME="+self.DB2_HOST+";PORT="+self.DB2_PORT+";PROTOCOL=TCPIP;UID="+self.DB2_USERNAME+";PWD="+self.DB2_PASSWORD+";"
             db = ibm_db.connect(url, "", "")  #Connect to an uncataloged database
             self.connection = db
         except Exception as e:
@@ -152,11 +147,19 @@ class DB2(object):
 
 if __name__ == "__main__":
 
-    configurations = {'database': DB2_SAMPLE_DB,'port': DB2_PORT ,'user': DB2_USERNAME ,'password': DB2_PASSWORD}
-
-    db2_plugins = DB2(configurations)
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
+    parser.add_argument('--port',help="Port",nargs='?', default= "50000")
+    parser.add_argument('--username',help="username", default= "db2")
+    parser.add_argument('--password',help="Password", default= "db2")
+    parser.add_argument('--sample_db' ,help="Sample db",nargs='?', default= "SAMPLE")
+    args=parser.parse_args()
+    	
+    db2_plugins = DB2(args)
 
     result = db2_plugins.metricCollector()
 
     print(json.dumps(result, indent=4, sort_keys=True))
     
+
