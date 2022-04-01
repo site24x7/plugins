@@ -12,36 +12,30 @@ PLUGIN_VERSION = "1"
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT="true"
 
-#Config Section:
-MONGODB_HOST='127.0.0.1'
-
-MONGODB_PORT=27017
-
-MONGODB_DBSTATS="yes"
-
-MONGODB_REPLSET="no"
-
-MONGODB_USERNAME=None
-
-MONGODB_PWD=None
-
-MONGODB_AUTHDB=None
-
 METRICS_UNITS = {'heap_usage':'MB',
                  'memory_resident':'MB',
                  'memory_virtual':'MB',
                  'memory_mapped':'MB'
                  }
 
+host ="localhost"
+port ="27017"
+username ="none"
+password ="none"
+dbstats ="yes"
+replset ="no"
+dbname ="test"
+
 class MongoDB(object):
-    def __init__(self, config):
-        self.configurations = config
-        self.connection = None
-        self.host=self.configurations.get('host')
-        self.port=self.configurations.get('port')
-        self.username = self.configurations.get('username')
-        self.password = self.configurations.get('password')
-        self.dbname=self.configurations.get('dbname')
+    def __init__(self, args):
+        self.args=args
+        self.host=args.host
+        self.port=args.port
+        self.username=args.username
+        self.password=args.password
+        self.dbstats=args.dbstats
+        self.replset=args.replset
+        self.dbname=args.dbname
         if(self.username!=None and self.password!=None and self.dbname!=None):
             self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username, self.password, self.host, self.port, self.dbname)
         elif(self.username!=None and self.password!=None):
@@ -50,8 +44,6 @@ class MongoDB(object):
             self.mongod_server = "{0}:{1}/{2}".format(self.host, self.port, self.dbname)
         else:
             self.mongod_server = "{0}:{1}".format(self.host, self.port)
-        self.dbstats = self.configurations.get('dbstats')
-        self.replset = self.configurations.get('replset')
 
 
     def metricCollector(self):
@@ -132,7 +124,7 @@ class MongoDB(object):
                 pass
 
             # Replica set status
-            if 'replset' in self.configurations and self.configurations.get('replset') =='yes':
+            if 'self.replset' in self.args and self.args.get('self.replset') =='yes':
                 # isMaster (to get state
                 isMaster = db.command('isMaster')
 
@@ -160,7 +152,7 @@ class MongoDB(object):
                     }
                     
             # db.stats()
-            if 'dbstats' in self.configurations and self.configurations.get('dbstats')=='yes':
+            if 'self.dbstats' in self.args and self.args.get('self.dbstats')=='yes':
                 for database in self.connection.database_names():
                     if database != 'config' and database != 'local' and database != 'admin' and database != 'test':
 
@@ -187,9 +179,18 @@ class MongoDB(object):
 
 if __name__ == "__main__":
     
-    configurations = {'host':MONGODB_HOST,'port':MONGODB_PORT,'dbstats':MONGODB_DBSTATS,'replset':MONGODB_REPLSET,'username':MONGODB_USERNAME,'password':MONGODB_PWD,'dbname':MONGODB_AUTHDB}
-
-    mongo_check = MongoDB(configurations)
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
+    parser.add_argument('--port',help="Port",nargs='?', default= "27017")
+    parser.add_argument('--username',help="username", default= username)
+    parser.add_argument('--password',help="Password", default= password)
+    parser.add_argument('--dbstats' ,help="dbstats",nargs='?', default= dbstats)
+    parser.add_argument('--replset' ,help="replset",nargs='?', default= replset)
+    parser.add_argument('--dbname' ,help="dbname",nargs='?', default= dbname)
+    args=parser.parse_args()
+	
+    mongo_check = MongoDB(args)
     
     result = mongo_check.metricCollector()
     
