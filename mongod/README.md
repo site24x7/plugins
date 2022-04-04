@@ -25,13 +25,13 @@
 		python mongod.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbstats=<dbstats> --replset=<replset> --dbname=<dbname>
 
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
 ---
 
 ### Configurations
 
-		["mongid"]
+- Provide your MongoDb configurations in mongod.cfg file.
+
+		["mongodb"]
 		host=<host_name>
 		port=<port_number>
 		username=<your_username>
@@ -39,3 +39,5 @@ The agent will automatically execute the plugin within five minutes and send per
 		dbstats=<dbstats>
 		replset=<replset>
 		dbname=<dbname>
+		
+The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
