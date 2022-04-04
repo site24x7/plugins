@@ -1,9 +1,41 @@
+# Mongodb Monitoring
+                                                                                              
+## Prerequisites
 
-Plugin for MongoDB Monitoring
-=============================
+- Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+---
 
-MongoDB is a free and open-source cross-platform document-oriented database program. Use Site24x7 plugins and gain in-depth visibility into the right MongoDB metrics to optimize your data infrastructures.
+### Plugin Installation  
 
-This document details how to configure the MongoDB plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of MongoDB servers.
+- Create a directory named "mongod" under the Site24x7 Linux Agent plugin directory: 
 
-Learn more https://www.site24x7.com/plugins/mongodb-monitoring.html
+		Linux             ->   /opt/site24x7/monagent/plugins/mongod
+      
+- Download all the files in the "mongod" folder and place it under the "mongod" directory.
+
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongod/mongod.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongod/mongod.cfg
+
+- Execute the following command in your server to install pymongo: 
+
+		pip install pymongo
+
+- Execute the below command with appropriate arguments to check for the valid json output:
+
+		python mongod.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbstats=<dbstats> --replset=<replset> --dbname=<dbname>
+
+
+The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
+---
+
+### Configurations
+
+		["mongid"]
+		host=<host_name>
+		port=<port_number>
+		username=<your_username>
+		password=<your_password>
+		dbstats=<dbstats>
+		replset=<replset>
+		dbname=<dbname>
