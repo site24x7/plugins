@@ -106,8 +106,8 @@ class HardwareParser:
                     if type(elem) is str:
                         attribute = elem
                     elif type(elem) is dict:
-                        attribute = (elem.keys())[0]
-                        unit = elem[(elem.keys())[0]]
+                        attribute = list(elem.keys())[0]
+                        unit = elem[list(elem.keys())[0]]
                         
                     key = (self.hardware +'_'+  attribute +'_'+elementname).replace(' ','')
                     jsondata[key] = value
