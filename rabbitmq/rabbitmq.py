@@ -1,8 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import json
-
-import sys
+import sys  
 
 #if any changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION=1
@@ -11,21 +10,13 @@ PLUGIN_VERSION=1
 HEARTBEAT="true"
 
 #Config Section
-RABBITMQ_HOST='localhost'
 
-RABBITMQ_PORT="15672"
 
 RABBITMQ_API_URI="/api/overview"
 
 RABBITMQ_NODES_URI="/api/nodes"
 
-RABBITMQ_USERNAME='guest'
 
-RABBITMQ_PASSWORD='guest'
-
-REALM=None
-
-RABBITMQ_SERVER = "http://"+RABBITMQ_HOST+":"+RABBITMQ_PORT
 
 METRICS_UNITS={'mem_used':'MB','disk_free_limit':'MB'}
 
@@ -72,16 +63,18 @@ def getOverview(data):
         URL = RABBITMQ_SERVER+RABBITMQ_API_URI
         if RABBITMQ_USERNAME and RABBITMQ_PASSWORD:
             password_mgr = connector.HTTPPasswordMgrWithDefaultRealm()
+            
             password_mgr.add_password(REALM, URL, RABBITMQ_USERNAME, RABBITMQ_PASSWORD)
             auth_handler = connector.HTTPBasicAuthHandler(password_mgr)
             opener = connector.build_opener(auth_handler)
             connector.install_opener(opener)
 
-        response = connector.urlopen(URL, timeout=10)
+        response = connector.urlopen(URL,timeout=40)
+        
     
         byte_responseData = response.read()
         str_responseData = byte_responseData.decode('UTF-8')
-
+        
         rabbit_dict = json.loads(str_responseData)
         if rabbit_dict:
             if 'consumers' in rabbit_dict['object_totals']:
@@ -96,13 +89,23 @@ def getOverview(data):
             if 'channels' in rabbit_dict['object_totals']:
                 data['channels']=rabbit_dict['object_totals']['channels']           
 
-            data['messages_ready']=rabbit_dict['queue_totals']['messages_ready']
-            data['messages_unack']=rabbit_dict['queue_totals']['messages_unacknowledged']
-            data['messages']=rabbit_dict['queue_totals']['messages']
+            if 'messages_ready' in rabbit_dict['queue_totals']:
+                data['messages_ready']=rabbit_dict['queue_totals']['messages_ready']
 
-            data['messages_rate']=rabbit_dict['queue_totals']['messages_details']['rate']
-            data['messages_ready_rate']=rabbit_dict['queue_totals']['messages_ready_details']['rate']
-            data['messages_unack_rate']=rabbit_dict['queue_totals']['messages_unacknowledged_details']['rate']
+            if 'messages_unacknowledged' in rabbit_dict['queue_totals']:
+                data['messages_unack']=rabbit_dict['queue_totals']['messages_unacknowledged']
+
+            if 'messages' in rabbit_dict['queue_totals']:
+                data['messages']=rabbit_dict['queue_totals']['messages']
+
+            if  'messages_details' in rabbit_dict['queue_totals']:
+                data['messages_rate']=rabbit_dict['queue_totals']['messages_details']['rate']
+
+            if  'messages_ready_details' in rabbit_dict['queue_totals']:
+                data['messages_ready_rate']=rabbit_dict['queue_totals']['messages_ready_details']['rate']
+
+            if  'messages_unacknowledged_details' in rabbit_dict['queue_totals']:
+                data['messages_unack_rate']=rabbit_dict['queue_totals']['messages_unacknowledged_details']['rate']
 
             if 'deliver_details' in rabbit_dict['message_stats']:
                 data['deliverrate']=rabbit_dict['message_stats']['deliver_details']['rate']
@@ -113,7 +116,7 @@ def getOverview(data):
 
     except Exception as e:
            data['status']=0
-           data['msg']=str(e)
+           data['msg']="Plugin Error : "+str(e)
     
 def getNodes(data):
     try:
@@ -126,7 +129,7 @@ def getNodes(data):
             opener = connector.build_opener(auth_handler)
             connector.install_opener(opener)
 
-        response = connector.urlopen(NODES_URL, timeout=10)
+        response = connector.urlopen(NODES_URL, timeout=40)
 
         byte_responseData = response.read()
         str_responseData = byte_responseData.decode('UTF-8')
@@ -164,5 +167,22 @@ def getNodes(data):
 
 if __name__ == "__main__":
     
-    print(json.dumps(metricCollector(), indent=4, sort_keys=True))
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--host',help="Host Name",nargs='?',default='localhost')
+    parser.add_argument('--port',help="Port",nargs='?',default="15672")
+    parser.add_argument('--username',help="Username",default="guest")
+    parser.add_argument('--password',help="Password",default="guest")
+    parser.add_argument('--realm',help="Realm",default=None)
 
+    args=parser.parse_args()
+    
+    RABBITMQ_HOST=args.host
+    RABBITMQ_PORT=args.port
+    RABBITMQ_USERNAME=args.username
+    RABBITMQ_PASSWORD=args.password
+    REALM=args.realm
+
+    RABBITMQ_SERVER = "http://"+RABBITMQ_HOST+":"+RABBITMQ_PORT
+
+    print(json.dumps(metricCollector(), indent=4, sort_keys=True))
