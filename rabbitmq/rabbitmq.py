@@ -69,7 +69,7 @@ def getOverview(data):
             opener = connector.build_opener(auth_handler)
             connector.install_opener(opener)
 
-        response = connector.urlopen(URL,timeout=40)
+        response = connector.urlopen(URL,timeout=10)
         
     
         byte_responseData = response.read()
@@ -129,7 +129,7 @@ def getNodes(data):
             opener = connector.build_opener(auth_handler)
             connector.install_opener(opener)
 
-        response = connector.urlopen(NODES_URL, timeout=40)
+        response = connector.urlopen(NODES_URL, timeout=10)
 
         byte_responseData = response.read()
         str_responseData = byte_responseData.decode('UTF-8')
