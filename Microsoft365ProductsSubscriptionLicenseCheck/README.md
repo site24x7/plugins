@@ -1,5 +1,5 @@
 # Read Me for the plugin "Microsoft 365 Products Subscription License Check"
----------------------------------------------------------------------------
+
 Configure the Site24x7 Microsoft365ProductsSubscriptionLicenseCheck plugin to monitor your Microsoft 365 Subscription Name, Subscription Date, Total Licenses, and the Number of Days to License Expiry. This plugin will notify technicians of product expiry well in advance so that they can renew their license.
 
 ## _Prerequisites_
