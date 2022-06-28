@@ -60,21 +60,21 @@ The agent will automatically execute the plugin within five minutes and send per
 
 - You can monitor various metrics to stay on top of performance, including those related to MySQL connections, queries, aborted clients and connections, query cache items, handler, read-writes, MyISAM key cache, sort, data transferred, tables, replication, and InnoDB.
 
-- Connections usage metrics
+#- Connections usage metrics
 
 
-		Maximum connection-Max connections shows the maximum number of connection attempts to the MySQL server.
-		Maximum used connections-Max Used Connections displays the maximum number of connections that have been in use simultaneously, since the server started.
-		Connection usage-Connection Usage denotes the total number of connections with respect to the percentage of maximum connections in the database. This information can be used to tune the database connections for better performance.
+	        1.Maximum connection-Max connections shows the maximum number of connection attempts to the MySQL server.
+		2.Maximum used connections-Max Used Connections displays the maximum number of connections that have been in use simultaneously, since the server started.
+		3.Connection usage-Connection Usage denotes the total number of connections with respect to the percentage of maximum connections in the database. This information can be used to tune the database connections for better performance.
 
-- Queries and questions metrics
+# - Queries and questions metrics
 
 
-		Application queries-Application Queries provides the number of statements executed by the server. This variable includes the statements executed within stored programs.
-		Client queries-Client Queries displays the number of statements executed by the server. This includes only the statements sent to the server by clients and not statements executed within stored programs.
-		Slow queries-Slow Queries provides the number of queries that have taken more time in seconds than the long_query_time to execute.
+		1.Application queries-Application Queries provides the number of statements executed by the server. This variable includes the statements executed within stored programs.
+		2.Client queries-Client Queries displays the number of statements executed by the server. This includes only the statements sent to the server by clients and not statements executed within stored programs.
+		3.Slow queries-Slow Queries provides the number of queries that have taken more time in seconds than the long_query_time to execute.
 
-- Aborted clients and connections metrics
+#- Aborted clients and connections metrics
 
 
 		Aborted clients-Aborted Clients fetches the number of connections that were aborted because the client died without closing the connection properly.
