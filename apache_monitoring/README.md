@@ -53,6 +53,9 @@ Version denotes the Apache server version.
 To analyze the metrics with Apache logs and find the exact root cause of issues, you can perform configuration changes in the apache_monitoring.cfg file.
 
 **Example:**
-   logs_enabled = true
-   log_type_name = "Apache Access Logs"
-   log_file_path = "/var/log/apache2/access.log"
+
+logs_enabled = true
+
+log_type_name = "Apache Access Logs"
+
+log_file_path = "/var/log/apache2/access.log"
