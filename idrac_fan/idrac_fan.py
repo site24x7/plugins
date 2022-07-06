@@ -81,8 +81,8 @@ class HardwareParser:
                     if type(elem) is str:   # Attributes with no units specified
                         attribute = elem
                     elif type(elem) is dict:    # Attributes with units
-                        attribute = (elem.keys())[0]
-                        unit = elem[(elem.keys())[0]]
+                        attribute = list(elem.keys())[0]
+                        unit = elem[list(elem.keys())[0]]
                         
                     key = (attribute +'_'+elementname).replace(' ','')
                     jsondata[key] = value
