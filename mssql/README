@@ -43,6 +43,11 @@ Driver Manager implementation of the ODBC API.
 
 sudo apt-get install -y unixodbc unixodbc-dev unixodbc-bin libodbc1 odbcinst1debian2 tdsodbc php5-odbc
 
+**If getting Problem in above commands in installation of php5-odbc and unixodbc-bin Try below commands to separately install php5-odbc and unixodbc-bin:**
+- sudo apt-get install php-odbc
+- sudo apt-get install unixodbc-bin=2.3.0-4+b1
+
+
 Configuration file:  /etc/odbcinst.ini :
 
 [FreeTDS]
