@@ -1,8 +1,40 @@
-Plugin for RabbitMQ Monitoring
-=============================
+# RabbitMQ Monitoring
+RabbitMQ is a message broker tool that routes messages between producers and consumers. It is open-source and functions based on the Advanced Message Queuing Protocol (AMQP).                                                                                              
+## Prerequisites
 
-RabbitMQ is open source message broker software that implements the Advanced Message Queuing Protocol (AMQP). Configure our RabbitMQ monitoring tool and troubleshoot all your RabbitMQ server performance issues.
+- Download and install the latest version of the Site24x7 Linux Server Monitoring agent on the server where you plan to run the plugin. 
+---
 
-Get to know how to configure the RabbitMQ plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of RabbitMQ servers.
+### Plugin Installation  
 
-Learn more https://www.site24x7.com/plugins/rabbitmq-monitoring.html
+- Create a directory named "rabbitmq" under the Site24x7 Linux Agent plugin directory: 
+
+		Linux             ->   /opt/site24x7/monagent/plugins/rabbitmq
+      
+- Download all the files in the "rabbitmq" folder and place it under the "rabbitmq" directory.
+
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/rabbitmq/rabbitmq.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/rabbitmq/rabbitmq.cfg
+
+
+- Execute the below command with appropriate arguments to check for the valid json output:
+
+		python rabbitmq.py --host=<RABBITMQ_HOST> --port=<RABBITMQ_PORT> --username=<RABBITMQ_USERNAME> --password=<RABBITMQ_PASSWORD>
+
+
+---
+
+### Configurations
+
+-  Provide your RabbitMQ configurations in rabbitmq.cfg file.
+
+		[rabbitmq]
+		host = <RABBITMQ_HOST>
+		port = <RABBITMQ_PORT>
+		username = <RABBITMQ_USERNAME>
+		password = <RABBITMQ_PASSWORD>    
+		
+		
+The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
+
