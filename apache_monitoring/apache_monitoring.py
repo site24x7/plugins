@@ -66,6 +66,9 @@ class ApacheMonitoring(object):
         self.url=args.url
         self.username=args.username
         self.password=args.password  
+        self.logsenabled=args.logs_enabled
+        self.logtypename=args.log_type_name
+        self.logfilepath=args.log_file_path
         
         self.timeout = args.timeout
         
@@ -117,8 +120,16 @@ class ApacheMonitoring(object):
                 self._parse_data_(response_data)
             else:
                 self.data['status'] = 0
-                self.data['msg'] = 'Error_code' + str(response.getcode())
-                
+                self.data['msg'] = 'Error_code' + str(response.getcode()) 
+            applog={}
+            if(self.logsenabled in ['True', 'true', '1']):
+                applog["logs_enabled"]=True
+                applog["log_type_name"]=self.logtypename
+                applog["log_file_path"]=self.logfilepath
+            else:
+                applog["logs_enabled"]=False
+            self.data['applog'] = applog
+	    
         except Exception as e:
             self.data['status'] = 0
             self.data['msg'] = str(e) + ": " + self.url
@@ -132,6 +143,9 @@ if __name__ == '__main__':
     parser.add_argument('--url', help='apache monitoring url', nargs='?', default="http://localhost:80/server-status?auto")
     parser.add_argument('--username',  help='user name', nargs='?', default= None)
     parser.add_argument('--password', help='password', nargs='?', default= None)
+    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
+    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
+    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
     parser.add_argument('--timeout', help='timeout', nargs='?', type=int, default=30)
     
     parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=1)
@@ -144,4 +158,3 @@ if __name__ == '__main__':
     data = apache._collect_metrics()
     print(json.dumps(data, indent=4, sort_keys=True))
     
-
