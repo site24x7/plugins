@@ -138,7 +138,7 @@ class Redis(object):
         #stats.items() for python version greater than 3 otherwise stats.iteritems()
         total_keys=0
         for name, value in stats.items():
-            if type(value)==dict:
+            if type(value)==dict and 'keys' in value:
                total_keys+=value['keys']
             try:
                 if name in METRICS.keys() :
