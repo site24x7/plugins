@@ -49,4 +49,9 @@ Version denotes the Apache server version.
 - Ensure the latest version of the Site24x7 Linux Server Monitoring agent is installed in the server where you plan to run the plugin.
 - Status module mod_status should be enabled for the server to be available at http://localhost:80/server-status.
 
-
+## Automatic Applogs Integration Configuration
+- To analyze the metrics with Apache logs and find the exact root cause of issues, you can perform configuration changes in the apache_monitoring.cfg file.
+**Example:**
+   logs_enabled = true
+   log_type_name = "Apache Access Logs"
+   log_file_path = "/var/log/apache2/access.log"
