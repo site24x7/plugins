@@ -10,7 +10,7 @@
 - Intsall Pymysql module with following command
 
 		pip install PyMySQL
-		
+- python version>=3.7 since PyMySQL dropped support for python version<=3.6		
 ---
 
 ### Plugin Installation 
