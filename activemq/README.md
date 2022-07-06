@@ -11,7 +11,7 @@ Follow the below steps to configure the ActiveMQ plugin and the monitoring metri
 
 - Plugin Uses "JPype" python library. This module is used to execute the jmx query and get data. Execute the below command to install python JPype modeule in your server. 
 
-- Python version must be 3.5 or above.  
+- Python version must be 3.7 or above.  
 
 		pip install JPype1
 		
