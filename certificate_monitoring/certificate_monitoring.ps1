@@ -35,9 +35,9 @@ Function Get-Data()
     if( $days_left -gt 0)
     {
         $is_the_certificate_expired = $false
-        $data.Add("days_left", ([math]::round($days_left,2)))
     }
 
+    $data.Add("days_left", ([math]::round($days_left,2)))
     $data.Add("is_the_certificate_expired", $is_the_certificate_expired)
     return $data
 }
