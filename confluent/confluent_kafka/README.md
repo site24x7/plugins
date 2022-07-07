@@ -9,7 +9,7 @@
 * How to enable JMX configuration
     ---
     
-    To Enable JMX Configuration: append line -Dcom.sun.management.jmxremote.rmi.port=9992 in variable KAFKA_JMX_OPTS under section #JMX settings in kafka-run-class.sh and add line export JMX_PORT=9992 before line exec $base_dir/kafka-run-class.sh $EXTRA_ARGS kafka.Kafka "$@" in kafka-server-start.sh. If port 9992 is occupied please choose a different one.
+    To Enable JMX Configuration: append line -Dcom.sun.management.jmxremote.rmi.port=9992 in variable KAFKA_JMX_OPTS under section #JMX settings in kafka-run-class.sh and add line export JMX_PORT=9992 before line exec $base_dir/kafka-run-class.sh $EXTRA_ARGS kafka.Kafka $@ in kafka-server-start.sh. If port 9992 is occupied please choose a different one.
 
 
 ## Plugin installation
