@@ -41,13 +41,18 @@ METRICS = { 'Total Accesses':'total_accesses',
             'ConnsTotal' : 'total_connections',
             'ConnsAsyncWriting' : 'connections_async_writing',
             'ConnsAsyncKeepAlive' : 'connections_async_keep_alive',
-            'ConnsAsyncClosing' : 'connections_async_closing'
+            'ConnsAsyncClosing' : 'connections_async_closing',
+            'Processes':'Processes'
+            
         }
 
 UNITS = {   'total_kbytes':'Bytes',
             'uptime':'Seconds',
             'bytes_per_sec':'Bytes',
-            'bytes_per_req':'Bytes'
+            'bytes_per_req':'Bytes',
+            'cpu_user':'%',
+            'cpu_system':'%',
+            'cpu_load':'%'
         }
 
 class ApacheMonitoring(object):
@@ -61,6 +66,9 @@ class ApacheMonitoring(object):
         self.url=args.url
         self.username=args.username
         self.password=args.password  
+        self.logsenabled=args.logs_enabled
+        self.logtypename=args.log_type_name
+        self.logfilepath=args.log_file_path
         
         self.timeout = args.timeout
         
@@ -79,7 +87,7 @@ class ApacheMonitoring(object):
         try:
             listStatsData = _data_.split('\n')
             for eachStat in listStatsData:
-                stats = eachStat.split(':')
+                stats = eachStat.split(':') 
                 if str(stats[0]) in METRICS: self.data.setdefault(METRICS[str(stats[0])], str.strip(str(stats[1])))
             
         except TypeError as e:
@@ -105,14 +113,23 @@ class ApacheMonitoring(object):
                 urlconnection.install_opener(opener)
             
             response = urlconnection.urlopen(self.url, timeout=self.timeout)
+            #print(self.url)
             
             if response.getcode() == 200:
                 response_data = response.read().decode('UTF-8')
                 self._parse_data_(response_data)
             else:
                 self.data['status'] = 0
-                self.data['msg'] = 'Error_code' + str(response.getcode())
-                
+                self.data['msg'] = 'Error_code' + str(response.getcode()) 
+            applog={}
+            if(self.logsenabled in ['True', 'true', '1']):
+                applog["logs_enabled"]=True
+                applog["log_type_name"]=self.logtypename
+                applog["log_file_path"]=self.logfilepath
+            else:
+                applog["logs_enabled"]=False
+            self.data['applog'] = applog
+	    
         except Exception as e:
             self.data['status'] = 0
             self.data['msg'] = str(e) + ": " + self.url
@@ -126,6 +143,9 @@ if __name__ == '__main__':
     parser.add_argument('--url', help='apache monitoring url', nargs='?', default="http://localhost:80/server-status?auto")
     parser.add_argument('--username',  help='user name', nargs='?', default= None)
     parser.add_argument('--password', help='password', nargs='?', default= None)
+    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
+    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
+    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
     parser.add_argument('--timeout', help='timeout', nargs='?', type=int, default=30)
     
     parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=1)

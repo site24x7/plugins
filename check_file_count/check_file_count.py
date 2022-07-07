@@ -20,46 +20,49 @@ FILE_THRESHOLD_COUNT=10
 
 DIR_THRESHOLD_COUNT=10
     
-def get_data(FOLDER_NAME,FILE_THRESHOLD_COUNT,DIR_THRESHOLD_COUNT):
+def get_data(FOLDER_NAME):
     folder_checks_data = {}
     size = 0
     folder_checks_data['plugin_version'] = PLUGIN_VERSION
     folder_checks_data['heartbeat_required'] = HEARTBEAT
     folder_checks_data['units'] = METRIC_UNITS
     try:
-        if INCLUDE_RECURSIVE_FILES:
-            file_count = sum([len(files) for r, d, files in os.walk(FOLDER_NAME)])
-            directory_count = sum([len(d) for r, d, files in os.walk(FOLDER_NAME)])
-        else:
-            path, dirs, files = next(os.walk(FOLDER_NAME))
-            file_count = len(files)
-            directory_count = len(dirs)
-        folder_checks_data['file_count'] = file_count
-        folder_checks_data['directory_count'] = directory_count
-        
-        for path, dirs, files in os.walk(FOLDER_NAME):
-            for f in files:
-                fp = os.path.join(path, f)
-                # skip if it is symbolic link
-                if not os.path.islink(fp):
-                    size += os.path.getsize(fp)
-        folder_checks_data['directory_size']=round(size/float(1000*1000),2)
-        
-        #logical conditions
-        if file_count > FILE_THRESHOLD_COUNT:
-            folder_checks_data['status']=0
-            folder_checks_data['msg']='File Count Exceeds the threshold'
-            return folder_checks_data
-
-        if directory_count > DIR_THRESHOLD_COUNT:
-            folder_checks_data['status']=0
-            folder_checks_data['msg']='Directory Count Exceeds the threshold'    
-            return folder_checks_data
-
-        if file_count > FILE_THRESHOLD_COUNT and directory_count > DIR_THRESHOLD_COUNT:
-            folder_checks_data['status']=0
-            folder_checks_data['msg']='File / Directory Counts Exceeded the threshold'
+        if os.path.exists(FOLDER_NAME):
             
+            if INCLUDE_RECURSIVE_FILES:
+                file_count = sum([len(files) for r, d, files in os.walk(FOLDER_NAME)])
+                directory_count = sum([len(d) for r, d, files in os.walk(FOLDER_NAME)])
+            else:
+                path, dirs, files = next(os.walk(FOLDER_NAME))
+                file_count = len(files)
+                directory_count = len(dirs)
+            folder_checks_data['file_count'] = file_count
+            folder_checks_data['directory_count'] = directory_count
+        
+            for path, dirs, files in os.walk(FOLDER_NAME):
+                for f in files:
+                    fp = os.path.join(path, f)
+                    # skip if it is symbolic link
+                    if os.path.exists(f) and not os.path.islink(fp):
+                        size += os.path.getsize(fp)
+            folder_checks_data['directory_size']=round(size/float(1000*1000),2)
+        
+            #logical conditions
+            if file_count > FILE_THRESHOLD_COUNT:
+               folder_checks_data['status']=0
+                folder_checks_data['msg']='File Count Exceeds the threshold'
+                return folder_checks_data
+
+            if directory_count > DIR_THRESHOLD_COUNT:
+                folder_checks_data['status']=0
+                folder_checks_data['msg']='Directory Count Exceeds the threshold'    
+                return folder_checks_data
+
+            if file_count > FILE_THRESHOLD_COUNT and directory_count > DIR_THRESHOLD_COUNT:
+                folder_checks_data['status']=0
+                folder_checks_data['msg']='File / Directory Counts Exceeded the threshold'
+        else:
+            folder_checks_data['msg']="Folder name does not exist" 
     except Exception as e:
         folder_checks_data['status']=0
         folder_checks_data['msg']=str(e)
@@ -85,5 +88,5 @@ if __name__ == "__main__":
     if args.directory_count_threshold:
         DIR_THRESHOLD_COUNT = args.directory_count_threshold
 
-    data = get_data(FOLDER_NAME,FILE_THRESHOLD_COUNT,DIR_THRESHOLD_COUNT)
+    data = get_data(FOLDER_NAME)
     print(json.dumps(data,indent=4))
