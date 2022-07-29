@@ -16,6 +16,7 @@ PLUGIN_VERSION = "1"
 # Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT = "true"
 
+Filesystem={"tmpfs"}
 
 class iNodeMon():
 
@@ -35,7 +36,7 @@ class iNodeMon():
         self.metrics['heartbeat_required'] = HEARTBEAT
 
         for part in psutil.disk_partitions(True):
-            if part.fstype == 'tmpfs':
+            if(part.device in Filesystem):
                inode_stats = self.__get_inode_stats(part.mountpoint)
                inode_files += inode_stats.f_files
                inode_free += inode_stats.f_ffree
@@ -70,5 +71,5 @@ if __name__ == '__main__':
 
     mon = iNodeMon()
     metrics = mon._get_metrics()
-    print json.dumps(metrics)
+    print(json.dumps(metrics, indent=4, sort_keys=True))
 
