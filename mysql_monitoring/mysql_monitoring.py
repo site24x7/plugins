@@ -1,8 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
-
 Site24x7 MySql table stats Plugin
-
 """
 import traceback
 import re
@@ -25,20 +23,6 @@ MYSQL_PORT="3306"
 MYSQL_USERNAME="user"
 
 MYSQL_PASSWORD=""
-
-'''
-    give the database name over which the table information has to be generated.
-    The list of database can be retrived using,
-    show databases;
-'''
-DATABASE = "information_schema"
-
-'''   
-    select the table name for which the information has to be returned.
-    The list of tables in a database can be retrived using,
-    show tables;
-'''
-TABLE = "TABLE_PRIVILEGES"
 
 METRICS_JSON={
     "Uptime":"uptime",
@@ -200,8 +184,7 @@ class MySQL(object):
         self.port = args.port
         self.username = args.username
         self.password = args.password
-        self.database = args.database
-        self.table = args.table
+        
         self.logsenabled=args.logs_enabled
         self.logtypename=args.log_type_name
         self.logfilepath=args.log_file_path
@@ -303,7 +286,9 @@ class MySQL(object):
                 myresult_slave=cursor.fetchall()
                 cursor.execute('SHOW MASTER STATUS')
                 myresult_master=cursor.fetchall()
-                if myresult_slave : 
+                if myresult_master:
+                        data['mysql_node_type']='Master'
+                elif myresult_slave : 
                     for entry in myresult_slave:
                         data['slave_IO_state'] = entry[0]
                         data['master_host']=entry[1]
@@ -319,8 +304,6 @@ class MySQL(object):
                         data['slave_IO_running'] = 0 if entry[10] == 'No' else 1
                         data['slave_sql_running'] = 0 if entry[11] == 'No' else 1
                         data['mysql_node_type']='Slave'
-                elif myresult_master:
-                        data['mysql_node_type']='Master'
                 else:
                         data['mysql_node_type']='Standalone'
                         
@@ -351,12 +334,12 @@ class MySQL(object):
                         json_file['MySQLNodeType']=data['mysql_node_type']
                         with open(file_name, 'w') as f:
                                 json.dump(json_file, f)
-                global_table = self.executeQuery('select * from information_schema.tables where table_schema="' + self.database + '" and table_name="'+self.table+'"')
-                data["row_length"] = global_table["AVG_ROW_LENGTH"]
-                data["data_length"] = global_table["DATA_LENGTH"]
-                data["index_length"] = global_table["INDEX_LENGTH"]
-                data["max_data_length"] = global_table["MAX_DATA_LENGTH"]
-                data["rows_count"] = global_table["TABLE_ROWS"]
+                #global_table = self.executeQuery('select * from information_schema.tables where table_schema="' + self.database + '" and table_name="'+self.table+'"')
+                data["row_length"] = 0
+                data["data_length"] = 0
+                data["index_length"] = 0
+                data["max_data_length"] = 0
+                data["rows_count"] = 0
                 global_metrics = self.executeQuery_mysql(con,'SHOW GLOBAL STATUS')
                 
                 global_variables = self.executeQuery_mysql(con,'SHOW VARIABLES') 
@@ -448,8 +431,6 @@ if __name__ == "__main__":
     parser.add_argument('--port',help="Port",nargs='?', default= MYSQL_PORT)
     parser.add_argument('--username',help="username", default= MYSQL_USERNAME)
     parser.add_argument('--password',help="Password", default= MYSQL_PASSWORD)
-    parser.add_argument('--database',help="database", default= DATABASE)
-    parser.add_argument('--table',help="table", default= TABLE)
     
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
     parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
