@@ -5,7 +5,7 @@ iNode is a data structure in a Unix-style file system which stores the attribute
 
 ## Prerequisites
 
-- Provide the inodes you want to monitor in the plugin script, line 19 as shown below:
+- To monitor additional inodes, the user can edit line number 19 by adding inodes separated by commas.Example as follows,
 
 		Filesystem={"tmpfs","/dev/root"} 
 
