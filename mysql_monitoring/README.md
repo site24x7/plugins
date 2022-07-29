@@ -26,7 +26,7 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python mysql_monitoring.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --database=<job_name> --table = <tablename> 
+		python mysql_monitoring.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> 
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
@@ -40,8 +40,6 @@ The agent will automatically execute the plugin within five minutes and send per
 		host = <hostname>
 		port = <port>
 		username = <username>
-		database = <dbname>
-		table = <tablename>
 		password = <password>
 		logs_enabled=<logenabled>
 		log_type_name=<logtypename>
@@ -250,5 +248,6 @@ The agent will automatically execute the plugin within five minutes and send per
 		12.Relay log space-Relay Log Space is the total combined size of all existing relay log files in bytes.
 		13.Seconds behind master-Seconds Behind Master is the difference in seconds between the slave’s clock time and the timestamp of the query, when it was recorded in the master’s binary log.
 		14.Skip counter-Skip Counter denotes the number of events from the source that a replica server should skip.
+
 
 
