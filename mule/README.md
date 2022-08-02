@@ -12,6 +12,8 @@ Know how to configure the Mule ESB plugin and the monitoring metrics for providi
 | Mule 3.9.x.         |     8        |  https://docs.mulesoft.com/mule-user-guide/v/3.9/hardware-and-software-requirements             |
 | Mule 4.1.x   	      |     8        |  https://docs.mulesoft.com/mule4-user-guide/v/4.1/hardware-and-software-requirements            |
 | Mule 4.2.x & later  |  8 and 11    |  https://docs.mulesoft.com/anypoint-studio/v/6/faq-jdk-requirement 			       |
+
+For more details - https://help.mulesoft.com/s/article/Mule-Runtime-support-for-Java-11-FAQ
 												
 	
 
