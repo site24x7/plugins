@@ -19,6 +19,14 @@
 - Execute the following command in your server to install pymongo: 
 
 		pip install pymongo
+		
+		Note: Please choose the compatibility version of pymongo for your Python version
+		- Python 3 compatibility version for pymongo
+		    https://www.mongodb.com/docs/drivers/pymongo/#python-3-compatibility
+		- Python 2 compatibility version for pymongo
+		    https://www.mongodb.com/docs/drivers/pymongo/#python-2-compatibility
+		
+		
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
