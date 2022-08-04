@@ -18,13 +18,13 @@
 
  - Execute the following command in your server to install pymongo: 
 
-		pip install pymongo
+	pip install pymongo
 		
-		Note: Please install the compatibility version of pymongo for your existing Python version
-		| Python Version | Reference link contains list of compatible pymongo versions                  |
-		| -------------- | ---------------------------------------------------------------------------- |
-		| Python 3       | https://www.mongodb.com/docs/drivers/pymongo/#python-3-compatibility         |
-		| Python 2       | https://www.mongodb.com/docs/drivers/pymongo/#python-2-compatibility         |
+ Note: Please install the compatibility version of pymongo for your existing Python version
+| Python Version | Reference link contains list of compatible pymongo versions                  |
+| -------------- | ---------------------------------------------------------------------------- |
+| Python 3       | https://www.mongodb.com/docs/drivers/pymongo/#python-3-compatibility         |
+| Python 2       | https://www.mongodb.com/docs/drivers/pymongo/#python-2-compatibility         |
 		
 		
 
