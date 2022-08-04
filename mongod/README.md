@@ -16,15 +16,15 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongod/mongod.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongod/mongod.cfg
 
-- Execute the following command in your server to install pymongo: 
+ - Execute the following command in your server to install pymongo: 
 
 		pip install pymongo
 		
-		Note: Please choose the compatibility version of pymongo for your Python version
-		- Python 3 compatibility version for pymongo
-		    https://www.mongodb.com/docs/drivers/pymongo/#python-3-compatibility
-		- Python 2 compatibility version for pymongo
-		    https://www.mongodb.com/docs/drivers/pymongo/#python-2-compatibility
+ Note: Please install the compatibility version of pymongo for your existing Python version
+| Python Version | Reference link contains list of compatible pymongo versions                  |
+| -------------- | ---------------------------------------------------------------------------- |
+| Python 3       | https://www.mongodb.com/docs/drivers/pymongo/#python-3-compatibility         |
+| Python 2       | https://www.mongodb.com/docs/drivers/pymongo/#python-2-compatibility         |
 		
 		
 
