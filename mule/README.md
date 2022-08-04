@@ -6,7 +6,7 @@ Know how to configure the Mule ESB plugin and the monitoring metrics for providi
 
 #### Prerequisites : 
 	
-#### Mule versions, runtime support for java versions 
+#### Mule versions compatible with Java versions 
 | Mule version        | Java version | Reference 										       |
 | ------------------- | ------------ | ----------------------------------------------------------------------------------------------- |
 | Mule 3.9.x.         |     8        |  https://docs.mulesoft.com/mule-user-guide/v/3.9/hardware-and-software-requirements             |
