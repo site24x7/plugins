@@ -10,7 +10,25 @@
 - Intsall Pymysql module with following command
 
 		pip install PyMySQL
-- python version>=3.7 since PyMySQL dropped support for python version<=3.6		
+- python version>=3.7 since PyMySQL dropped support for python version<=3.6	
+
+- To create a MySQL user:
+
+		CREATE USER username@hostname IDENTIFIED BY 'password';
+		
+  Select on queries permission is required to execute the queries mentioned above.
+  
+		GRANT SELECT ON mysql.* TO username@hostname IDENTIFIED BY password;
+		
+  For Example, create a user called 'site24x7' with 'site24x7' as password. Give Select permission, SUPER or REPLICATION CLIENT privilege(s)  for the 'site24x7' user and  flush the privileges:
+  
+		CREATE USER site24x7@localhost IDENTIFIED BY 'site24x7';
+		GRANT SELECT ON mysql.* TO site24x7@localhost IDENTIFIED BY 'site24x7';
+		use mysql;
+  		UPDATE mysql.user SET Super_Priv='Y' WHERE user='site24x7' AND host='localhost';  (or)
+  		UPDATE mysql.user SET Repl_client_priv='Y' WHERE user='site24x7' AND host='localhost';
+		FLUSH PRIVILEGES;
+
 ---
 
 ### Plugin Installation 
@@ -248,6 +266,7 @@ The agent will automatically execute the plugin within five minutes and send per
 		12.Relay log space-Relay Log Space is the total combined size of all existing relay log files in bytes.
 		13.Seconds behind master-Seconds Behind Master is the difference in seconds between the slave’s clock time and the timestamp of the query, when it was recorded in the master’s binary log.
 		14.Skip counter-Skip Counter denotes the number of events from the source that a replica server should skip.
+
 
 
 
