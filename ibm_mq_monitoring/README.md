@@ -28,8 +28,7 @@
 		pip install pymqi
 
 - Execute the below command with appropriate arguments to check for the valid json output:
-
- ```
+```
  python3 ibm_mq_monitoring.py --queue_manager_name=<name of the queue manager> --channel_name=<channel name> --queue_name=<queue_name> --host=<host name> --port=<port number>  --username=<optional - username> --password=<optional - password> 
  ```
 Since it's a python plugin, to run in windows server please follow the steps in below link, remaining configuration steps are exactly the same. 
