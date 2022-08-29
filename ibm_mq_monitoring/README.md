@@ -1,7 +1,8 @@
 # IBM MQ Monitoring
-Businesses may build scalable architectures, thanks to IBM MQ's infrastructure, which is largely queue-based and capable of transporting any form of data as messages. It enables the delivery of secure messages across a wide range of computing platforms, online services, communication networks, and applications. With IBM MQ, you can monitor and manage the flow of messages and data.
+
+IBM MQ is used by businesses to build scalable architectures.It is largely queue-based and capable of transporting any form of data as messages. It enables the delivery of secure messages across a wide range of computing platforms, online services, communication networks, and applications. With IBM MQ, you can monitor and manage the flow of messages and data.
  
-Therefore, it's necessary to monitor IBM MQ, which plays a crucial role in message delivery. And precisely for such use, the IBM MQ monitoring plugin is employed.
+Hence using our plugin, technician can monitor the performance  attributes of IBM MQ Objects like queue manager, channels and queues while also enabling easy alerting, health check would help  reduce risk of downtime within your IBM MQ infrastructure. 
 
                                                                                               
 ## Prerequisites
