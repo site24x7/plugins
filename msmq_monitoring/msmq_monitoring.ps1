@@ -1,8 +1,12 @@
+param([string]$queueName)
+$output = @{}
 
 $heartbeat = "true" 
 $version=1
 Function Get-Data($name)
 {
+
+try{
   
   $outdata=@{}
   
@@ -35,7 +39,14 @@ Function Get-Data($name)
   
   
   $outdata
+  }
+  catch{
 
+  $outdata.add("status",0)
+  $outdata.add("msg", $Error[0])
+  $outdata
+
+  }
 }
 
 
