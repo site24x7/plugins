@@ -1,4 +1,8 @@
 # IBM MQ Monitoring
+Businesses may build scalable architectures, thanks to IBM MQ's infrastructure, which is largely queue-based and capable of transporting any form of data as messages. It enables the delivery of secure messages across a wide range of computing platforms, online services, communication networks, and applications. With IBM MQ, you can monitor and manage the flow of messages and data.
+ 
+Therefore, it's necessary to monitor IBM MQ, which plays a crucial role in message delivery. And precisely for such use, the IBM MQ monitoring plugin is employed.
+
                                                                                               
 ## Prerequisites
 
@@ -55,7 +59,7 @@ Since it's a python plugin, to run in windows server please follow the steps in 
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
-##Supported Metrics
+## Supported Metrics
 The following metrics are captured in the IBM MQ monitoring plugin, which has been categorized under the following entities of IBM WebSphere MQ.
  
 - Queue Manager Metrics
@@ -64,111 +68,111 @@ The following metrics are captured in the IBM MQ monitoring plugin, which has be
  
 ### **Queue Manager Metrics**
  
-#### Connection_count
- The number of connections to the queue manager.
-  <p>&nbsp;</p>
+- #### Connection_count
+     The number of connections to the queue manager.
+
   
-#### Status
- The status of the queue manager.
- <p>&nbsp;</p>
+- #### Status
+     The status of the queue manager.
+
  
 ### **Queue Metrics**
 
-#### Queue Name
- The name of the queue.
-<p>&nbsp;</p>
+- #### Queue Name
+     The name of the queue.
 
-#### High Queue Depth
-The maximum number of messages on the queue since the queue statistics were last reset.
-  <p>&nbsp;</p>
 
-#### Msg Dequeue Count
-The number of messages removed from the queue since the queue statistics were last reset.
- <p>&nbsp;</p>
+- #### High Queue Depth
+     The maximum number of messages on the queue since the queue statistics were last reset.
+  
+
+- #### Msg Dequeue Count
+     The number of messages removed from the queue since the queue statistics were last reset.
+
  
 
-#### Msg Enqueue Count
-The number of messages enqueued, i.e., the number of messages put on the queue since the queue statistics were last reset.
-  <p>&nbsp;</p>
+- #### Msg Enqueue Count
+     The number of messages enqueued, i.e., the number of messages put on the queue since the queue statistics were last reset.
+ 
 
-#### Current Queue Depth
-The current number of messages on the queue.
-  <p>&nbsp;</p>
+- #### Current Queue Depth
+     The current number of messages on the queue.
+  
 
-#### Handles Open (Input Count)
-The number of handles that are currently open for input for the queue.
-  <p>&nbsp;</p>
+- #### Handles Open (Input Count)
+     The number of handles that are currently open for input for the queue.
+  
 
-#### Handles Open (Output Count)
- The number of handles that are currently open for output for the queue.
-  <p>&nbsp;</p>
+- #### Handles Open (Output Count)
+     The number of handles that are currently open for output for the queue.
+  
 
-#### Last Msg get Date 
-   The date of the last message successfully read from the queue.
-  <p>&nbsp;</p>
+- #### Last Msg get Date 
+     The date of the last message successfully read from the queue.
+  
 
-#### Last Msg get Time 
-The time of the last message successfully read from the queue.
-  <p>&nbsp;</p>
+- #### Last Msg get Time 
+     The time of the last message successfully read from the queue.
+ 
 
-#### Last Msg put Date 
-The date of the last message successfully put to the queue.
-  <p>&nbsp;</p>
+- #### Last Msg put Date 
+     The date of the last message successfully put to the queue.
+  
 
-#### Last Msg put Time 
-The time of the last message successfully put to the queue.
-  <p>&nbsp;</p>
+- #### Last Msg put Time 
+     The time of the last message successfully put to the queue.
+  
 
-#### Oldest Msg Age
- The age of the oldest message on the queue.
-  <p>&nbsp;</p>
+- #### Oldest Msg Age
+     The age of the oldest message on the queue.
+  
 
-#### No. of Uncommitted Msgs
-The number of uncommitted messages on the queue.
- <p>&nbsp;</p>
+- #### No. of Uncommitted Msgs
+     The number of uncommitted messages on the queue.
+ 
  
 ### **Channel Metrics**
  
-#### Channel Name
- The name of the channel name.
- <p>&nbsp;</p>
+- #### Channel Name
+     The name of the channel name.
  
-#### Channel Connection Name
- The number of connections described in the summary.
- <p>&nbsp;</p>
  
-#### Channel Status
- The current status of the client.
- <p>&nbsp;</p>
+- #### Channel Connection Name
+     The number of connections described in the summary.
  
-#### No. of MQI calls
-The number of messages sent or received.
-<p>&nbsp;</p>
  
-#### Bytes Sent
-The number of bytes sent.
-<p>&nbsp;</p>
+- #### Channel Status
+     The current status of the client.
  
-#### Bytes Received
-The number of bytes received.
-<p>&nbsp;</p>
  
-#### Buffers Sent
-The number of buffers sent.
-<p>&nbsp;</p>
+- #### No. of MQI calls
+     The number of messages sent or received.
 
-#### Buffers Received
-The number of buffers received.
- <p>&nbsp;</p>
  
-#### Channel Substate
-The current action being performed by the channel.
-<p>&nbsp;</p>
+- #### Bytes Sent
+     The number of bytes sent.
 
-#### Channel Start Date
-The date when the channel started.
-<p>&nbsp;</p> 
+ 
+- #### Bytes Received
+     The number of bytes received.
 
-#### Channel Start Time
-The time when the channel started.
+ 
+- #### Buffers Sent
+     The number of buffers sent.
+
+
+- #### Buffers Received
+     The number of buffers received.
+ 
+ 
+- #### Channel Substate
+     The current action being performed by the channel.
+
+
+- #### Channel Start Date
+     The date when the channel started.
+ 
+
+- #### Channel Start Time
+     The time when the channel started.
 
