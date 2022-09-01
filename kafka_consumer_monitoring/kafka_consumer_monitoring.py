@@ -7,6 +7,8 @@ from kafka import KafkaConsumer
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
+METRICS_UNITS={'Avg Fetch Throttle Time':'ms','Maximum Fetch Throttle time':'ms','Max Fetch Size':'Bytes','Max Fetch Latency':'ms','Bytes Consumed Rate':'Bytes','Avg Fetch Size':'Bytes','Avg Fetch Latency':'ms' }
+
 
 class Kafka:
 
@@ -15,6 +17,7 @@ class Kafka:
         self.maindata={}
         self.maindata['plugin_version'] = PLUGIN_VERSION
         self.maindata['heartbeat_required']=HEARTBEAT
+        self.maindata['units']=METRICS_UNITS
 
 
         self.broker=args.broker
@@ -50,10 +53,40 @@ class Kafka:
                     if k =='consumer-fetch-manager-metrics':
                         consumer_metrics=v
 
-                self.maindata['records-lag-max']=float(consumer_metrics['records-lag-max'])         
-                self.maindata['bytes-consumed-rate']=float(consumer_metrics['bytes-consumed-rate'])   
-                self.maindata['records-consumed-rate']=float(consumer_metrics['records-consumed-rate'])   
-                self.maindata['fetch-rate']=float(consumer_metrics['fetch-rate'])
+                if consumer_metrics['records-lag-max']==float("-Infinity"):
+                    pass
+                else:
+                    self.maindata['Maximum Records Lag']=consumer_metrics['records-lag-max']
+
+
+                self.maindata['Bytes Consumed Rate']=float(consumer_metrics['bytes-consumed-rate'])   
+                self.maindata['Records Consumed Rate']=float(consumer_metrics['records-consumed-rate'])   
+                self.maindata['Fetch Rate']=float(consumer_metrics['fetch-rate'])
+                self.maindata['Avg Fetch Size']=float(consumer_metrics['fetch-size-avg'])
+
+                if consumer_metrics['fetch-size-max']==float("-Infinity"):
+                    pass
+                else:
+                    self.maindata['Max Fetch Size']=consumer_metrics['fetch-size-max']
+
+                self.maindata['Avg Records Per Request']=float(consumer_metrics['records-per-request-avg'])
+                self.maindata['Avg Fetch Latency']=float(consumer_metrics['fetch-latency-avg'])
+
+                
+                if consumer_metrics['fetch-latency-max']==float("-Infinity"):
+                    pass
+                else:
+                    self.maindata['Max Fetch Latency']=consumer_metrics['fetch-latency-max']
+
+
+                self.maindata['Avg Fetch Throttle Time']=float(consumer_metrics['fetch-throttle-time-avg']) 
+
+                if consumer_metrics['fetch-throttle-time-max']==float("-Infinity"):
+                    pass
+                else:
+                    self.maindata['Maximum Fetch Throttle time']=consumer_metrics['fetch-throttle-time-max']
+            
+
              
         except Exception as e:
             self.maindata['msg']=str(e)
