@@ -71,4 +71,35 @@ The following metrics are captured by the Kafka Consumer Monitoring plugin :
 - **Fetch Rate**
 
 	The number of fetch requests per second from the consumer
+- **Avg Fetch Size**
+
+	Average number of bytes fetched per request
+
+	
+
+- **Max Fetch Size**
+
+	Maximum number of bytes fetched per request
+
+- **Avg Records Per Request**
+
+	Average number of records in each request
+
+- **Avg Fetch Latency**
+
+	Average time taken for a fetch request
+
+- **Max Fetch Latency**
+
+	Maximum time taken for a fetch request
+
+- **Avg Fetch Throttle Time**
+
+	Average throttle time in milliseconds
+	
+
+- **Maximum Fetch Throttle time**
+
+	Maximum throttle time in milliseconds
+	
 
