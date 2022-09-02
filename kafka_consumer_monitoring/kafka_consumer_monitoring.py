@@ -54,7 +54,7 @@ class Kafka:
                         consumer_metrics=v
 
                 if consumer_metrics['records-lag-max']==float("-Infinity"):
-                    pass
+                    self.maindata['Maximum Records Lag']=-1
                 else:
                     self.maindata['Maximum Records Lag']=consumer_metrics['records-lag-max']
 
@@ -65,7 +65,7 @@ class Kafka:
                 self.maindata['Avg Fetch Size']=float(consumer_metrics['fetch-size-avg'])
 
                 if consumer_metrics['fetch-size-max']==float("-Infinity"):
-                    pass
+                    self.maindata['Max Fetch Size']=-1
                 else:
                     self.maindata['Max Fetch Size']=consumer_metrics['fetch-size-max']
 
@@ -74,7 +74,7 @@ class Kafka:
 
                 
                 if consumer_metrics['fetch-latency-max']==float("-Infinity"):
-                    pass
+                    self.maindata['Max Fetch Latency']=-1
                 else:
                     self.maindata['Max Fetch Latency']=consumer_metrics['fetch-latency-max']
 
@@ -82,7 +82,7 @@ class Kafka:
                 self.maindata['Avg Fetch Throttle Time']=float(consumer_metrics['fetch-throttle-time-avg']) 
 
                 if consumer_metrics['fetch-throttle-time-max']==float("-Infinity"):
-                    pass
+                    self.maindata['Maximum Fetch Throttle time']=-1
                 else:
                     self.maindata['Maximum Fetch Throttle time']=consumer_metrics['fetch-throttle-time-max']
             
