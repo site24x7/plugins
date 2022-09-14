@@ -13,7 +13,7 @@ A client that consumes records from a Kafka cluster. This client transparently h
 ## Prerequisites
  - Installation of jmxquery module for Python3
 ```
-pip install jmxquery
+pip3 install jmxquery
 ```
 
  - Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
