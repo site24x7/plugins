@@ -93,8 +93,8 @@ if __name__=="__main__":
     kafka_consumer_host="localhost"
     kafka_consumer_jmx_port=9983
     kafka_consumer_partition=0
-    kafka_topic_name="quickstart-events"
-    kafka_client_id="console-consumer"
+    kafka_topic_name=None
+    kafka_client_id=None
 
     import argparse
     parser=argparse.ArgumentParser()
