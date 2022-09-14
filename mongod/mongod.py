@@ -20,11 +20,12 @@ METRICS_UNITS = {'heap_usage':'MB',
 
 host ="localhost"
 port ="27017"
-username ="none"
-password ="none"
+username ="None"
+password ="None"
 dbstats ="yes"
 replset ="no"
-dbname ="test"
+dbname ="local"
+authdb="admin"
 
 class MongoDB(object):
     def __init__(self, args):
@@ -36,12 +37,13 @@ class MongoDB(object):
         self.dbstats=args.dbstats
         self.replset=args.replset
         self.dbname=args.dbname
-        if(self.username!=None and self.password!=None and self.dbname!=None):
-            self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username, self.password, self.host, self.port, self.dbname)
-        elif(self.username!=None and self.password!=None):
+        self.authdb=args.authdb
+        if(self.username!="None" and self.password!="None" and self.authdb!="None"):
+            self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username, self.password, self.host, self.port, self.authdb)
+        elif(self.username!="None" and self.password!="None"):
             self.mongod_server = "{0}:{1}@{2}:{3}".format(self.username, self.password, self.host, self.port)
-        elif(self.dbname!=None):
-            self.mongod_server = "{0}:{1}/{2}".format(self.host, self.port, self.dbname)
+        elif(self.authdb!="None"):
+            self.mongod_server = "{0}:{1}/{2}".format(self.host, self.port, self.authdb)
         else:
             self.mongod_server = "{0}:{1}".format(self.host, self.port)
 
@@ -63,7 +65,7 @@ class MongoDB(object):
             try:
                 mongo_uri = 'mongodb://' + self.mongod_server
                 self.connection = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
-                db = self.connection['local']
+                db = self.connection[self.dbname]
                 output = db.command('serverStatus', recordStats=0)
             except pymongo.errors.ServerSelectionTimeoutError:
                 data['status']=0
@@ -187,9 +189,10 @@ if __name__ == "__main__":
     parser.add_argument('--password',help="Password", default= password)
     parser.add_argument('--dbstats' ,help="dbstats",nargs='?', default= dbstats)
     parser.add_argument('--replset' ,help="replset",nargs='?', default= replset)
-    parser.add_argument('--dbname' ,help="dbname",nargs='?', default= dbname)
+    parser.add_argument('--dbname' ,help="dbname",nargs='?', type=str,default= dbname)
+    parser.add_argument('--authdb' ,help="authdb",nargs='?',type=str, default= authdb)
+    
     args=parser.parse_args()
-	
     mongo_check = MongoDB(args)
     
     result = mongo_check.metricCollector()

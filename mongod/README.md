@@ -16,13 +16,21 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongod/mongod.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongod/mongod.cfg
 
-- Execute the following command in your server to install pymongo: 
+ - Execute the following command in your server to install pymongo: 
 
 		pip install pymongo
+		
+ Note: Please install the compatibility version of pymongo for your existing Python version
+| Python Version | Reference link contains list of compatible pymongo versions                  |
+| -------------- | ---------------------------------------------------------------------------- |
+| Python 3       | https://www.mongodb.com/docs/drivers/pymongo/#python-3-compatibility         |
+| Python 2       | https://www.mongodb.com/docs/drivers/pymongo/#python-2-compatibility         |
+		
+		
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python mongod.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbstats=<dbstats> --replset=<replset> --dbname=<dbname>
+		python mongod.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbstats=<dbstats> --replset=<replset> --dbname=<dbname> --authdb=<authdb>
 
 
 ---
@@ -39,5 +47,7 @@
 		dbstats=<dbstats>
 		replset=<replset>
 		dbname=<dbname>
+		authdb=<authdb>
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
