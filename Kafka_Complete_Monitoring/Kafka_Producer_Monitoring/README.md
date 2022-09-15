@@ -71,23 +71,22 @@ The following metrics are captured by the Kafka Producer Monitoring Plugin :
 
 - **Request Rate**
 
-    Average number of bytes consumed per second for a specific topic
+    Average number of requests sent per second
 
 - **Request Latency Avg**
 
-    Average number of records consumed per second across all topics
-
+    Average request latency
 - **Outgoing Byte Rate**
 
-    Average number of records consumed per second for a specific topic
+    Average number of outgoing/incoming bytes per second
 
 - **IO Wait Time NS Avg**
 
-    Number of fetch requests per second from the consumer
+    Average length of time the I/O thread spent waiting for a socket
 
 - **Batch Size Avg**
 
-    Number of messages consumer is behind producer on this partition
+    The average number of bytes sent per partition per request
 
 - **Client ID**
 
