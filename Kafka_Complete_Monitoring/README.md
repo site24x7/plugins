@@ -9,10 +9,10 @@ Apache Kafka is a distributed event store and stream-processing platform. It is 
 ## Starting Kafka with JMX
 
 - #### Starting Kafka Broker at JMX port 9999
-```
-JMX_PORT=9999 bin/kafka-server-start.sh config/server.properties
-```
-  *Incase if port 9999 is occupied choose a open port*
+  ```
+  JMX_PORT=9999 bin/kafka-server-start.sh config/server.properties
+  ```
+    *Incase if port 9999 is occupied choose a open port*
 
 &nbsp;
 
@@ -29,7 +29,6 @@ JMX_PORT=9999 bin/kafka-server-start.sh config/server.properties
 - #### Starting Kafka Consumer at JMX port 9983
   ```
   bin/kafka-console-consumer.sh --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
-
   ```
   *Incase if port 9983 is occupied choose a open port*
 
