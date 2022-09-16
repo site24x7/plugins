@@ -59,9 +59,6 @@ log_type_name=None
 log_file_path=None
 
 
-
-
-
 ```
 
 ## Supported Metrics
