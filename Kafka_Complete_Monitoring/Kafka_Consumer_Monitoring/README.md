@@ -36,7 +36,7 @@ pip3 install jmxquery
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 ```
-python3 kafka_consumer_monitoring.py --kafka_consumer_host=<KAFKA_BROKER_HOST_NAME> kafka_consumer_jmx_port=<KAFKA_BROKER_PORT_NO> --kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO> --kafka_topic_name=<KAFKA_TOPIC_NAME> --kafka_consumer_client_id=<KAFKA_CONSUMER_CLIENT_ID> --logs_enabled=False --log_type_name=None --log_file_path=None
+python3 kafka_consumer_monitoring.py --kafka_consumer_host=<KAFKA_CONSUMER_HOST_NAME> kafka_consumer_jmx_port=<KAFKA_CONSUMER_PORT_NO> --kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO> --kafka_topic_name=<KAFKA_TOPIC_NAME> --kafka_consumer_client_id=<KAFKA_CONSUMER_CLIENT_ID> --logs_enabled=False --log_type_name=None --log_file_path=None
 ```
 Since it's a python plugin, to run in windows server please follow the steps in below link, remaining configuration steps are exactly the same.
 https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
