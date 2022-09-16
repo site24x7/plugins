@@ -30,7 +30,7 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python mongod.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbstats=<dbstats> --replset=<replset> --dbname=<dbname>
+		python mongod.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbstats=<dbstats> --replset=<replset> --dbname=<dbname> --authdb=<authdb>
 
 
 ---
@@ -47,5 +47,7 @@
 		dbstats=<dbstats>
 		replset=<replset>
 		dbname=<dbname>
+		authdb=<authdb>
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
