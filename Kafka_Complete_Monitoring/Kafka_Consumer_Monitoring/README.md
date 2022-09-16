@@ -48,15 +48,14 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 
 ```
 [kafka_consumer_1]
-kafka_consumer_host=<KAFKA_BROKER_HOST_NAME>
-kafka_consumer_jmx_port=<KAFKA_BROKER_PORT_NO>
+kafka_consumer_host=<KAFKA_CONSUMER_HOST_NAME>
+kafka_consumer_jmx_port=<KAFKA_CONSUMER_PORT_NO>
 kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO>
 kafka_topic_name=<KAFKA_TOPIC_NAME>
 kafka_consumer_client_id=<KAFKA_CONSUMER_CLIENT_ID>
 logs_enabled=False
 log_type_name=None
 log_file_path=None
-
 
 ```
 
@@ -117,10 +116,4 @@ The following metrics are captured by the Kafka Consumer Monitoring Plugin :
 - **Client ID**
     
     Client ID of the Consumer to collect the metrics
-
-
-
-
-
-
 
