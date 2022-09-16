@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import json
-import math
+
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
@@ -16,12 +16,10 @@ class appname:
         self.maindata['heartbeat_required']=HEARTBEAT
         self.maindata['units']=METRICS_UNITS
 
-        self.kafka_consumer_host=args.kafka_consumer_host
-        self.kafka_consumer_jmx_port=args.kafka_consumer_jmx_port
-        self.kafka_consumer_partition=args.kafka_consumer_partition
+        self.kafka_host=args.kafka_host
+        self.kafka_jmx_port=args.kafka_jmx_port
+        self.kafka_consumer_partition=int(args.kafka_consumer_partition)
         self.kafka_topic_name=args.kafka_topic_name
-        self.kafka_consumer_client_id=args.kafka_consumer_client_id
-
         self.logsenabled=args.logs_enabled
         self.logtypename=args.log_type_name
         self.logfilepath=args.log_file_path
@@ -32,38 +30,40 @@ class appname:
         try:
             global jmx
             import jmxquery as jmx
-            jmxConnection = jmx.JMXConnection(f"service:jmx:rmi:///jndi/rmi://{self.kafka_consumer_host}:{self.kafka_consumer_jmx_port}/jmxrmi")
-            
+            jmxConnection = jmx.JMXConnection(f"service:jmx:rmi:///jndi/rmi://{self.kafka_host}:{self.kafka_jmx_port}/jmxrmi")
             metric_queries={
-                "Records Lag Max(All Partitions)":f"kafka.consumer:type=consumer-fetch-manager-metrics,client-id={self.kafka_consumer_client_id}/records-lag-max",
-                f"Bytes Consumed Rate(All Topics)":f"kafka.consumer:type=consumer-fetch-manager-metrics,client-id={self.kafka_consumer_client_id}/bytes-consumed-rate",
-                f"Bytes Consumed Rate({self.kafka_topic_name})":f"kafka.consumer:type=consumer-fetch-manager-metrics,client-id={self.kafka_consumer_client_id},topic={self.kafka_topic_name}/bytes-consumed-rate",
-                "Records Consumed Rate(All Topics)":f"kafka.consumer:type=consumer-fetch-manager-metrics,client-id={self.kafka_consumer_client_id}/records-consumed-rate",
-                f"Records Consumed Rate({self.kafka_topic_name})":f"kafka.consumer:type=consumer-fetch-manager-metrics,client-id={self.kafka_consumer_client_id},topic={self.kafka_topic_name}/records-consumed-rate",
-                "Fetch Rate":f"kafka.consumer:type=consumer-fetch-manager-metrics,client-id={self.kafka_consumer_client_id}/fetch-rate",
-                f"Records Lag ( Partition No. : {self.kafka_consumer_partition} )":f"kafka.consumer:type=consumer-fetch-manager-metrics,client-id={self.kafka_consumer_client_id},topic={self.kafka_topic_name},partition={self.kafka_consumer_partition}/records-lag",
-                f"Records Lag Max ( Partition No. : {self.kafka_consumer_partition} )":f"kafka.consumer:type=consumer-fetch-manager-metrics,client-id={self.kafka_consumer_client_id},topic={self.kafka_topic_name},partition={self.kafka_consumer_partition}/records-lag-max",
-                "Records Per Request Avg":f"kafka.consumer:type=consumer-fetch-manager-metrics,client-id={self.kafka_consumer_client_id},topic={self.kafka_topic_name}/records-per-request-avg",
-                "Fetch Throttle Time Avg":f"kafka.consumer:type=consumer-fetch-manager-metrics,client-id={self.kafka_consumer_client_id}/fetch-throttle-time-avg",
-                "Fetch Throttle Time Max":f"kafka.consumer:type=consumer-fetch-manager-metrics,client-id={self.kafka_consumer_client_id}/fetch-throttle-time-max"
-                
-            }
-            
+
+                "Under Replicated Partitions":"kafka.server:type=ReplicaManager,name=UnderReplicatedPartitions",
+                "ISR Shrinks Per Sec":"kafka.server:type=ReplicaManager,name=IsrShrinksPerSec/Count",
+                "ISR Expands Per Sec":"kafka.server:type=ReplicaManager,name=IsrExpandsPerSec/Count",
+                "Active Controller Count" : "kafka.controller:type=KafkaController,name=ActiveControllerCount",
+                "Offline Partitions Count" : "kafka.controller:type=KafkaController,name=OfflinePartitionsCount",
+                "Leader Election Rate And Time Ms" : "kafka.controller:type=ControllerStats,name=LeaderElectionRateAndTimeMs/Count",
+                "Unclean Leader Elections Per Sec" : "kafka.controller:type=ControllerStats,name=UncleanLeaderElectionsPerSec/Count",
+                "Total Time Ms" : "kafka.network:type=RequestMetrics,name=TotalTimeMs,request=Produce/Count",
+                "Purgatory Size":"kafka.server:type=DelayedOperationPurgatory,name=PurgatorySize,delayedOperation=Produce",
+                "Bytes In Per Sec":"kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec/Count",
+                "Bytes Out Per Sec":"kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec/Count",
+                "Network Request Rate":"kafka.network:type=RequestMetrics,name=RequestsPerSec,request=Produce,version=9/Count",
+                "Network Error Rate":"kafka.network:type=RequestMetrics,name=ErrorsPerSec,request=Produce,error=NONE/Count",
+                "Total Broker Partitions":"kafka.server:type=ReplicaManager,name=PartitionCount/Value",
+                "Young Generation GC Count":"java.lang:type=GarbageCollector,name=G1 Young Generation/CollectionCount",
+                "Young Generation GC Time":"java.lang:type=GarbageCollector,name=G1 Young Generation/CollectionTime",
+                "Old Generation GC Count":"java.lang:type=GarbageCollector,name=G1 Old Generation/CollectionCount",
+                "Old Generation GC Time":"java.lang:type=GarbageCollector,name=G1 Old Generation/CollectionTime",
+                f"Log End Offset(Partition : {self.kafka_consumer_partition})":f"kafka.log:type=Log,name=LogEndOffset,topic={self.kafka_topic_name},partition={self.kafka_consumer_partition}"
+
+                }
+
+
             for metric in metric_queries:
                     
                 jmxQuery = [jmx.JMXQuery(metric_queries[metric])]
                 metric_result = jmxConnection.query(jmxQuery)
-                data=metric_result[0].value
-                if math.isnan(data):
-                    self.maindata[metric]=-1
-                else:
-                    self.maindata[metric]=data
-
-            
+                self.maindata[metric]=metric_result[0].value
+                
             self.maindata["Topic Name"]=self.kafka_topic_name
             self.maindata["Partition No."]=f"Partition No : {self.kafka_consumer_partition}"
-            self.maindata["Client ID"]=self.kafka_consumer_client_id
-
 
 
 
@@ -74,44 +74,41 @@ class appname:
                     applog["log_file_path"]=self.logfilepath
             else:
                     applog["logs_enabled"]=False
+
             self.maindata['applog'] = applog
+            
 
-
-
-        except Exception as e: 
+        except Exception as e:
             self.maindata['msg']=str(e)
             self.maindata['status']=0
             return self.maindata
 
+
         return self.maindata
-
-
 
 
 if __name__=="__main__":
 
-    kafka_consumer_host="localhost"
-    kafka_consumer_jmx_port=9983
-    kafka_consumer_partition=0
+    kafka_host="localhost"
+    kafka_jmx_port=9999
+    kafka_consumer_partition=None
     kafka_topic_name=None
-    kafka_client_id=None
 
     import argparse
     parser=argparse.ArgumentParser()
-    parser.add_argument('--kafka_consumer_host', help='host name to access the kafka consumer metrics',default=kafka_consumer_host)
-    parser.add_argument('--kafka_consumer_jmx_port', help='jmx port to access the kafka consumer metrics',default=kafka_consumer_jmx_port)
+    parser.add_argument('--kafka_host', help='host name to access the kafka server metrics',default=kafka_host)
+    parser.add_argument('--kafka_jmx_port', help='jmx port to access the kafka server metrics',default=kafka_jmx_port)
     parser.add_argument('--kafka_consumer_partition', help='partition to monitor the metrics',default=kafka_consumer_partition)
     parser.add_argument('--kafka_topic_name', help='kafka topic name',default=kafka_topic_name)
-    parser.add_argument('--kafka_consumer_client_id', help='kafka consumer client id',default=kafka_client_id)
 
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
     parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
     parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
-    
     args=parser.parse_args()
 
     obj=appname(args)
 
     result=obj.metriccollector()
     print(json.dumps(result,indent=True))
-    
+
+
