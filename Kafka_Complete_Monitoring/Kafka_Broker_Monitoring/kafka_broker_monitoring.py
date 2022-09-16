@@ -91,8 +91,8 @@ if __name__=="__main__":
 
     kafka_host="localhost"
     kafka_jmx_port=9999
-    kafka_consumer_partition=0
-    kafka_topic_name="quickstart-events"
+    kafka_consumer_partition=None
+    kafka_topic_name=None
 
     import argparse
     parser=argparse.ArgumentParser()
