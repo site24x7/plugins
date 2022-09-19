@@ -31,8 +31,8 @@ pip install jmxquery
  - Download all the files in the "kafka_broker_monitoring" folder and place it under the "kafka_broker_monitoring" directory. 
 
 ```
-
-
+wget https://raw.githubusercontent.com/site24x7/plugins/master/Kafka_Complete_Monitoring/Kafka_Broker_Monitoring/kafka_broker_monitoring.py
+wget https://raw.githubusercontent.com/site24x7/plugins/master/Kafka_Complete_Monitoring/Kafka_Broker_Monitoring/kafka_broker_monitoring.cfg
 ```
 
 - Execute the below command with appropriate arguments to check for the valid json output:
