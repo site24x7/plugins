@@ -4,7 +4,14 @@ import math
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
-METRICS_UNITS={}
+
+METRICS_UNITS={
+    "Response Rate":"/sec",
+    "Request Rate":"/sec",
+    "Request Latency Avg":"/sec",
+    "Outgoing Byte Rate":"Bytes",
+    "IO Wait Time NS Avg":"ns",
+    "Batch Size Avg":"Bytes"}
 
 
 class appname:
