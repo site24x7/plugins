@@ -29,8 +29,8 @@ pip install jmxquery
  - Download all the files in the "kafka_producer_monitoring" folder and place it under the "kafka_producer_monitoring" directory. 
 
 ```
-
-
+wget https://raw.githubusercontent.com/site24x7/plugins/master/Kafka_Complete_Monitoring/Kafka_Producer_Monitoring/kafka_producer_monitoring.py
+wget https://raw.githubusercontent.com/site24x7/plugins/master/Kafka_Complete_Monitoring/Kafka_Producer_Monitoring/kafka_producer_monitoring.cfg
 ```
 
 - Execute the below command with appropriate arguments to check for the valid json output:
