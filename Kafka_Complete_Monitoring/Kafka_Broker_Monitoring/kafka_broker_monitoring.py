@@ -4,7 +4,20 @@ import json
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
-METRICS_UNITS={}
+METRICS_UNITS={
+    "ISR Shrinks Per Sec":"/sec",
+    "ISR Expands Per Sec":"/sec",
+    "Leader Election Rate And Time Ms":"/ms",
+    "Unclean Leader Elections Per Sec":"/sec",
+    "Bytes In Per Sec":"/sec",
+    "Bytes Out Per Sec":"/sec",
+    "Network Request Rate":"/sec",
+    "Network Error Rate":"/sec"
+
+
+
+
+}
 
 
 class appname:
@@ -91,8 +104,8 @@ if __name__=="__main__":
 
     kafka_host="localhost"
     kafka_jmx_port=9999
-    kafka_consumer_partition=None
-    kafka_topic_name=None
+    kafka_consumer_partition=0
+    kafka_topic_name="quickstart-events"
 
     import argparse
     parser=argparse.ArgumentParser()
