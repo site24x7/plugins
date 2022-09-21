@@ -19,7 +19,7 @@ Get to know how to configure the Elasticsearch plugin and the monitoring metrics
       
 - Download all the files in the "elasticsearch" folder and place it under the "elasticsearch" directory.
 ```
-	 wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.cfg
+     wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.cfg
      wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.py
 ```
 
