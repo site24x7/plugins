@@ -28,7 +28,7 @@ Apache Kafka is a distributed event store and stream-processing platform. It is 
 
 - #### Starting Kafka Consumer at JMX port 9983
   ```
-  JMX_PORT=9982 bin/kafka-console-consumer.sh --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
+  JMX_PORT=9983 bin/kafka-console-consumer.sh --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
   ```
   *Incase if port 9983 is occupied choose a open port*
 
