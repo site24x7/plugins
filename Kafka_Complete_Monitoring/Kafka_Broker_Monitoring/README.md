@@ -2,15 +2,15 @@
 
 ## Apache Kafka
 
-Apache Kafka is a distributed event store and stream-processing platform. It is an open-source system developed by the Apache Software Foundation written in Java and Scala. The project aims to provide a unified, high-throughput, low-latency platform for handling real time data feeds.
+Apache Kafka is an open-source distributed stream-processing platform developed by the Apache Software Foundation. It is written in Java and Scala, and is used to collect, process, and store real-time data streams. Its core capabilities include high throughput, scalability, and low latency, and it is often used to build stream data pipelines and applications.
 
 ## Kafka Broker
+A Kafka broker is a single Kafka server that runs on a Kafka cluster. On deployment, each broker independently runs the Kafka broker process. Each broker hosts some set of partitions and handles events to write to the partition or read from them.
 
-Apache Kafka is composed of a network of machines called brokers. In a contemporary deployment, these may not be separate physical servers but containers running on pods running on virtualized servers running on actual processors in a physical datacenter somewhere. However they are deployed, they are independent machines each running the Kafka broker process. Each broker hosts some set of partitions and handles incoming requests to write new events to those partitions or read events from them. Brokers also handle replication of partitions between each other.
+**Install the Kafka Broker plugin to monitor crucial Kafka broker processes.**
 
 
 
-**Therefore it is pivotal to monitor the Kafka Broker**
 
 ## Prerequisites
  - Installation of jmxquery module for Python3

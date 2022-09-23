@@ -2,13 +2,12 @@
 
 ## Apache Kafka
 
-Apache Kafka is a distributed event store and stream-processing platform. It is an open-source system developed by the Apache Software Foundation written in Java and Scala. The project aims to provide a unified, high-throughput, low-latency platform for handling real time data feeds.
+Apache Kafka is an open-source distributed stream-processing platform developed by the Apache Software Foundation. It is written in Java and Scala, and is used to collect, process, and store real-time data streams. Its core capabilities include high throughput, scalability, and low latency, and it is often used to build stream data pipelines and applications.
 
 ## Kafka Consumer
 
-A client that consumes records from a Kafka cluster. This client transparently handles the failure of Kafka brokers, and transparently adapts as topic partitions it fetches migrate within the cluster
+A Kafka consumer is a client application that pulls event data from one or more Kafka topics. Install the Kafka Consumer plugin and monitor key consumer metrics.
 
-**Therefore it is pivotal to monitor the Kafka Consumer**
 
 ## Prerequisites
  - Installation of jmxquery module for Python3

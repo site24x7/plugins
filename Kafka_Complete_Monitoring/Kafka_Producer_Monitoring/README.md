@@ -1,14 +1,13 @@
 # **Kafka Producer Monitoring**
 
 ## Apache Kafka
-
-Apache Kafka is a distributed event store and stream-processing platform. It is an open-source system developed by the Apache Software Foundation written in Java and Scala. The project aims to provide a unified, high-throughput, low-latency platform for handling real time data feeds.
+Apache Kafka is an open-source distributed stream-processing platform developed by the Apache Software Foundation. It is written in Java and Scala, and is used to collect, process, and store real-time data streams. Its core capabilities include high throughput, scalability, and low latency, and it is often used to build stream data pipelines and applications.
 
 ## Kafka Producer
 
-The Kafka producer is conceptually much simpler than the consumer since it has no need for group coordination. A producer partitioner maps each message to a topic partition, and the producer sends a produce request to the leader of that partition.
+Producers are client applications that send data into Kafka broker topics. 
+Install the Apache Kafka Producer plugin to monitor key Kafka producer metrics and ensure a steady flow of data.
 
-**Therefore it is pivotal to monitor the Kafka Producer**
 
 ## Prerequisites
  - Installation of jmxquery module for Python3
