@@ -13,7 +13,7 @@ PLUGIN_VERSION = "1"
 # if the ping needs to happen via an specific source/interface kindly provide the ip or name here
 INTERFACE_IP=None
 
-HOST='172.20.11.11'
+HOST='8.8.8.8'
 
 METRICS_UNITS={'packet_loss':'%'}
 
@@ -21,9 +21,11 @@ def get_ping_status(HOST_TO_PING,data):
     try:
         if sys.platform == 'win32':
             if INTERFACE_IP:    
-                cmd = 'ping -S '+INTERFACE_IP+' -n 3 '+HOST+' > /dev/null 2>&1'
+                cmd = 'ping -S '+INTERFACE_IP+' -n 3 '+HOST+' > NUL 2>&1'
             else:
-                cmd = 'ping -n 3 '+HOST+' > /dev/null 2>&1'    
+                cmd = 'ping -n 3 '+HOST+' > NUL 2>&1'    
+
+
         if sys.platform.startswith('linux'):
             if INTERFACE_IP:    
                 cmd = 'ping -I '+INTERFACE_IP+' -c 3 '+HOST+' > /dev/null 2>&1'
@@ -46,6 +48,9 @@ def get_ping_status(HOST_TO_PING,data):
         data['status'] = 0
         data['msg'] = str(e)
     return data
+
+
+
 
 def get_packet_loss(HOST,data):
     try:
