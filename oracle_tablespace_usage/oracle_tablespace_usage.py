@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/bin/python3
 """
 
 Site24x7 Oracle DB Plugin
@@ -16,15 +16,15 @@ PLUGIN_VERSION = "1"
 HEARTBEAT = "true"
 
 # Config Section: Enter your configuration details to connect to the oracle database
-ORACLE_HOST = "hostname"
+ORACLE_HOST = "localhost"
 
 ORACLE_PORT = "1521"
 
 ORACLE_SID = "XE"
 
-ORACLE_USERNAME = "sys"
+ORACLE_USERNAME = None
 
-ORACLE_PASSWORD = "test"
+ORACLE_PASSWORD = None
 
 TABLESPACE_NAME = ["SYSTEM","USERS","SYSAUX"]  ####Edit this field and add the names of the tablespaces to be monitored. Names are separated by comma
 
@@ -58,11 +58,13 @@ class Oracle(object):
             return self.data
 
         try:
-            dsnStr = cx_Oracle.makedsn(self.host, self.port, self.sid)
-            conn = cx_Oracle.connect(user=self.username, password=self.password, dsn=dsnStr, mode=cx_Oracle.SYSDBA)
+            #dsnStr = cx_Oracle.makedsn(self.host, self.port, self.sid)
+            conn = cx_Oracle.connect(self.username,self.password,self.host+':'+str(self.port)+'/'+self.sid)
             c = conn.cursor()
             
-            c.execute("select distinct NVL(rtrim(ltrim(to_char(used.used_bytes/total.total_bytes * 100, '999.99'))),0) usage,df.tablespace_name as name,df.status as status from sys.dba_tablespaces df,(select de.tablespace_name as name2, sum(de.bytes) used_bytes from dba_extents de group by de.tablespace_name) used,(select dd.tablespace_name as name1,sum(dd.bytes) total_bytes from sys.dba_data_files dd group by dd.tablespace_name) total where df.tablespace_name = used.name2(+) and df.tablespace_name=total.name1(+)")
+            c=c.execute("select distinct NVL(rtrim(ltrim(to_char(used.used_bytes/total.total_bytes * 100, '999.99'))),0) usage,df.tablespace_name as name,df.status as status from sys.dba_tablespaces df,(select de.tablespace_name as name2, sum(de.bytes) used_bytes from dba_extents de group by de.tablespace_name) used,(select dd.tablespace_name as name1,sum(dd.bytes) total_bytes from sys.dba_data_files dd group by dd.tablespace_name) total where df.tablespace_name = used.name2(+) and df.tablespace_name=total.name1(+)")
+
+	    
             for row in c:
             	usage, name ,status= row
             	if name in TABLESPACE_NAME:
@@ -76,6 +78,7 @@ class Oracle(object):
             if c!= None : c.close()
             if conn != None : conn.close()
             return self.data
+
            
 if __name__ == "__main__":
     configurations = {'host': ORACLE_HOST, 'port': ORACLE_PORT,
