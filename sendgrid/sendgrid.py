@@ -48,6 +48,14 @@ class SendGrid:
         return result
 
 if __name__ == "__main__":
+
+    import argparse
+
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--api_key",help="api key for sendgrid",default=None)
+    args=parser.parse_args()
+
+    API_KEY=args.api_key
     s = SendGrid(API_KEY)
     
     result = s.metricsCollector()
