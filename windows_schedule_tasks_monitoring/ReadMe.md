@@ -1,4 +1,4 @@
-# Plugin for monitoring Windows Schedule task
+# Plugin for monitoring Windows Scheduled tasks
 
 The plugins will helps to monitor the below metrics of Scheduled tasks. 
 
@@ -12,4 +12,4 @@ The plugins will helps to monitor the below metrics of Scheduled tasks.
 | Start_Date    |  Task Started time                                |
 | errorCode     |  Error code of Previous Scheduled task.           |
 
-To monitor multiple scheduled tasks, please update in the ScheduleTask.cfg file with task name.
+To monitor multiple scheduled tasks, please update in the ScheduledTask.cfg file with task name.
