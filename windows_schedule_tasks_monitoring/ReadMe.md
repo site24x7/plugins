@@ -1,8 +1,8 @@
-##Plugin for monitoring Windows Schedule task
+Plugin for monitoring Windows Schedule task
 
 The plugins will helps to monitor the below metrics of Scheduled tasks. 
 
-Metrics :
+# Metrics :
 ----------
 lastRunBefore :  Time of Previous Schedule task performed.
 author :  Task's owner
