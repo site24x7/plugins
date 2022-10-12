@@ -5,6 +5,8 @@ import datetime
 import traceback
 import time
 import json
+import urllib.parse
+
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
@@ -39,7 +41,7 @@ class MongoDB(object):
         self.dbname=args.dbname
         self.authdb=args.authdb
         if(self.username!="None" and self.password!="None" and self.authdb!="None"):
-            self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username, self.password, self.host, self.port, self.authdb)
+            self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username,urllib.parse.quote(self.password), self.host, self.port, self.authdb)
         elif(self.username!="None" and self.password!="None"):
             self.mongod_server = "{0}:{1}@{2}:{3}".format(self.username, self.password, self.host, self.port)
         elif(self.authdb!="None"):
