@@ -1,8 +1,15 @@
 # **Process Count Monitoring**
 
 ## About Process Count
-The plugin revolves around monitoring the process count of a particular user. Its main use case can be in monitoring the nproc limit for oracle user.
-Since the default limit for process count for oracle is very low, this plugin can be used to get alerts if the process count exceeds a particular threshold.
+The plugin revolves around monitoring the process count of a particular user. 
+
+
+
+
+
+**Best usecase of this plugin**
+
+It can be used in monitoring the nproc limit for oracle user. Since the default limit for process count for oracle is very low, this plugin can be used to get alerts if the process count exceeds a particular threshold.
 
 
 
