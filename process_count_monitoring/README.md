@@ -35,10 +35,10 @@ python3 process_count_monitoring.py --user_name=<USER NAME>
 ```
 
 ### **Configuration**
-##### Provide your Process Count configurations in process_count_monitoring.cfg file:
+##### Provide your Username details in process_count_monitoring.cfg file:
 
 ```
-[process_count_1]
+[user_1_process_count]
 user_name=<USER NAME>
 ```
 #### Supported Metrics
