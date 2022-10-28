@@ -1,8 +1,10 @@
 # Plugin for monitoring Windows Scheduled tasks
 
-The plugins will helps to monitor the below metrics of Scheduled tasks. 
+Monitor the status of scheduled tasks in Windows Task Scheduler with the Windows Scheduled Tasks plugin. Leverage the plugin to track the task's status, view meta information, and ensure the success of its execution.
 
-## Metrics details
+## Metrics
+Track the following metrics with the plugin:
+
 | Metric Name   | Description                                       |
 | ------------- | ------------------------------------------------- |
 | lastRunBefore |  Time of Previous Schedule task performed.        |
@@ -12,4 +14,47 @@ The plugins will helps to monitor the below metrics of Scheduled tasks.
 | Start_Date    |  Task Started time                                |
 | errorCode     |  Error code of Previous Scheduled task.           |
 
-To monitor multiple scheduled tasks, please update in the ScheduledTask.cfg file with task name.
+## **Prerequisites**
+
+Download and install the latest version of the [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+
+## **Plugin installation**
+
+1. Create a folder "ScheduledTask" under Site24x7 Windows Agent plugin directory:
+
+    Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\ScheduledTask
+
+2. Download all the files in "ScheduledTask" folder and place it under the "ScheduledTask" directory.
+
+```
+wget https://raw.githubusercontent.com/site24x7/plugins/master/ScheduledTask/ScheduledTask.ps1
+
+wget https://raw.githubusercontent.com/site24x7/plugins/master/ScheduledTask/ScheduledTask.cfg
+```
+
+3. Modify the ScheduledTask.cfg file with the task name to monitor the particular task.
+
+```
+For example:
+[Scheduled_task]
+taskName=\OfficeSoftwareProtectionPlatform\SvcRestartTask
+```
+
+  **NOTE:**
+  To fill in the task name in the .cfg file, add the location of the task you want to monitor from the General tab of Windows Task Scheduler followed by    a slash and the task name.
+
+
+4. To monitor multiple tasks, modify the .cfg file accordingly. 
+
+Here's an example below:
+
+```
+[Scheduled_task1]
+taskName=\OfficeSoftwareProtectionPlatform\SvcRestartTask
+
+[Scheduled_task2]
+taskName=\Microsoft\Windows\AppId\Work Room
+```
+
+The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
