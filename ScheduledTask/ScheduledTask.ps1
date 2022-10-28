@@ -95,7 +95,7 @@ $data.Add("lastRunTime",$lastRunTime)
 $lastTaskResult = $task.Last_Result
 $data.Add("errorCode",$lastTaskResult)
 $timenow = Get-Date
-$timespan  = NEW-TIMESPAN –Start $lastRunTime –End $timenow
+$timespan  = NEW-TIMESPAN -Start $lastRunTime -End $timenow
 
 $timediff = $timespan.Days.ToString() + " Days "+ $timespan.Hours.ToString() + " Hours " + $timespan.Minutes.ToString() + " Minutes " + $timespan.Seconds.ToString() + " Seconds " 
 $data.Add("lastRunBefore",$timediff)
