@@ -14,8 +14,8 @@
 
 ### Metrics Captured
 
-- #### packages_to_be_updated
+- #### Packages_to_be_updated
              No.of packages needs to be updated.
-- #### security_updates 
+- #### Security_updates 
              No.of security packages, needs to be updated.
 
