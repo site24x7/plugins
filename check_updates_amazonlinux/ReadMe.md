@@ -4,7 +4,7 @@
 ### Plugin installation
 ---
  
-- Create a directory "check_updates_amazonlinux" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/check_updates_amazonlinux
+- Create a directory named "check_updates_amazonlinux" under the Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/check_updates_amazonlinux
 - Download the file "check_updates_amazonlinux.py" and place it under the "check_updates_amazonlinux" directory
   
   wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates_amazonlinux/check_updates_amazonlinux.py
@@ -15,7 +15,6 @@
 ### Metrics Captured
 
 - #### Packages_to_be_updated
-             No.of packages needs to be updated.
+            The number of packages that need to be updated.
 - #### Security_updates 
-             No.of security packages, needs to be updated.
-
+            The number of security packages that need to be updated.
