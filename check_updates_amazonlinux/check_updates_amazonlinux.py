@@ -2,7 +2,7 @@
 
 import subprocess,sys,json
 
-METRIC_UNITS={'Available_Updates':'count','Security_Updates':'count'}
+METRIC_UNITS={'Packages_to_be_updated':'count','Security_Updates':'count'}
 PLUGIN_VERSION="1"
 HEARTBEAT="true"
 
@@ -15,7 +15,7 @@ class datacollector:
         try:
             self.updates=subprocess.check_output("yum check-update | wc -l",shell=True)
             self.security=subprocess.check_output("yum list-security |wc -l",shell=True)
-            self.data["Available_Updates"]=int(self.updates)
+            self.data["Packages_to_be_updated"]=int(self.updates)
             self.data["Security_Updates"]=int(self.security)
         except Exception as e:
             self.data["status"]=0
