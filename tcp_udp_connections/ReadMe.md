@@ -1,6 +1,6 @@
 # The plugin to monitor TCP and UDP connections
 
-The plugin contains the following metrics.
+The plugin will report the following metrics.
 
 1. Number_of_TCP_connections - 
       The number of TCP connections are listening.
