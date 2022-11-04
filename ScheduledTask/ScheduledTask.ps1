@@ -83,7 +83,9 @@ Function Get-ScheduledJobDetails($jobName)
 $data = @{}
 
 
-$task = Get-ScheduledJobDetails $taskName
+$task = Get-ScheduledJobDetails $taskName 
+$task2= Get-ScheduledTaskInfo $taskName
+
 $author = $task.Author
 $data.Add("author",$author)
 $Start_Date = $task.Start_Date
@@ -94,6 +96,12 @@ $lastRunTime = $task.Last_Run_Time
 $data.Add("lastRunTime",$lastRunTime)
 $lastTaskResult = $task.Last_Result
 $data.Add("errorCode",$lastTaskResult)
+$data.Add("state_value",$task.Scheduled_Task_State)
+$data.Add("numberOfMissedRuns",$task2.NumberOfMissedRuns)
+
+
+
+
 $timenow = Get-Date
 $timespan  = NEW-TIMESPAN -Start $lastRunTime -End $timenow
 
@@ -120,4 +128,3 @@ if($lastTaskResult -ge 0)
     $mainJson.Add("msg",$msg)
 }
 $mainJson | ConvertTo-Json
-
