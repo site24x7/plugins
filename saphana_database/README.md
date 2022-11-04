@@ -3,24 +3,26 @@
 =================================================================
 ###What is SAP HANA Database ?
 
-	As an in-memory database, SAP HANA places data storage, analytics capabilities, and transactions which load data on the same level of RAM storage. This reduces the amount of time needed to access and manipulate data, resulting in decreased processing time. In order to quickly access all this data, SAP HANA utilizes high-compression rates in both columnar and row storage, saves only one copy of data to avoid bloat, and categorizes data based on its necessity and age keeping only what it needs in-memory. The remainder of the data is then kept on the SAP HANA disk, and in some cases, in external storage.SAP HANA has the ability to connect to data lakes and other stores of big data and intelligently process the information.
+	SAP HANA (High-performance ANalytic Appliance) is a column-oriented database that stores data in its memory instead of on a disk. This unique architecture enables SAP HANA to process and query massive amounts of data with near-zero latency, which is significantly faster than other database management systems and allows for advanced real-time analytics.
+	
+	Monitor the availability and performance of your SAP HANA database with SAP HANA plugin integration.
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
-- Intsall hdbcli module with following command
+- Install the hdbcli module with the following command
 
 		pip install hdbcli
 		
-- To monitor sap hana database user required public and monitoring role
+- Ensure the SAP HANA database user has been provided public and monitoring role access:
 
 		GRANT ROLE PUBLIC to user <username>
 		GRANT ROLE MONITORING to user <username>
 
 ###Plugin Installation
 
-- Create a directory "saphana_database" under Site24x7 Linux Agent plugin directory : 
+- Create a directory named "saphana_database" under the Site24x7 Linux Agent plugin directory: 
 
 		Linux             ->   /opt/site24x7/monagent/plugins/saphana_database
 		
@@ -30,7 +32,7 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/saphana_database/saphana_database.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/saphana_database/saphana_database.cfg
 	
-- Add the configuration in saphana_database.cfg
+- Add the below configurations in saphana_database.cfg file:
 
 		[saphana_database]
 		host = <hostname>
@@ -38,21 +40,33 @@
 		username = <username>
 		password = <password>
 
-- Execute the below command with appropriate arguments to check for the valid json output.  
+- Execute the below command with appropriate arguments to check for a valid json output.  
 
 		python saphana_database.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> 
+		
+- To analyze your application logs and identify the exact root cause of the issues, you can make configuration changes by adding logs_enabled, log_type_name, and log_file_path in saphana_database.cfg file
 
-
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
+		[saphana_database]
+		host=<hostname>
+		port=<port>
+		username=<username>
+		password=<password>
+		logs_enabled=True
+		log_type_name="saphana_log"
+		log_file_path="/usr/sap/<SID>/HDB<Instance number>/<hostname>/trace/*.log"
+		
+ In the above, fill <SID> with the System ID, <Instance number> with the instance number, and <hostname> with the host name.
+ 
+The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center
+		
 ###Metrics Monitored
 
-		1.ACTIVE_THREADS - Number of active threads
-		2.ACTIVE_TRANSACTIONS - Number of active transactions
-		3.BACKUP_CATALOGS - total number of backup catalogs
+		1.ACTIVE_THREADS - The number of active threads
+		2.ACTIVE_TRANSACTIONS - The number of active transactions
+		3.BACKUP_CATALOGS - The total number of backup catalogs
 		4.DATA_DISK_FREE_SIZE - The volume of the free size of the data disk
-		5.IDLE_CONNECTIONS - Number of idle connections
-		6.INACTIVE_TRANSACTIONS - Number of inactive connections
+		5.IDLE_CONNECTIONS - The number of idle connections
+		6.INACTIVE_TRANSACTIONS - The number of inactive connections
 		7.INDEX_SHARED_FREE_SIZE - Free shared memory size of the index module
 		8.INDEX_SERVER_MEMORY_POOL_HEAP_USED_SIZE - The amount of pool heap memory that is in use of the index server
 		9.INDEX_SERVER_MEMORY_POOL_USED_SIZE - The amount of memory in use from the memory pool of the index server
