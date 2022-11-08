@@ -61,24 +61,24 @@ The agent will automatically execute the plugin within five minutes and send per
 		
 ###Metrics Monitored
 
-		1.ACTIVE_THREADS - The number of active threads
-		2.ACTIVE_TRANSACTIONS - The number of active transactions
-		3.BACKUP_CATALOGS - The total number of backup catalogs
-		4.DATA_DISK_FREE_SIZE - The volume of the free size of the data disk
-		5.IDLE_CONNECTIONS - The number of idle connections
-		6.INACTIVE_TRANSACTIONS - The number of inactive connections
-		7.INDEX_SHARED_FREE_SIZE - Free shared memory size of the index module
-		8.INDEX_SERVER_MEMORY_POOL_HEAP_USED_SIZE - The amount of pool heap memory that is in use of the index server
-		9.INDEX_SERVER_MEMORY_POOL_USED_SIZE - The amount of memory in use from the memory pool of the index server
-		10.INDEX_SERVER_MEMORY_POOL_SHARED_USED_SIZE - The amount of pool shared memory that is in use of the index server
-		11.LOG_DISK_FREE_SIZE - The volume of the free size of the log disk
-		12.NAMESERVER_MEMORY_POOL_HEAP_USED_SIZE - The amount of pool heap memory that is in use of the name server
-		13.NAMESERVER_MEMORY_POOL_USED_SIZE - The amount of memory in use from the memory pool of the name server
-		14.NAMESERVER_MEMORY_POOL_SHARED_USED_SIZE  - The amount of pool shared memory that is in use of the name server
-		15.QUEUING_CONNECTIONS - Total number of connection currently queued
-		16.REPLICATION_ERRORS - Number of replication is in error
-		17.REPLICATION_SYNCING - Number of syncing replication
-		18.RUNNING_CONNECTIONS - Total number of statement is executing
-		19.TOTAL_DELTA_MERGE_ERRORS - Total number of table delta merge statistics
-		20.TOTAL_EXPENSIVE_STATEMENTS - Total number of expensive statements
-		21.TOTAL_NETWORK_IO_OPERATIONS - Total network I/O operations
+		1.Active Threads - The number of active threads
+		2.Active Transactions - The number of active transactions
+		3.Backup Catalogs - The total number of backup catalogs
+		4.DATA Disk Free Size - The volume of the free size of the data disk
+		5.Idle Connections - The number of idle connections
+		6.Inactive Transactions - The number of inactive connections
+		7.Index Server Memory Pool Heap Used Size - The amount of pool heap memory that is in use of the index server
+		8.Index Server Memory Pool Used Size - The amount of memory in use from the memory pool of the index server
+		9.Index Server Memory Pool Shared Used Size - The amount of pool shared memory that is in use of the index server
+		10.LOG Disk Free Size - The volume of the free size of the log disk
+		11.Name Server Memory Pool Heap Used Size - The amount of pool heap memory that is in use of the name server
+		12.Name Server Memory Pool Used Size - The amount of memory in use from the memory pool of the name server
+		13.Name Server Memory Pool Shared Used Size  - The amount of pool shared memory that is in use of the name server
+		14.Queuing Connections - Total number of connection currently queued
+		15.Replication Errors - Number of replication is in error
+		16.Replication Syncing - Number of syncing replication
+		17.Running Connections - Total number of statement is executing
+		18.Total Delta Merge Errors - Total number of table delta merge statistics
+		19.Total Expensive Statements - Total number of expensive statements
+		20.Total Network I/O Operations - Total network I/O operations
+		21.Total Column Unloads - Total number of column unloads

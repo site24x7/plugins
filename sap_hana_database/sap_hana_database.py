@@ -13,12 +13,12 @@ PLUGIN_VERSION = "1"
 HEARTBEAT=True
 
 metric_units={
-    "INDEX_SERVER_MEMORY_POOL_USED_SIZE":"GB",
-    "INDEX_SERVER_MEMORY_POOL_HEAP_USED_SIZE":"GB",
-    "INDEX_SERVER_MEMORY_POOL_SHARED_USED_SIZE":"GB",
-    "NAMESERVER_MEMORY_POOL_USED_SIZE":"GB",
-    "NAMESERVER_MEMORY_POOL_HEAP_USED_SIZE":"GB",
-    "NAMESERVER_MEMORY_POOL_SHARED_USED_SIZE":"GB"
+    "Index Server Memory Pool Used Size":"GB",
+    "Index Server Memory Pool Heap Used Size":"GB",
+    "Index Server Memory Pool Shared Used Size":"GB",
+    "Name Server Memory Pool Used Size":"GB",
+    "Name Server Memory Pool Heap Used Size":"GB",
+    "Name Server Memory Pool Shared Used Size":"GB"
 }
 class Sap_hana(object):
     def __init__(self, args):
@@ -50,18 +50,18 @@ class Sap_hana(object):
                     idle_connection +=1
                 if row["CONNECTION_STATUS"]=="QUEUING":
                     queuing_connection +=1
-            self.resultjson["RUNNING_CONNECTIONS"]=running_connection
-            self.resultjson["IDLE_CONNECTIONS"]=idle_connection
-            self.resultjson["QUEUING_CONNECTIONS"]=queuing_connection
+            self.resultjson["Running Connections"]=running_connection
+            self.resultjson["Idle Connections"]=idle_connection
+            self.resultjson["Queuing Connections"]=queuing_connection
                 
             cursor.execute("SELECT * FROM M_DISKS")
             result = cursor.fetchall()
             for row in result:
-                self.resultjson[(row["USAGE_TYPE"])+"_DISK_FREE_SIZE"]=str(round((row["TOTAL_SIZE"]-row["USED_SIZE"])/1024.0**3 , 4))+" GB"
+                self.resultjson[(row["USAGE_TYPE"])+" Disk Free Size"]=str(round((row["TOTAL_SIZE"]-row["USED_SIZE"])/1024.0**3 , 4))+" GB"
                 
             cursor.execute("SELECT * FROM M_SERVICE_NETWORK_IO")
             result = cursor.fetchall()
-            self.resultjson["TOTAL_NETWORK_IO_OPERATIONS"]=len(result)
+            self.resultjson["Total Network I/O Operations"]=len(result)
             
             cursor.execute("SELECT * FROM M_SERVICE_THREADS")
             result = cursor.fetchall()
@@ -69,7 +69,7 @@ class Sap_hana(object):
             for row in result:
                 if row["IS_ACTIVE"]:
                     active_thread +=1
-            self.resultjson["ACTIVE_THREADS"]=active_thread
+            self.resultjson["Active Threads"]=active_thread
             
             cursor.execute("SELECT * FROM M_TRANSACTIONS WHERE SECONDS_BETWEEN(START_TIME,CURRENT_TIME)<300")
             result = cursor.fetchall()
@@ -80,20 +80,20 @@ class Sap_hana(object):
                     inactive_transaction +=1
                 if row["TRANSACTION_STATUS"]=="ACTIVE":
                     active_transaction +=1
-            self.resultjson["INACTIVE_TRANSACTIONS"]=inactive_transaction
-            self.resultjson["ACTIVE_TRANSACTIONS"]=active_transaction
+            self.resultjson["Inactive Transactions"]=inactive_transaction
+            self.resultjson["Active Transactions"]=active_transaction
             
             cursor.execute("SELECT TOTAL_MEMORY_USED_SIZE, CODE_SIZE,STACK_SIZE, HEAP_MEMORY_ALLOCATED_SIZE, HEAP_MEMORY_USED_SIZE,SHARED_MEMORY_ALLOCATED_SIZE,SHARED_MEMORY_USED_SIZE FROM M_SERVICE_MEMORY where Service_name='indexserver' ")
             result = cursor.fetchall()
-            self.resultjson["INDEX_SERVER_MEMORY_POOL_USED_SIZE"]=str(round(result[0][0]/1024.0**3 , 4))
-            self.resultjson["INDEX_SERVER_MEMORY_POOL_HEAP_USED_SIZE"]=str(round(result[0][4]/1024.0**3 , 4))
-            self.resultjson["INDEX_SERVER_MEMORY_POOL_SHARED_USED_SIZE"]=str(round(result[0][6]/1024.0**3 , 4))
+            self.resultjson["Index Server Memory Pool Used Size"]=str(round(result[0][0]/1024.0**3 , 4))
+            self.resultjson["Index Server Memory Pool Heap Used Size"]=str(round(result[0][4]/1024.0**3 , 4))
+            self.resultjson["Index Server Memory Pool Shared Used Size"]=str(round(result[0][6]/1024.0**3 , 4))
             
             cursor.execute("SELECT TOTAL_MEMORY_USED_SIZE, CODE_SIZE,STACK_SIZE, HEAP_MEMORY_ALLOCATED_SIZE, HEAP_MEMORY_USED_SIZE,SHARED_MEMORY_ALLOCATED_SIZE,SHARED_MEMORY_USED_SIZE FROM M_SERVICE_MEMORY where Service_name='nameserver' ")
             result = cursor.fetchall()
-            self.resultjson["NAMESERVER_MEMORY_POOL_USED_SIZE"]=str(round(result[0][0]/1024.0**3 , 4))
-            self.resultjson["NAMESERVER_MEMORY_POOL_HEAP_USED_SIZE"]=str(round(result[0][4]/1024.0**3 , 4))
-            self.resultjson["NAMESERVER_MEMORY_POOL_SHARED_USED_SIZE"]=str(round(result[0][6]/1024.0**3 , 4))
+            self.resultjson["Name Server Memory Pool Used Size"]=str(round(result[0][0]/1024.0**3 , 4))
+            self.resultjson["Name Server Memory Pool Heap Used Size"]=str(round(result[0][4]/1024.0**3 , 4))
+            self.resultjson["Name Server Memory Pool Shared Used Size"]=str(round(result[0][6]/1024.0**3 , 4))
             
             cursor.execute("SELECT * FROM M_SERVICE_REPLICATION")
             result = cursor.fetchall()
@@ -104,20 +104,24 @@ class Sap_hana(object):
                     error_replication +=1
                 elif row["REPLICATION_STATUS"]=="SYNCING":
                     syncing +=1
-            self.resultjson["REPLICATION_ERRORS"]=error_replication
-            self.resultjson["REPLICATION_SYNCING"]=syncing
+            self.resultjson["Replication Errors"]=error_replication
+            self.resultjson["Replication Syncing"]=syncing
             
             cursor.execute("SELECT * from M_DELTA_MERGE_STATISTICS WHERE TYPE='MERGE' AND SUCCESS='FALSE' AND SECONDS_BETWEEN(START_TIME,CURRENT_TIME)<300")
             result = cursor.fetchall()
-            self.resultjson["TOTAL_DELTA_MERGE_ERRORS"]=len(result)
+            self.resultjson["Total Delta Merge Errors"]=len(result)
             
             cursor.execute("SELECT * from M_EXPENSIVE_STATEMENTS WHERE SECONDS_BETWEEN(START_TIME,CURRENT_TIME)<300")
             result = cursor.fetchall()
-            self.resultjson["TOTAL_EXPENSIVE_STATEMENTS"]=len(result)
+            self.resultjson["Total Expensive Statements"]=len(result)
             
             cursor.execute("SELECT * from M_BACKUP_CATALOG WHERE SECONDS_BETWEEN(SYS_START_TIME,CURRENT_TIME)<300")
             result = cursor.fetchall()
-            self.resultjson["BACKUP_CATALOGS"]=len(result)
+            self.resultjson["Backup Catalogs"]=len(result)
+            
+            cursor.execute("SELECT * from M_CS_UNLOADS WHERE SECONDS_BETWEEN(UNLOAD_TIME,CURRENT_TIME)<300")
+            result = cursor.fetchall()
+            self.resultjson["Total Column Unloads"]=len(result)
             
         except Exception as e:
             self.resultjson["msg"]="Error:" + str(traceback.print_exc())
