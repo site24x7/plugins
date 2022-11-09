@@ -1,7 +1,7 @@
 # SAP HANA DATABASE MONITORING
 
-=================================================================
-###What is SAP HANA Database ?
+
+### What is SAP HANA ?
 
 	SAP HANA (High-performance ANalytic Appliance) is a column-oriented database that stores data in its memory instead of on a disk. This unique architecture enables SAP HANA to process and query massive amounts of data with near-zero latency, which is significantly faster than other database management systems and allows for advanced real-time analytics.
 	
@@ -15,7 +15,7 @@
 
 		pip install hdbcli
 		
-- Ensure the SAP HANA database user has been provided public and monitoring role access:
+-  Ensure the SAP HANA user profile that will be added in the saphana_database.cfg file has been provided public and monitoring role access:
 
 		GRANT ROLE PUBLIC to user <username>
 		GRANT ROLE MONITORING to user <username>
@@ -40,7 +40,7 @@
 		username = <username>
 		password = <password>
 
-- Execute the below command with appropriate arguments to check for a valid json output.  
+- Execute the below command with appropriate arguments to check for a valid json output:  
 
 		python sap_hana_database.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> 
 		
@@ -59,7 +59,7 @@
  
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center
 		
-###Metrics Monitored
+### Performance Metrics
 
 		1.Active Threads - The number of active threads
 		2.Active Transactions - The number of active transactions
