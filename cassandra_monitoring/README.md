@@ -14,8 +14,15 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
 -  Set up  the jmx port for Cassandra:
 
     1.  Open the cassandra-env.sh file from the location "/etc/cassandra"
+    
+    2.  By default JMX security is disabled in cassandra, to enable it locate following lines of code in *cassandra-env.sh* file.
+		    
+        ```
+         if [ "$LOCAL_JMX" = "yes" ]; then
+  		   JVM_OPTS="$JVM_OPTS -Dcassandra.jmx.local.port=$JMX_PORT -XX:+DisableExplicitGC"
+         ```
 
-    2.  Add the following line to the cassandra-env.sh file:
+    3.  Add the following lines to the else block of the above lines in the cassandra-env.sh file
     
         ```
          JVM_OPTS="$JVM_OPTS -Dcassandra.jmx.remote.login.config=CassandraLogin"'
@@ -24,26 +31,26 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
          ```
          
 
-    3. Also, comment out the following lines in the cassandra-env.sh file:
+    4. Also, comment out the following lines in the cassandra-env.sh file:
         ```
         JVM_OPTS="$JVM_OPTS -Dcom.sun.management.jmxremote.password.file=/etc/cassandra/jmxremote.password"
         JVM_OPTS="$JVM_OPTS -Dcom.sun.management.jmxremote.access.file=/etc/cassandra/jmxremote.access"
         ```
 
-    4.  Change the authentication in the cassandra.yaml file to PasswordAuthenticator:
+    5.  Change the authentication in the cassandra.yaml file to PasswordAuthenticator:
 
           ```
           authenticator: PasswordAuthenticator
           ```
 
-    5. Change the authorization in the cassandra.yaml file to CassandraAuthorizer:
+    6. Change the authorization in the cassandra.yaml file to CassandraAuthorizer:
 
           ```
           authorizer: CassandraAuthorizer
           ```
 
 
-    6.  Restart Cassandra once you are done.
+    7.  Restart Cassandra once you are done.
 
 #### Plugin Installation
 
