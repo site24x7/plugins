@@ -52,10 +52,17 @@ def metrics_collector():
         new_data["maxinstance_size"]=data["providerSettings"]["autoScaling"]["compute"]["maxInstanceSize"]
         new_data["mininstance_size"]=data["providerSettings"]["autoScaling"]["compute"]["minInstanceSize"]
         new_data["replication_factor"]=data["replicationFactor"]
-        new_data["analytics_nodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["analyticsNodes"]
-        new_data["electable_nodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["electableNodes"]
-        new_data["priority"]=data["replicationSpec"]["ASIA_SOUTH_1"]["priority"]
-        new_data["readonly_nodes"]=data["replicationSpec"]["ASIA_SOUTH_1"]["readOnlyNodes"]
+
+
+        region_data=data["replicationSpec"]
+        for region in region_data:
+            new_data[region+"_"+"analytics_nodes"]=data["replicationSpec"][region]["analyticsNodes"]
+            new_data[region+"_"+"electableNodes"]=data["replicationSpec"][region]["electableNodes"]
+            new_data[region+"_"+"priority"]=data["replicationSpec"][region]["priority"]
+            new_data[region+"_"+"readOnlyNodes"]=data["replicationSpec"][region]["readOnlyNodes"]
+
+
+
         new_data["zonename"]=data["replicationSpecs"][0]["zoneName"]
         new_data["rootcert_type"]=data["rootCertType"]
         new_data["srvaddress"]=data["srvAddress"]
@@ -94,4 +101,3 @@ if __name__ == '__main__':
     resultjson['heartbeat_required'] = heartbeat_required
     resultjson['units'] = metrics_units
 print(json.dumps(resultjson, indent=4, sort_keys=True))
-
