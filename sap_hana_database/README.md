@@ -3,9 +3,9 @@
 
 ### What is SAP HANA ?
 
-	SAP HANA (High-performance ANalytic Appliance) is a column-oriented database that stores data in its memory instead of on a disk. This unique architecture enables SAP HANA to process and query massive amounts of data with near-zero latency, which is significantly faster than other database management systems and allows for advanced real-time analytics.
+SAP HANA (High-performance ANalytic Appliance) is a column-oriented database that stores data in its memory instead of on a disk. This unique architecture enables SAP HANA to process and query massive amounts of data with near-zero latency, which is significantly faster than other database management systems and allows for advanced real-time analytics.
 	
-	Monitor the availability and performance of your SAP HANA database with SAP HANA plugin integration.
+Monitor the availability and performance of your SAP HANA database with SAP HANA plugin integration.
 
 ### Prerequisites
 
@@ -15,7 +15,7 @@
 
 		pip install hdbcli
 		
--  Ensure the SAP HANA user profile that will be added in the saphana_database.cfg file has been provided public and monitoring role access:
+-  Ensure the SAP HANA user profile that will be added in the sap_hana_database.cfg file has been provided public and monitoring role access:
 
 		GRANT ROLE PUBLIC to user <username>
 		GRANT ROLE MONITORING to user <username>
@@ -74,11 +74,11 @@ The agent will automatically execute the plugin within five minutes and send per
 		11.Name Server Memory Pool Heap Used Size - The amount of pool heap memory that is in use of the name server
 		12.Name Server Memory Pool Used Size - The amount of memory in use from the memory pool of the name server
 		13.Name Server Memory Pool Shared Used Size  - The amount of pool shared memory that is in use of the name server
-		14.Queuing Connections - Total number of connection currently queued
-		15.Replication Errors - Number of replication is in error
-		16.Replication Syncing - Number of syncing replication
-		17.Running Connections - Total number of statement is executing
-		18.Total Delta Merge Errors - Total number of table delta merge statistics
-		19.Total Expensive Statements - Total number of expensive statements
-		20.Total Network I/O Operations - Total network I/O operations
-		21.Total Column Unloads - Total number of column unloads
+		14.Queuing Connections - The total number of connections currently queued
+		15.Replication Errors - The number of replications that have in errors
+		16.Replication Syncing - The number of syncing replications
+		17.Running Connections - The total number of statement is executing
+		18.Total Delta Merge Errors - The total number of table delta merge statistics
+		19.Total Expensive Statements - The total number of expensive statements
+		20.Total Network I/O Operations - The total network I/O operations
+		21.Total Column Unloads - The total number of column unloads
