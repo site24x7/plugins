@@ -90,13 +90,34 @@ $author = $task.Author
 $data.Add("author",$author)
 $Start_Date = $task.Start_Date
 $data.Add("Start_Date",$Start_Date)
-$statestr = $task.Status
-$data.Add("Status",$statestr.ToString())
+#$statestr = $task.Status
+#$data.Add("Status",$statestr.ToString())
 $lastRunTime = $task.Last_Run_Time
 $data.Add("lastRunTime",$lastRunTime)
 $lastTaskResult = $task.Last_Result
 $data.Add("errorCode",$lastTaskResult)
-$data.Add("state_value",$task.Scheduled_Task_State)
+
+$status=$task.Status
+if($status -eq "Ready"){
+$value_status=3
+}
+
+if($status -eq "Disabled"){
+$value_status=1
+}
+
+if($status -eq "Queued"){
+$value_status=2
+}
+
+if($status -eq "Running"){
+$value_status=4
+}
+
+
+$data.Add("state_value",$value_status)
+ 
+
 $data.Add("numberOfMissedRuns",$task2.NumberOfMissedRuns)
 
 
