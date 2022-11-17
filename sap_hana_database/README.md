@@ -20,7 +20,7 @@ Monitor the availability and performance of your SAP HANA database with SAP HANA
 		GRANT ROLE PUBLIC to user <username>
 		GRANT ROLE MONITORING to user <username>
 
-###Plugin Installation
+### Plugin Installation
 
 - Create a directory named "sap_hana_database" under the Site24x7 Linux Agent plugin directory: 
 
