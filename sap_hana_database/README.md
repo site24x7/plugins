@@ -55,7 +55,7 @@ Monitor the availability and performance of your SAP HANA database with SAP HANA
 		log_type_name="saphana_log"
 		log_file_path="/usr/sap/<SID>/HDB<Instance number>/<hostname>/trace/*.log"
 		
- In the above, fill <SID> with the System ID, <Instance number> with the instance number, and <hostname> with the host name.
+ In the above, fill in the System ID, Instance number and hostname with applicable details.
  
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center
 		
