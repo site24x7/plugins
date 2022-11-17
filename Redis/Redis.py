@@ -1,12 +1,8 @@
 #!/usr/bin/python
 """
-  
   Site24x7 Redis Plugin
-  
 """
-
 import json,sys
-
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
@@ -111,10 +107,11 @@ class Redis(object):
             self.password=args.password
         else:
             self.password=""
-        if args.password:
+        if args.queues:
             self.queues=args.queues
         else:
             self.queues=""
+
     def metricCollector(self):
         data = {}
         data['plugin_version'] = PLUGIN_VERSION
@@ -128,14 +125,18 @@ class Redis(object):
         stats = None
         for db in self.dbs.split(','):
             try:
-                redis_connection = redis.StrictRedis(host=self.host,port=self.port,db=int(self.dbs),password=self.password)
+                redis_connection = redis.StrictRedis(
+                    host=self.host,
+                    port=self.port,
+                    db=int(self.dbs),
+                    password=self.password
+                )
                 stats = redis_connection.info()
             except Exception as e:
                 data['status']=0
                 data['msg']=str(e)
         if not stats:
             return data
-        #stats.items() for python version greater than 3 otherwise stats.iteritems()
         total_keys=0
         for name, value in stats.items():
             if type(value)==dict:
@@ -159,7 +160,6 @@ class Redis(object):
 
 
 if __name__ == '__main__':
-    
     import argparse
     parser=argparse.ArgumentParser()
     parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
