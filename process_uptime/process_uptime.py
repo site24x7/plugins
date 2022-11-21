@@ -2,6 +2,7 @@
 
 import math , json , subprocess
 
+
 def get_process_uptime(process_name):
     process_cmd = "ps -eo pid,comm,stime,etimes,args | grep -w "+process_name+" | grep -v process_uptime | grep -v grep | awk '{print $3,$4}'"
     p = subprocess.Popen(process_cmd, stdout=subprocess.PIPE, shell=True)
@@ -43,15 +44,29 @@ if __name__ == "__main__":
     process_data['plugin_version'] = args.plugin_version
     process_data['heartbeat_required'] = args.heartbeat
     process_data['process_name'] = process_name
-    process_cmd_output = get_process_uptime(process_name)
-    if process_cmd_output:
-        process_out = process_cmd_output.split()
-        process_data['start_time'] = process_out[0]
-        time_in_ms = process_out[1]
-        time_in_ms = int(time_in_ms) * 1000
-        timeConversion(time_in_ms,process_data)
-    else:
-        process_data['status'] = 0
-        process_data['msg'] = "Process {} Not Running".format(process_name)
     
-    print(json.dumps(process_data, indent=4, sort_keys=True))
+    try :
+    	process_cmd_output = get_process_uptime(process_name)
+    	if process_cmd_output:
+    		process_out = process_cmd_output.split()
+    		process_out[0] = process_out[0].decode()
+    		process_data['start_time'] = process_out[0]
+    		process_data['process_status'] = 1
+    		time_in_ms = process_out[1]
+    		time_in_ms = int(time_in_ms) * 1000
+    		timeConversion(time_in_ms,process_data)
+    	else:
+        	process_data['status'] = 1
+        	process_data['process_status'] = 0
+        	process_data['days'] = "null"
+        	process_data['hours'] = "null"
+        	process_data['mins'] = "null"
+        	process_data['seconds'] = "null"
+        	process_data['start_time'] = "null"
+        	process_data['msg'] = "Process {} Not Running".format(process_name)
+    except Exception as e:
+        process_data["status"] = 0
+        process_data["msg"] = str(e)
+    
+    print(json.dumps(process_data))
+

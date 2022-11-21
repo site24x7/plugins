@@ -48,3 +48,5 @@ hours : No of hours the process is runnning
 minutes : No of minutes the process is running
 
 seconds : No of seconds the process is running
+
+process_status : Displays 1 if a process is running and 0 if a process is not running.
