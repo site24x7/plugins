@@ -46,7 +46,7 @@ def metricCollector():
     if PYTHON_MAJOR_VERSION == 3:
         import urllib
         import urllib.request as connector
-        input_data['vhost']=urllib.parse.quote('/', safe='')
+        input_data['vhost']=urllib.parse.quote(input_data['vhost'], safe='')
         input_data['uri']="/api/queues/"+input_data['vhost']+"/"+connector.quote(input_data['queue_name'])
     elif PYTHON_MAJOR_VERSION == 2:
         import urllib2 as connector
