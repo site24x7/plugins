@@ -46,7 +46,15 @@ Monitor the availability and performance of your Weblogic Server with Site24x7's
 			       -Dcom.sun.management.jmxremote.access.file=jmxremote.access
 			       -Dcom.sun.management.jmxremote.password.file=jmxremote.password"
 		```
+	- Please provide the below details appropriately based on the weblogic instance configured
+		- jmxremote.port
+		- jmxremote.host
+		- jmxremote.access.file (jmxremote.access file path)
+		- jmxremote.password.file(jmxremote.password file path)
 	- Restart the weblogic instance after the following changes
+		
+	   
+		
 
 
 
