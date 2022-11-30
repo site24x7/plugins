@@ -17,6 +17,38 @@ Monitor the availability and performance of your Weblogic Server with Site24x7's
   ```
   
 - Set up the jmx port for Weblogic.
+	- Open the setDomainEnv.sh in the domain folder of the weblogic instance
+	- Exporting jmx port **insecurely**
+		```
+		JAVA_OPTIONS="${JAVA_OPTIONS} -Dcom.sun.management.jmxremote 
+			       -Dcom.sun.management.jmxremote.port=9010 
+			       -Dcom.sun.management.jmxremote.rmi.port=9010
+			       -Dcom.sun.management.jmxremote.host=127.0.0.1
+			       -Dcom.sun.management.jmxremote.ssl=false  
+			       -Dcom.sun.management.jmxremote.authenticate=false
+			       -Dcom.sun.management.jmxremote.local.only=true
+			       -Djavax.management.builder.initial=weblogic.management.jmx.mbeanserver.WLSMBeanServerBuilder
+			       -Djava.rmi.server.hostname=127.0.0.1"
+		
+		```
+	- For the above configuration the authentication is false, that is there is no username and password required.
+	- Exporting jmx port **securely**
+		```
+		JAVA_OPTIONS="${JAVA_OPTIONS} -Dcom.sun.management.jmxremote 
+			       -Dcom.sun.management.jmxremote.port=9010 
+			       -Dcom.sun.management.jmxremote.rmi.port=9010
+			       -Dcom.sun.management.jmxremote.host=127.0.0.1
+			       -Dcom.sun.management.jmxremote.ssl=false  
+			       -Dcom.sun.management.jmxremote.authenticate=false
+			       -Dcom.sun.management.jmxremote.local.only=true
+			       -Djavax.management.builder.initial=weblogic.management.jmx.mbeanserver.WLSMBeanServerBuilder
+			       -Djava.rmi.server.hostname=127.0.0.1
+			       -Dcom.sun.management.jmxremote.access.file=jmxremote.access
+			       -Dcom.sun.management.jmxremote.password.file=jmxremote.password"
+		```
+	- Restart the weblogic instance after the following changes
+
+
 
 ## Plugin Installation
 - Create a directory named "weblogic_monitoring" under the Site24x7 Linux Agent plugin directory:
@@ -51,6 +83,8 @@ Monitor the availability and performance of your Weblogic Server with Site24x7's
 hostname=<HOSTNAME>
 port=<PORT NUMBER>
 server_name=<SERVER_NAME>
+username=<WEBLOGIC PASSWORD>
+password=<WEBLOGIC PASSWORD>
 logs_enabled=False
 log_type_name=None
 log_file_path=None
