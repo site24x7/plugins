@@ -21,24 +21,32 @@ Function Get-Data
        {
           $active=$active+1
           $userName += $userarr[0]
+          if($userarr[4] -eq '.')
+          {
+            $dataObj.Add($userarr[0]+"_idletime",0)
+          }
+          else
+          {
+            $dataObj.Add($userarr[0]+"_idletime",$userarr[4])
+          }
        }
+       $dataObj.Add($userarr[0]+"_status","Active")
+	   $dataObj.Add($userarr[0]+"_logon_logout(1/0)",1)
     }
 
     for($user=1; $user -lt $activeUser.Count; $user=$user+1)
     {
         $date=$activeUser[$user].LastLogon
-	$date = $date -replace '[a-z]', ''
+	    $date = $date -replace '[a-z]', ''
         $dataObj.Add($activeUser[$user].Name+"_last_logon_time",$date)
-        if($userName.Contains($activeUser[$user].Name))
+        if($userName -notcontains ($activeUser[$user].Name))
         {
-             $dataObj.Add($activeUser[$user].Name+"_status","Active")
-	     $dataObj.Add($activeUser[$user].Name+"_logon_logout(1/0)",1)
-        }
-        else
-        {
+          
              $dataObj.Add($activeUser[$user].Name+"_status","DisConnected")
-	     $dataObj.Add($activeUser[$user].Name+"_logon_logout(1/0)",0)
+	         $dataObj.Add($activeUser[$user].Name+"_logon_logout(1/0)",0)
+             $dataObj.Add($activeUser[$user].Name+"_idletime",0)
         }
+        $units.Add($activeUser[$user].Name+"_idletime","minutes")
     }
     $dataObj.Add("active_user",$active)
     return $dataObj

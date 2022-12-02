@@ -25,7 +25,8 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/WindowsUsersSessi
 
 Track the following metrics with the plugin:
 
-	1.active_user - The total number of active users.
+	1. active_user - The total number of active users.
 	2. user_status - Displays the user's status as active or disconnected
 	3. user_logon_logout(1/0) - Displays 1 if a user is logged in and 0 if auser is logged out.
 	4. user_last_logon_time - Last logged in date and time of the user 
+	5. user_idletime - Displays the idle time of the user in minutes.
