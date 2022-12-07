@@ -1,5 +1,4 @@
 $output = @{}
-$units = @{}
 $heartbeat = "true" 
 $version=1
 Function Get-Data
@@ -46,7 +45,6 @@ Function Get-Data
 	         $dataObj.Add($activeUser[$user].Name+"_logon_logout(1/0)",0)
              $dataObj.Add($activeUser[$user].Name+"_idletime",0)
         }
-        $units.Add($activeUser[$user].Name+"_idletime","minutes")
     }
     $dataObj.Add("active_user",$active)
     return $dataObj
@@ -55,7 +53,6 @@ Function Get-Data
 $output.Add("heartbeat_required", $heartbeat)
 $data =Get-Data
 $output.Add("data", ($data))
-$output.Add("units",($units))
 $output.Add("plugin_version", $version)
 
 $output | ConvertTo-Json
