@@ -1,4 +1,4 @@
-Plugin to monitor Active Dorectory Replication status  Monitoring
+Plugin to monitor Active Dorectory Replication status
 ===========
 
 A plugin to monitor Active Directory replication's metadata for a set of one or more replication partner with data 
