@@ -25,6 +25,12 @@ The following metrics are provided for this plugin:
 * ErrorPartner: The Replication error which thrown for partner.
 * ErrorServer: The Replication error which thrown for server.
 
+### Prerequisites 
+Make sure following powershell cmdlets installed in the server where you going to add the Active Directory Replication status plugin
+1. Get-ADDomainController
+2. Get-ADReplicationPartnerMetadata
+3. Get-ADReplicationFailure
+
 ### Plugin Installation
 1. Download the latest version of Site24x7WindowsAgent and install in your server. 
     https://www.site24x7.com/help/admin/adding-a-monitor/windows-server-monitoring.html
