@@ -10,10 +10,6 @@ METRICS_UNITS={
     "Used Percent":"%"
 }
 
-# Reference
-metrics = {}
-
-
 
 class oracle:
 
