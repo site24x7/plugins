@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import json
+import os
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
@@ -192,6 +193,8 @@ class oracle:
             else:
                     applog["logs_enabled"]=False
             self.maindata['applog'] = applog
+            self.maindata['tags']=f"oracle_hostname:{self.hostname},oracle_sid:{self.sid}"
+
 
 
         except Exception as e:
@@ -211,6 +214,8 @@ if __name__=="__main__":
     sid="ORCLCDB"
     username=None
     password=None
+    oracle_home='/opt/oracle/product/19c/dbhome_1'
+
 
 
     import argparse
@@ -221,6 +226,7 @@ if __name__=="__main__":
     parser.add_argument('--sid', help='sid for oracle',default=sid)
     parser.add_argument('--username', help='username for oracle',default=username)
     parser.add_argument('--password', help='password for oracle',default=password)
+    parser.add_argument('oracle_home',help='oracle home path',default=oracle_home)
 
 
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
@@ -228,6 +234,7 @@ if __name__=="__main__":
     parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
     args=parser.parse_args()
 
+    os.environ['ORACLE_HOME']=args.oracle_home
     obj=oracle(args)
 
     result=obj.metriccollector()
