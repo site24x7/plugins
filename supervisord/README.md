@@ -7,3 +7,4 @@ Know how to configure the supervisor plugin and the monitoring metrics for provi
 Learn more: https://www.site24x7.com/plugins/supervisord-monitoring.html
 
 [How to install supervisor?]: <http://supervisord.org/installing.html>
+
