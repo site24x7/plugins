@@ -16,8 +16,8 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
 2. Download all the files from the "WindowsSpecificUserSession" folder and place them under the "WindowsSpecificUserSession" directory.
 
 ```
-wget https://raw.githubusercontent.com/site24x7/plugins/master/WindowsUsersSessionMonitor/WindowsSpecificUserSession.ps1
-wget https://raw.githubusercontent.com/site24x7/plugins/master/WindowsUsersSessionMonitor/WindowsSpecificUserSession.cfg
+wget https://raw.githubusercontent.com/site24x7/plugins/master/WindowsSpecificUserSession/WindowsSpecificUserSession.ps1
+wget https://raw.githubusercontent.com/site24x7/plugins/master/WindowsSpecificUserSession/WindowsSpecificUserSession.cfg
 ```
 
 3. Modify the WindowsSpecificUserSession.cfg file with the user name to monitor.

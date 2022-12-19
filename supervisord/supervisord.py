@@ -9,8 +9,8 @@ Tested in Ubuntu
 
 """
 
+import sys
 import supervisor.xmlrpc
-import xmlrpclib
 import supervisor
 import socket
 import json
@@ -33,6 +33,13 @@ PLUGIN_VERSION = "1"
 
 # Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT = "true"
+
+PYTHON_MAJOR_VERSION = sys.version_info[0]
+#REQUESTS_INSTALLED = None
+if PYTHON_MAJOR_VERSION == 3:
+    import xmlrpc.client as xmlrpclib
+elif PYTHON_MAJOR_VERSION == 2:
+    import xmlrpclib
 
 class SupervisordMon():
     server = None
@@ -112,3 +119,4 @@ if __name__ == '__main__':
     mon = SupervisordMon(config)
     metrics = mon.get_metrics()
     print(json.dumps(metrics))
+
