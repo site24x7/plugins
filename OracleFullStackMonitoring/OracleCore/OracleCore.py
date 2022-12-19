@@ -182,15 +182,6 @@ class oracle:
 
 
                 
-
-
-
-
-
-
-
-
-
             applog={}
             if(self.logsenabled in ['True', 'true', '1']):
                     applog["logs_enabled"]=True
