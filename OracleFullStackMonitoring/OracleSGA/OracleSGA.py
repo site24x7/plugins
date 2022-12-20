@@ -226,7 +226,7 @@ if __name__=="__main__":
     parser.add_argument('--sid', help='sid for oracle',default=sid)
     parser.add_argument('--username', help='username for oracle',default=username)
     parser.add_argument('--password', help='password for oracle',default=password)
-    parser.add_argument('oracle_home',help='oracle home path',default=oracle_home)
+    parser.add_argument('--oracle_home',help='oracle home path',default=oracle_home)
 
 
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
