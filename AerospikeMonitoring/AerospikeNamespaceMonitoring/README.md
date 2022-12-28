@@ -57,6 +57,8 @@
     log_file_path=<LOG FILE PATH>
 ```	
 
+**If TLS is configured in Aerospike then the tls_enable parameter should be set to 'true' and the cafile path, tls_name should be entered.**
+
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ## Supported Metrics
