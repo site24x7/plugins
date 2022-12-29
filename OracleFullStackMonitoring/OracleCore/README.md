@@ -62,6 +62,8 @@ The agent will automatically execute the plugin within five minutes and send per
 ## Supported Metrics
 The following metrics are captured in the OracleCore Plugin:
 
+### System Metrics 
+
 - **Soft Parse Ratio**
 
     The Soft Parse Ratio Oracle metric is the ratio of soft parses
@@ -167,7 +169,6 @@ The following metrics are captured in the OracleCore Plugin:
 
     The number of direct physical reads per second
 
-
 - **Shared Pool Free %**
 
     Percentage of free space in shared pool
@@ -184,8 +185,33 @@ The following metrics are captured in the OracleCore Plugin:
 
     The percentage of pages found in the buffer cache without having to read from disk
 
+- **Dict Cache Hit Ratio**
+
+    The measure  of ratio of dictionary hits to misses
+
+- **Rman Failed Backup Count**
+
+    Count of RMAN failed backups
+
+- **Long Running Query**
+
+    Count of long running queries
 
 
+### PGA Metrics
 
+- **Total PGA Allocated**
 
+    Total amount of memory provided currently
 
+- **Total Freeable PGA Memory**
+
+    The amount of PGA memory that can be reallocated or given back to the operating system
+
+- **Maximum PGA Allocated**
+
+    Maximum amount of memory provided currently
+
+- **Total PGA Inuse**
+
+    Total amount of memory inuse
