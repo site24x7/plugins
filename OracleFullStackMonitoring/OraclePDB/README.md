@@ -31,7 +31,7 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
- python3 OracleCore.py --hostname=<name of the host> --port=<port> --sid=<SID> --username=<USERNAME> --password=<PASSWORD> --oracle_home=<ORACLE_HOME>
+ python3 OraclePDB.py --hostname=<name of the host> --port=<port> --sid=<SID> --username=<USERNAME> --password=<PASSWORD> --oracle_home=<ORACLE_HOME>
  ```
 
 
