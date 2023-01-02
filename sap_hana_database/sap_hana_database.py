@@ -1,13 +1,14 @@
 #!/usr/bin/python
 
 from hdbcli import dbapi
-import json
+import simplejson as json
 import traceback
+from decimal import *
 
 host='localhost'
-port=39041
-username='system'
-password=''
+port=30115
+username='SYSTEM'
+password='password'
 
 PLUGIN_VERSION = "1"
 HEARTBEAT=True
@@ -15,10 +16,17 @@ HEARTBEAT=True
 metric_units={
     "Index Server Memory Pool Used Size":"GB",
     "Index Server Memory Pool Heap Used Size":"GB",
-    "Index Server Memory Pool Shared Used Size":"GB",
+    "Index Server Memory Pool Shared Used Size":"GB", 
     "Name Server Memory Pool Used Size":"GB",
     "Name Server Memory Pool Heap Used Size":"GB",
-    "Name Server Memory Pool Shared Used Size":"GB"
+    "Name Server Memory Pool Shared Used Size":"GB",
+    "Start Time of Services":"Seconds",
+    "Free Physical Memory":"GB",
+    "Used Physical Memory":"GB",
+    "Total CPU Idle Time":"minutes",
+    "CPU Usage":"%",
+    "Disk Free Size":"GB",
+    "Plan Cache Size":"GB"
 }
 class Sap_hana(object):
     def __init__(self, args):
@@ -38,7 +46,7 @@ class Sap_hana(object):
             db = dbapi.connect(address=self.host, port=self.port, user=self.username, password=self.password)
             cursor = db.cursor()
             
-            cursor.execute('SELECT * FROM "M_CONNECTIONS" WHERE SECONDS_BETWEEN(START_TIME,CURRENT_TIME)<300')
+            cursor.execute('SELECT * FROM "M_CONNECTIONS" WHERE SECONDS_BETWEEN(START_TIME,CURRENT_TIMESTAMP)<300')
             result = cursor.fetchall()
             running_connection=0
             idle_connection=0
@@ -71,7 +79,7 @@ class Sap_hana(object):
                     active_thread +=1
             self.resultjson["Active Threads"]=active_thread
             
-            cursor.execute("SELECT * FROM M_TRANSACTIONS WHERE SECONDS_BETWEEN(START_TIME,CURRENT_TIME)<300")
+            cursor.execute("SELECT * FROM M_TRANSACTIONS WHERE SECONDS_BETWEEN(START_TIME,CURRENT_TIMESTAMP)<300")
             result = cursor.fetchall()
             active_transaction=0
             inactive_transaction=0
@@ -107,21 +115,55 @@ class Sap_hana(object):
             self.resultjson["Replication Errors"]=error_replication
             self.resultjson["Replication Syncing"]=syncing
             
-            cursor.execute("SELECT * from M_DELTA_MERGE_STATISTICS WHERE TYPE='MERGE' AND SUCCESS='FALSE' AND SECONDS_BETWEEN(START_TIME,CURRENT_TIME)<300")
+            cursor.execute("SELECT * from M_DELTA_MERGE_STATISTICS WHERE TYPE='MERGE' AND SUCCESS='FALSE' AND SECONDS_BETWEEN(START_TIME,CURRENT_TIMESTAMP)<300")
             result = cursor.fetchall()
             self.resultjson["Total Delta Merge Errors"]=len(result)
             
-            cursor.execute("SELECT * from M_EXPENSIVE_STATEMENTS WHERE SECONDS_BETWEEN(START_TIME,CURRENT_TIME)<300")
+            cursor.execute("SELECT * from M_EXPENSIVE_STATEMENTS WHERE SECONDS_BETWEEN(START_TIME,CURRENT_TIMESTAMP)<300")
             result = cursor.fetchall()
             self.resultjson["Total Expensive Statements"]=len(result)
             
-            cursor.execute("SELECT * from M_BACKUP_CATALOG WHERE SECONDS_BETWEEN(SYS_START_TIME,CURRENT_TIME)<300")
+            cursor.execute("SELECT * from M_BACKUP_CATALOG WHERE SECONDS_BETWEEN(SYS_START_TIME,CURRENT_TIMESTAMP)<300")
             result = cursor.fetchall()
             self.resultjson["Backup Catalogs"]=len(result)
             
-            cursor.execute("SELECT * from M_CS_UNLOADS WHERE SECONDS_BETWEEN(UNLOAD_TIME,CURRENT_TIME)<300")
+            cursor.execute("SELECT * from M_CS_UNLOADS WHERE SECONDS_BETWEEN(UNLOAD_TIME,CURRENT_TIMESTAMP)<300")
             result = cursor.fetchall()
             self.resultjson["Total Column Unloads"]=len(result)
+
+            cursor.execute("select * from M_PREPARED_STATEMENTS where STATEMENT_STATUS = 'ACTIVE'")
+            result = cursor.fetchall()
+            self.resultjson["Total Active Statements"]=len(result)
+
+            cursor.execute("select * from M_CACHES")
+            result = cursor.fetchall()
+            self.resultjson["Total Caches"]=len(result)
+
+            cursor.execute("select (sum(DURATION)/1000) from SYS.M_DEV_RECOVERY_")
+            result = cursor.fetchall()
+            self.resultjson["Start Time of Services"]=Decimal(result[0][0])
+
+            cursor.execute("SELECT * from _SYS_STATISTICS.STATISTICS_ALERT_THRESHOLDS WHERE SECONDS_BETWEEN(REACHED_AT,CURRENT_TIMESTAMP)<300")
+            result = cursor.fetchall()
+            self.resultjson["Total Alerts"]=len(result)
+
+            cursor.execute("SELECT FREE_PHYSICAL_MEMORY, USED_PHYSICAL_MEMORY,TOTAL_CPU_IDLE_TIME FROM M_HOST_RESOURCE_UTILIZATION WHERE HOST='"+self.host+"'")
+            result = cursor.fetchall()
+            self.resultjson["Free Physical Memory"]=str(round(result[0][0]/1024.0**3 , 4))
+            self.resultjson["Used Physical Memory"]=str(round(result[0][1]/1024.0**3 , 4))
+            self.resultjson["Total CPU Idle Time"]=str(round(result[0][2]/60000))
+
+            cursor.execute("SELECT CPU, DISK_SIZE-DISK_USED FROM M_LOAD_HISTORY_HOST WHERE HOST='"+self.host+"'")
+            result = cursor.fetchall()
+
+            self.resultjson["CPU Usage"]=result[len(result)-1][0]
+            self.resultjson["Disk Free Size"]=str(round(result[len(result)-1][1]/1024.0**3 , 4))
+
+            cursor.execute("SELECT CACHED_PLAN_SIZE, PLAN_CACHE_HIT_RATIO FROM M_SQL_PLAN_CACHE_OVERVIEW WHERE HOST='"+self.host+"'")
+            result = cursor.fetchall()
+
+            self.resultjson["Plan Cache Size"]=str(round(result[0][0]/1024.0**3 , 4))
+            self.resultjson["Plan Cache Hit Ratio"]=result[0][1]
             
         except Exception as e:
             self.resultjson["msg"]="Error:" + str(traceback.print_exc())
@@ -156,4 +198,5 @@ if __name__ == '__main__':
     resultjson['plugin_version'] = PLUGIN_VERSION
     resultjson['heartbeat_required'] = HEARTBEAT
     resultjson['units'] = metric_units
-    print(json.dumps(resultjson, indent=4, sort_keys=True))
+    print(json.dumps(resultjson, indent=4, sort_keys=True ))
+
