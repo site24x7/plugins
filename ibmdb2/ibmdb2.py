@@ -1,15 +1,4 @@
-#!/usr/bin/python
-
-### This plugin in python monitors the performance metrics of IBM DB2 servers
-
-### It uses the DB2 query options to get the monitoring data.
-### Download and install the latest version of Site24x7 Linux Agent. The agent will execute the plugin and push the data to the Site24x7 server
-
-### Author: Shobana, Zoho Corp
-### Language : Python
-### Tested in Ubuntu
-
-### Configure DB2 Server to enable monitoring for Site24x7
+#!/usr/bin/python3
 
 import re
 import json
@@ -17,14 +6,10 @@ import os
 import ibm_db
 import traceback
 import sys
-#if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
 
-#Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT="true"
 
-#Mention the units of your metrics in this python dictionary. If any new metrics are added make an entry here for its unit.
-#Attribute units
 METRICS_UNITS={'no_of_bufferpools':'count',
                'total_logical_reads':'count',
                'total_physical_reads':'count',
@@ -38,7 +23,9 @@ METRICS_UNITS={'no_of_bufferpools':'count',
                'xda_hit_ratio_percent':'%',
                'log_utilization_percent':'%',
                'total_log_used_kb':'KB',
-               'total_log_available_kb':'KB'}
+               'total_log_available_kb':'KB',
+               'lock_timeouts':'ms',
+               'lock_wait_time':'ms'}
 
 class DB2(object):
     
@@ -60,7 +47,6 @@ class DB2(object):
             return False
         return True
 
-    #execute a query and returns a dictionary
     def executeQuery(self, con, query):
         try:
             stmt = ibm_db.exec_immediate(con, query)
@@ -140,8 +126,19 @@ class DB2(object):
             data['total_log_used_kb']=int(logutilization_metrics['TOTAL_LOG_USED_KB'])    #Total log space used
 
         if not (logutilization_metrics['TOTAL_LOG_AVAILABLE_KB'] is None):
-            data['total_log_available_kb']=int(logutilization_metrics['TOTAL_LOG_AVAILABLE_KB'])     #Total log space available
+            data['total_log_available_kb']=int(logutilization_metrics['TOTAL_LOG_AVAILABLE_KB'])   
 
+
+        database_metric_list=['appls_cur_cons', 'appls_in_db2', 'connections_top','db_status', 'deadlocks', 'last_backup', 'lock_list_in_use', 'lock_timeouts', 'lock_wait_time', 'lock_waits', 'num_locks_held', 'num_locks_waiting', 'rows_modified', 'rows_read', 'rows_returned', 'total_cons']
+        database_metric_query=f'SELECT {", ".join(database_metric_list)} FROM TABLE(MON_GET_DATABASE(-1))'
+        database_metrics=self.executeQuery(self.connection,database_metric_query)
+
+        for metric in database_metric_list:
+            if metric in database_metrics:
+                data[metric]=database_metrics[metric]
+            else:
+                data[metric]=0
+        
         data['units']=METRICS_UNITS
         return data
 
@@ -151,9 +148,9 @@ if __name__ == "__main__":
     parser=argparse.ArgumentParser()
     parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
     parser.add_argument('--port',help="Port",nargs='?', default= "50000")
-    parser.add_argument('--username',help="username", default= "db2")
-    parser.add_argument('--password',help="Password", default= "db2")
-    parser.add_argument('--sample_db' ,help="Sample db",nargs='?', default= "SAMPLE")
+    parser.add_argument('--username',help="username", default= "db2inst1")
+    parser.add_argument('--password',help="Password", default= "db2inst1")
+    parser.add_argument('--sample_db' ,help="Sample db",nargs='?', default= "Sample")
     args=parser.parse_args()
     	
     db2_plugins = DB2(args)
@@ -161,5 +158,4 @@ if __name__ == "__main__":
     result = db2_plugins.metricCollector()
 
     print(json.dumps(result, indent=4, sort_keys=True))
-    
-
+   
