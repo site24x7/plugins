@@ -1,0 +1,20 @@
+#!/bin/bash
+set echo off
+
+PLUGIN_VERSION="1"
+HEARTBEAT_REQUIRED="true"
+
+HOST=""
+USERNAME=""
+PASSWORD=""
+JAVA_HOME="/usr/bin"
+
+PLUGIN_FOLDER_NAME="as400"
+
+PLUGIN_PATH="/opt/site24x7/monagent/plugins/"$PLUGIN_FOLDER_NAME
+export CLASS_PATH=$PLUGIN_PATH/json-20140107.jar:$PLUGIN_PATH/jt400.jar
+
+$JAVA_HOME/javac -cp $CLASS_PATH -d $PLUGIN_PATH $PLUGIN_PATH"/As400DataCollector.java"
+data=$($JAVA_HOME/java -cp $CLASS_PATH:$PLUGIN_PATH "As400DataCollector" $PLUGIN_VERSION $HEARTBEAT_REQUIRED $HOST $USERNAME $PASSWORD)
+
+echo "$data"
