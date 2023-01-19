@@ -17,7 +17,7 @@ import json
 
 ################### CONFIG SECTION START #######################
 
-SERVER_URL = "unix:///var/run//supervisor.sock"		# Give full unix socket path or http server path. eg: http://localhost:9001 or unix:///var/run//supervisor.sock
+SERVER_URL = "unix:///var/run/supervisor.sock"		# Give full unix socket path or http server path. eg: http://localhost:9001 or unix:///var/run//supervisor.sock
 USER_NAME = None					#If authorization required for accessing the supervisord server, provide username and password.
 PASSWORD = None
 MONITOR_PROCESS_NAMES = []				#Only provided process names will be monitored, if empty all process will be monitored
