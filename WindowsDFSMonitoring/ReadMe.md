@@ -1,6 +1,6 @@
 Windows DFS monitoring:
 
-What is  Distributed File System
+What is  Distributed File System:
 
 The Distributed File System (DFS) functions provide the ability to logically group shares on multiple servers and to transparently link shares into a single hierarchical namespace. DFS organizes shared resources on a network in a treelike structure.It is a file system that is distributed on multiple file servers or multiple locations. It allows programs to access or store isolated files as they do with the local ones, allowing programmers to access files from any network or computer. 
 
