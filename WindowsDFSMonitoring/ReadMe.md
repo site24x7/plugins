@@ -18,7 +18,7 @@ Download all the files and edit the cfg file run using this command on the comma
 Once it opens the following contents will be shown 
 
           [DFS_Namespace]
-          path=\\windowsserver20\public-1\*
+          path=<Path to the DFS Namespace>\*
 
 
 [DFS_Namespace] is the name of the monitor , you can change the name of the monitor by entering the name inside the [].
