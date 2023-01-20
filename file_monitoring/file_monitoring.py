@@ -35,7 +35,7 @@ hash_type="md5"
 search_text=""
 case_sensitive="False"
 
-metric_units={"file_size":"kb","time_since_last_accessed":"hours","time_since_last_modified":"hours"}
+metric_units={"file_size":"bytes","time_since_last_accessed":"hours","time_since_last_modified":"hours"}
 
 hash_storage_path = "./hash_value_storage_unit.json"
 
