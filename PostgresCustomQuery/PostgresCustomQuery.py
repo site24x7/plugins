@@ -19,7 +19,6 @@ class appname:
         self.password=args.password
         self.hostname=args.hostname
         self.port=args.port
-        self.display_name=args.display_name
         self.query=args.query
         
     def metriccollector(self):
@@ -43,7 +42,14 @@ class appname:
 
             try:
                 cursor.execute(self.query)
-                self.maindata[self.display_name]=str(cursor.fetchone()[0])
+                colnames = [desc[0] for desc in cursor.description]
+                
+                tot=len(colnames)
+                data=cursor.fetchone()
+                for i in range(tot):
+                    self.maindata[colnames[i]]=str(data[i])
+                    
+
 
             except Exception as e:
                 self.maindata['msg']=str(e)
@@ -60,13 +66,11 @@ class appname:
 if __name__=="__main__":
 
     DB = 'postgres'                 
-    USERNAME = None           
-    PASSWORD = None
+    USERNAME = 'suraj'       
+    PASSWORD = 'suraj'
     HOSTNAME = 'localhost'            
     PORT = 5432 
-    DISPLAY_NAME='active-query-duration'
-    QUERY="SELECT COALESCE( (SELECT EXTRACT(EPOCH FROM NOW()) - EXTRACT(EPOCH FROM query_start) AS duration FROM pg_stat_activity WHERE state = 'active' AND pid != pg_backend_pid() AND usename != 'repmgr' ORDER BY duration DESC nulls last LIMIT 1), 0);"
-    
+    QUERY="SELECT buffers_checkpoint, buffers_backend, maxwritten_clean, checkpoints_req, checkpoints_timed, buffers_alloc FROM pg_stat_bgwriter;"
 
     import argparse
     parser=argparse.ArgumentParser()
@@ -75,7 +79,6 @@ if __name__=="__main__":
     parser.add_argument('--password', help='password of db',default=PASSWORD)
     parser.add_argument('--hostname', help='name of hostname',default=HOSTNAME)
     parser.add_argument('--port', help='port of postgres',default=PORT)
-    parser.add_argument('--display_name',help='display name of the metric', default=DISPLAY_NAME)
     parser.add_argument('--query',help='query of the metric', default=QUERY)
     args=parser.parse_args()
     obj=appname(args)
