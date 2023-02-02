@@ -277,7 +277,7 @@ class MySQL(object):
                     cursor = con.cursor()
                     cursor.execute(VERSION_QUERY)
                     result = cursor.fetchone()
-                    data['version'] = result[0]
+                    data['mysql_version'] = result[0]
                 except pymysql.OperationalError as message:
                     traceback.print_exc()
                     return data
