@@ -66,8 +66,8 @@ class appname:
 if __name__=="__main__":
 
     DB = 'postgres'                 
-    USERNAME = 'suraj'       
-    PASSWORD = 'suraj'
+    USERNAME = None       
+    PASSWORD = None
     HOSTNAME = 'localhost'            
     PORT = 5432 
     QUERY="SELECT buffers_checkpoint, buffers_backend, maxwritten_clean, checkpoints_req, checkpoints_timed, buffers_alloc FROM pg_stat_bgwriter;"
