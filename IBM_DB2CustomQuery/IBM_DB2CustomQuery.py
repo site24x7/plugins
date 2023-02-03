@@ -55,7 +55,7 @@ if __name__=="__main__":
     port='25000'
     username='db2inst1'
     password='db2inst1'
-    sample_db='suraj'
+    sample_db='sample'
     query='SELECT * FROM syscat.bufferpools'
     
     import argparse
