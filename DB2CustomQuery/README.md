@@ -60,7 +60,7 @@ Query to be given :
 
 
 Metrics captured :
-<img src="https://i.imgur.com/HivtqWF.png"/>
+<img src="https://i.imgur.com/gQ9nPzS.png"/>
 
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
