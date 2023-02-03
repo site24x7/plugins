@@ -15,14 +15,14 @@
 
 ### Plugin Installation  
 
-- Create a directory named "CustomDB2Query" under the Site24x7 Linux Agent plugin directory: 
+- Create a directory named "DB2CustomQuery" under the Site24x7 Linux Agent plugin directory: 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/CustomDB2Query
+		Linux             ->   /opt/site24x7/monagent/plugins/DB2CustomQuery
       
-- Download all the files in the "CustomDB2Query" folder and place it under the "CustomDB2Query" directory.
+- Download all the files in the "DB2CustomQuery" folder and place it under the "DB2CustomQuery" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/CustomDB2Query/CustomDB2Query.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/CustomDB2Query/CustomDB2Query.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/DB2CustomQuery/DB2CustomQuery.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/DB2CustomQuery/DB2CustomQuery.py
 
 - Execute the following command in your server to install ibm_db: 
   ```
@@ -30,7 +30,7 @@
   ```
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
- python3 CustomDB2Query.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name> --query <db2 query>
+ python3 DB2CustomQuery.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name> --query <db2 query>
  ```
 
 
@@ -39,7 +39,8 @@
 
 ### Configurations
 
-- Provide your IBM MQ configurations in IBM_DB2_Core.cfg file.
+- Provide your IBM MQ configurations in DB2CustomQuery.cfg file.
+
 ```
   [ibm_db_2]
   host 		= "<hostname>"
@@ -49,6 +50,7 @@
   sample_db	= "<sample_db>"
   query         = "<DB2 Query>
 ```	
+
 The custom query shall be given in the query section of the config file. The name of the columns of the result will be taken as the metric name and the result will be taken as the metric value.
 
 Example : 
