@@ -54,13 +54,14 @@ The custom query shall be given in the query section of the config file. The nam
 Example : 
 
 Query to be given :
-<img src="https://imgur.com/Owb9px6"/>
+<img src="https://i.imgur.com/petJTnD.png"/>
 
 
 Metrics captured :
-<img src="https://imgur.com/bD7aE9n"/>
+<img src="https://i.imgur.com/HivtqWF.png"/>
 
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
 
 
