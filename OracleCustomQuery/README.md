@@ -1,4 +1,4 @@
-# Custom Oracle DB Monitoring
+# Oracle DB Custom Query monitoring
 
                                                                                        
 ## Prerequisites
