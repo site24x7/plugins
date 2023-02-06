@@ -39,7 +39,7 @@
 
 ### Configurations
 
-- Provide your IBM MQ configurations in IBM_DB2CustomQuery.cfg file.
+- Provide your IBM DB2 configurations in IBM_DB2CustomQuery.cfg file.
 
 ```
   [ibm_db_2]
