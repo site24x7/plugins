@@ -30,7 +30,7 @@
   ```
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
- python3 PostgresCustomQuery.py --db_name <db_name> --port <port no> --username <username> --password <password> --query <db2 query>
+ python3 PostgresCustomQuery.py --db_name <db_name> --port <port no> --username <username> --password <password> --query < query>
  ```
 
 
