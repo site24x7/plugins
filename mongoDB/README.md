@@ -1,4 +1,4 @@
-# Mongodb Monitoring
+# MongoDB Monitoring
                                                                                               
 ## Prerequisites
 
@@ -9,12 +9,12 @@
 
 - Create a directory named "mongod" under the Site24x7 Linux Agent plugin directory: 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/mongod
+		Linux             ->   /opt/site24x7/monagent/plugins/mongoDB
       
 - Download all the files in the "mongod" folder and place it under the "mongod" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongod/mongod.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongod/mongod.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.cfg
 
  - Execute the following command in your server to install pymongo: 
 
