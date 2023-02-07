@@ -11,7 +11,7 @@
 
 		Linux             ->   /opt/site24x7/monagent/plugins/mongoDB
       
-- Download all the files in the "mongod" folder and place it under the "mongod" directory.
+- Download all the files in the "mongoDB" folder and place it under the "mongoDB" directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.cfg
