@@ -30,7 +30,7 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python mongod.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbstats=<dbstats> --replset=<replset> --dbname=<dbname> --authdb=<authdb>
+		python mongoDB.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbstats=<dbstats> --replset=<replset> --dbname=<dbname> --authdb=<authdb>
 
 
 ---
