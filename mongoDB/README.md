@@ -13,6 +13,8 @@
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.cfg
+		
+### Prerequisites
 
  - Execute the following command in your server to install pymongo: 
 
