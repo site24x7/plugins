@@ -25,11 +25,13 @@ This plugin monitors the performance metrics of CIFS mount point status, IP addr
 - Configure the mount point to be monitored in the cifs.cfg file, as mentioned below.
 
 	  [display_name]
-	  mount_folder = “<your_mount_folder_path>”
+	  mount_folder = “<your_mount_folder_path>,<your_mount_folder_path1>”
+	  
+- Enter the Folder paths inside the " " separated by commas ','.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python cifs.py --mount_folder=<your_mount_folder_path>
+		python cifs.py --mount_folder=<your_mount_folder_path>,<your_mount_folder_path1>
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
@@ -37,16 +39,16 @@ The agent will automatically execute the plugin within five minutes and send per
 
 ### Metrics Captured
 ---
-	mount_permission -> Mount permmision for the client to the mount point 
+	Folder 1,2,etc,. Mount Permission -> Mount permmision for the client to the mount point 
 
-	mount_point -> Mount point path on the client, which is connected to the CIFS Server.
+	Folder 1,2,etc,. Mount Point -> Mount point path on the client, which is connected to the CIFS Server.
 
-	server_ip_address -> IP Address of the server connected with the CIFS Client
+	Folder 1,2,etc,. Server IP Address -> IP Address of the server connected with the CIFS Client
 
-	shared_directory -> The path to the directory which is shared by the CIFS Server
+	Folder 1,2,etc,. Shared Directory -> The path to the directory which is shared by the CIFS Server
 
-	disk_usage -> Percentage of the space used on the CIFS Server
+	<Folder Name> Disk Usage -> Percentage of the space used on the CIFS Server
 
-	cifs_version -> Version of the CIFS installed in the Client
+	Cifs Version -> Version of the CIFS installed in the Client
 
-	domain -> Domain name of the CIFS Server
+	Folder 1,2,etc,. Status -> Domain name of the CIFS Server

@@ -1,0 +1,58 @@
+# MySQL CUSTOM QUERY EXECUTION
+
+=================================================================
+
+### MySQL Custom Query Monitoring
+
+- This plugin is used to monitor your custom queries present in your MySQL databases.. We will execute the query and display the result with column name as Metric and and column value as Metric value. However, we will monitor only the first row of the given MySQL table.
+
+### Prerequisites
+
+- Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+
+- Intsall Pymysql module with following command
+
+		pip install PyMySQL
+- Pymysql(v1.0.3) works only for python with version>=3.7 	
+
+- Select on queries permission is required to execute the queries mentioned above.
+		GRANT SELECT ON mysql.* TO "username"@"hostname" IDENTIFIED BY "password";
+		FLUSH PRIVILEGES;
+
+---
+
+### Plugin Installation 
+
+- Create a directory "mysql_custom_query" under Site24x7 Linux Agent plugin directory : 
+
+		Linux             ->   /opt/site24x7/monagent/plugins/mysql_custom_query
+- Download all the files in "mysql_custom_query" folder and place it under the "mysql_custom_query" directory
+
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_query/mysql_custom_query.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_query/mysql_custom_query.cfg
+
+- Configurations
+  Update the below configurations in mysql_custom_query.cfg file:
+
+
+		[mysql_custom_query]
+		host = localhost
+		port = 3306
+		username = "root"
+		password = 
+		db = sys
+		query = "select * from metrics LIMIT 1"
+		
+- This plugin will monitor only the first row of the result of the query.So, use LIMIT clause in the query as below to return only one row from the result.
+
+		query = "select * from metrics LIMIT 1"
+
+- Execute the below command with appropriate arguments to check for the valid json output.  
+
+		python mysql_custom_query.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --db=<db> --query=<custom_query>
+
+
+The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
+---
+

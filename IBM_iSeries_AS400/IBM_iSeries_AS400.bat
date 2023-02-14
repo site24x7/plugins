@@ -7,7 +7,7 @@ set USERNAME=""
 set PASSWORD=""
 set JAVA_HOME="C:\Program Files\Java\jdk1.8.0_241\bin"
 
-set PLUGIN_FOLDER_NAME="as400"
+set PLUGIN_FOLDER_NAME="IBM_iSeries_AS400"
 
 set PLUGIN_PATH=C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\%PLUGIN_FOLDER_NAME%
 
