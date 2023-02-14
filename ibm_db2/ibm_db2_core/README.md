@@ -1,4 +1,4 @@
-# IBM DB2 Tablespace Monitoring
+# IBM DB2 Monitoring
 
                                                                                        
 ## Prerequisites
@@ -15,14 +15,14 @@
 
 ### Plugin Installation  
 
-- Create a directory named "ibm_db2_tablespace" under the Site24x7 Linux Agent plugin directory: 
+- Create a directory named "ibm_db2_core" under the Site24x7 Linux Agent plugin directory: 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/ibm_db2_tablespace
+		Linux             ->   /opt/site24x7/monagent/plugins/ibm_db2_core
       
-- Download all the files in the "ibm_db2_tablespace" folder and place it under the "ibm_db2_tablespace" directory.
+- Download all the files in the "ibm_db2_core" folder and place it under the "ibm_db2_core" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_db2/ibm_db2_tablespace/ibm_db2_tablespace.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_db2/ibm_db2_tablespace/ibm_db2_tablespace.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_db2/ibm_db2_core/ibm_db2_core.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_db2/ibm_db2_core/ibm_db2_core.cfg
 
 - Execute the following command in your server to install ibm_db: 
   ```
@@ -30,7 +30,7 @@
   ```
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
- python3 ibm_db2_tablespace.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name> --tbsp_name <tablespace name>
+ python3 ibm_db2_core.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name>
  ```
 Since it's a python plugin, to run in windows server please follow the steps in below link, remaining configuration steps are exactly the same. 
 
@@ -42,7 +42,7 @@ Since it's a python plugin, to run in windows server please follow the steps in 
 
 ### Configurations
 
-- Provide your IBM DB2 configurations in ibm_db2_tablespace.cfg file.
+- Provide your IBM MQ configurations in ibm_db2_core.cfg file.
 ```
   [ibm_db_2]
   host 		= "<hostname>"
@@ -50,7 +50,6 @@ Since it's a python plugin, to run in windows server please follow the steps in 
   username	= "<username>"
   password 	= "<password>"
   sample_db	= "<sample_db>"
-  tbsp_name ="<tablespace name>
 ```	
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
@@ -58,26 +57,127 @@ The agent will automatically execute the plugin within five minutes and send per
 ## Supported Metrics
 The following metrics are captured :
 
-- **tbsp_name**
+- **no_of_bufferpools**
     
-    Name of the tablespace
+    Total number of bufferpools
 
-- **tbsp_page_size**
+- **total_logical_reads**
 
-    Tablespace page size
+    Total number of logical reads
 
-- **tbsp_state**
+- **total_physical_reads**
 
-    State of the tablespace 
+    Total number of physical reads
 
-- **tbsp_total_pages**
-    
-    Total pages of the tablespace
+- **total_hit_ratio_percent**
 
-- **tbsp_usable_pages**
+    Percentage of total hit ratio
 
-    Number of pages unusable in tablespace
+- **data_logical_reads**
 
-- **tbsp_used_pages**
+    Number of pages read from data cache
 
-    Number of pages used in tablespace
+- **data_physical_reads**
+
+    Number of pages read from disk
+
+- **data_hit_ratio_percent**
+
+    Data hit ratio, that is, the percentage of time that the database manager did not need to load a page from disk to service a data page request.
+
+
+- **index_logical_reads**
+
+    Indicates the number of index pages which have been requested from the buffer pool (logical) for regular and large table spaces.
+
+
+- **index_hit_ratio_percent**
+
+     The percentage of the index reads that did not require physical disk access
+
+
+- **xda_logical_reads**
+
+    Number of data pages for XML storage objects (XDAs) which have been requested from the buffer pool (logical) for regular and large table spaces
+
+- **xda_hit_ratio_percent**
+
+    Auxiliary storage objects hit ratio.
+
+
+- **log_utilization_percent**
+
+    Percent utilization of total log space.
+
+
+- **total_log_used_kb**
+
+    Utilization of total log space in KB
+
+
+- **total_log_available_kb**
+
+    Total log avilable in KB
+
+
+- **appls_cur_cons**
+
+    Indicates the number of applications that are currently connected to the database.
+
+- **appls_in_db2**
+
+    Number of applications that are currently connected to the database, and for which the database manager is currently processing a request
+
+- **connections_top**
+
+    The highest number of simultaneous connections to the database since the database was activated.
+
+- **db_status**
+
+    The current status of the database.
+
+- **deadlocks**
+
+    Total number of deadlocks
+
+- **lock_list_in_use**
+
+    Number of pages currently in use by the lock list
+
+- **lock_timeouts**
+
+    The number of times that a request to lock an object timed out instead of being granted. 
+
+- **lock_wait_time**
+
+    The total elapsed time spent waiting for locks. 
+
+- **lock_waits**
+
+    Total number of lock waits
+
+- **num_locks_held**
+
+    Total number of locks held
+
+- **num_locks_waiting** 
+
+    Number of agents waiting on a lock
+
+- **rows_modified**
+
+    Total number of rows modified
+
+
+- **rows_read**
+
+    Total number of rows read
+
+
+- **rows_returned**
+
+    Total number of rows returned
+
+- **total_cons**
+
+    Total number of connections attempted from the DB2 Connect
