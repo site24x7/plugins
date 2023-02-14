@@ -15,14 +15,14 @@
 
 ### Plugin Installation  
 
-- Create a directory named "AerospikeNamespaceMonitoring" under the Site24x7 Linux Agent plugin directory: 
+- Create a directory named "aerospike_namespace_monitoring" under the Site24x7 Linux Agent plugin directory: 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/AerospikeNamespaceMonitoring
+		Linux             ->   /opt/site24x7/monagent/plugins/aerospike_namespace_monitoring
       
-- Download all the files in the "AerospikeNamespaceMonitoring" folder and place it under the "AerospikeNamespaceMonitoring" directory.
+- Download all the files in the "aerospike_namespace_monitoring" folder and place it under the "aerospike_namespace_monitoring" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/AerospikeMonitoring/AerospikeNamespaceMonitoring/AerospikeNamespaceMonitoring.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/AerospikeMonitoring/AerospikeNamespaceMonitoring/AerospikeNamespaceMonitoring.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/aerospike_monitoring/aerospike_namespace_monitoring/aerospike_namespace_monitoring.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/aerospike_monitoring/aerospike_namespace_monitoring/aerospike_namespace_monitoring.cfg
 
 - Execute the following command in your server to install aerospike: 
 
@@ -30,7 +30,7 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
- python3 AerospikeNamespaceMonitoring.py --hostname=<name of the host> --port=<port> --tls_enable=<true/false> --tls_name=<tls name> --cafile=<cafile path>  --username=<username> --password=<password>  --node_id=<node id> --namespace=<namespace>
+ python3 aerospike_namespace_monitoring.py --hostname=<name of the host> --port=<port> --tls_enable=<true/false> --tls_name=<tls name> --cafile=<cafile path>  --username=<username> --password=<password>  --node_id=<node id> --namespace=<namespace>
  ```
 
 
@@ -40,7 +40,7 @@
 
 ### Configurations
 
-- Provide your AerospikeNamespaceMonitoring configurations in AerospikeNamespaceMonitoring.cfg file.
+- Provide your aerospike_namespace_monitoring configurations in aerospike_namespace_monitoring.cfg file.
 ```
     [Aerospike Namespace Monitoring]
     hostname=<HOSTNAME>
@@ -57,12 +57,10 @@
     log_file_path=<LOG FILE PATH>
 ```	
 
-**If TLS is configured in Aerospike then the tls_enable parameter should be set to 'true' and the cafile path, tls_name should be entered.**
-
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ## Supported Metrics
-The following metrics are captured in the AerospikeNamespaceMonitoring Plugin
+The following metrics are captured in the aerospike_namespace_monitoring Plugin
 
 - **Dead Partitions**
 

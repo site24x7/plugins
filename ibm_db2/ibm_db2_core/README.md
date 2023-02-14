@@ -15,14 +15,14 @@
 
 ### Plugin Installation  
 
-- Create a directory named "IBM_DB2_Core" under the Site24x7 Linux Agent plugin directory: 
+- Create a directory named "ibm_db2_core" under the Site24x7 Linux Agent plugin directory: 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/IBM_DB2_Core
+		Linux             ->   /opt/site24x7/monagent/plugins/ibm_db2_core
       
-- Download all the files in the "IBM_DB2_Core" folder and place it under the "IBM_DB2_Core" directory.
+- Download all the files in the "ibm_db2_core" folder and place it under the "ibm_db2_core" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_DB2/IBM_DB2_Core/IBM_DB2_Core.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_DB2/IBM_DB2_Core/IBM_DB2_Core.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_db2/ibm_db2_core/ibm_db2_core.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_db2/ibm_db2_core/ibm_db2_core.cfg
 
 - Execute the following command in your server to install ibm_db: 
   ```
@@ -30,7 +30,7 @@
   ```
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
- python3 IBM_DB2_Core.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name>
+ python3 ibm_db2_core.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name>
  ```
 Since it's a python plugin, to run in windows server please follow the steps in below link, remaining configuration steps are exactly the same. 
 
@@ -42,7 +42,7 @@ Since it's a python plugin, to run in windows server please follow the steps in 
 
 ### Configurations
 
-- Provide your IBM MQ configurations in IBM_DB2_Core.cfg file.
+- Provide your IBM MQ configurations in ibm_db2_core.cfg file.
 ```
   [ibm_db_2]
   host 		= "<hostname>"

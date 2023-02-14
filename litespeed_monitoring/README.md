@@ -1,9 +1,9 @@
-# Openlitespeed Monitoring
+# Litespeed Monitoring
 
                                                                                               
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 
 ---
@@ -12,20 +12,20 @@
 
 ### Plugin Installation  
 
-- Create a directory named "OpenlitespeedMonitoring" under the Site24x7 Linux Agent plugin directory: 
+- Create a directory named "litespeed_monitoring" under the Site24x7 Linux Agent plugin directory: 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/OpenlitespeedMonitoring
+		Linux             ->   /opt/site24x7/monagent/plugins/litespeed_monitoring
       
-- Download all the files in the "OpenlitespeedMonitoring" folder and place it under the "OpenlitespeedMonitoring" directory.
+- Download all the files in the "litespeed_monitoring" folder and place it under the "litespeed_monitoring" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/OpenlitespeedMonitoring/OpenlitespeedMonitoring.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/OpenlitespeedMonitoring/OpenlitespeedMonitoring.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/litespeed_monitoring/litespeed_monitoring.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/litespeed_monitoring/litespeed_monitoring.cfg
 
 
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
- python3 OpenlitespeedMonitoring.py --metric_path=<swapping directory path> --virtual_host=<virtual host name>
+ python3 litespeed_monitoring.py --metric_path=<swapping directory path> --virtual_host=<virtual host name>
  ```
 
 
@@ -35,7 +35,7 @@
 
 ### Configurations
 
-- Provide your OpenlitespeedMonitoring configurations in OpenlitespeedMonitoring.cfg file.
+- Provide your litespeed_monitoring configurations in litespeed_monitoring.cfg file.
 ```
 [ols_monitoring]
 metric_path='/tmp/lshttpd/'
@@ -49,7 +49,7 @@ log_file_path=None
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ## Supported Metrics
-The following metrics are captured in the OpenlitespeedMonitoring Plugin
+The following metrics are captured in the litespeed_monitoring Plugin
 
 - **Request Processing**
 
@@ -88,6 +88,5 @@ The following metrics are captured in the OpenlitespeedMonitoring Plugin
 - **Total Static Hits**
 
     Total number of static hits
-
 
 

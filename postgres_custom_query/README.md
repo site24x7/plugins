@@ -15,14 +15,14 @@
 
 ### Plugin Installation  
 
-- Create a directory named "PostgresCustomQuery" under the Site24x7 Linux Agent plugin directory: 
+- Create a directory named "postgres_custom_query" under the Site24x7 Linux Agent plugin directory: 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/PostgresCustomQuery
+		Linux             ->   /opt/site24x7/monagent/plugins/postgres_custom_query
       
-- Download all the files in the "PostgresCustomQuery" folder and place it under the "PostgresCustomQuery" directory.
+- Download all the files in the "postgres_custom_query" folder and place it under the "postgres_custom_query" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/PostgresCustomQuery/PostgresCustomQuery.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/PostgresCustomQuery/PostgresCustomQuery.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres_custom_query/postgres_custom_query.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres_custom_query/postgres_custom_query.py
 
 - Execute the following command in your server to install psycopg2: 
   ```
@@ -30,7 +30,7 @@
   ```
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
- python3 PostgresCustomQuery.py --db_name <db_name> --port <port no> --username <username> --password <password> --query < query>
+ python3 postgres_custom_query.py --db_name <db_name> --port <port no> --username <username> --password <password> --query < query>
  ```
 
 
@@ -39,7 +39,7 @@
 
 ### Configurations
 
-- Provide your Postgres DB configurations in PostgresCustomQuery.cfg file.
+- Provide your Postgres DB configurations in postgres_custom_query.cfg file.
 
 ```
     [custom_metric_1]
@@ -62,5 +62,4 @@ Metrics captured :
 <img src="https://i.imgur.com/onxWKO6.png"/>
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
 

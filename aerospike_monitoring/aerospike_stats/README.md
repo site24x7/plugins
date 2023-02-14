@@ -16,14 +16,14 @@
 
 ### Plugin Installation  
 
-- Create a directory named "AerospikeStatsMonitoring" under the Site24x7 Linux Agent plugin directory: 
+- Create a directory named "aerospike_stats_monitoring" under the Site24x7 Linux Agent plugin directory: 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/AerospikeStatsMonitoring
+		Linux             ->   /opt/site24x7/monagent/plugins/aerospike_stats_monitoring
       
-- Download all the files in the "AerospikeStatsMonitoring" folder and place it under the "AerospikeStatsMonitoring" directory.
+- Download all the files in the "aerospike_stats_monitoring" folder and place it under the "aerospike_stats_monitoring" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/AerospikeMonitoring/AerospikeStatsMonitoring/AerospikeStatsMonitoring.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/AerospikeMonitoring/AerospikeStatsMonitoring/AerospikeStatsMonitoring.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/aerospike_monitoring/aerospike_stats_monitoring/aerospike_stats_monitoring.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/aerospike_monitoring/aerospike_stats_monitoring/aerospike_stats_monitoring.cfg
 
 - Execute the following command in your server to install aerospike: 
 
@@ -31,7 +31,7 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
- python3 AerospikeStatsMonitoring.py --hostname=<name of the host> --port=<port> --tls_enable=<true/false> --tls_name=<tls name> --cafile=<cafile path>  --username=<username> --password=<password>  --node_id=<node id>
+ python3 aerospike_stats_monitoring.py --hostname=<name of the host> --port=<port> --tls_enable=<true/false> --tls_name=<tls name> --cafile=<cafile path>  --username=<username> --password=<password>  --node_id=<node id>
  ```
 
 
@@ -41,7 +41,7 @@
 
 ### Configurations
 
-- Provide your AerospikeStatsMonitoring configurations in AerospikeStatsMonitoring.cfg file.
+- Provide your aerospike_stats_monitoring configurations in aerospike_stats_monitoring.cfg file.
 ```
     [Aerospike Stats Monitoring]
     hostname=<HOSTNAME>
@@ -56,12 +56,11 @@
     log_type_name=<LOG TYPE NAME>
     log_file_path=<LOG FILE PATH>
 ```	
-**If TLS is configured in Aerospike then the tls_enable parameter should be set to 'true' and the cafile path, tls_name should be entered.**
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ## Supported Metrics
-The following metrics are captured in the AerospikeStatsMonitoring Plugin
+The following metrics are captured in the aerospike_stats_monitoring Plugin
 
 - **Client Connections**
 
