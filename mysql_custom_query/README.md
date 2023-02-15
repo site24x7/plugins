@@ -1,10 +1,10 @@
-# MySQL CUSTOM QUERY EXECUTION
+# MySQL CUSTOM QUERY MONITORING
 
 =================================================================
 
-### MySQL Custom Query Monitoring
+- This plugin is used to keep an eye on critical MySQL queries that impact the availability and performance of your business application. DBA, DevOps team can add the critical query for monitoring in their Database.. The monitor's dashboard is structured to give you an overview of the important metrics of the monitor.
 
-- This plugin is used to monitor your custom queries present in your MySQL databases.. We will execute the query and display the result with column name as Metric and and column value as Metric value. However, we will monitor only the first row of the given MySQL table.
+  Using this plugin, the DBA, and DevOps teams can get information about the availability and the performance of the given database query.The plugin will execute the given query and display the result as performance data like column name as metric and assign the column value to the metric. However, for each data collection of the plugin, it will accept only the first row of the given MySQL table. Hence we recommend using the LIMIT clause in the query for better performance.
 
 ### Prerequisites
 
@@ -55,4 +55,5 @@
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ---
+
 
