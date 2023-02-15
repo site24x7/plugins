@@ -21,7 +21,7 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
- ```
+ ```bash
  python3 nginx.py --nginx_status_url=<nginx stats url> --username=<nginx username> --password=<nginx password> 
  ```
 
@@ -31,6 +31,27 @@
 ---
 
 ### Configurations
+
+- Adding the nginx_status Location
+To add the nginx_status location, follow these steps:
+
+1. Open the default nginx configuration file (`/etc/nginx/sites-available/default`) in your favorite text editor.
+2. Locate the server block where you want to add the nginx_status location. This is typically in the main http block.
+3. Add the following code inside the server block:
+```
+location /nginx_status {
+    stub_status;
+}
+```
+4. Save and close the nginx configuration file.
+5. Reload nginx to apply the changes :
+```bash
+sudo systemctl reload nginx
+```
+
+To modify location block to your own needs.
+
+Read at : https://ubiq.co/tech-blog/how-to-enable-nginx-status-page/
 
 - Provide your nginx configurations in nginx.cfg file.
 ```
