@@ -7,8 +7,8 @@
 #### Enable nginx_status to get metrics
 
 1. Open terminal and run the following command to open NGINX server configuration file.
-``` 		 $ sudo vi /etc/nginx/nginx.conf
-3. Add the following code inside the server block which is present in the "/etc/nginx/nginx.conf" file.
+		 $ sudo vi /etc/nginx/nginx.conf
+2. Add the following code inside the server block which is present in the "/etc/nginx/nginx.conf" file.
 ```
 location /nginx_status {
     stub_status;
