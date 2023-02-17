@@ -8,7 +8,7 @@
 
 1. Open terminal and run the following command to open NGINX server configuration file.
 		 ``` 
-		 sudo vi /etc/nginx/nginx.conf 
+		 $sudo vi /etc/nginx/nginx.conf 
 		 ```
 2. Add the following code inside the server block which is present in the "/etc/nginx/nginx.conf" file.
 ```
@@ -22,10 +22,10 @@ location /nginx_status {
 ```bash
 sudo systemctl reload nginx
 ```
----
 
-### Plugin Installation  
----
+
+## Plugin Installation  
+
 - Once installed the respective agent in the server, create a directory named "nginx".
       
 - Download all the files in the "nginx" folder and place it under the "nginx" directory.
