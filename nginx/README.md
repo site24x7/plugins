@@ -4,7 +4,7 @@
 
 - Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
-#### Enable nginx_status to get metrics
+#### Enable nginx_status to get metrics -
 
 1. Open terminal and run the following command to open NGINX server configuration file.
 		 ``` 
@@ -39,7 +39,7 @@ sudo systemctl reload nginx
  python3 nginx.py --nginx_status_url=<nginx stats url> --username=<nginx username> --password=<nginx password> 
  ```
 
-- Once above command execution given valid json, then provide the command argument as configurations in nginx.cfg file.
+- Once the above command execution given the valid json, further provide the command argument as configurations in nginx.cfg file.
 ```
   [nginx]
   plugin_version=1
@@ -52,7 +52,7 @@ sudo systemctl reload nginx
   log_type_name = "Nginx Logs"
   log_file_path = "/var/log/nginx/access*"
 ```	
-- Once configuration done, move the "nginx" directory under the Site24x7 Linux Agent plugin directory: 
+- Once the configuration done, move the "nginx" directory under the Site24x7 Linux Agent plugin directory: 
 
 		``` Linux             ->   /opt/site24x7/monagent/plugins/nginx ```
 
