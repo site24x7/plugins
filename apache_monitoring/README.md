@@ -23,11 +23,11 @@ Download and install the latest version of the [Site24x7 Linux agent] (https://w
 
 - In the file "/etc/httpd/conf/httpd.conf", search for the following line
 
-	``` #LoadModule status_module modules/mod_status.so ```
+	``` 	#LoadModule status_module modules/mod_status.so ```
 
 - Uncomment the above line by removing # at its beginning.
 
-	``` LoadModule status_module modules/mod_status.so ```
+	``` 	LoadModule status_module modules/mod_status.so ```
 
 
 
@@ -63,16 +63,16 @@ The above configuration works for default Apache configuration. If you want to c
 Also, this configuration will not work for Virtual Hosts. If you have configurated Virtual Hosts, then you need to place this location block inside the VirtualHost block, as shown below.
 
 	```
-	     <VirtualHost *:80>
-		   …
-		   <Location /server-status>
-		      SetHandler server-status
-		      Order allow,deny
-		      Deny from all
-		      Allow from example.com
-		   </Location>
-		  …
-	     </VirtualHost>
+		     <VirtualHost *:80>
+			   …
+			   <Location /server-status>
+			      SetHandler server-status
+			      Order allow,deny
+			      Deny from all
+			      Allow from example.com
+			   </Location>
+			  …
+		     </VirtualHost>
 	```
 
 ## Plugin Installation  
@@ -106,7 +106,7 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 
 - Once the configuration done, move the "apache_monitoring" directory under the Site24x7 Linux Agent plugin directory: 
 
-		```  Linux             ->   /opt/site24x7/monagent/plugins/apache_monitoring ```
+		```  	Linux             ->   /opt/site24x7/monagent/plugins/apache_monitoring 		```
 
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
