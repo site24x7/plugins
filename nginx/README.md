@@ -4,10 +4,10 @@
 
 - Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
-### Enable nginx_status to get metrics
+#### Enable nginx_status to get metrics
 
 1. Open terminal and run the following command to open NGINX server configuration file.
-	```$ sudo vi /etc/nginx/nginx.conf
+	``` $ sudo vi /etc/nginx/nginx.conf
 2. Add the following code inside the server block which is present in the "/etc/nginx/nginx.conf" file.
 ```
 location /nginx_status {
