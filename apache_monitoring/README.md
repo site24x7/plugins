@@ -49,12 +49,12 @@ Download and install the latest version of the [Site24x7 Linux agent] (https://w
 
 - Uncomment the location block by removing # in front of its lines, and update the Allow, Order and Deny directives as shown below.
 ```
-<Location /server-status>
-   SetHandler server-status
-   Order allow,deny
-   Deny from all
-   Allow from all
-</Location>
+	<Location /server-status>
+	   SetHandler server-status
+	   Order allow,deny
+	   Deny from all
+	   Allow from all
+	</Location>
 ```
 
 The above configuration works for default Apache configuration. If you want to change the URL at which the dashboard is available, then change /server-status in location tag as per your requirement.
@@ -62,16 +62,18 @@ The above configuration works for default Apache configuration. If you want to c
 
 Also, this configuration will not work for Virtual Hosts. If you have configurated Virtual Hosts, then you need to place this location block inside the VirtualHost block, as shown below.
 
-```<VirtualHost *:80>
-   …
-   <Location /server-status>
-      SetHandler server-status
-      Order allow,deny
-      Deny from all
-      Allow from example.com
-   </Location>
-  …
-</VirtualHost>```
+```
+	<VirtualHost *:80>
+	   …
+	   <Location /server-status>
+	      SetHandler server-status
+	      Order allow,deny
+	      Deny from all
+	      Allow from example.com
+	   </Location>
+	  …
+	</VirtualHost>
+```
 
 ## Plugin Installation  
 
