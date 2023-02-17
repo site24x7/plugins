@@ -15,7 +15,7 @@ Download and install the latest version of the [Site24x7 Linux agent] (https://w
     /etc/apache2/apache2.conf
     /etc/httpd/httpd.conf
     /etc/httpd/conf/httpd.conf
-    ````
+    ```
 
 - Open terminal and run the following command to open Apache configuration file "/etc/httpd/conf/httpd.conf".
 
