@@ -1,6 +1,6 @@
 # Wordpress Plugin Performance Monitor:
 
-This plugin monitors the No of Process,CPU and Memory usage of the wordpress  plugins under '/var/www/html/wp-content/plugins/' folder.
+This plugin monitors the No of Process,CPU and Memory usage of the wordpress plugins running under '/var/www/html/wp-content/plugins/' folder.
 
 ## Wordpress:
 
