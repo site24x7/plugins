@@ -28,7 +28,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/Wordpress_Plugin_
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
-python3 wordpress_mon.py --url="http://<Domain or Website>/wp-json/wp/v2/plugins" --username="<Wordpress UserName>" --app_password="<Application Password>"
+python3 Wordpress_Plugin_Performance.py --url="http://<Domain or Website>/wp-json/wp/v2/plugins" --username="<Wordpress UserName>" --app_password="<Application Password>"
 ```
 ### Configurations
 
