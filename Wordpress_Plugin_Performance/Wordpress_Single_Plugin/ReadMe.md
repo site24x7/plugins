@@ -22,8 +22,8 @@ WordPress is a CMS that enables you to manage your website’s content (CMS for 
       
 - Download all the files in the "Wordpress_Single_Plugin" folder and place it under the "Wordpress_Single_Plugin" directory.
 ```
-wget https://raw.githubusercontent.com/site24x7/plugins/master/Wordpress_Plugin_Performance/Wordpress_Plugin_Performance.cfg
-wget https://raw.githubusercontent.com/site24x7/plugins/master/Wordpress_Plugin_Performance/Wordpress_Plugin_Performance.py
+wget https://raw.githubusercontent.com/site24x7/plugins/master/Wordpress_Plugin_Performance/Wordpress_Single_Plugin/Wordpress_Single_Plugin.cfg
+wget https://raw.githubusercontent.com/site24x7/plugins/master/Wordpress_Plugin_Performance/Wordpress_Single_Plugin/Wordpress_Single_Plugin.py
 ```
 
 - Execute the below command with appropriate arguments to check for the valid json output:
