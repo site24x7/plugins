@@ -1,8 +1,8 @@
-##Wordpress Plugin Performance Monitor:
+# Wordpress Plugin Performance Monitor:
 
 This plugin monitors the No of Process,CPU and Memory usage of the wordpress  plugins under '/var/www/html/wp-content/plugins/' folder.
 
-##Wordpress:
+## Wordpress:
 
 WordPress is a free and open-source content management system written in hypertext preprocessor language and paired with a MySQL or MariaDB database with supported HTTPS. Features include a plugin architecture and a template system, referred to within WordPress as "Themes".
 
