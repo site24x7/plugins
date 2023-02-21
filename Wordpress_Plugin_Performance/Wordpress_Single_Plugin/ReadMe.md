@@ -11,6 +11,8 @@ WordPress is a CMS that enables you to manage your website’s content (CMS for 
 ## Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- If have any wordpress plugin disabling wordpress API just enable the api or enable only this "http://localhost/wp-json/wp/v2/plugins" endpoint if that option is available.
+- Install the agent and the plugin in the server which is running the wordpress.
 
 ### Plugin Installation  
 
@@ -19,6 +21,10 @@ WordPress is a CMS that enables you to manage your website’s content (CMS for 
         Linux             ->   /opt/site24x7/monagent/plugins/Wordpress_Single_Plugin
       
 - Download all the files in the "Wordpress_Single_Plugin" folder and place it under the "Wordpress_Single_Plugin" directory.
+```
+wget https://raw.githubusercontent.com/site24x7/plugins/master/Wordpress_Plugin_Performance/Wordpress_Plugin_Performance.cfg
+wget https://raw.githubusercontent.com/site24x7/plugins/master/Wordpress_Plugin_Performance/Wordpress_Plugin_Performance.py
+```
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
@@ -36,9 +42,15 @@ app_password = "<Application Password>"
 plugin_path = "<Exact Name of Plugin>,<path to the plugin folder>"
 ```
 
-- Make sure that Wordpress username is the administrator or an user with permissions. And enter the application password generated under user->Application password. Do not enter the password of the user.
-
+- Make sure that Wordpress username is the administrator or an user with access to the REST API. And enter the application password generated under user->Application password. Do not enter the password of the user.
 - Specify the correct name of the plugin and the folder path separtated by commas. If you dont know the path to the folder go under '/var/www/html/wp-content/plugins/', you will find the plugin folder. 
+
+#### Generating Application password
+- Go to users->all users and Click on the username which you want to generate the appllication password. 
+- Scroll down to the end and there will be the option to generate application passwords. Provide the application name and click on generate password. 
+- Make sure that the user is an administrator or an user with access to the REST API.
+
+
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
