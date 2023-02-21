@@ -11,8 +11,8 @@ WordPress is a CMS that enables you to manage your website’s content (CMS for 
 ## Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
-- If have any wordpress plugin disabling wordpress API just enable the API or enable only this "http://localhost/wp-json/wp/v2/plugins" endpoint if that option is available.
-- Install the agent and the plugin in the server which is running the wordpress.
+-The plugin is using "http://yourwebsite.com/wp-json/wp/v2/plugins" Wordpress API endpoint to fetch plugins state. Incase if user disabled the Wordpress API, please enable for this end point.
+- Install linux/windows agent in the server where wordpress application is running.
 
 ### Plugin Installation  
 
@@ -39,9 +39,10 @@ url = "http://<Domain or Website>/wp-json/wp/v2/plugins"
 username = "<Wordpress UserName>"
 app_password = "<Application Password>"
 ```
-- The "http://yourwebsite.com/wp-json/wp/v2/plugins" is the REST API endpoint for fetching the status of the wordpress plugins. Provide the equivalent endpoint with 'http or https://localhost or domain name/wp-json/wp/v2/plugins'.
-- Make sure that Wordpress username is the administrator or an user with access to the REST API. And enter the application password generated under user->Application password. Do not enter the password of the user.
+- The "http://yourwebsite.com/wp-json/wp/v2/plugins" is the REST API endpoint for fetching the status of the wordpress plugins. Provide the equivalent endpoint with 'http or https://localhost or domain name/wp-json/wp/v2/plugins'. Provide equivalent URL used for your Wordpress setup.
+- Make sure that Wordpress username is the administrator or an user with access to the REST API. And enter the application password generated in your wordpress site->Admin login->users->all users->Application password. Do not enter the password of the user.
 #### Generating Application password
+- Open your wordpress site and login in wp-admin page.
 - Go to users->all users and Click on the username which you want to generate the appllication password. 
 - Scroll down to the end and there will be the option to generate application passwords. Provide the application name and click on generate password. 
 - Make sure that the user is an administrator or an user with access to the REST API.
