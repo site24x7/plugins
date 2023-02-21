@@ -39,7 +39,7 @@ url = "http://<Domain or Website>/wp-json/wp/v2/plugins"
 username = "<Wordpress UserName>"
 app_password = "<Application Password>"
 ```
-
+- The "http://yourwebsite.com/wp-json/wp/v2/plugins" is the REST API endpoint for fetching the status of the wordpress plugins. Provide the equivalent endpoint with 'http or https://localhost or domain name/wp-json/wp/v2/plugins'.
 - Make sure that Wordpress username is the administrator or an user with access to the REST API. And enter the application password generated under user->Application password. Do not enter the password of the user.
 #### Generating Application password
 - Go to users->all users and Click on the username which you want to generate the appllication password. 
