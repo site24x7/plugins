@@ -29,6 +29,7 @@ def fetchDatafromURL(url,username,app_password):
 	data.update(Plugin_list)
 	
 def metricCollector():
+	
 	output=subprocess.check_output("ls /var/www/html/wp-content/plugins",shell=True).decode()
 	folders=output.split("\n")
 	folders.remove("hello.php")
