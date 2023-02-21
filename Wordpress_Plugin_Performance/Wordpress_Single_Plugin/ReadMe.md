@@ -34,6 +34,7 @@ python3 wordpress_mon.py --url="http://<Domain or Website>/wp-json/wp/v2/plugins
 ### Configurations
 
 - Provide your Wordpress_Single_Plugin configurations in Wordpress_Single_Plugin.cfg file.
+
 ```
 [Wordpress Plugin Process]
 url = "http://<Domain or Website>/wp-json/wp/v2/plugins"
@@ -42,10 +43,12 @@ app_password = "<Application Password>"
 plugin_path = "<Exact Name of Plugin>,<path to the plugin folder>"
 ```
 
+- The "http://yourwebsite.com/wp-json/wp/v2/plugins" is the REST API endpoint for fetching the status of the wordpress plugins. Provide the equivalent endpoint with 'http or https://localhost or domain name/wp-json/wp/v2/plugins'.
 - Make sure that Wordpress username is the administrator or an user with access to the REST API. And enter the application password generated under user->Application password. Do not enter the password of the user.
 - Specify the correct name of the plugin and the folder path separtated by commas. If you dont know the path to the folder go under '/var/www/html/wp-content/plugins/', you will find the plugin folder. 
 
 #### Generating Application password
+
 - Go to users->all users and Click on the username which you want to generate the appllication password. 
 - Scroll down to the end and there will be the option to generate application passwords. Provide the application name and click on generate password. 
 - Make sure that the user is an administrator or an user with access to the REST API.
