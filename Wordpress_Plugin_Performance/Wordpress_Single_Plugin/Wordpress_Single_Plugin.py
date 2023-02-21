@@ -8,7 +8,7 @@ data={}
 cores=multiprocessing.cpu_count()
 
 
-def datacollector(url,username,app_password,plugin_name):
+def fetchDatafromURL(url,username,app_password,plugin_name):
 
 	response = requests.get(url, auth=(username,app_password))
 	rtext=response.text
@@ -26,6 +26,7 @@ def datacollector(url,username,app_password,plugin_name):
 	   
 	
 def metricCollector(plugin_folder):
+	
 	try:
 	     output = subprocess.check_output("sudo lsof +D "+plugin_folder[1]+" 2> /dev/null | awk {'print$2'}", shell=True)
 	     out=output.decode()
@@ -71,7 +72,7 @@ if __name__ == "__main__":
   args=parser.parse_args()
   plugin=args.plugin_path.split(",")
   if os.path.isdir(plugin[1]):
-  	datacollector(args.url,args.username,args.app_password,plugin[0])
+  	fetchDatafromURL(args.url,args.username,args.app_password,plugin[0])
   	metricCollector(plugin)
   else:
   	data['status']=0
