@@ -43,7 +43,7 @@ The following metrics are captured in the Wordpress_Plugin_Performance Plugin
  
 ```
 1) <Plugin Name> - Status of the plugin (Active or Inactive)
-2)<Plugin Folder Name> CPU Usage - The Total CPU Usage of all the process running inside the plugin folder.
-3)<Plugin Folder Name> Memory Usage - The Total Memory Usage of all the process running inside the plugin folder.
-3)<Plugin Folder Name> Process Count - The Total No of the process running inside the plugin folder.
+2) <Plugin Folder Name> CPU Usage - The Total CPU Usage of all the process running inside the plugin folder.
+3) <Plugin Folder Name> Memory Usage - The Total Memory Usage of all the process running inside the plugin folder.
+4) <Plugin Folder Name> Process Count - The Total No of the process running inside the plugin folder.
 ```
