@@ -11,7 +11,7 @@ WordPress is a CMS that enables you to manage your website’s content (CMS for 
 ## Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
-- If have any wordpress plugin disabling wordpress API just enable the api or enable only this "http://localhost/wp-json/wp/v2/plugins" endpoint if that option is available.
+- If have any wordpress plugin disabling wordpress API just enable the API or enable only this "http://localhost/wp-json/wp/v2/plugins" endpoint if that option is available.
 - Install the agent and the plugin in the server which is running the wordpress.
 
 ### Plugin Installation  
