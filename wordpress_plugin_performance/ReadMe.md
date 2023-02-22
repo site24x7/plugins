@@ -16,23 +16,23 @@ WordPress is a CMS that enables you to manage your website’s content (CMS for 
 
 ### Plugin Installation  
 
-- Create a directory named "Wordpress_Plugin_Performance" under the Site24x7 Linux Agent plugin directory: 
+- Create a directory named "wordpress_plugin_performance" under the Site24x7 Linux Agent plugin directory: 
 
-        Linux             ->   /opt/site24x7/monagent/plugins/Wordpress_Plugin_Performance
+        Linux             ->   /opt/site24x7/monagent/plugins/wordpress_plugin_performance
       
-- Download all the files in the "Wordpress_Plugin_Performance" folder and place it under the "Wordpress_Plugin_Performance" directory.
+- Download all the files in the "wordpress_plugin_performance" folder and place it under the "wordpress_plugin_performance" directory.
 ```
-wget https://raw.githubusercontent.com/site24x7/plugins/master/Wordpress_Plugin_Performance/Wordpress_Plugin_Performance.cfg
-wget https://raw.githubusercontent.com/site24x7/plugins/master/Wordpress_Plugin_Performance/Wordpress_Plugin_Performance.py
+wget https://raw.githubusercontent.com/site24x7/plugins/master/wordpress_plugin_performance/wordpress_plugin_performance.cfg
+wget https://raw.githubusercontent.com/site24x7/plugins/master/wordpress_plugin_performance/wordpress_plugin_performance.py
 ```
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
-python3 Wordpress_Plugin_Performance.py --url="http://<Domain or Website>/wp-json/wp/v2/plugins" --username="<Wordpress UserName>" --app_password="<Application Password>"
+python3 wordpress_plugin_performance.py --url="http://<Domain or Website>/wp-json/wp/v2/plugins" --username="<Wordpress UserName>" --app_password="<Application Password>"
 ```
 ### Configurations
 
-- Provide your Wordpress_Plugin_Performance configurations in Wordpress_Plugin_Performance.cfg file.
+- Provide your wordpress_plugin_performance configurations in wordpress_plugin_performance.cfg file.
 ```
 [Wordpress Plugin Process]
 url = "http://<Domain or Website>/wp-json/wp/v2/plugins"
@@ -50,7 +50,7 @@ app_password = "<Application Password>"
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ## Supported Metrics
-The following metrics are captured in the Wordpress_Plugin_Performance Plugin
+The following metrics are captured in the wordpress_plugin_performance Plugin
  
 ```
 1) <Plugin Name> - Status of the plugin (Active or Inactive)
