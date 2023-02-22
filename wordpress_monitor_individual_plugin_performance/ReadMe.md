@@ -55,8 +55,8 @@ The following metrics are captured in the wordpress_monitor_individual_plugin_pe
  
 ```
 1) <Plugin Name> - Status of the plugin (Active or Inactive)
-2) <Plugin Name>  CPU Usage - The Total CPU Usage of all the process running inside the plugin folder.
-3) <Plugin Name>  Memory Usage - The Total Memory Usage of all the process running inside the plugin folder.
-3) <Plugin Name>  Process Count - The Total No of the process running inside the plugin folder.
+2) <Plugin Name>  CPU Usage - The Total CPU Usage of all the process running inside the specified plugin folder.
+3) <Plugin Name>  Memory Usage - The Total Memory Usage of all the process running inside the specified plugin folder.
+3) <Plugin Name>  Process Count - The Total No of the process running inside the specified plugin folder.
 ```
 
