@@ -11,7 +11,7 @@ cores=multiprocessing.cpu_count()
 dcpu={}
 dmem={}
 
-def datacollector(url,username,app_password):
+def fetchDatafromURL(url,username,app_password):
 
 	response = requests.get(url, auth=(username,app_password))
 	rtext=response.text
@@ -29,6 +29,7 @@ def datacollector(url,username,app_password):
 	data.update(Plugin_list)
 	
 def metricCollector():
+	
 	output=subprocess.check_output("ls /var/www/html/wp-content/plugins",shell=True).decode()
 	folders=output.split("\n")
 	folders.remove("hello.php")
@@ -85,7 +86,7 @@ if __name__ == "__main__":
   parser.add_argument('--username',help="Wordpress Username")
   parser.add_argument('--app_password',help="Application Password for Authentication")
   args=parser.parse_args()
-  datacollector(args.url,args.username,args.app_password)
+  fetchDatafromURL(args.url,args.username,args.app_password)
   metricCollector()
   data.update(dcpu)
   data.update(dmem)

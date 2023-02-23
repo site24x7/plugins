@@ -26,6 +26,7 @@ def datacollector(url,username,app_password,plugin_name):
 	   
 	
 def metricCollector(plugin_folder):
+	
 	try:
 	     output = subprocess.check_output("sudo lsof +D "+plugin_folder[1]+" 2> /dev/null | awk {'print$2'}", shell=True)
 	     out=output.decode()
