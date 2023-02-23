@@ -13,20 +13,24 @@ dmem={}
 
 def fetchDatafromURL(url,username,app_password):
 
-	response = requests.get(url, auth=(username,app_password))
-	rtext=response.text
-	ltext=rtext.split("[{",1)[-1]
-	ltext="[{"+ltext
-	rjson=json.loads(ltext)
-	Plugin_list={}
-	for i in rjson:
-	   Plugin_list[i["name"]]=i["status"]
-	   '''if i["status"] == "active":
-	       Plugin_list[i["name"]+" Status"]=1
-	   else:
-	       Plugin_list[i["name"]+" Status"]=0
-	   '''
-	data.update(Plugin_list)
+	try:
+		response = requests.get(url, auth=(username,app_password))
+		rtext=response.text
+		ltext=rtext.split("[{",1)[-1]
+		ltext="[{"+ltext
+		rjson=json.loads(ltext)
+		Plugin_list={}
+		for i in rjson:
+	   		Plugin_list[i["name"]]=i["status"]
+	   		'''if i["status"] == "active":
+	       			Plugin_list[i["name"]+" Status"]=1
+	   		else:
+	       			Plugin_list[i["name"]+" Status"]=0
+	   		'''
+		data.update(Plugin_list)
+	except Exception as e:
+	   	data['status'] = 0
+	   	data['msg'] = str(response)
 	
 def metricCollector():
 	
