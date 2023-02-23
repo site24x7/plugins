@@ -50,7 +50,7 @@ plugin_path = "<Exact Name of Plugin>,<path to the plugin folder>"
   
   After completing the above configurations copy the "wordpress_monitor_individual_plugin_performance" folder to the Site24x7 Linux Agent plugin directory:
   
-         Linux             ->   /opt/site24x7/monagent/plugins/wordpress_monitor_individual_plugin_performance
+         Linux             ->   /opt/site24x7/monagent/plugins/
          
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
