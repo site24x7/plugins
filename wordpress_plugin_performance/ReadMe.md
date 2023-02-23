@@ -41,11 +41,13 @@ app_password = "<Application Password>"
 ```
 - The "http://yourwebsite.com/wp-json/wp/v2/plugins" is the REST API endpoint for fetching the status of the wordpress plugins. Provide the equivalent endpoint with 'http or https://localhost or domain name/wp-json/wp/v2/plugins'. Provide equivalent URL used for your Wordpress setup.
 - Make sure that Wordpress username is the administrator or an user with access to the REST API. And enter the application password generated in your wordpress site->Admin login->users->all users->Application password. Do not enter the password of the user.
-#### Generating Application password
-- Open your wordpress site and login in wp-admin page.
-- Go to users->all users and Click on the username which you want to generate the appllication password. 
-- Scroll down to the end and there will be the option to generate application passwords. Provide the application name and click on generate password. 
-- Make sure that the user is an administrator or an user with access to the REST API.
+  #### Generating Application password
+  In case if user doesn't have application password, please follow the below steps.
+  
+  - Open your wordpress site and login in wp-admin page.
+  - Go to users->all users and Click on the username which you want to generate the appllication password. 
+  - Scroll down to the end and there will be the option to generate application passwords. Provide the application name and click on generate password. 
+  - Make sure that the user is an administrator or an user with access to the REST API.
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
