@@ -16,9 +16,7 @@ WordPress is a CMS that enables you to manage your website’s content (CMS for 
 
 ### Plugin Installation  
 
-- Create a directory named "wordpress_plugin_performance" under the Site24x7 Linux Agent plugin directory: 
-
-        Linux             ->   /opt/site24x7/monagent/plugins/wordpress_plugin_performance
+- Create a directory named "wordpress_plugin_performance".
       
 - Download all the files in the "wordpress_plugin_performance" folder and place it under the "wordpress_plugin_performance" directory.
 ```
@@ -48,6 +46,10 @@ app_password = "<Application Password>"
   - Go to users->all users and Click on the username which you want to generate the appllication password. 
   - Scroll down to the end and there will be the option to generate application passwords. Provide the application name and click on generate password. 
   - Make sure that the user is an administrator or an user with access to the REST API.
+  
+  After completing the above configurations copy the "wordpress_plugin_performance" folder to the Site24x7 Linux Agent plugin directory:
+  
+         Linux             ->   /opt/site24x7/monagent/plugins/
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
