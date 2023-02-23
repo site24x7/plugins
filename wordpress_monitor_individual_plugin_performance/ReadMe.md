@@ -16,11 +16,9 @@ WordPress is a CMS that enables you to manage your website’s content (CMS for 
 
 ### Plugin Installation  
 
-- Create a directory named "wordpress_monitor_individual_plugin_performance" under the Site24x7 Linux Agent plugin directory: 
-
-        Linux             ->   /opt/site24x7/monagent/plugins/wordpress_monitor_individual_plugin_performance
+- Create a directory named "wordpress_monitor_individual_plugin_performance" .
       
-- Download all the files in the "wordpress_monitor_individual_plugin_performance" folder and place it under the "Wordpress_Single_Plugin" directory.
+- Download all the files in the "wordpress_monitor_individual_plugin_performance" folder and place it under the "wordpress_monitor_individual_plugin_performance" directory.
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
@@ -29,7 +27,7 @@ python3 wordpress_monitor_individual_plugin_performance.py --url="http://<Domain
 ```
 ### Configurations
 
-- Provide your Wordpress_Single_Plugin configurations in wordpress_monitor_individual_plugin_performance.cfg file.
+- Provide your wordpress_monitor_individual_plugin_performance configurations in wordpress_monitor_individual_plugin_performance.cfg file.
 ```
 [Wordpress Plugin Process]
 url = "http://<Domain or Website>/wp-json/wp/v2/plugins"
@@ -42,12 +40,18 @@ plugin_path = "<Exact Name of Plugin>,<path to the plugin folder>"
 
 - Specify the correct name of the plugin and the folder path separtated by commas. If you dont know the path to the folder go under '/var/www/html/wp-content/plugins/', you will find the plugin folder. 
 
-#### Generating Application password
-- Open your wordpress site and login in wp-admin page.
-- Go to users->all users and Click on the username which you want to generate the appllication password. 
-- Scroll down to the end and there will be the option to generate application passwords. Provide the application name and click on generate password. 
-- Make sure that the user is an administrator or an user with access to the REST API.
+  #### Generating Application passwordz
+  In case if user doesn't have application password, please follow the below steps.
   
+  - Open your wordpress site and login in wp-admin page.
+  - Go to users->all users and Click on the username which you want to generate the appllication password. 
+  - Scroll down to the end and there will be the option to generate application passwords. Provide the application name and click on generate password. 
+  - Make sure that the user is an administrator or an user with access to the REST API.
+  
+  After completing the above configurations copy the "wordpress_monitor_individual_plugin_performance" folder to the Site24x7 Linux Agent plugin directory:
+  
+         Linux             ->   /opt/site24x7/monagent/plugins/wordpress_monitor_individual_plugin_performance
+         
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ## Supported Metrics
