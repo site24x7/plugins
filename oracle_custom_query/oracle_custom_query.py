@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 import json
 import os
+import time
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
-METRICS_UNITS={}
+METRICS_UNITS={'execution_time':'ms'}
 
 
 class oracle:
@@ -34,6 +35,7 @@ class oracle:
             return self.maindata
 
         try:
+            start_time=time.time()
 
             try:
                 conn = cx_Oracle.connect(self.username,self.password,self.hostname+':'+str(self.port)+'/'+self.sid)
@@ -52,7 +54,11 @@ class oracle:
                     self.maindata[col_names[i]]=row[i]
                 break
             self.maindata['tags']=f"oracle_hostname:{self.hostname},oracle_sid:{self.sid}"
-            
+            end_time=time.time()
+            total_time=(end_time-start_time) * 1000
+            self.maindata['execution_time']="%.3f" % total_time 
+
+
         except Exception as e:
             self.maindata['msg']=str(e)
             self.maindata['status']=0
@@ -88,4 +94,5 @@ if __name__=="__main__":
 
     result=obj.metriccollector()
     print(json.dumps(result,indent=True))
+
 
