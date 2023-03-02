@@ -10,19 +10,23 @@ cores=multiprocessing.cpu_count()
 
 def datacollector(url,username,app_password,plugin_name):
 
-	response = requests.get(url, auth=(username,app_password))
-	rtext=response.text
-	ltext=rtext.split("[{",1)[-1]
-	ltext="[{"+ltext
-	rjson=json.loads(ltext)
+	try:
+		response = requests.get(url, auth=(username,app_password))
+		rtext=response.text
+		ltext=rtext.split("[{",1)[-1]
+		ltext="[{"+ltext
+		rjson=json.loads(ltext)
 	
-	for i in rjson:
-	   if plugin_name==i["name"]:
-	   	data[i["name"]]=i["status"]
-	   	if i["status"] == "active":
-	       		data[i["name"]+" Status"]=1
-	   	else:
-	       		data[i["name"]+" Status"]=0
+		for i in rjson:
+	   		if plugin_name==i["name"]:
+	   			data[i["name"]]=i["status"]
+	   			if i["status"] == "active":
+	       				data[i["name"]+" Status"]=1
+	   			else:
+	       				data[i["name"]+" Status"]=0
+	except Exception as e:
+		data['status']=0
+		data['msg']=str(response)
 	   
 	
 def metricCollector(plugin_folder):
