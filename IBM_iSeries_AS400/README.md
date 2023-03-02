@@ -2,7 +2,9 @@
 
 ### What is IBM AS/400 ?
 
-IBM AS400 is Most secured, Stable, Reliable  and Scalable Platform Web & Mobile Business Applications.The IBM AS400 uses a technology-independent machine interface (TIMI) and a platform-independent instruction set architecture (ISA) that compiles with machine language instructions. This allows it to use a 64-bit processor without breaking application compatibility.OS/400 has a built-in database that it uses for many of its own storage requirements.AS400 operating system can work effectively for a long time without operational support and a database administrator.Programmers often use the OS/400 to develop highly available and accurate systems that are economical and easy to operate. For example, warehouse management, inventory control, order processing, banking, and insurance applications.
+IBM iSeries is one of the most reliable and secure servers used by multiple enterprises across industries worldwide. The IBM AS400 comes with hardware, software, security, a database, and other components built in. It is robust, adaptable, and can easily incorporate new technologies. 
+ 
+IBM AS400/iSeries is used by enterprises from industries such as banking, insurance, and manufacturing, where the uptime and performance of applications are business-critical. Site24x7's IBM AS400/iSeries plugin integration tracks server availability and performance, helping you to identify and fix issues before they affect end users.
 
 ### Prerequisites
 
