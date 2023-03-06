@@ -1,4 +1,4 @@
-param([string]$count)
+param([string]$threshold)
 $output = @{}
 $heartbeat = "true" 
 $version=9
@@ -41,7 +41,7 @@ $outdata
 
 $output.Add("heartbeat_required", $heartbeat)
 try{
-  $data =Get-Data $count
+  $data =Get-Data $threshold
   $output.Add("data", ($data))
 
   if($global:status -eq 0){
