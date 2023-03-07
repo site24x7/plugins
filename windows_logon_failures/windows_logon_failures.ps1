@@ -26,7 +26,7 @@ foreach($Event in $Events){
     $ClientNameFrom=$Event.ReplacementStrings[13] 
     $ClientIPFrom=$Event.ReplacementStrings[19]
 
-    $msg1="`nLogin failure at $TimeStamp : User '$UserTried' from domain '$DomainNameFrom' attempted to log in from IP address $ClientIPFrom." -replace '[^a-zA-Z0-9.,:\s]' , ""
+    $msg1="`nLogin failure at $TimeStamp : User '$UserTried' from domain '$DomainNameFrom' attempted to log in from IP address $ClientIPFrom failed due to bad password." -replace '[^a-zA-Z0-9.,:/\s]' , ""
     
     $global:msg+=$msg1
 
