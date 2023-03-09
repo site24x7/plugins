@@ -1,12 +1,8 @@
 #!/usr/bin/python
 """
-  
   Site24x7 Redis Plugin
-  
 """
-
 import json,sys
-
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
@@ -15,15 +11,10 @@ PLUGIN_VERSION = "1"
 HEARTBEAT="true"
 
 #Config Section
-REDIS_HOST = "localhost"
-
-REDIS_PORT = "6379"
-
-REDIS_PASSWORD = ""
-
-REDIS_DBS = "0"
-
-REDIS_QUEUES = ""
+host = "localhost"
+port = "6379"
+password = ""
+dbs = "0"
 
 
 ### Uncomment/Comment the Attribute Names to be monitored
@@ -106,13 +97,15 @@ METRICS = {
 METRICS_UNITS={'incoming traffic':'kbps','outgoing traffic':'kbps','used memory':'KB'}
 
 class Redis(object):
-    def __init__(self,config):
-        self.configuration = config
-        self.host = self.configuration.get('host', 'localhost')
-        self.port = int(self.configuration.get('port', '6379'))
-        self.dbs = self.configuration.get('dbs', ['0'])
-        self.password = self.configuration.get('password', '')
-        self.queues = self.configuration.get('queues', '')
+    def __init__(self,args):
+        self.args=args
+        self.host=args.host
+        self.port=args.port
+        self.dbs=args.dbs
+        if args.password:
+            self.password=args.password
+        else:
+            self.password=""
 
     def metricCollector(self):
         data = {}
@@ -121,25 +114,26 @@ class Redis(object):
         try:
             import redis
         except Exception:
-            #print('Python Redis module not installed, please install https://pypi.python.org/pypi/redis/')
             data['status']=0
             data['msg']='Redis Module Not Installed'
             return data
         stats = None
         for db in self.dbs.split(','):
             try:
-                redis_connection = redis.StrictRedis(host=self.host,port=self.port,db=int(db),password=self.password)
+                redis_connection = redis.StrictRedis(
+                    host=self.host,
+                    port=self.port,
+                    db=int(self.dbs),
+                    password=self.password
+                )
                 stats = redis_connection.info()
             except Exception as e:
                 data['status']=0
                 data['msg']=str(e)
         if not stats:
             return data
-        #stats.items() for python version greater than 3 otherwise stats.iteritems()
         total_keys=0
         for name, value in stats.items():
-            if type(value)==dict and 'keys' in value:
-               total_keys+=value['keys']
             try:
                 if name in METRICS.keys() :
                     if METRICS[name] == 'used memory':
@@ -147,23 +141,38 @@ class Redis(object):
                     data[METRICS[name]] = value
             except (ValueError, TypeError) as e:
                 data[name] = value
-            
-        total_key_stats = data['keyspace hits'] + data['keyspace misses']
-        if total_key_stats == 0:
-            data['hit ratio']=0
-        else:
-            data['hit ratio'] = data['keyspace hits'] / total_key_stats
-            data['total_keys']=total_keys
-            data['units']=METRICS_UNITS
+            if type(value)==dict and 'keys' in value:
+               total_keys+=value['keys']
+        try:
+            total_key_stats = data['keyspace hits'] + data['keyspace misses']
+            if total_key_stats == 0:
+                data['hit ratio']=0
+            else:
+                data['hit ratio'] = data['keyspace hits'] / total_key_stats
+                data['total_keys']=total_keys
+        except Exception as e:
+                data['status']=0
+                data['msg']=str(e)
+        data['units']=METRICS_UNITS
         return data
 
 
 if __name__ == '__main__':
-    
-    configuration = {'host': REDIS_HOST,'port': REDIS_PORT,'dbs': REDIS_DBS,'password': REDIS_PASSWORD,'queues': REDIS_QUEUES}
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
+    parser.add_argument('--port',help="Port",nargs='?', default= "6379")
+    parser.add_argument('--dbs',help="dbs" , default= dbs)
+    parser.add_argument('--password',help="Password" , default= password)
+    args=parser.parse_args()
 
-    redis_plugin = Redis(configuration)
+    redis_plugin = Redis(args)
 
     result=redis_plugin.metricCollector()
  
     print(json.dumps(result, indent=4, sort_keys=True))
+
+
+
+
+
