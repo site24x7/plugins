@@ -14,7 +14,7 @@ $Events=Get-EventLog -LogName Security -Source "Microsoft-Windows-Security-Audit
 $Log=[System.Collections.ArrayList]@()
 $event_count=$Events.Count
 
-$outdata.Add("failed_login_count",$event_count)
+$outdata.Add("failed_logon_count",$event_count)
 if($event_count -gt $count){
 
 foreach($Event in $Events){
