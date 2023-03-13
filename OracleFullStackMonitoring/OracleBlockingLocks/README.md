@@ -41,7 +41,7 @@
 
 ### Configurations
 
-- Provide your AerospikeStatsMonitoring configurations in OracleBlockingLocks.cfg file.
+- Provide your OracleBlockingLocks configurations in OracleBlockingLocks.cfg file.
 ```
     [ORCL]
     hostname=localhost
