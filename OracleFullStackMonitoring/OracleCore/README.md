@@ -25,7 +25,7 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleCore/OracleCore.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleCore/OracleCore.cfg
 
-- Execute the following command in your server to install aerospike: 
+- Execute the following command in your server to install cx_Oracle: 
 
 		pip3 install cx_Oracle
 

@@ -25,7 +25,7 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleBlockingLocks/OracleBlockingLocks.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleBlockingLocks/OracleBlockingLocks.cfg
 
-- Execute the following command in your server to install aerospike: 
+- Execute the following command in your server to install cx_Oracle: 
 
 		pip3 install cx_Oracle
 
@@ -41,7 +41,7 @@
 
 ### Configurations
 
-- Provide your AerospikeStatsMonitoring configurations in AerospikeStatsMonitoring.cfg file.
+- Provide your OracleBlockingLocks configurations in OracleBlockingLocks.cfg file.
 ```
     [ORCL]
     hostname=localhost
@@ -59,7 +59,7 @@
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ## Supported Metrics
-The following metrics are captured in the AerospikeStatsMonitoring Plugin
+The following metrics are captured in the OracleBlockingLocks Plugin
 
 - **Blocking Session**
 
