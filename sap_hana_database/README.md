@@ -15,6 +15,8 @@ Monitor the availability and performance of your SAP HANA database with SAP HANA
 
 		pip install hdbcli
 		
+- hdbcli driver supports for python 2.7, python 3.4 and above.
+		
 -  Ensure the SAP HANA user profile that will be added in the sap_hana_database.cfg file has been provided public and monitoring role access:
 
 		GRANT ROLE PUBLIC to user <username>
@@ -94,4 +96,5 @@ The agent will automatically execute the plugin within five minutes and send per
 		31.Total Network I/O Operations - Total network I/O operations
 		32.Used Physical Memory - Specifies the used physical memory on the host in GB
 		
+
 
