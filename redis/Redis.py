@@ -135,14 +135,14 @@ class Redis(object):
         total_keys=0
         for name, value in stats.items():
             try:
+                if type(value)==dict and 'keys' in value:
+                    total_keys+=value['keys']
                 if name in METRICS.keys() :
                     if METRICS[name] == 'used memory':
                         value = value / 1024
                     data[METRICS[name]] = value
             except (ValueError, TypeError) as e:
                 data[name] = value
-            if type(value)==dict and 'keys' in value:
-               total_keys+=value['keys']
         try:
             total_key_stats = data['keyspace hits'] + data['keyspace misses']
             if total_key_stats == 0:
