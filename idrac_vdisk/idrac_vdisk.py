@@ -16,11 +16,15 @@ import argparse
 ### Tested for snmp version 2c
 
 
+OIDREPLACE = "1.3.6.1.4.1"
+SMISTR="SNMPv2-SMI::enterprises"
+ISOSTR="iso.3.6.1.4.1" 
+
 
 ### OIDS for Getting Virtual Disk Details
-OIDS = {'vdisk' : ['virtualDiskTable']}
+OIDS = {'vdisk' : ['1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1']}
 ### OID Attributes
-hardware = {'vdisk' : ['virtualDiskName','virtualDiskState','virtualDiskSizeInMB','virtualDiskBadBlocksDetected']}
+hardware = {'vdisk' : ['1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.2','1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.4','1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.6','1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.23']}
 ### Output Keys and their units
 names = {'vdisk' : ['name','state',{'size': 'MB'},'badblocks']}
 
@@ -63,13 +67,21 @@ class HardwareParser:
         unitdata = output_data['units'] 
         
         for _ in self.snmp_data:
+            if ( not _.startswith(OIDREPLACE) and _.startswith(SMISTR) ):
+                _ = _.replace(SMISTR, OIDREPLACE)
+            elif ( not _.startswith(OIDREPLACE) and _.startswith(ISOSTR) ):
+                _ = _.replace(ISOSTR, OIDREPLACE)
+            #print(_)
+            
             for index, __ in enumerate(hardware[self.hardware]) :
-                if __ in _:        
-                    
-                    name = ''.join(_.split("::")[1:]).replace('"','').split(' ')[0].split('.')
-                    
-                    elementname = name[len(name)-1] # Name
-                    value = ''.join(_.split()[1:]).replace('"','') # Value
+                if __ in _: 
+                    _ = _.replace('\n','').replace('\r','').replace('"','')
+                    name = _.split(' ')[0]
+                    elementname = name[len(name)-1]
+
+                    l = _.split(' ')
+                    l.pop(0)
+                    value = ' '.join(l)
                     
                     if ':' in value:
                         val = value.split(':')[1:] 

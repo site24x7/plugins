@@ -15,10 +15,14 @@ import argparse
 ### Tested in Ubuntu
 ### Tested for snmp version 2c
 
+OIDREPLACE = "1.3.6.1.4.1"
+SMISTR="SNMPv2-SMI::enterprises"
+ISOSTR="iso.3.6.1.4.1" 
+
 ### OIDS for Getting CPU Details
-OIDS = {'cpu' : ['processorDeviceTable']}
+OIDS = {'cpu' : ['1.3.6.1.4.1.674.10892.5.4.1100.30.1']}
 ### OID Attributes
-hardware = {'cpu' : ['processorDeviceStateSettings','processorDeviceStatus','processorDeviceCoreCount','processorDeviceThreadCount']}
+hardware = {'cpu' : ['1.3.6.1.4.1.674.10892.5.4.1100.30.1.4','1.3.6.1.4.1.674.10892.5.4.1100.30.1.5','1.3.6.1.4.1.674.10892.5.4.1100.30.1.17','1.3.6.1.4.1.674.10892.5.4.1100.30.1.19']}
 ### Output Keys and their units
 names = {'cpu' : ['state','status','cores','threads']}
 
@@ -62,12 +66,21 @@ class HardwareParser:
         unitdata = output_data['units'] 
         
         for _ in self.snmp_data:
+            if ( not _.startswith(OIDREPLACE) and _.startswith(SMISTR) ):
+                _ = _.replace(SMISTR, OIDREPLACE)
+            elif ( not _.startswith(OIDREPLACE) and _.startswith(ISOSTR) ):
+                _ = _.replace(ISOSTR, OIDREPLACE)
+            #print(_)
+            
             for index, __ in enumerate(hardware[self.hardware]) :
                 if __ in _:        
-                    
-                    name = ''.join(_.split("::")[1:]).replace('"','').split(' ')[0].split('.')  
-                    elementname = name[len(name)-1]     # Name
-                    value = ''.join(_.split()[1:]).replace('"','')  # Value
+                    _ = _.replace('\n','').replace('\r','').replace('"','')
+                    name = _.split(' ')[0]
+                    elementname = name[len(name)-1]
+
+                    l = _.split(' ')
+                    l.pop(0)
+                    value = ' '.join(l)
                     
                     if ':' in value:
                         val = value.split(':')[1:] 

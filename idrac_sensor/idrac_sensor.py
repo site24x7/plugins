@@ -15,10 +15,15 @@ import argparse
 ### Tested in Ubuntu
 ### Tested for snmp version 2c
 
+OIDREPLACE = "1.3.6.1.4.1"
+SMISTR="SNMPv2-SMI::enterprises"
+ISOSTR="iso.3.6.1.4.1" 
+
+
 ### OIDS for Getting Sensor Details
-OIDS = {'sensor' : ['temperatureProbeTable']}
+OIDS = {'sensor' : ['1.3.6.1.4.1.674.10892.5.4.700.20.1']}
 ### OID Attributes
-hardware = {'sensor' : ['temperatureProbeStateSettings','temperatureProbeStatus','temperatureProbeReading','temperatureProbeLocationName']}
+hardware = {'sensor' : ['1.3.6.1.4.1.674.10892.5.4.700.20.1.4','1.3.6.1.4.1.674.10892.5.4.700.20.1.5','1.3.6.1.4.1.674.10892.5.4.700.20.1.6','1.3.6.1.4.1.674.10892.5.4.700.20.1.8']}
 ### Output Keys and their units
 names = {'sensor' : ['state','status','reading','location']}
 
@@ -62,13 +67,22 @@ class HardwareParser:
         unitdata = output_data['units'] 
         
         for _ in self.snmp_data:
+            if ( not _.startswith(OIDREPLACE) and _.startswith(SMISTR) ):
+                _ = _.replace(SMISTR, OIDREPLACE)
+            elif ( not _.startswith(OIDREPLACE) and _.startswith(ISOSTR) ):
+                _ = _.replace(ISOSTR, OIDREPLACE)
+            #print(_)
+            
             for index, __ in enumerate(hardware[self.hardware]) :
                 if __ in _:        
                     
-                    name = ''.join(_.split("::")[1:]).replace('"','').split(' ')[0].split('.')
-                    
-                    elementname = name[len(name)-1] # Name
-                    value = ''.join(_.split()[1:]).replace('"','') # Value
+                    _ = _.replace('\n','').replace('\r','').replace('"','')
+                    name = _.split(' ')[0]
+                    elementname = name[len(name)-1]
+
+                    l = _.split(' ')
+                    l.pop(0)
+                    value = ' '.join(l)
                     
                     if ':' in value:
                         val = value.split(':')[1:] 
