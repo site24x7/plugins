@@ -15,11 +15,15 @@ import argparse
 ### Tested in Ubuntu
 ### Tested for snmp version 2c
 
+OIDREPLACE = "1.3.6.1.4.1"
+SMISTR="SNMPv2-SMI::enterprises"
+ISOSTR="iso.3.6.1.4.1" 
+
 
 ### OIDS for Getting Fan Details   
-OIDS = {'fan' : ['coolingDeviceTable']}
+OIDS = {'fan' : ['1.3.6.1.4.1.674.10892.5.4.700.12.1']}
 ### OID Attributes
-hardware = {'fan' : ['coolingDeviceStatus','coolingDeviceReading','coolingDeviceLocationName']}
+hardware = {'fan' : ['1.3.6.1.4.1.674.10892.5.4.700.12.1.5','1.3.6.1.4.1.674.10892.5.4.700.12.1.6','1.3.6.1.4.1.674.10892.5.4.700.12.1.8']}
 ### Output Keys and their units
 names = {'fan' : ['status', {'rotations':'rpm'}, 'location']}
 
@@ -44,6 +48,7 @@ class HardwareParser:
             self.oids = OIDS[self.hardware]
             
             for _ in self.oids:
+                
                 try:
                     ### SNMPUtil module is used to get the snmp output for the input OIDS
                     snmpdata = SNMPUtil.SNMPPARSER('snmpwalk',self.hostname, self.snmp_version, self.snmp_community_str,_, self.mib_location, hardware[self.hardware])
@@ -62,13 +67,21 @@ class HardwareParser:
         unitdata = output_data['units'] 
         
         for _ in self.snmp_data:
+            if ( not _.startswith(OIDREPLACE) and _.startswith(SMISTR) ):
+                _ = _.replace(SMISTR, OIDREPLACE)
+            elif ( not _.startswith(OIDREPLACE) and _.startswith(ISOSTR) ):
+                _ = _.replace(ISOSTR, OIDREPLACE)
+            #print(_)
+            
             for index, __ in enumerate(hardware[self.hardware]) :
                 if __ in _:        
+                    _ = _.replace('\n','').replace('\r','').replace('"','')
+                    name = _.split(' ')[0]
+                    elementname = name[len(name)-1]
                     
-                    name = ''.join(_.split("::")[1:]).replace('"','').split(' ')[0].split('.') 
-                     
-                    elementname = name[len(name)-1] # Name
-                    value = ''.join(_.split()[1:]).replace('"','')# Value
+                    l = _.split(' ')
+                    l.pop(0)
+                    value = ' '.join(l)
                     
                     if ':' in value:
                         val = value.split(':')[1:] 
@@ -120,4 +133,3 @@ if __name__ == '__main__':
     result['plugin_version'] = args.plugin_version
     result['heartbeat_required'] = args.heartbeat_required
     print(json.dumps(result, indent=2, sort_keys=True))
-    

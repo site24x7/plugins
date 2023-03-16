@@ -16,10 +16,15 @@ import argparse
 ### Tested for snmp version 2c
 
 
+OIDREPLACE = "1.3.6.1.4.1"
+SMISTR="SNMPv2-SMI::enterprises"
+ISOSTR="iso.3.6.1.4.1" 
+
+
 ### OIDS for Getting Powersupply Details
-OIDS = {'PS' : ['powerSupplyTable','amperageProbeReading','voltageProbeReading']}
+OIDS = {'PS' : ['1.3.6.1.4.1.674.10892.5.4.600.12.1','1.3.6.1.4.1.674.10892.5.4.600.30.1.6','1.3.6.1.4.1.674.10892.5.4.600.20.1.6']}
 ### OID Attributes
-hardware = {'PS' :  ['powerSupplyStatus','powerSupplyOutputWatts','powerSupplyInputVoltage','powerSupplyRatedInputWattage','amperageProbeReading','voltageProbeReading']}
+hardware = {'PS' :  ['1.3.6.1.4.1.674.10892.5.4.600.12.1.5','1.3.6.1.4.1.674.10892.5.4.600.12.1.6','1.3.6.1.4.1.674.10892.5.4.600.12.1.9','1.3.6.1.4.1.674.10892.5.4.600.12.1.14','1.3.6.1.4.1.674.10892.5.4.600.30.1.6','1.3.6.1.4.1.674.10892.5.4.600.20.1.6']}
 ### Output Keys and their units
 names = {'PS' : ['status',{'owatt':'Watts'},{'ivolt':'Volts'},{'iwatt':'Watts'},{'current':'Ampere'},{'ovolt':'Volts'}]}
 
@@ -65,11 +70,21 @@ class HardwareParser:
         
         if not jsondata: appendkeys = True 
         for _ in self.snmp_data:
+            if ( not _.startswith(OIDREPLACE) and _.startswith(SMISTR) ):
+                _ = _.replace(SMISTR, OIDREPLACE)
+            elif ( not _.startswith(OIDREPLACE) and _.startswith(ISOSTR) ):
+                _ = _.replace(ISOSTR, OIDREPLACE)
+            #print(_)
+            
             for index, __ in enumerate(hardware[self.hardware]) :
                 if __ in _:        
-                    
-                    name = ''.join(_.split("::")[1:]).replace('"','').split(' ')[0].split('.')
-                    elementname = name[len(name)-1] # Name
+                    _ = _.replace('\n','').replace('\r','').replace('"','')
+                    name = _.split(' ')[0]
+                    elementname = name[len(name)-1]
+
+                    l = _.split(' ')
+                    l.pop(0)
+                    value = ' '.join(l)
                     
                     if appendkeys : self.keys.add(elementname);
                     
@@ -80,9 +95,16 @@ class HardwareParser:
                         value = val[len(val)-1]
                     
                     if __ == 'powerSupplyOutputWatts' : value = int(value)/float(10)
+                    if __ == '1.3.6.1.4.1.674.10892.5.4.600.12.1.6' : value = int(value)/float(10)
+                    
                     if __ == 'powerSupplyRatedInputWattage' : value = int(value)/float(10)
+                    if __ == '1.3.6.1.4.1.674.10892.5.4.600.12.1.14' : value = int(value)/float(10)
+                    
                     if __ == 'amperageProbeReading' : value = int(value)/float(10)
+                    if __ == '1.3.6.1.4.1.674.10892.5.4.600.30.1.6' : value = int(value)/float(10)
+                    
                     if __ == 'voltageProbeReading' : value = int(value)/float(1000)
+                    if __ == '1.3.6.1.4.1.674.10892.5.4.600.20.1.6' : value = int(value)/float(1000)
                     
                     elem = names[self.hardware][index]
                     attribute = ''  # Attribute Name
