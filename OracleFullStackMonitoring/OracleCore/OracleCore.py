@@ -133,8 +133,9 @@ class oracle:
 
         try:
             try:
-                conn = cx_Oracle.connect(self.username,self.password,self.hostname+':'+str(self.port)+'/'+self.sid)
-                c = conn.cursor()
+            
+            	conn = cx_Oracle.connect(user=self.username, password=self.password, dsn=f"{self.hostname}:{self.port}/{self.sid}")
+            	c = conn.cursor()
             except Exception as e:
                 self.maindata['status']=0
                 self.maindata['msg']='Exception while making connection: '+str(e)
@@ -209,7 +210,7 @@ if __name__=="__main__":
     
     hostname="localhost"
     port="1521"
-    sid="ORCLCDB"
+    sid="pdb1"
     username=None
     password=None
 
