@@ -67,7 +67,7 @@ class oracle:
 
         try:
             try:
-                conn = cx_Oracle.connect(self.username,self.password,self.hostname+':'+str(self.port)+'/'+self.sid)
+                conn = cx_Oracle.connect(user=self.username, password=self.password, dsn=f"{self.hostname}:{self.port}/{self.sid}")
                 c = conn.cursor()
             except Exception as e:
                 self.maindata['status']=0
@@ -128,7 +128,7 @@ if __name__=="__main__":
     parser.add_argument('--username', help='username for oracle',default=username)
     parser.add_argument('--password', help='password for oracle',default=password)
 
-    parser.add_argument('oracle_home',help='oracle home path',default=oracle_home)
+    parser.add_argument('--oracle_home',help='oracle home path',default=oracle_home)
 
 
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
