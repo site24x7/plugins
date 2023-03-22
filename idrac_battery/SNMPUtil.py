@@ -49,7 +49,7 @@ class SNMPPARSER:
     
     def executeSNMPCommand(self):
         
-        snmp_command = self.command+ ' -O q -v '+ self.snmp_version + ' -c ' + self.snmp_community +' '+ self.host +' '+ self.oids  +' -m '+ self.mibs
+        snmp_command = self.command+ ' -O q -v '+ self.snmp_version + ' -c ' + self.snmp_community +' '+ self.host +' '+ self.oids  
         #print(snmp_command)
         status, output, err = self.get_snmp_output(snmp_command)
         
@@ -77,7 +77,7 @@ class SNMPPARSER:
         else:
             raise Exception(self.command+" Not Supported") 
         return self.output
-    
+        
     # Parsing snmpget,snmpwalk data
     def getData(self):
         if self.command == 'snmpget':#retrieving data from a host

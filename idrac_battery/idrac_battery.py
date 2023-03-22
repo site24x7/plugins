@@ -16,11 +16,15 @@ import SNMPUtil
 ### Tested in Ubuntu
 ### Tested for snmp version 2c
 
+OIDREPLACE = "1.3.6.1.4.1"
+SMISTR="SNMPv2-SMI::enterprises"
+ISOSTR="iso.3.6.1.4.1" 
+
 
 ### OIDS for Getting Battery Details
-OIDS = {'battery' : ['systemBattery']}
+OIDS = {'battery' : ['1.3.6.1.4.1.674.10892.5.4.600.50.1']}
 ### OID Attributes
-hardware = {'battery' : ['systemBatteryStateSettings','systemBatteryStatus','systemBatteryReading','systemBatteryLocationName']}
+hardware = {'battery' : ['1.3.6.1.4.1.674.10892.5.4.600.50.1.4','1.3.6.1.4.1.674.10892.5.4.600.50.1.5','1.3.6.1.4.1.674.10892.5.4.600.50.1.6','1.3.6.1.4.1.674.10892.5.4.600.50.1.7']}
 ### Output Keys and their units
 names = {'battery' : ['state','status','reading','location']}
 
@@ -62,14 +66,22 @@ class HardwareParser:
         unitdata = output_data['units'] 
         
         for _ in self.snmp_data:
+            if ( not _.startswith(OIDREPLACE) and _.startswith(SMISTR) ):
+                _ = _.replace(SMISTR, OIDREPLACE)
+            elif ( not _.startswith(OIDREPLACE) and _.startswith(ISOSTR) ):
+                _ = _.replace(ISOSTR, OIDREPLACE)
+            #print(_)
+            
             for index, __ in enumerate(hardware[self.hardware]) :
                 if __ in _:        
+                    _ = _.replace('\n','').replace('\r','').replace('"','')
+                    name = _.split(' ')[0]
+                    elementname = name[len(name)-1]
                     
-                    name = ''.join(_.split("::")[1:]).replace('"','').split(' ')[0].split('.')
-                    
-                    elementname = name[len(name)-1]     # Name
-                    value = ''.join(_.split()[1:]).replace('"','') # Value
-                    
+                    l = _.split(' ')
+                    l.pop(0)
+                    value = ' '.join(l)
+                     
                     if ':' in value:
                         val = value.split(':')[1:] 
                         value = val[len(val)-1]

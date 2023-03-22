@@ -2,6 +2,7 @@
 
 import json
 import SNMPUtil
+import argparse
 
 ### Monitoring iDRAC Servers - Memory Performance
 
@@ -15,22 +16,26 @@ import SNMPUtil
 ### Tested for snmp version 2c
 
 ### iDRAC Server Configuration Details
-HOST = 'IDRAC_SERVER'
-VERSION = '2c' 
-COMMUNITY = 'public'
-MIB = 'MIB LOCATION'
 
+OIDREPLACE = "1.3.6.1.4.1"
+SMISTR="SNMPv2-SMI::enterprises"
+ISOSTR="iso.3.6.1.4.1" 
 
 ### OIDS for Getting Memory Details
-OIDS = {'memory' : ['memoryDeviceTable']}
+OIDS = {'memory' : ['1.3.6.1.4.1.674.10892.5.4.1100.50.1']}
 ### OID Attributes
-hardware = {'memory' : ['memoryDeviceStateSettings','memoryDeviceStatus','memoryDeviceType','memoryDeviceSize','memoryDeviceSpeed']}
+hardware = {'memory' : ['1.3.6.1.4.1.674.10892.5.4.1100.50.1.4','1.3.6.1.4.1.674.10892.5.4.1100.50.1.5','    1.3.6.1.4.1.674.10892.5.4.1100.50.1.7','1.3.6.1.4.1.674.10892.5.4.1100.50.1.14','1.3.6.1.4.1.674.10892.5.4.1100.50.1.15']}
 ### Output Keys and their units
 names = {'memory' : ['state','status','type',{'size': 'KB'},{'speed':'nanosec'}]}
 
 
 class HardwareParser:
-    def __init__(self):
+    def __init__(self, hostname, snmp_version, snmp_community_str, mib_location):
+        self.hostname = hostname
+        self.snmp_version = snmp_version
+        self.snmp_community_str = snmp_community_str
+        self.mib_location = mib_location
+    
         self.hardware = ''
         self.oids = ''
         self.pattern = ''
@@ -45,7 +50,7 @@ class HardwareParser:
             
             for _ in self.oids:
                 ### SNMPUtil module is used to get the snmp output for the input OIDS
-                snmpdata = SNMPUtil.SNMPPARSER('snmpwalk',HOST,VERSION,COMMUNITY,_,MIB,hardware[self.hardware])
+                snmpdata = SNMPUtil.SNMPPARSER('snmpwalk',self.hostname, self.snmp_version, self.snmp_community_str,_, self.mib_location, hardware[self.hardware])
                 ### get Raw SNMP Output as a dict
                 self.snmp_data = snmpdata.getRawData()
                 ### Method to parse the SNMP command output data
@@ -60,13 +65,23 @@ class HardwareParser:
         unitdata = output_data['units'] 
         
         for _ in self.snmp_data:
+            if ( not _.startswith(OIDREPLACE) and _.startswith(SMISTR) ):
+                _ = _.replace(SMISTR, OIDREPLACE)
+            elif ( not _.startswith(OIDREPLACE) and _.startswith(ISOSTR) ):
+                _ = _.replace(ISOSTR, OIDREPLACE)
+            #print(_)
+            
             for index, __ in enumerate(hardware[self.hardware]) :
                 if __ in _:        
                     
-                    name = ''.join(_.split("::")[1:]).replace('"','').split(' ')[0].split('.')
+                    _ = _.replace('\n','').replace('\r','').replace('"','')
+                    name = _.split(' ')[0]
+                    elementname = name[len(name)-1]
+
+                    l = _.split(' ')
+                    l.pop(0)
+                    value = ' '.join(l)
                     
-                    elementname = name[len(name)-1] # Name
-                    value = ''.join(_.split()[1:]).replace('"','')  # Value
                     
                     if ':' in value:
                         val = value.split(':')[1:] 
@@ -97,13 +112,25 @@ class HardwareParser:
 
 if __name__ == '__main__':
     
-    parser = HardwareParser()
     result = {}
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--hostname', help='hostname', nargs='?', default='localhost')
+    parser.add_argument('--snmp_version', help='snmp version', type=str, nargs='?', default="2c")
+    parser.add_argument('--snmp_community_str', help='snmp community version',  nargs='?', default='public')
+    parser.add_argument('--idrac_mib_file_locn', help='idrac mib file location',  nargs='?', default='')
+    parser.add_argument('--plugin_version', help='plugin template version',  nargs='?', default='1')
+    parser.add_argument('--heartbeat_required', help='Enable heartbeat for monitoring',  nargs='?', default="true")
+    args = parser.parse_args()
+    
     try:
+        parser = HardwareParser(args.hostname, args.snmp_version, args.snmp_community_str, args.idrac_mib_file_locn)
         output = parser.getData()
         result = output['data']
         result['units'] = output['units']
     except ValueError as e:
         result['msg'] = str(e)
+    
+    result['plugin_version'] = args.plugin_version
+    result['heartbeat_required'] = args.heartbeat_required
     print(json.dumps(result, indent=2, sort_keys=True))
     
