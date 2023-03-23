@@ -44,7 +44,7 @@ class oracle:
 
         try:
             try:
-                conn = cx_Oracle.connect(self.username,self.password,self.hostname+':'+str(self.port)+'/'+self.sid)
+                conn = cx_Oracle.connect(user=self.username, password=self.password, dsn=f"{self.hostname}:{self.port}/{self.sid}")
                 c = conn.cursor()
             except Exception as e:
                 self.maindata['status']=0
