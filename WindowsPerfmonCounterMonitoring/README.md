@@ -21,8 +21,8 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
 
 		[counter_monitoring]
 		counters="\LogicalDisk(C:)\Avg. Disk sec/Write,\Processor Information(_Total)\% Processor Time,\LogicalDisk(C:)\Avg. Disk Bytes/Write"
-		units="sec/Write,%,bytes/Write"
-		displaynames="c_disk_secperwrite,processor_time,c_disk_bytesperwrite"
+		units="sec/Write,percentage,bytes/Write"
+		displaynames="CDisk_write,processor_time,CDisk_bytesperwrite"
 		
 
 
