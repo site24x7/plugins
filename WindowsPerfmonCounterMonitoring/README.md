@@ -17,17 +17,16 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
 		https://raw.githubusercontent.com/site24x7/plugins/master/WindowsPerfmonCounterMonitoring/WindowsPerfmonCounterMonitoring.ps1
 		https://raw.githubusercontent.com/site24x7/plugins/master/WindowsPerfmonCounterMonitoring/WindowsPerfmonCounterMonitoring.cfg
 		
-3. Open the "WindowsPerfmonCounterMonitoring.cfg" and in the counters config, configure your desired perfmon counters, units and displaynames. The value of each is separated by a comma .
+3. Open the "WindowsPerfmonCounterMonitoring.cfg" and in the counters config, configure your desired perfmon counters and displaynames. The value of each is separated by a comma .
 
 		[counter_monitoring]
-		counters="\LogicalDisk(C:)\Avg. Disk sec/Write,\Processor Information(_Total)\% Processor Time,\LogicalDisk(C:)\Avg. Disk Bytes/Write"
-		units="sec/Write,percentage,bytes/Write"
-		displaynames="CDisk_write,processor_time,CDisk_bytesperwrite"
+		counters="\Web Service(_Total)\Current Connections,\Processor Information(_Total)\% Processor Time,\Server\Logon Total"
+		displaynames="webservice_current_connections,processor_time,total_server_logon"
 		
 
 
-Please ensure to map the metric number and position of each counter, units, displaynames correctly. 
-For example, the number of counters, units, and displaynames should be same. Also, the first metric from counters should map to both units and displaynames.
+Please ensure to map the metric number and position of each counter, displaynames correctly. 
+For example, the number of counters and displaynames should be same. Also, the first metric from counters should map to displaynames.
 
  The agent will automatically execute the plugin within five minutes and send metrics to the Site24x7 data center.
 
