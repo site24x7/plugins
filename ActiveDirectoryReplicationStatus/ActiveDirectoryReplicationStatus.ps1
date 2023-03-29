@@ -139,7 +139,6 @@ if($replicationfailure -ne $null)
     }
 } 
 
-$mainJson = @{}
 $data = @{}
 if($msg.Length -eq 0)
 {
@@ -165,8 +164,8 @@ if($msg.Length -eq 0)
 }
 else
 {
-    $mainJson.Add("Status",0)
-    $mainJson.Add("msg",$msg)
+    $data.Add("Status",0)
+    $data.Add("msg",$msg)
 }
 
 
@@ -181,14 +180,13 @@ $heartbeat = "true"
 $displayname = $domainControlerName + " - AD Replication Status"  
 
 
-$mainJson.Add("plugin_version", $version)
-$mainJson.Add("heartbeat_required", $heartbeat)
-$mainJson.Add("displayname", $displayname) 
-
-$mainJson.Add("data", $data) 
+$data.Add("plugin_version", $version)
+$data.Add("heartbeat_required", $heartbeat)
+$data.Add("displayname", $displayname) 
 
 ### Returns the monitoring data to Site24x7 servers
-return $mainJson | ConvertTo-Json
+return $data | ConvertTo-Json
+
 
 
 
