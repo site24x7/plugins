@@ -8,10 +8,10 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
 
 - To run powershell plugin, ensure the below policy has been set.
 
-  Login to your server
-  Run the PowerShell prompt as Admin and execute the following:
-  Set-ExecutionPolicy RemoteSigned
-  Restart the plugin agent service
+  - Login to your server
+  - Run the PowerShell prompt as Admin and execute the following:
+  - Set-ExecutionPolicy RemoteSigned
+  - Restart the plugin agent service
 
 ## **Plugin installation**
 
