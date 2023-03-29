@@ -1,12 +1,12 @@
 param([string]$SQLServer , [string]$SQLDBName , [string]$query , [string]$sqlusername , [string]$sqlpassword)
 $version = 1 #If any changes in the plugin metrics, increment the plugin version here. 
 $heartbeat = "true"
-$output = @{}
+$dataObj = @{}
 #incase of sql server authentication
 $sqlserverauthetication = $false # make it $false for windows authentication
 Function Get-Data()
 {
-        $dataObj = @{}
+        
         $units = @{}
         try{
             $results=Invoke-Sqlcmd -ConnectionString "Data Source=$SQLServer; User Id=$sqlusername; Password =$sqlpassword" -Query "$query"
@@ -41,12 +41,11 @@ Function Get-Data()
         $dataObj.Add("isOutputReturned",$isOutputReturned)
         $dataObj.Add("isConnectionSuccessful",$isConnectionSuccessful)
         $dataObj.Add("units",$units)
-        return $dataObj
+        return 1
 	
 }
-$output.Add("plugin_version", $version)
-$output.Add("heartbeat_required", $heartbeat)
+$dataObj.Add("plugin_version", $version)
+$dataObj.Add("heartbeat_required", $heartbeat)
 $data =Get-Data
-$output.Add("data", ($data))
 
-$output | ConvertTo-Json
+$dataObj | ConvertTo-Json
