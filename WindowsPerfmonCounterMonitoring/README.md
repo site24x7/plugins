@@ -27,9 +27,9 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
 3. Open the "WindowsPerfmonCounterMonitoring.cfg" and in the counters config, configure your desired perfmon counters, units and displaynames. The value of each is separated by a comma. Example as follows
 
 		[counter_monitoring]
-		#counters="\LogicalDisk(C:)\Avg. Disk sec/Write,\Processor Information(_Total)\% Processor Time,\LogicalDisk(C:)\Avg. Disk Bytes/Write,\Processor(_Total)\% Idle Time,\Event Log\Events/sec,\PhysicalDisk(_Total)\Avg. Disk Bytes/Read,\LogicalDisk(_Total)\Current Disk Queue Length,\Thread(_Total/_Total)\Priority Current,\Process(_Total)\IO Read Operations/sec,\Database(HealthService)\Database Cache % Hit"
-		#units="sec/Write,%,bytes/Write,%,/sec,bytes/read,count,count,/sec,%"
-#displaynames="disk_write,processor_time,disk_byteswrite,Processor_idle_time,event_logs,disk_read,disk_queue_length,current_priority_thread,IO_read_operations,database_healthservice_cache_hit"
+		counters="\LogicalDisk(C:)\Avg. Disk sec/Write,\Processor Information(_Total)\% Processor Time,\LogicalDisk(C:)\Avg. Disk Bytes/Write,\Processor(_Total)\% Idle Time,\Event Log\Events/sec,\PhysicalDisk(_Total)\Avg. Disk Bytes/Read,\LogicalDisk(_Total)\Current Disk Queue Length,\Thread(_Total/_Total)\Priority Current,\Process(_Total)\IO Read Operations/sec,\Database(HealthService)\Database Cache % Hit"
+		units="sec/Write,%,bytes/Write,%,/sec,bytes/read,count,count,/sec,%"
+displaynames="disk_write,processor_time,disk_byteswrite,Processor_idle_time,event_logs,disk_read,disk_queue_length,current_priority_thread,IO_read_operations,database_healthservice_cache_hit"
 		
 
 
