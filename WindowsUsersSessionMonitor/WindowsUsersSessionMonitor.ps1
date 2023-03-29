@@ -1,11 +1,10 @@
-$output = @{}
+$dataObj = @{}
 $heartbeat = "true" 
 $version=1
 Function Get-Data
 {
     $userInfo=query user
     $activeUser = Get-LocalUser | Select *
-    $dataObj = @{}
     $active = 0
     $disconn = 0
     $userName=@()
@@ -47,12 +46,11 @@ Function Get-Data
         }
     }
     $dataObj.Add("active_user",$active)
-    return $dataObj
+    return 1
 }
 
-$output.Add("heartbeat_required", $heartbeat)
+$dataObj.Add("heartbeat_required", $heartbeat)
 $data =Get-Data
-$output.Add("data", ($data))
-$output.Add("plugin_version", $version)
+$dataObj.Add("plugin_version", $version)
 
-$output | ConvertTo-Json
+$dataObj | ConvertTo-Json
