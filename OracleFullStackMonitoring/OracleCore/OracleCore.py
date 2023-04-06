@@ -180,8 +180,10 @@ class oracle:
             for row in c:
                 count=row[0]
                 self.maindata['Long Running Queries']=count
-
-
+             
+            c.close()
+            conn.close()
+                
                 
             applog={}
             if(self.logsenabled in ['True', 'true', '1']):
