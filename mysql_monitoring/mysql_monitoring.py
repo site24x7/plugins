@@ -408,6 +408,8 @@ class MySQL(object):
                 
             except Exception as e:
                 data["error"] = repr(e)
+                cursor.close()
+                con.close()
                 return data
         applog={}
         if(self.logsenabled in ['True', 'true', '1']):
@@ -421,6 +423,8 @@ class MySQL(object):
         data['units']=METRICS_UNITS
         data['plugin_version'] = PLUGIN_VERSION
         data['heartbeat_required']=HEARTBEAT
+        cursor.close()
+        con.close()
         return data
 
 if __name__ == "__main__":
@@ -440,3 +444,4 @@ if __name__ == "__main__":
     mysql_plugins = MySQL(args)
     result = mysql_plugins.metricCollector()
     print(json.dumps(result, indent=4, sort_keys=True))
+
