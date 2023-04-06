@@ -56,8 +56,10 @@ class oracle:
                     units[name+'_Usage_Percent']="%"
 
                 self.maindata['units']=units
-
-
+                
+            c.close()
+            conn.close()
+            
             applog={}
             if(self.logsenabled in ['True', 'true', '1']):
                     applog["logs_enabled"]=True
