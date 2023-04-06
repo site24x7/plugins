@@ -102,6 +102,8 @@ class MySQL(object):
             traceback.print_exc()
             metric['status'] = 0
             metric['msg'] = e
+        cursor.close()
+        con.close()
         return metric
 
     def getDbConnection(self):
@@ -164,8 +166,7 @@ class MySQL(object):
     
             try:
                 con = self.connection
-                self.data = self.executeQuery(con, self.query, self.data)               
-                con.close()
+                self.data = self.executeQuery(con, self.query, self.data)
             except Exception as e:
                 #traceback.format_exc()
                 self.data['status'] = 0
