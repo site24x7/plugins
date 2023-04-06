@@ -60,6 +60,10 @@ class oracle:
                 self.maindata[PDB_Name+'_OpenMode']=row[3]
                 self.maindata[PDB_Name+'_Restricted']=row[4]
                 self.maindata[PDB_Name+'_OpenTime']=str(row[5]).split()[0]
+             
+                
+             c.close()
+             conn.close()
 
 
 

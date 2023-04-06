@@ -184,6 +184,8 @@ class oracle:
             for row in c:
                 value=row[0]
                 self.maindata["Total Memory"]=value            
+            c.close()
+            conn.close()
 
             applog={}
             if(self.logsenabled in ['True', 'true', '1']):
