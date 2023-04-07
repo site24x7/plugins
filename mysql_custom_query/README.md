@@ -13,6 +13,7 @@
 - Intsall Pymysql module with following command
 
 		pip install PyMySQL
+		
 - Pymysql(v1.0.3) works only for python with version>=3.7 	
 
 - Select on queries permission is required to execute the queries mentioned above.
