@@ -48,17 +48,24 @@ class appname:
                 data=cursor.fetchone()
                 for i in range(tot):
                     self.maindata[colnames[i]]=str(data[i])
+                
+                cursor.close()
+                connection.close()
                     
 
 
             except Exception as e:
                 self.maindata['msg']=str(e)
                 self.maindata['status']=0
+                cursor.close()
+                connection.close()
                 return self.maindata
         
         except Exception as e:
             self.maindata['msg']=str(e)
             self.maindata['status']=0
+            cursor.close()
+            connection.close()
             return self.maindata
 
         return self.maindata
