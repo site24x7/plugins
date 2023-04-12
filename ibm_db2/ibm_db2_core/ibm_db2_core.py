@@ -134,6 +134,8 @@ class DB2(object):
             else:
                 data[metric]=0
         
+        ibm_db.close(self.connection)
+        
 
         data['units']=METRICS_UNITS
         return data
