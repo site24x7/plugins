@@ -3,9 +3,27 @@ import json
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
-METRICS_UNITS={}
 
-metrics={   "AlwaysRetroactive":"Always Retroactive", 
+METRICS_UNITS={
+     
+     "AverageBlockedTime":"ms",
+     "AverageEnqueueTime":"ms",
+     "AverageMessageSize":"bytes",
+     "BlockedProducerWarningInterval":"ms",
+     "MaxEnqueueTime":"ms",
+     "MaxMessageSize":"bytes",
+     "MaxPageSize":"bytes",
+     "MemoryLimit":"bytes",
+     "MemoryPercentUsage":"%",
+     "MinEnqueueTime":"ms",
+     "MinMessageSize":"bytes",
+     "QueueSize":"bytes",
+     "StoreMessageSize":"bytes",
+     "TotalBlockedTime":"ms"
+}
+
+metrics={   
+            "AlwaysRetroactive":"Always Retroactive", 
             "AverageBlockedTime":"Average Blocked Time", 
             "AverageEnqueueTime":"Average Enqueue Time", 
             "AverageMessageSize":"Average Message Size", 
@@ -14,7 +32,7 @@ metrics={   "AlwaysRetroactive":"Always Retroactive",
             "ConsumerCount":"Consumer Count", 
             "DLQ":"DLQ", 
             "DequeueCount":"Dequeue Count",
-            "DispatchCount":"Dispatch Count",
+            "DispatchCount":"Dispatch Count", 
             "DuplicateFromStoreCount":"Duplicate From Store Count",
             "EnqueueCount":"Enqueue Count",
             "ExpiredCount":"Expired Count",
@@ -40,7 +58,8 @@ metrics={   "AlwaysRetroactive":"Always Retroactive",
             "TempUsageLimit":"Temp Usage Limit",
             "TempUsagePercentUsage":"Temp Usage Percent Usage",
             "TotalBlockedTime":"Total Blocked Time",
-            "UseCache":"Use Cache"}
+            "UseCache":"Use Cache"
+            }
 
 class appname:
 
@@ -69,10 +88,7 @@ class appname:
         except Exception as e:
             result["status"] = 0
             result["msg"] = str(e)
-
         return result
-
-    
 
 
     def metriccollector(self):
@@ -104,7 +120,6 @@ class appname:
             self.maindata['status']=0
             return self.maindata
     
-    
         applog={}
         if(self.logsenabled in ['True', 'true', '1']):
                 applog["logs_enabled"]=True
@@ -114,7 +129,6 @@ class appname:
                 applog["logs_enabled"]=False
         self.maindata['applog'] = applog
         return self.maindata
-
 
 
 
