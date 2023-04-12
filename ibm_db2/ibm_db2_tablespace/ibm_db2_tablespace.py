@@ -74,6 +74,7 @@ class DB2(object):
             if metric.upper() in database_metrics:
                 data[metric] = database_metrics[metric.upper()]
             
+        ibm_db.close(self.connection)
         data['units']=METRICS_UNITS
         return data
 
