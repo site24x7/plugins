@@ -73,7 +73,12 @@ class oracle:
                 self.maindata['Content']=row[0]
                 self.maindata['Log']=row[1]
                 self.maindata['TB_Status']=row[2]
-
+                
+            c.close()
+            conn.close()
+            
+            
+    
 
             applog={}
             if(self.logsenabled in ['True', 'true', '1']):

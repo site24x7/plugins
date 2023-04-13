@@ -7,9 +7,6 @@ HEARTBEAT=True
 
 
 
-
-
-
 class oracle:
 
     def __init__(self,args):
@@ -28,9 +25,6 @@ class oracle:
         self.logtypename=args.log_type_name
         self.logfilepath=args.log_file_path
         
-
-
-
 
     def metriccollector(self):
         
@@ -65,13 +59,9 @@ class oracle:
                 units['Seconds Waited_'+str(i)]='sec'
                 i+=1
             self.maindata['units']=units
-
-
             
-
-
-
-
+            c.close()
+            conn.close()
 
             applog={}
             if(self.logsenabled in ['True', 'true', '1']):
@@ -87,9 +77,6 @@ class oracle:
         except Exception as e:
             self.maindata['msg']=str(e)
             self.maindata['status']=0
-
-        
-
 
         return self.maindata
 

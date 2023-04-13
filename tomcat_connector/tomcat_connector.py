@@ -61,15 +61,15 @@ def convertBytesToMB(v):
 
 class Tomcat(object):
     
-    def __init__(self,config):
-        self.configurations = config
-        self.host = self.configurations.get('host', 'localhost')
-        self.port = int(self.configurations.get('port', '8080'))
-        self.username = self.configurations.get('user')
-        self.password = self.configurations.get('password')
-        self.connector = self.configurations.get('connector')
-        self.url = self.configurations.get('url','/manager')
-        self.timeout = int(self.configurations.get('timeout'))
+    def __init__(self,args):
+        self.args = args
+        self.host=args.host
+        self.port=args.port
+        self.username=args.username
+        self.password=args.password
+        self.connector = TOMCAT_CONNECTOR
+        self.url = TOMCAT_URL
+        self.timeout = TOMCAT_TIMEOUT
         
     def readXmlFromUrl(self,host,port,url,user,password):
         xmlUrl = url+"/status?XML=true"
@@ -137,7 +137,7 @@ class Tomcat(object):
             tomcatStatusStr = serverinfo[0]
             tomcatVersion = (tomcatVersionStr.split("/"))[1].split(".")[0]
             if (tomcatVersion.isdigit()):
-                data['tomcat_version']=tomcatVersion
+                data['Tomcat Version']=tomcatVersion
             if(tomcatStatusStr.split(' ')[0]=='OK'):
                 data['status']=1
             else:
@@ -154,15 +154,15 @@ class Tomcat(object):
                         if name==self.connector:
                             thread = connector.find('./threadInfo')
                             request = connector.find('./requestInfo')
-                            data['name']=name
-                            data['thread_count']=int(thread.get('currentThreadCount'))     
-                            data['thread_busy']=int(thread.get('currentThreadsBusy'))       
-                            data['thread_allowed']=float(thread.get('maxThreads'))       
-                            data['bytes_received']=convertBytesToMB(float(request.get('bytesReceived')))       
-                            data['bytes_sent']=convertBytesToMB(float(request.get('bytesSent')))       
-                            data['error_count']=float(request.get('errorCount'))       
-                            data['processing_time']=float(request.get('processingTime'))       
-                            data['request_count']=float(request.get('requestCount'))       
+                            data['Name']=name
+                            data['Thread Count']=int(thread.get('currentThreadCount'))     
+                            data['Thread Busy']=int(thread.get('currentThreadsBusy'))       
+                            data['Thread Allowed']=float(thread.get('maxThreads'))       
+                            data['Bytes Received']=convertBytesToMB(float(request.get('bytesReceived')))       
+                            data['Bytes Sent']=convertBytesToMB(float(request.get('bytesSent')))       
+                            data['Error Count']=float(request.get('errorCount'))       
+                            data['Processing Time']=float(request.get('processingTime'))       
+                            data['Request Count']=float(request.get('requestCount'))       
                 else:
                     data['msg']='Unable to collect data for the server'    
         else:
@@ -174,9 +174,15 @@ class Tomcat(object):
 
 if __name__ == "__main__":
 
-    configurations = {'host': TOMCAT_HOST,'port': TOMCAT_PORT,'user': TOMCAT_USERNAME,'password': TOMCAT_PASSWORD, 'url': TOMCAT_URL, 'connector': TOMCAT_CONNECTOR, 'timeout': TOMCAT_TIMEOUT}
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--host',help="Host Name",nargs='?', default= TOMCAT_HOST)
+    parser.add_argument('--port',help="Port",nargs='?', default= TOMCAT_PORT)
+    parser.add_argument('--username',help="username", default= TOMCAT_USERNAME)
+    parser.add_argument('--password',help="Password", default= TOMCAT_PASSWORD)
+    args=parser.parse_args()
 
-    tomcat_plugins = Tomcat(configurations)
+    tomcat_plugins = Tomcat(args)
     
     result = tomcat_plugins.metricCollector()
     

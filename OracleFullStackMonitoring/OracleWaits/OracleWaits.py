@@ -83,6 +83,8 @@ class oracle:
                 self.maindata[name+"_wait_count"]=wait_count
 
             self.maindata['units']=units
+            c.close()
+            conn.close()
                 
 
        
