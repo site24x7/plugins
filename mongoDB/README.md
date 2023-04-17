@@ -36,15 +36,13 @@
 		port=<port_number>
 		username=<your_username>
 		password=<your_password>
-		dbstats=<dbstats>
-		replset=<replset>
 		dbname=<dbname>
 		authdb=<authdb>
 			
 
 - Execute the below command with appropriate arguments which were given in the configuration to check for the valid output with JSON format.
 
-		python mongoDB.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbstats=<dbstats> --replset=<replset> --dbname=<dbname> --authdb=<authdb>
+		python mongoDB.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbname=<dbname> --authdb=<authdb>
 		
 		
 - Once above execution was given valid output, then copy the mongoDB directory to Site24x7 Linux Agent plugin directory: 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import collections
 import datetime
@@ -14,18 +14,65 @@ PLUGIN_VERSION = "1"
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT="true"
 
-METRICS_UNITS = {'heap_usage':'MB',
-                 'memory_resident':'MB',
-                 'memory_virtual':'MB',
-                 'memory_mapped':'MB'
+METRICS_UNITS = {
+                 
+                 "Heap Usage":'MB',
+                 "Memory Resident":'MB',
+                 "Memory Virtual":'MB',
+                 "Memory Mapped":'MB',
+                 "Memory Bits":'bits',
+                 "Network Bytes In per sec":'bytes',
+                 "Network Bytes Out per sec":'bytes',
+                 "Network Num Requests per sec":'requests',
+                 "Asserts Msg per sec":'assertions',
+                 "Asserts User per sec":'assertions',
+                 "Asserts Regular per sec":'assertions',
+                 "Asserts Warning per sec":'assertions',
+                 "OpLatencies Reads Latency":'ms',
+                 "OpLatencies Writes Latency":'ms',
+                 "OpLatencies Commands Latency":'ms',
+                 "Opcounters Insert per sec":'operations',
+                 "Opcounters Update per sec":'operations',
+                 "Opcounters Delete per sec":'operations',
+                 "Opcounters Getmore per sec":'operations',
+                 "Opcounters Command per sec":'commands',
+                 "Opcounters Query per sec":'queries',
+                 "Document Deleted per sec":'documents',
+                 "Document Inserted per sec":'documents',
+                 "Document Returned per sec":'documents',
+                 "Document Updated per sec":'documents',
+                 "Concurrent Transactions Read Available":'tickets',
+                 "Concurrent Transactions Read Out":'tickets',
+                 "Concurrent Transactions Read Total Tickets":'tickets',
+                 "Concurrent Transactions Write Available":'tickets',
+                 "Concurrent Transactions Write Out":'tickets',
+                 "Concurrent Transactions Write Total Tickets":'tickets',
+                 "Bytes Currently in the Cache":'bytes',
+                 "Extra Info Page Faults per sec":'faults',
+                 "Total Page Faults":'faults',
+                 "Total no of dbs":'databases',
+                 "Cursors Total Open":'cursors',
+                 "Cursors Timedout":'cursors',
+                 "Metrics cursor Timed Out":'cursors',
+                 "Metrics cursor Open NoTimeout":'cursors',
+                 "Metrics cursor Open Pinned":'cursors',
+                 "Metrics cursor Open Total":'cursors',
+                 "Current Connections":'connections',
+                 "Total Connections Created":'connections',
+                 "Stats Objects":'objects',
+                 "Stats Collections":'collections',
+                 "Stats Storage Size":'bytes',
+                 "Stats Indexes":'indexes',
+                 "Stats Index Size":'bytes',
+                 "Stats Data Size":'bytes',
+                 "Uptime":'s'
+
                  }
 
 host ="localhost"
 port ="27017"
 username ="None"
 password ="None"
-dbstats ="yes"
-replset ="no"
 dbname ="local"
 authdb="admin"
 
@@ -36,8 +83,6 @@ class MongoDB(object):
         self.port=args.port
         self.username=args.username
         self.password=args.password
-        self.dbstats=args.dbstats
-        self.replset=args.replset
         self.dbname=args.dbname
         self.authdb=args.authdb
         if(self.username!="None" and self.password!="None" and self.authdb!="None"):
@@ -49,11 +94,21 @@ class MongoDB(object):
         else:
             self.mongod_server = "{0}:{1}".format(self.host, self.port)
 
+    
 
     def metricCollector(self):
         data = {}
         data['plugin_version'] = PLUGIN_VERSION
         data['heartbeat_required']=HEARTBEAT
+
+        def per_sec(doc,metric):
+            diff = output[doc][metric] - cache_data[doc][metric]
+            ps = int(diff / elapsed_time)
+            return ps
+        def per_sec_metric(root,doc,metric):
+            diff = output[root][doc][metric] - cache_data[root][doc][metric]
+            ps = int(diff / elapsed_time)
+            return ps
         try:
             import pymongo
             from pymongo import MongoClient
@@ -68,7 +123,15 @@ class MongoDB(object):
                 mongo_uri = 'mongodb://' + self.mongod_server
                 self.connection = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
                 db = self.connection[self.dbname]
+                cache_data = db.command('serverStatus', recordStats=0)
+                time.sleep(5)
                 output = db.command('serverStatus', recordStats=0)
+                elapsed_time=output['uptime']-cache_data['uptime']
+                data['Uptime']=output['uptime']
+                data['Total no of dbs']=len(self.connection.list_database_names())
+                stats=db.command('dbstats')
+                self.connection.close()
+
             except pymongo.errors.ServerSelectionTimeoutError:
                 data['status']=0
                 data['msg']='No mongoDB server is available to connect'
@@ -87,27 +150,98 @@ class MongoDB(object):
                 data['version'] = output['version']
             except KeyError as ex:
                 pass
+ 
+            #Asserts,extra info,network,opcounters,fsynclocked
+            try:
+                data['Asserts Msg per sec']=per_sec('asserts','msg')
+                data['Asserts User per sec']=per_sec('asserts','user')
+                data['Asserts Regular per sec']=per_sec('asserts','regular')
+                data['Asserts Warning per sec']=per_sec('asserts','warning')
+                data['Extra Info Page Faults per sec'] = per_sec('extra_info','page_faults')
+                data['Network Bytes In per sec'] = per_sec('network','bytesIn')
+                data['Network Bytes Out per sec'] = per_sec('network','bytesOut')
+                data['Network Num Requests per sec'] = per_sec('network','numRequests')
+                data['Opcounters Insert per sec'] = per_sec('opcounters','insert')
+                data['Opcounters Query per sec'] = per_sec('opcounters','query')
+                data['Opcounters Update per sec'] = per_sec('opcounters','update')
+                data['Opcounters Delete per sec'] = per_sec('opcounters','delete')
+                data['Opcounters Getmore per sec'] = per_sec('opcounters','getmore')
+                data['Opcounters Command per sec'] = per_sec('opcounters','command')
+                data['Document Deleted per sec']=per_sec_metric('metrics','document','deleted')
+                data['Document Inserted per sec']=per_sec_metric('metrics','document','inserted')
+                data['Document Returned per sec']=per_sec_metric('metrics','document','returned')
+                data['Document Updated per sec']=per_sec_metric('metrics','document','updated')
+                data['Fsynclocked']= output['fsynclocked']
+
+            except KeyError as ex:
+                pass
+
+            #Stats
+            try:
+                data['Stats Objects'] = stats['objects']
+                data['Stats Collections'] = stats['collections']
+                data['Stats Storage Size'] = stats['storageSize']
+                data['Stats Indexes'] = stats['indexes']
+                data['Stats Index Size'] = stats['indexSize']
+                data['Stats Data Size'] = stats['dataSize']
+
+            except KeyError as ex:
+                pass
 
             #Memory
             try:
-                data['memory_resident'] = output['mem']['resident']
-                data['memory_virtual'] = output['mem']['virtual']
-                data['memory_mapped'] = output['mem']['mapped']
+                data['Memory Resident'] = output['mem']['resident']
+                data['Memory Virtual'] = output['mem']['virtual']
+                data['Memory Mapped'] = output['mem']['mapped']
+                data['Memory Bits'] = output['mem']['bits']
+
+            except KeyError as ex:
+                pass
+            #oplatencies
+            try:
+                data['OpLatencies Reads Latency'] = output['opLatencies']['reads']['latency']
+                data['OpLatencies Writes Latency'] = output['opLatencies']['writes']['latency']
+                data['OpLatencies Commands Latency'] = output['opLatencies']['commands']['latency']
+                
+            except KeyError as ex:
+                pass
+
+
+            #WiredTiger
+            try:
+                data['Bytes Currently in the Cache'] = output['wiredTiger']['cache']['bytes currently in the cache']
+                data['Concurrent Transactions Read Available'] = output['wiredTiger']['concurrentTransactions']['read']['available']
+                data['Concurrent Transactions Read Out'] = output['wiredTiger']['concurrentTransactions']['read']['out']
+                data['Concurrent Transactions Read Total Tickets'] = output['wiredTiger']['concurrentTransactions']['read']['totalTickets']
+                data['Concurrent Transactions Write Available'] = output['wiredTiger']['concurrentTransactions']['write']['available']
+                data['Concurrent Transactions Write Out'] = output['wiredTiger']['concurrentTransactions']['write']['out']
+                data['Concurrent Transactions Write Total Tickets'] = output['wiredTiger']['concurrentTransactions']['write']['totalTickets']
+
+            except KeyError as ex:
+                pass
+
+            # Metrics.cursor
+            try:
+                data['Metrics cursor Timed Out'] = output['metrics']['cursor']['timedOut']
+                data['Metrics cursor Open NoTimeout'] = output['metrics']['cursor']['open']['noTimeout']
+                data['Metrics cursor Open Pinned'] = output['metrics']['cursor']['open']['pinned']
+                data['Metrics cursor Open Total'] = output['metrics']['cursor']['open']['total']
 
             except KeyError as ex:
                 pass
 
             # Connections
             try:
-                data['connections_current'] = output['connections']['current']
-                data['connections_available'] = output['connections']['available']
+                data['Current Connections'] = output['connections']['current']
+                data['Connections Available'] = output['connections']['available']
+                data['Total Connections Created'] = output['connections']['totalCreated']
 
             except KeyError as ex:
                 pass
 
             try:
-                data['heap_usage'] = round((float(output['extra_info']['heap_usage_bytes'])/(1024*1024)),2)
-                data['page_faults'] = output['extra_info']['page_faults']
+                data['Heap Usage'] = round((float(output['extra_info']['heap_usage_bytes'])/(1024*1024)),2)
+                data['Total Page Faults'] = output['extra_info']['page_faults']
 
             except KeyError as ex:
                 pass
@@ -123,57 +257,13 @@ class MongoDB(object):
 
             # Cursors
             try:
-                data['cursors_total_open'] = output['cursors']['totalOpen']
+                data['Cursors Total Open'] = output['cursors']['totalOpen']
+                data['Cursors Timedout'] = output['cursors']['timedOut']
+
             except KeyError as ex:
                 pass
 
-            # Replica set status
-            if 'self.replset' in self.args and self.args.get('self.replset') =='yes':
-                # isMaster (to get state
-                isMaster = db.command('isMaster')
 
-                data['replSet_setName'] = isMaster['setName']
-                data['replSet_isMaster'] = isMaster['ismaster']
-                data['replSet_isSecondary'] = isMaster['secondary']
-
-                if 'arbiterOnly' in isMaster:
-                    data['replSet_isArbiter'] = isMaster['arbiterOnly']
-
-                # rs.status()
-                db = self.connection['admin']
-                repl_set = db.command('replSetGetStatus')
-
-                data['replSet_myState'] = repl_set['myState']
-
-                data['replSet'] = {}
-                data['replSet']['members'] = {}
-
-                for member in repl_set['members']:
-
-                    data['replSet']['members'][str(member['_id'])] = {
-                        'name': member['name'],
-                        'state': member['state']
-                    }
-                    
-            # db.stats()
-            if 'self.dbstats' in self.args and self.args.get('self.dbstats')=='yes':
-                for database in self.connection.database_names():
-                    if database != 'config' and database != 'local' and database != 'admin' and database != 'test':
-
-                        dbstats_database = 'dbStats_{0}'.format(database)
-                        dbstats_database_namespaces = 'dbStats_{0}_namespaces'.format(database)
-
-                        master = self.connection[database].command('isMaster')
-
-                        dt={}
-                        dt[dbstats_database] = self.connection[database].command('dbstats')
-
-                        for key in dt[dbstats_database].keys():
-                                data[dbstats_database+'_'+key] = str(dt[dbstats_database][key])
-
-                        # if master['ismaster']:
-                        #     namespaces = (self.connection[database]['system']['namespaces'])
-                        #     data[dbstats_database_namespaces] = (namespaces.count())
         except Exception:
             data['msg']=traceback.format_exc()
 
@@ -189,8 +279,6 @@ if __name__ == "__main__":
     parser.add_argument('--port',help="Port",nargs='?', default= "27017")
     parser.add_argument('--username',help="username", default= username)
     parser.add_argument('--password',help="Password", default= password)
-    parser.add_argument('--dbstats' ,help="dbstats",nargs='?', default= dbstats)
-    parser.add_argument('--replset' ,help="replset",nargs='?', default= replset)
     parser.add_argument('--dbname' ,help="dbname",nargs='?', type=str,default= dbname)
     parser.add_argument('--authdb' ,help="authdb",nargs='?',type=str, default= authdb)
     
