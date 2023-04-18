@@ -20,9 +20,7 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
 
 ## **Plugin installation**
 
-1. Create a folder "ScheduledTask" under Site24x7 Windows Agent plugin directory:
-
-    Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\ScheduledTask
+1. Create a folder "ScheduledTask".
 
 2. Download all the files in "ScheduledTask" folder and place it under the "ScheduledTask" directory.
 
@@ -54,6 +52,12 @@ taskName=\OfficeSoftwareProtectionPlatform\SvcRestartTask
 
 [Scheduled_task2]
 taskName=\Microsoft\Windows\AppId\Work Room
+```
+
+5. After configuring the plugin move the folder "ScheduledTask" into the  Site24x7 Windows Agent plugin directory:
+
+```
+    Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\ScheduledTask
 ```
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.

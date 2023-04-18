@@ -23,6 +23,22 @@ location /nginx_status {
 sudo systemctl reload nginx
 ```
 
+5. Please test the nginx status url that returns response without error.  
+
+	For Example
+	```
+	curl http://localhost/nginx_status
+	```
+ 	Response of the command should be similar to the below output.
+	
+	```
+	Active connections: 2
+	server accepts handled requests
+	344014 344014 661581
+	Reading: 0 Writing: 1 Waiting: 1
+	```
+ **Note :**
+	The nginx status url used was default one. In case if you have assigned a domain please use that in the URL accordingly.
 
 ## Plugin Installation  
 
