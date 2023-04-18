@@ -14,13 +14,9 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
 
 ### Linux
 
-- Create a directory named "IBM_iSeries_AS400" under the Site24x7 Linux Agent plugin directory: 
-
-		Linux             ->   /opt/site24x7/monagent/plugins/IBM_iSeries_AS400
+- Create a directory named "IBM_iSeries_AS400": 
 		
 - Download the files "IBM_iSeries_AS400.sh" , "As400DataCollector.java", "json-20140107.jar", "jt400.jar" and place it under the "IBM_iSeries_AS400" directory using following commands:
-
-     		cd /opt/site24x7/monagent/plugins/IBM_iSeries_AS400
     
     		wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/IBM_iSeries_AS400.sh
     
@@ -34,11 +30,16 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
 
 - Run the command- which java. Copy the output you get and paste it in the JAVA_HOME field. Make sure to paste the path to bin directory and not the path to java.
 
+- Move the "IBM_iSeries_AS400" folder to the site24x7 agent directory
+```
+  Linux             ->   /opt/site24x7/monagent/plugins/IBM_iSeries_AS400
+```
 - Once configured the agent will automatically execute the plugin in five minutes interval and send performance data to the Site24x7 data center.
-    		
+
+
 ### Windows
 
-- Create a directory "IBM_iSeries_AS400" under Site24x7 Windows Agent plugin directory - C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\IBM_iSeries_AS400
+- Create a directory "IBM_iSeries_AS400" 
 
 - Download the files "IBM_iSeries_AS400.bat" , "As400DataCollector.java", "json-20140107.jar", "jt400.jar" and place it under the "IBM_iSeries_AS400" directory:
 
@@ -54,6 +55,10 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
 
 - Run the command- where java. Copy the output of, bin directory of jdk and not the path to java.
 
+- Move the "IBM_iSeries_AS400" into the Site24x7 Windows Agent plugin directory.
+```
+C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\IBM_iSeries_AS400
+```
 - Once configured the agent will automatically execute the plugin in five minutes interval and send performance data to the Site24x7 data center.
 
 ### Metrics Captured
