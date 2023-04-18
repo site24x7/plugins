@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 import json
+import requests
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
 METRICS_UNITS={}
-
 
 class nginx:
 
@@ -18,44 +18,75 @@ class nginx:
         self.logtypename=args.log_type_name
         self.logfilepath=args.log_file_path
 
-        self.domain_name=args.domain_name
+        self.url=args.nginx_status_url
         self.username=args.username
         self.password=args.password
 
 
-    
-    
-    def metriccollector(self):
+
+
+
+    def urlGet(self, endpoint, url, auth):
+
+        maindata={}
+        try:
+            response=requests.get(self.url+endpoint,auth=(self.username,self.password))
+            response.raise_for_status()
         
-        api_endpoints=['/connections','/ssl','/http/requests']
+        except requests.exceptions.HTTPError as err:
+            maindata['msg']="HTTP error: "+str(err)
+            maindata['status']=0
+            return maindata
+
+        except requests.exceptions.RequestException as err:
+             maindata['msg']="Requests Exception found: "+str(err)
+             maindata['status']=0
+             return maindata
+             
+        except Exception as e:
+             maindata['msg']=str(e)
+             maindata['status']=0
+             return maindata
+
+        result=response.json()
+        for key, value in result.items():
+            maindata[endpoint.split("/")[-1]+"_"+key]=value
+
+        return maindata
+
+    def metricData(self,endpoints, auth, url):
+        
+        maindata={}
+        for endpoint in endpoints:
+             interdata=self.urlGet(endpoint, url, auth)
+             maindata.update(interdata)
+             if "status" in interdata and interdata['status']==0:
+                return maindata
+             
+        return maindata
+                  
+
+
+
+    def metriccollector(self):
         try:
              
-            try:
-                import requests
 
-            except Exception as e:
-                self.maindata['msg']=str(e)
-                self.maindata['status']=0
-                return self.maindata
-
-            url="http://"+self.domain_name+"/api/3"
-
-            for api_endpoint in api_endpoints:
-
-                response=requests.get(url+api_endpoint,auth=(self.username,self.password))
-                result=response.json()
-                for key, value in result.items():
-                    self.maindata[api_endpoint.split("/")[-1]+"_"+key]=value
             
-            del self.maindata['ssl_verify_failures']
+            auth=(self.username, self.password)
+            api_endpoints=['/connections','/ssl','/http/requests']
+            interdata=self.metricData(api_endpoints, self.url, auth)
+            self.maindata.update(interdata)
+            if "ssl_verify_failures" in self.maindata:
+                del self.maindata['ssl_verify_failures']
                 
-
         except Exception as e:
              self.maindata['msg']=str(e)
              self.maindata['status']=0
              return self.maindata
              
-        
+
+
         applog={}
         if(self.logsenabled in ['True', 'true', '1']):
                 applog["logs_enabled"]=True
@@ -70,16 +101,17 @@ class nginx:
 
 if __name__=="__main__":
     
-    domain_name='localhost:80'
+
+    nginx_status_url='http://localhost:80/api/3'
     username=None
     password=None
-    
+
     import argparse
     parser=argparse.ArgumentParser()
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
     parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
     parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
-    parser.add_argument('--domain_name', help='name of the nginx domain', nargs='?', default=domain_name)
+    parser.add_argument('--nginx_status_url', help='nginx api url', nargs='?', default=nginx_status_url)
     parser.add_argument('--username', help='username', nargs='?', default=username)
     parser.add_argument('--password', help='password', nargs='?', default=password)
     args=parser.parse_args()
