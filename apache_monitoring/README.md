@@ -4,7 +4,7 @@ The Apache HTTP Server, commonly known as Apache, is the world's most used web s
 
 ## Prerequisites
 
-Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 #### Perform the following configuration in Apache configuration file to get the performance metrics - 
 1. Enable mod_status
@@ -73,6 +73,11 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 			   </Location>
 			  …
 		     </VirtualHost>
+
+3. After completing all the changes restart the apache server using the below linux command.
+	```
+	service apache restart
+	```
 	
 
 ## Plugin Installation  
