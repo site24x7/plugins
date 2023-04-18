@@ -21,8 +21,21 @@ location /api/ {
 ```bash
 sudo systemctl reload nginx
 ```
+5. Please test the nginx status url that returns response without error.  
 
-
+	For example:		
+	```
+	curl http://localhost:80/api/3
+	```
+	Response of the command should be similar to the below output.
+	```
+	["nginx","processes","connections","slabs","http","ssl"]
+	```
+	
+	**Note : **
+	
+	The nginx status url used was default one. In case if you have assigned a domain please use that in the URL accordingly.
+	
 ## Plugin Installation  
 
 - Once installed the respective agent in the server, create a directory named "nginxplus".
