@@ -41,6 +41,12 @@
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
+To view performance charts and set thresholds for the various performance metrics:
+
+1. Log in to Site24x7.
+2. Navigate to Plugins.
+3. Click the required monitor. 
+
 ---
 
 
