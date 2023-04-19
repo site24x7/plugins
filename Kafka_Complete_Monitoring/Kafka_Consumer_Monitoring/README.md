@@ -20,10 +20,9 @@ fi
 And paste the following lines below the above code block.
 
 ```
-export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=<JMX_PORT>"
-export JMX_PORT=<JMX_PORT>
+export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9997"
+export JMX_PORT=9997
 ```
-Replace the <JMX_PORT> with a desirable port.
 - Install the jmxquery module for Python3.
 
     ```
