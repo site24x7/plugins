@@ -23,6 +23,7 @@ And paste the following lines below the above code block.
 export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9997"
 export JMX_PORT=9997
 ```
+- Restart the kafka consumer after the above changes.
 - Install the jmxquery module for Python3.
 
     ```
