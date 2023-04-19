@@ -12,6 +12,24 @@ A Kafka broker is a single Kafka server that runs on a Kafka cluster. On deploym
 
 ## Prerequisites
 
+- **To enable Kafka Broker JMX port**
+
+Find the following code block in the kafka-server-start.sh script.
+
+```
+if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
+    export KAFKA_HEAP_OPTS="-Xmx1G -Xms1G"
+fi
+```
+
+Paste the following lines below the above code block.
+
+```
+export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=<JMX_PORT>"
+export JMX_PORT=<JMX_PORT>
+```
+Replace the <JMX_PORT> with a desirable port.
+
 - Install the jmxquery module for Python3.
   ```
   pip install jmxquery
