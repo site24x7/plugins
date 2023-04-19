@@ -56,8 +56,8 @@ Provide your Kafka Broker configurations in kafka_broker_monitoring.cfg file
 
 ```
 [kafka_broker_1]
-kafka_host=<KAFKA_BROKER_HOST_NAME>
-kafka_jmx_port=<KAFKA_BROKER_PORT_NO>
+kafka_host=localhost
+kafka_jmx_port=9999
 kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO>
 kafka_topic_name=<KAFKA_TOPIC_NAME>
 logs_enabled=False
