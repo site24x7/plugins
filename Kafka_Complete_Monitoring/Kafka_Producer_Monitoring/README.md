@@ -9,6 +9,23 @@ Install the Apache Kafka Producer plugin to monitor key Kafka producer metrics a
 
 
 ### Prerequisites
+- To enable Kafka Producer JMX port
+
+Find the following similar code block in the kafka-console-producer.sh script.
+
+```
+if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
+    export KAFKA_HEAP_OPTS="-Xmx512M"
+fi
+```
+And paste the following lines below the above code block.
+
+```
+export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=<JMX_PORT>"
+export JMX_PORT=<JMX_PORT>
+```
+Replace the <JMX_PORT> with a desirable port.
+
 - Install the jmxquery module for Python3.
 ```
 pip install jmxquery
