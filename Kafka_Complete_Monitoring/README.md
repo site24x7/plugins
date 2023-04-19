@@ -10,25 +10,62 @@ Apache Kafka is an open-source distributed stream-processing platform developed 
 
 ## Starting Kafka with JMX
 
-**Starting Kafka Broker at JMX port 9999**
+### **To enable Kafka Broker JMX port**
+
+Find the following code block in the kafka-server-start.sh script.
+
 ```
-JMX_PORT=9999 bin/kafka-server-start.sh config/server.properties
+if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
+    export KAFKA_HEAP_OPTS="-Xmx1G -Xms1G"
+fi
 ```
-*In case port 9999 is occupied, choose an open port.*
+
+Paste the following lines below the above code block.
+
+```
+export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9999"
+export JMX_PORT=9999
+```
+**Restart the kafka broker after the above changes.**
+
+
+### **To enable Kafka Producer JMX port**
+
+Find the following similar code block in the kafka-console-producer.sh script.
+
+```
+if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
+    export KAFKA_HEAP_OPTS="-Xmx512M"
+fi
+```
+And paste the following lines below the above code block.
+
+```
+export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9998"
+export JMX_PORT=9998
+```
+**Restart the kafka producer after the above changes.**
+
+
+
 
  
-**Starting Kafka Producer at JMX port 9982**
+
+### **To enable Kafka Consumer JMX port**
+
+Find the following similar code block in the kafka-console-consumer.sh script.
 
 ```
-JMX_PORT=9982 bin/kafka-console-producer.sh --topic quickstart-events --bootstrap-server localhost:9092
+if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
+    export KAFKA_HEAP_OPTS="-Xmx512M"
+fi
 ```
-*In case port 9982 is occupied, choose an open port.*
+And paste the following lines below the above code block.
 
- 
-**Starting Kafka Consumer at JMX port 9983**
+```
+export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9997"
+export JMX_PORT=9997
+```
+**Restart the kafka consumer after the above changes.**
 
-```
-JMX_PORT=9983 bin/kafka-console-consumer.sh --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
-```
-*In case port 9983 is occupied, choose an open port.*
 
