@@ -87,7 +87,7 @@ class appname:
 if __name__=="__main__":
 
     kafka_producer_host="localhost"
-    kafka_producer_jmx_port=9982
+    kafka_producer_jmx_port=9998
     kafka_producer_client_id="console-producer"
 
     import argparse
