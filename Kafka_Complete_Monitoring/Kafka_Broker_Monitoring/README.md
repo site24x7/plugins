@@ -12,7 +12,7 @@ A Kafka broker is a single Kafka server that runs on a Kafka cluster. On deploym
 
 ## Prerequisites
 
-- **To enable Kafka Broker JMX port**
+- To enable Kafka Broker JMX port
 
 Find the following code block in the kafka-server-start.sh script.
 
