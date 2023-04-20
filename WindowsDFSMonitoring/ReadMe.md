@@ -1,4 +1,4 @@
-                              # Windows DFS monitoring
+# Windows DFS monitoring
 
 #### What is Distributed File System:
 
@@ -22,12 +22,10 @@ The Distributed File System (DFS) functions provide the ability to logically gro
            https://raw.githubusercontent.com/site24x7/plugins/master/WindowsDFSMonitoring/WindowsDFSMonitoring.cfg
            https://github.com/site24x7/plugins/raw/master/WindowsDFSMonitoring/WindowsDFSMonitoring.ps1
           ```
-          
-          Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsDFSMonitoring
-
+        
 - Open and edit the downloaded file WindowsDFSMonitoring.cfg
 
-          notepad.exe path_to_the_file\WindowsDFSMonitoring.cfg
+          notepad.exe <dir>\WindowsDFSMonitoring.cfg
 
 - The WindowsDFSMonitoring.cfg file will contains the below content
 
