@@ -6,7 +6,7 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
 ### Monitor the health and performance of your Cassandra database with our plugin integration:
 
 #### Prerequisites
--  Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you intend to run the plugin
+-  Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you intend to run the plugin
 
 -  Install the jmxquery module for python.
   	pip install jmxquery
@@ -54,10 +54,7 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
 
 #### Plugin Installation
 
--  Create a directory named "cassandra_monitoring" under the Site24x7 Linux Agent plugin directory:
-    ```
-     Linux             ->   /opt/site24x7/monagent/plugins/cassandra_monitoring
-    ```
+-  Create a directory named "cassandra_monitoring".
     
 -  Download all the files in the "cassandra_monitoring" folder and place it under the "cassandra_monitoring" directory.
     ```
@@ -76,6 +73,12 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
     ```
      python3 cassandra_monitoring.py --hostname localhost --port 7199 --logs_enabled False
     ```
+- Move the folder "cassandra_monitoring" into the Site24x7 Linux Agent plugin directory:
+    ```
+     Linux             ->   /opt/site24x7/monagent/plugins/cassandra_monitoring
+    ```
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
 
 #### Configurations
 
