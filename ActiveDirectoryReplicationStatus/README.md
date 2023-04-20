@@ -34,9 +34,10 @@ Make sure following powershell cmdlets installed in the server where you going t
 ### Plugin Installation
 1. Download the latest version of Site24x7WindowsAgent and install in your server. 
     https://www.site24x7.com/help/admin/adding-a-monitor/windows-server-monitoring.html
-3. Create a folder named 'ActiveDirectoryReplicationStatus' under the Plugins directory "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins" and place this 'ActiveDirectoryReplicationStatus.ps1' script file under created folder.
+2. Create a folder named 'ActiveDirectoryReplicationStatus' and place the 'ActiveDirectoryReplicationStatus.ps1' script file under created folder.
+3. After the configurations move the folder "ActiveDirectoryReplicationStatus" into the Plugins directory "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins"
 4. Once the plugin monitor is added, you can see the monitor under Server > Plugin Integrations. The plugin monitor will also be listed under the respective server monitor's Plugins tab (Server > Server Monitor > Servers > click on the desired server monitor > Plugins). 
-5. User can set up threshold profiles and be alerted when the configured value exceeds.
+6. User can set up threshold profiles and be alerted when the configured value exceeds.
     https://www.site24x7.com/help/admin/configuration-profiles/threshold-and-availability/plugin-monitor.html
 
 

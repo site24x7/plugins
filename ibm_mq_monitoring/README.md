@@ -7,7 +7,7 @@ Hence using our plugin, technician can monitor the performance  attributes of IB
                                                                                               
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 - Install pymqi module for python
 ```
@@ -19,9 +19,7 @@ Hence using our plugin, technician can monitor the performance  attributes of IB
 
 ### Plugin Installation  
 
-- Create a directory named "ibm_mq_monitoring" under the Site24x7 Linux Agent plugin directory: 
-
-		Linux             ->   /opt/site24x7/monagent/plugins/ibm_mq_monitoring
+- Create a directory named "ibm_mq_monitoring".
       
 - Download all the files in the "ibm_mq_monitoring" folder and place it under the "ibm_mq_monitoring" directory.
 
@@ -33,9 +31,14 @@ Hence using our plugin, technician can monitor the performance  attributes of IB
 		pip install pymqi
 
 - Execute the below command with appropriate arguments to check for the valid json output:
-```
- python3 ibm_mq_monitoring.py --queue_manager_name=<name of the queue manager> --channel_name=<channel name> --queue_name=<queue_name> --host=<host name> --port=<port number>  --username=<optional - username> --password=<optional - password> 
- ```
+	 ```
+	 python3 ibm_mq_monitoring.py --queue_manager_name=<name of the queue manager> --channel_name=<channel name> --queue_name=<queue_name> --host=<host name> --port=<port number>  --username=<optional - username> --password=<optional - password> 
+	 ```
+ - Move the folder "ibm_mq_monitoring" into the  Site24x7 Linux Agent plugin directory: 
+
+		Linux             ->   /opt/site24x7/monagent/plugins/ibm_mq_monitoring
+ 
+ 
 Since it's a python plugin, to run in windows server please follow the steps in below link, remaining configuration steps are exactly the same. 
 
   https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
@@ -57,6 +60,8 @@ Since it's a python plugin, to run in windows server please follow the steps in 
     username=<IBM MQ USERNAME>
     password = <IBM MQ PASSWORD>
 ```	
+		
+		
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 

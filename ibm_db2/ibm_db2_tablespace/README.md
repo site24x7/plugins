@@ -15,9 +15,7 @@
 
 ### Plugin Installation  
 
-- Create a directory named "ibm_db2_tablespace" under the Site24x7 Linux Agent plugin directory: 
-
-		Linux             ->   /opt/site24x7/monagent/plugins/ibm_db2_tablespace
+- Create a directory named "ibm_db2_tablespace".
       
 - Download all the files in the "ibm_db2_tablespace" folder and place it under the "ibm_db2_tablespace" directory.
 
@@ -29,9 +27,13 @@
    pip install ibm_db
   ```
 - Execute the below command with appropriate arguments to check for the valid json output:
-```
- python3 ibm_db2_tablespace.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name> --tbsp_name <tablespace name>
- ```
+	```
+	 python3 ibm_db2_tablespace.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name> --tbsp_name <tablespace name>
+	 ```
+ - Move the folder "ibm_db2_tablespace" into the Site24x7 Linux Agent plugin directory: 
+
+		Linux             ->   /opt/site24x7/monagent/plugins/ibm_db2_tablespace
+		
 Since it's a python plugin, to run in windows server please follow the steps in below link, remaining configuration steps are exactly the same. 
 
   https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers

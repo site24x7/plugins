@@ -8,7 +8,7 @@ Hence the MSMQ performance monitoring provides comprehensive performance metrics
                                                                                               
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 
 ---
@@ -17,11 +17,9 @@ Hence the MSMQ performance monitoring provides comprehensive performance metrics
 
 ### Plugin Installation  
 
-- Create a directory named "msmq_monitoring" under the Site24x7 Windows Agent plugin directory: 
-
-		Windows             ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
+- Create a directory named "msmq_monitoring".
       
-- Download all the files in the "msmq_monitoring" folder and place it under the "msmq_monitoring" directory.
+- Download all the files and place it under the "msmq_monitoring" directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/msmq_monitoring/msmq_monitoring.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/msmq_monitoring/msmq_monitoring.cfg
@@ -30,15 +28,14 @@ Hence the MSMQ performance monitoring provides comprehensive performance metrics
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
- ```
-.\msmq_monitoring.ps1 -queueName "queuename"
- ```
-Since it's a windows plugin, to run in windows server please follow the steps in below link, remaining configuration steps are exactly the same. 
+	 ```
+	.\msmq_monitoring.ps1 -queueName "queuename"
+	 ```
+ 
+ - Move the folder into the  Site24x7 Windows Agent plugin directory: 
 
-  https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
-
-
-
+		Windows             ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
+		
 ---
 
 ### Configurations
