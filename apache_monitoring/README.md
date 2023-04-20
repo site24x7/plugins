@@ -109,7 +109,9 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 		log_file_path = "/var/log/apache*/access.log*"
 	```	
 - In case, if user configured virtualHost and to monitor multiple domains status using same plugin. Please follow the below link to configure those domains to monitor
+	```
 	 https://www.site24x7.com/help/admin/adding-a-monitor/plugins/custom-plugins.html#multiple-config
+	```
 
 - Once the configuration done, move the "apache_monitoring" directory under the Site24x7 Linux Agent plugin directory: 
 
