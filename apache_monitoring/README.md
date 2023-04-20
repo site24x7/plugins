@@ -108,13 +108,16 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 		log_type_name = "Apache Access Logs"
 		log_file_path = "/var/log/apache*/access.log*"
 	```	
+- In case if user configured virtualHost and to monitor multiple domains status using same plugin. Please follow the below link to configure those domains to monitor
+	https://www.site24x7.com/help/admin/adding-a-monitor/plugins/custom-plugins.html#multiple-config
 
 - Once the configuration done, move the "apache_monitoring" directory under the Site24x7 Linux Agent plugin directory: 
 
 		 	Linux             ->   /opt/site24x7/monagent/plugins/apache_monitoring 	
 
 		
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
 
 In case if user needs to run this apache_monitoring plugin in windows server, please follow the steps in below link.
 https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
