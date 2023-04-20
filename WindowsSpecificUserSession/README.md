@@ -1,4 +1,4 @@
-# Plugin for monitoring User session on Windows
+# Plugin for monitoring specific User session on Windows
 
 Monitor the specific user's status, and the time of login for Windows servers
 
@@ -9,11 +9,9 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
 
 ## **Plugin installation**
 
-1. Create a folder named "WindowsSpecificUserSession" under the Site24x7 Windows Agent plugin directory:
+1. Create a folder named "WindowsSpecificUserSession" 
 
-    Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsSpecificUserSession
-
-2. Download all the files from the "WindowsSpecificUserSession" folder and place them under the "WindowsSpecificUserSession" directory.
+2. Download below files and place them under the "WindowsSpecificUserSession" directory.
 
 ```
 wget https://raw.githubusercontent.com/site24x7/plugins/master/WindowsSpecificUserSession/WindowsSpecificUserSession.ps1
@@ -45,7 +43,11 @@ UserName="USER_NAME2"
 .\WindowsSpecificUserSession.ps1 -UserName "USER_NAME1"
 ```
 
-  The agent will automatically execute the plugin within five minutes and send metrics to the Site24x7 data center.
+6.Further move the folder "WindowsSpecificUserSession" into the Site24x7 Windows Agent plugin directory: Windows -> C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsSpecificUserSession
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+ 
   
 ## Supported Metrics
 

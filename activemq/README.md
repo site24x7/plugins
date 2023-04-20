@@ -29,7 +29,7 @@ Follow the below steps to configure the ActiveMQ plugin and the monitoring metri
 	
 	
 	
-Restart the instance after making the above changes.
+- Restart the activemq service after making the above changes.
 
 ### Plugin installation
 ---
@@ -57,7 +57,7 @@ Restart the instance after making the above changes.
 	      Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\activemq
 
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Configurations
 ---
