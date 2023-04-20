@@ -37,9 +37,9 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations. 
 
 Note: 
-	Please ensure the position of metrics, counters, units, displaynames correctly. Thus it will map and showcase in the Site24x7 web client 
+	- Please ensure the position of metrics, counters, units, displaynames correctly. Thus it will map and showcase in the Site24x7 web client 
 	correctly.
-	For example, the number of counters, units, and displaynames should be same. Also, the first metric from counters should map to both units and displaynames.
+	- For example, the number of counters, units, and displaynames should be same. Also, the first metric from counters should map to both units and displaynames.
 
  
 
