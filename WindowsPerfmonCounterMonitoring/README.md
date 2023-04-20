@@ -31,7 +31,7 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
 		units="sec/Write,%,bytes/Write,%,/sec,bytes/read,count,count,/sec,%" 
 		displaynames="disk_write,processor_time,disk_byteswrite,Processor_idle_time,event_logs,disk_read,disk_queue_length,current_priority_thread, IO_read_operations,database_healthservice_cache_hit"
 		
-4. After configuring the plugin move the folder "WindowsPerfmonCounterMonitoring" into the Site24x7 Windows Agent plugin directory:
+4. Further move the folder "WindowsPerfmonCounterMonitoring" into the Site24x7 Windows Agent plugin directory:
     Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsPerfmonCounterMonitoring
     
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations. 
