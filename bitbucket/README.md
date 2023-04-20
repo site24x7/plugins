@@ -21,21 +21,30 @@ On-Premise Solution for Atlassian Bit Bucket
 ## Plugin installation
 ___
 
-### Linux
-* Create a directory "bitbucket_jmx" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/bitbucket
+* Create a directory "bitbucket_jmx".
 * Go to the created directory and run the following commands
 `wget https://raw.githubusercontent.com/site24x7/plugins/master/bitbucket/bitbucket.sh`
 `wget https://raw.githubusercontent.com/site24x7/plugins/master/bitbucket/Bitbucket.java`
 
-### Windows
-* Create a directory "bitbucket" under Site24x7 Linux Agent plugin directory - C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\bitbucket
-* Download the files “bitbucket.bat” , “Bitbucket.java” and place it under the “bitbucket” directory
 
 ### Plugin configuration
 ---
 * Open bitbucket.sh (or) bitbucket.bat file. Set the values for **HOSTNAME**, **PORT**, **RMI_UNAME**, **RMI_PASSWORD**. If you have not configured any password for JMX, you don't have to change the RMI_UNAME and RMI_PASSWORD fields. The values for RMI_UNAME and RMI_PASSWORD can also be set through environmental variables
 * **For linux:** If the java classpath is not set in your machine, run the commaand- `which java`. Copy the output you get and paste it in the *JAVA_HOME* field and uncomment it. Make sure to paste the path to bin directory and not the path to java
 * **For windows:** If the java classpath is not set in your machine, you can uncomment **JAVA_HOME** and **PATH** fields and enter the correct path for the respective fields
+
+* Move the folder "bitbucket_jmx" into agent directory.
+   
+   For Linux
+   ```
+   /opt/site24x7/monagent/plugins/bitbucket
+   ```
+   
+   For Windows
+   ```
+   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\bitbucket
+   ```
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics captured
 ---
