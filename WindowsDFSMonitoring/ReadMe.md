@@ -38,10 +38,10 @@ The Distributed File System (DFS) functions provide the ability to logically gro
 After configuring the plugin move the folder "WindowsDFSMonitoring" into the Site24x7 Windows Agent plugin directory:
     Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsDFSMonitoring
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
-The plugin contains the following metrics.
 
+### Metrics collected :
 
           1) Server Name - The Name of the Server which is monitored.
 
