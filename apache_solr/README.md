@@ -5,7 +5,7 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent/Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 - Plugin Uses "JPype" python library. This module is used to execute the jmx query and get data. Execute the below command to install python JPype modeule in your server. 
 
@@ -21,33 +21,33 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 
 ### Plugin installation
 ---
-##### Linux 
 
-- Create a directory "apache_solr" under Site24x7 Linux Agent plugin directory : 
-
-      Linux             ->   /opt/site24x7/monagent/plugins/apache_solr
-
-##### Windows 
-
-- Create a directory "apache_solr" under Site24x7 Windows Agent plugin directory : 
-
-      Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\apache_solr
-      
----
+- Create a directory "apache_solr".
 
 - Download all the files in "apache_solr" folder and place it under the "apache_solr" directory
 
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_solr/apache_solr.py
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_solr/apache_solr.cfg
 	
-- Configure the keys to be monitored, as mentioned in the configuration section below.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python apache_solr.py --host_name=localhost --port=18983 --domain_name=<your_domain_name>
 
+- Move the folder apache_solr into the agent directory.
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+	For Linux 
+	```
+	      Linux             ->   /opt/site24x7/monagent/plugins/apache_solr
+	```
+	
+	For Windows
+	```
+	      Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\apache_solr
+	```
+
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Configurations
 ---

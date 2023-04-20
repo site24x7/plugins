@@ -12,9 +12,7 @@ This plugin monitors the certificates in windows certificate store
 
 ##### Windows
 
-- Create a directory "certificate_monitoring" under Site24x7 Windows Agent plugin directory :
-
-      Windows     ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\certificate_monitoring
+- Create a directory "certificate_monitoring".
 
 - Download the files "certificate_monitoring.ps1" and "certificate_monitoring.cfg".
 
@@ -25,8 +23,11 @@ This plugin monitors the certificates in windows certificate store
 - Execute the below command with appropriate arguments to check for the valid json output.
 
       .\certificate_monitoring.ps1 -certPath "<path to the certificate store>" -certName "<Certificate Name>"
+- Move the folder "certificate_monitoring"  into the Site24x7 Windows Agent plugin directory :
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+      Windows     ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\certificate_monitoring
+      
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Configuration
 ---
