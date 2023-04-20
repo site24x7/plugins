@@ -1,33 +1,44 @@
-Windows DFS monitoring:
+# Windows DFS monitoring:
 
-What is  Distributed File System:
+What is Distributed File System:
 
 The Distributed File System (DFS) functions provide the ability to logically group shares on multiple servers and to transparently link shares into a single hierarchical namespace. DFS organizes shared resources on a network in a treelike structure.It is a file system that is distributed on multiple file servers or multiple locations. It allows programs to access or store isolated files as they do with the local ones, allowing programmers to access files from any network or computer. 
 
-For Installation:
+## Prerequisites: 
+   
+- FS-DFS-Namespace and RSAT-DFS-Mgmt-Con powershell cmdlets are required for monitoring Windows DFS. 
 
+- Goto the server where would monitor the Windows DFS and execute the below command in the powershell
+          ```
+          Install-WindowsFeature FS-DFS-Namespace, RSAT-DFS-Mgmt-Con
+          ```
 
-Create a directory "WindowsDFSMonitoring" under Site24x7 Windows Agent plugin directory :
+## Installation Steps:
 
+- Create a directory "WindowsDFSMonitoring"
+
+- Download the below files and place under above created directory
+          ```
+          https://raw.githubusercontent.com/site24x7/plugins/master/WindowsDFSMonitoring/WindowsDFSMonitoring.cfg
+          https://github.com/site24x7/plugins/raw/master/WindowsDFSMonitoring/WindowsDFSMonitoring.ps1
+          ```
+          
           Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsDFSMonitoring
 
-Download all the files and edit the cfg file run using this command on the command prompt: 
+- Open and edit the downloaded file WindowsDFSMonitoring.cfg
 
-          notepad.exe path_to_the_file
+          notepad.exe path_to_the_file\WindowsDFSMonitoring.cfg
 
-Once it opens the following contents will be shown 
+- The WindowsDFSMonitoring.cfg file contains below content
 
           [DFS_Namespace]
           path=<Path to the DFS Namespace>\*
 
+          - [DFS_Namespace] is the name of the monitor, you can change the name based on your need.
+          - Replace "<Path to the DFS Namespace>" with your the path of DFS Namespace. Don't delete the '\*' as it require to collect metrics. 
 
-[DFS_Namespace] is the name of the monitor , you can change the name of the monitor by entering the name inside the [].
-
-When you replace the path '\*' must be added to the end of the path like in the example or else it will not work. Then run the following command on Power shell:
-
-          Install-WindowsFeature FS-DFS-Namespace, RSAT-DFS-Mgmt-Con
-
-After the above steps are done place the WindowsDFSMonitoring.cfg and WindowsDFSMonitoring.ps1 files under the "WindowsDFSMonitoring" under Site24x7 Windows Agent plugin directory
+After configuring the plugin move the folder "WindowsDFSMonitoring" into the Site24x7 Windows Agent plugin directory:
+    Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsDFSMonitoring
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
