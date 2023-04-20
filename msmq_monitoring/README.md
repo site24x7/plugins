@@ -36,12 +36,6 @@ Hence the MSMQ performance monitoring provides comprehensive performance metrics
 
 		Windows             ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
 		
-Since it's a windows plugin, to run in windows server please follow the steps in below link, remaining configuration steps are exactly the same. 
-
-  https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
-
-
-
 ---
 
 ### Configurations
