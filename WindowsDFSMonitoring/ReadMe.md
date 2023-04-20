@@ -29,7 +29,7 @@ The Distributed File System (DFS) functions provide the ability to logically gro
 
           notepad.exe path_to_the_file\WindowsDFSMonitoring.cfg
 
-- The WindowsDFSMonitoring.cfg file contains below content
+- The WindowsDFSMonitoring.cfg file will contains the below content
 
           [DFS_Namespace]
           path=<Path to the DFS Namespace>\*
