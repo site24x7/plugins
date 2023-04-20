@@ -1,6 +1,6 @@
-# Windows DFS monitoring:
+                              # Windows DFS monitoring
 
-What is Distributed File System:
+#### What is Distributed File System:
 
 The Distributed File System (DFS) functions provide the ability to logically group shares on multiple servers and to transparently link shares into a single hierarchical namespace. DFS organizes shared resources on a network in a treelike structure.It is a file system that is distributed on multiple file servers or multiple locations. It allows programs to access or store isolated files as they do with the local ones, allowing programmers to access files from any network or computer. 
 
@@ -19,8 +19,8 @@ The Distributed File System (DFS) functions provide the ability to logically gro
 
 - Download the below files and place under above created directory
           ```
-          https://raw.githubusercontent.com/site24x7/plugins/master/WindowsDFSMonitoring/WindowsDFSMonitoring.cfg
-          https://github.com/site24x7/plugins/raw/master/WindowsDFSMonitoring/WindowsDFSMonitoring.ps1
+           https://raw.githubusercontent.com/site24x7/plugins/master/WindowsDFSMonitoring/WindowsDFSMonitoring.cfg
+           https://github.com/site24x7/plugins/raw/master/WindowsDFSMonitoring/WindowsDFSMonitoring.ps1
           ```
           
           Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsDFSMonitoring
