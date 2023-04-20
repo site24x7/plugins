@@ -45,14 +45,14 @@ Since it's a python plugin, to run in windows server please follow the steps in 
 ### Configurations
 
 - Provide your IBM MQ configurations in ibm_db2_core.cfg file.
-```
-  [ibm_db_2]
-  host 		= "<hostname>"
-  port 		= "<port>"
-  username	= "<username>"
-  password 	= "<password>"
-  sample_db	= "<sample_db>"
-```	
+	```
+	  [ibm_db_2]
+	  host 		= "<hostname>"
+	  port 		= "<port>"
+	  username	= "<username>"
+	  password 	= "<password>"
+	  sample_db	= "<sample_db>"
+	```	
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
