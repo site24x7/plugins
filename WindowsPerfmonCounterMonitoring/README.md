@@ -12,14 +12,14 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
   - Run the PowerShell prompt as Admin and execute the following:
   - Set-ExecutionPolicy RemoteSigned
   - Restart the plugin agent service
+  - Download and install the latest version of the [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+
 
 ## **Plugin installation**
 
-1. Create a folder named "WindowsPerfmonCounterMonitoring" under the Site24x7 Windows Agent plugin directory:
+1. Create a folder named "WindowsPerfmonCounterMonitoring" 
 
-		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsPerfmonCounterMonitoring
-
-2. Download all the files from the "WindowsPerfmonCounterMonitoring" folder in GitHub and place them under the created "WindowsPerfmonCounterMonitoring" directory.
+2. Download below files and place them under the created "WindowsPerfmonCounterMonitoring" directory.
 
 		https://raw.githubusercontent.com/site24x7/plugins/master/WindowsPerfmonCounterMonitoring/WindowsPerfmonCounterMonitoring.ps1
 		https://raw.githubusercontent.com/site24x7/plugins/master/WindowsPerfmonCounterMonitoring/WindowsPerfmonCounterMonitoring.cfg
@@ -30,13 +30,17 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
 		counters="\LogicalDisk(C:)\Avg. Disk sec/Write,\Processor Information(_Total)\% Processor Time,\LogicalDisk(C:)\Avg. Disk Bytes/Write,\Processor(_Total)\% Idle Time,\Event Log\Events/sec,\PhysicalDisk(_Total)\Avg. Disk Bytes/Read,\LogicalDisk(_Total)\Current Disk Queue Length,\Thread(_Total/_Total)\Priority Current,\Process(_Total)\IO Read Operations/sec,\Database(HealthService)\Database Cache % Hit"
 		units="sec/Write,%,bytes/Write,%,/sec,bytes/read,count,count,/sec,%" 
 		displaynames="disk_write,processor_time,disk_byteswrite,Processor_idle_time,event_logs,disk_read,disk_queue_length,current_priority_thread, IO_read_operations,database_healthservice_cache_hit"
-                		
+		
+4. After configuring the plugin move the folder "WindowsPerfmonCounterMonitoring" into the Site24x7 Windows Agent plugin directory:
+    Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsPerfmonCounterMonitoring
+    
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations. 
 
-Please ensure to map the metric number and position of each counter, units, displaynames correctly. 
-For example, the number of counters, units, and displaynames should be same. Also, the first metric from counters should map to both units and displaynames.
+Note: 
+- Please ensure the position of metrics, counters, units, displaynames correctly. Thus it will map and showcase in the Site24x7 web client correctly.
+- For example, the number of counters, units, and displaynames should be same. Also, the first metric from counters should map to both units and displaynames.
 
- The agent will automatically execute the plugin within five minutes and send metrics to the Site24x7 data center.
-
+ 
 
 
 
