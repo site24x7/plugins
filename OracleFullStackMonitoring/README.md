@@ -23,6 +23,7 @@ All the plugins listed are made from the perspective of **Oracle Database Tuning
   pip3 install cx_Oracle
 
 ```
+- To install cx_Oracle on windows check this [KBase](https://support.site24x7.com/portal/en/kb/articles/install-and-configure-oracle-plugin-in-windows)
 - Roles need to be granted
 
 ```
@@ -31,6 +32,8 @@ grant select_catalog_role to {username}
 ```
 grant create session to {username}
 ```
+
+
 
 ## Prerequisites for db's in a cluster
 
