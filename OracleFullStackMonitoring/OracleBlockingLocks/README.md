@@ -10,6 +10,7 @@
 ```
   pip3 install cx_Oracle
 ```
+- To install cx_Oracle on windows check the [KBase](https://support.site24x7.com/portal/en/kb/articles/install-and-configure-oracle-plugin-in-windows)
 - Roles need to be granted for the user to be used in plugin
 
 ```
