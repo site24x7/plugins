@@ -78,7 +78,25 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 	```
 	service apache restart
 	```
+4. After following the above steps execute the command below to verify the accessibility of the apache2 stats page.
+	```
+	curl -I http://localhost:80/server-status?auto
+	```
 	
+	```
+	HTTP/1.1 200 OK
+	Date: Fri, 21 Apr 2023 10:11:01 GMT
+	Server: Apache/2.4.52 (Ubuntu)
+	Vary: Accept-Encoding
+	Content-Length: 3864
+	Content-Type: text/html; charset=ISO-8859-1
+
+	```
+	It can also be mannually checked using the browser by entering the below url.
+	```
+	http://localhost:80/server-status?auto
+	```
+*Note : The url will differ based on what you have entered in the apache configuration.*
 
 ## Plugin Installation  
 
