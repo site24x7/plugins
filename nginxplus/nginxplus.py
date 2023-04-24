@@ -23,9 +23,6 @@ class nginx:
         self.password=args.password
 
 
-
-
-
     def urlGet(self, endpoint, url, auth):
 
         maindata={}
@@ -62,17 +59,12 @@ class nginx:
              maindata.update(interdata)
              if "status" in interdata and interdata['status']==0:
                 return maindata
-             
         return maindata
                   
-
-
 
     def metriccollector(self):
         try:
              
-
-            
             auth=(self.username, self.password)
             api_endpoints=['/connections','/ssl','/http/requests']
             interdata=self.metricData(api_endpoints, self.url, auth)
@@ -98,10 +90,8 @@ class nginx:
         return self.maindata
 
 
-
 if __name__=="__main__":
     
-
     nginx_status_url='http://localhost:80/api/3'
     username=None
     password=None
