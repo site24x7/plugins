@@ -316,6 +316,7 @@ class MySQL(object):
                                 json_file['MySQLNodeType']=data['mysql_node_type']
                                 with open(file_name, 'w') as f:
                                         json.dump(json_file, f)
+                                        f.close()
                         f = open(file_name)
                         json_val = json.load(f)
                         json_data = json_val["MySQLNodeType"]
@@ -330,10 +331,12 @@ class MySQL(object):
                                 json_file['MySQLNodeType']=data['mysql_node_type']
                                 with open(file_name, 'w') as f:
                                         json.dump(json_file, f)
+                        f.close()
                 else:
                         json_file['MySQLNodeType']=data['mysql_node_type']
                         with open(file_name, 'w') as f:
                                 json.dump(json_file, f)
+                                f.close()
                 #global_table = self.executeQuery('select * from information_schema.tables where table_schema="' + self.database + '" and table_name="'+self.table+'"')
                 data["row_length"] = 0
                 data["data_length"] = 0
@@ -444,4 +447,5 @@ if __name__ == "__main__":
     mysql_plugins = MySQL(args)
     result = mysql_plugins.metricCollector()
     print(json.dumps(result, indent=4, sort_keys=True))
+
 
