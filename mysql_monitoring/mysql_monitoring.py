@@ -318,6 +318,7 @@ class MySQL(object):
                                         json.dump(json_file, f)
                         f = open(file_name)
                         json_val = json.load(f)
+                        f.close()
                         json_data = json_val["MySQLNodeType"]
                         if(json_data != data['mysql_node_type'] and (json_data in ['Slave', 'Master', 'Standalone'])):
                                 json_file['MySQLNodeType']=data['mysql_node_type']
@@ -330,6 +331,7 @@ class MySQL(object):
                                 json_file['MySQLNodeType']=data['mysql_node_type']
                                 with open(file_name, 'w') as f:
                                         json.dump(json_file, f)
+
                 else:
                         json_file['MySQLNodeType']=data['mysql_node_type']
                         with open(file_name, 'w') as f:
@@ -444,4 +446,5 @@ if __name__ == "__main__":
     mysql_plugins = MySQL(args)
     result = mysql_plugins.metricCollector()
     print(json.dumps(result, indent=4, sort_keys=True))
+
 
