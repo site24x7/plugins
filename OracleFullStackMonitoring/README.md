@@ -48,7 +48,7 @@ Steps to use the [SetenvPrerequisites.py](https://github.com/site24x7/plugins/bl
 - Execute the **SetenvPrerequisites.py** file
 - Once Excuted the **SetenvPrerequisites.py** will ask for **sysdba username and passsword**, based on the details provided in the ".cfg" file the db will be connected and the necessary previlieges will be granted 
 
-**The cx_Oracle source can be found at : https://github.com/oracle/python-cx_Oracle.**
+**The cx_Oracle source can be found [here](https://github.com/oracle/python-cx_Oracle)**
 
-**Zoho Corporation has made this into one single executable and is licensed under the same [license](https://github.com/oracle/python-cx_Oracle/blob/main/LICENSE.txt) which can be found at: https://github.com/site24x7/plugins/tree/master/OracleFullStackMonitoring/cx_Oracle%20License/License.txt**
+**Zoho Corporation has made this into one single executable and is licensed under the same [license](https://github.com/oracle/python-cx_Oracle/blob/main/LICENSE.txt) which can be found [here](https://github.com/site24x7/plugins/tree/master/OracleFullStackMonitoring/cx_Oracle%20License/License.txt)**
 
