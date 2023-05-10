@@ -50,5 +50,5 @@ Steps to use the [SetenvPrerequisites.py](https://github.com/site24x7/plugins/bl
 
 **The cx_Oracle source can be found [here](https://github.com/oracle/python-cx_Oracle)**
 
-**Zoho Corporation has made this into one single [executable](https://github.com/SurajDevAnand/plugins-1/tree/master/OracleFullStackMonitoring/cx_Oracle_linux) and is licensed under the same [license](https://github.com/oracle/python-cx_Oracle/blob/main/LICENSE.txt) which can be found [here](https://github.com/site24x7/plugins/tree/master/OracleFullStackMonitoring/cx_Oracle%20License/License.txt)**
+**Zoho Corporation has made this into one single [executable](https://github.com/site24x7/plugins/tree/master/OracleFullStackMonitoring/cx_Oracle_linux) and is licensed under the same [license](https://github.com/oracle/python-cx_Oracle/blob/main/LICENSE.txt) which can be found [here](https://github.com/site24x7/plugins/tree/master/OracleFullStackMonitoring/cx_Oracle%20License/License.txt)**
 
