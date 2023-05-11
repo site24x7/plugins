@@ -6,7 +6,6 @@
 
 - Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
-- To install cx_Oracle on windows check this [KBase](https://support.site24x7.com/portal/en/kb/articles/install-and-configure-oracle-plugin-in-windows)
 - Roles need to be granted for the user to be used in plugin
 
 ```
