@@ -27,9 +27,9 @@ grant create session to {username}
 		```
 		wget https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_linux/cx_Oracle.cpython-36m-x86_64-linux-gnu.so
 		```
-	- For Windows
+	- For Windows download the module file from below link.
 	
-		- Download the raw file by clicking this [link](https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_windows/cx_Oracle.cp38-win32.pyd).
+		https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_windows/cx_Oracle.cp38-win32.pyd
 	
 - Download the below files in the "OracleBlockingLocks" folder and place it under the "OracleBlockingLocks" directory.
 
@@ -40,7 +40,7 @@ grant create session to {username}
 	```
 	 python3 OracleBlockingLocks.py --hostname=<name of the host> --port=<port> --sid=<SID> --username=<USERNAME> --password=<PASSWORD> --oracle_home=<ORACLE_HOME>
 	 ```
-- After verifying the above command provide your OracleBlockingLocks configurations in OracleBlockingLocks.cfg file.
+- After the above command with parameters gives the expected output, please configure the relevant parameters in the OracleBlockingLocks.cfg file.
 	```
 	    [ORCL]
 	    hostname=localhost
@@ -53,12 +53,12 @@ grant create session to {username}
 	    log_file_path=None
 	    oracle_home=None
 	```	
-- Move the "OracleBlockingLocks" into the Site24x7 Linux Agent plugin directory: 
+- Move the "OracleBlockingLocks" folder into the Site24x7 Linux Agent plugin directory: 
 	```
 	Linux             ->   /opt/site24x7/monagent/plugins/OracleBlockingLocks
 	```
 	```
-	Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\activemq
+	Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\OracleBlockingLocks
 	```
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
