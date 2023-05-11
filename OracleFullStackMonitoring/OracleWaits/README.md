@@ -25,29 +25,27 @@ grant create session to {username}
 
 ### Plugin Installation  
 
-- Create a directory named "OracleWaits" under the Site24x7 Linux Agent plugin directory: 
-
-		Linux             ->   /opt/site24x7/monagent/plugins/OracleWaits
-      
-- Download all the files in the "OracleWaits" folder and place it under the "OracleWaits" directory.
+- Create a directory named "OracleWaits".
+- Download the cx_Oracle python module in the "OracleWaits".
+	- For Linux 	
+		```
+		wget https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_linux/cx_Oracle.cpython-36m-x86_64-linux-gnu.so
+		```
+	- For Windows download the module file from below link.
+	
+		https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_windows/cx_Oracle.cp38-win32.pyd
+	
+- Download the below files in the "OracleWaits" folder and place it under the "OracleWaits" directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleWaits/OracleWaits.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleWaits/OracleWaits.cfg
 
-- Execute the following command in your server to install OracleWaits: 
-
-		pip3 install cx_Oracle
-
 - Execute the below command with appropriate arguments to check for the valid json output:
-```
- python3 OracleWaits.py --hostname=<name of the host> --port=<port> --sid=<SID> --username=<USERNAME> --password=<PASSWORD> --oracle_home=<ORACLE_HOME> --tablespace_name=<TABLESPACE_NAME>
- ```
+	```
+	 python3 OracleWaits.py --hostname=<name of the host> --port=<port> --sid=<SID> --username=<USERNAME> --password=<PASSWORD> --oracle_home=<ORACLE_HOME>
+	 ```
+- After the above command with parameters gives the expected output, please configure the relevant parameters in the OracleWaits.cfg file.
 
----
-
-### Configurations
-
-- Provide your OracleWaits configurations in OracleWaits.cfg file.
 ```
     [ORCL]
     hostname=localhost
@@ -61,6 +59,13 @@ grant create session to {username}
     oracle_home=None
 
 ```	
+- Move the "OracleWaits" folder into the Site24x7 Linux Agent plugin directory: 
+	```
+	Linux             ->   /opt/site24x7/monagent/plugins/OracleWaits
+	```
+	```
+	Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\OracleWaits
+	```
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
