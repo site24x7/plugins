@@ -8,12 +8,12 @@
 
 - Roles need to be granted for the user to be used in plugin
 
-```
-grant select_catalog_role to {username}
-```
-```
-grant create session to {username}
-```
+	```
+	grant select_catalog_role to {username}
+	```
+	```
+	grant create session to {username}
+	```
 ---
 
 
