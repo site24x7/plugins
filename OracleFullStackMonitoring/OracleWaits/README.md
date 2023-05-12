@@ -5,7 +5,7 @@
 ## Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
-
+- Install python3.7 or higher version on the server.
 - Install cx_Oracle module for python
 ```
   pip3 install cx_Oracle
