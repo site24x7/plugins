@@ -24,9 +24,13 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
 
 * Edit  DiskFolderMonitoring.ps1 script and update $path with the path of the folder you want to monitor.
 
-* Move the directory "DiskFolderMonitoring" to Site24x7 Windows Agent plugin directory - \monitoring\Plugins\
+* Move the directory "DiskFolderMonitoring" to Site24x7 Windows Agent plugin directory 
 
-###### The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center. ######
+```
+    Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\ScheduledTask
+```
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
 
