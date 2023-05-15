@@ -1,7 +1,7 @@
 Plugin for Disk partition  Monitoring
 ===========
 
-Update the update the disk partition name in the script before adding the plugin 
+Update the disk partition name in the script before adding the plugin 
 
 The following metrics are provided for the disk partition I/O plugin:
 
