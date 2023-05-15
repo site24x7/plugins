@@ -69,12 +69,7 @@ METRICS_UNITS = {
 
                  }
 
-host ="localhost"
-port ="27017"
-username ="None"
-password ="None"
-dbname ="local"
-authdb="admin"
+
 
 class MongoDB(object):
     def __init__(self, args):
@@ -85,6 +80,28 @@ class MongoDB(object):
         self.password=args.password
         self.dbname=args.dbname
         self.authdb=args.authdb
+
+        self.tls=args.tls
+        
+        if self.tls=="True":
+        
+            self.tls=True
+            self.tlscertificatekeyfile=args.tlscertificatekeyfile
+            self.tlscertificatekeyfilepassword=args.tlscertificatekeyfilepassword
+            self.tlsallowinvalidcertificates=args.tlsallowinvalidcertificates
+            self.tlsallowinvalidcertificates=args.tlsallowinvalidcertificates
+            if self.tlsallowinvalidcertificates=="True":
+                self.tlsallowinvalidcertificates=True
+            else:
+                self.tlsallowinvalidcertificates=False
+                
+            
+            
+     
+        else:
+            self.tls=False
+
+
         if(self.username!="None" and self.password!="None" and self.authdb!="None"):
             self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username,urllib.parse.quote(self.password), self.host, self.port, self.authdb)
         elif(self.username!="None" and self.password!="None"):
@@ -121,7 +138,14 @@ class MongoDB(object):
 
             try:
                 mongo_uri = 'mongodb://' + self.mongod_server
-                self.connection = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
+
+                if self.tls:
+                    self.connection = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000,tls=self.tls,tlscertificatekeyfile=self.tlscertificatekeyfile,tlscertificatekeyfilepassword=self.tlscertificatekeyfilepassword,tlsallowinvalidcertificates=self.tlsallowinvalidcertificates)
+                else:
+                    self.connection = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
+
+
+
                 db = self.connection[self.dbname]
                 cache_data = db.command('serverStatus', recordStats=0)
                 time.sleep(5)
@@ -272,15 +296,34 @@ class MongoDB(object):
         return data
 
 if __name__ == "__main__":
-    
+
+
+    host ="127.0.0.1"
+    port ="27017"
+    username =None
+    password =None
+    dbname ="mydatabase"
+    authdb="admin"
+
+    # TLS/SSL Details
+    tls="False"
+    tlscertificatekeyfile=None
+    tlscertificatekeyfilepassword=None
+    tlsallowinvalidcertificates="True"
+
     import argparse
     parser=argparse.ArgumentParser()
-    parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
-    parser.add_argument('--port',help="Port",nargs='?', default= "27017")
+    parser.add_argument('--host',help="Host Name",nargs='?', default= host)
+    parser.add_argument('--port',help="Port",nargs='?', default= port)
     parser.add_argument('--username',help="username", default= username)
     parser.add_argument('--password',help="Password", default= password)
     parser.add_argument('--dbname' ,help="dbname",nargs='?', type=str,default= dbname)
     parser.add_argument('--authdb' ,help="authdb",nargs='?',type=str, default= authdb)
+
+    parser.add_argument('--tls' ,help="tls setup (True or False)",nargs='?',default= tls)
+    parser.add_argument('--tlscertificatekeyfile' ,help="tlscertificatekeyfile file path",default= tlscertificatekeyfile)
+    parser.add_argument('--tlscertificatekeyfilepassword' ,help="tlscertificatekeyfilepassword",default= tlscertificatekeyfilepassword)
+    parser.add_argument('--tlsallowinvalidcertificates' ,help="tlsallowinvalidcertificates",default= tlsallowinvalidcertificates)
     
     args=parser.parse_args()
     mongo_check = MongoDB(args)
