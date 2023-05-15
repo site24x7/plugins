@@ -1,7 +1,7 @@
 Plugin for monitoring MongoDb Atlas performance
 ==============================================
 
-This plugin monitors the metrics of MongoDb Atlas performance.
+This plugin monitors the performance and availability of MongoDb Atlas cluster node.
 
 ## Prerequisites
 
@@ -14,11 +14,7 @@ This plugin monitors the metrics of MongoDb Atlas performance.
 
 ### Plugin Installation
 
-- Create a directory "mongodb_measurement_of_process" under Site24x7 Linux Agent plugin directory : 
-
-      Linux             ->   /opt/site24x7/monagent/plugins/mongodb_atlas_perf_metrics
-
----
+- Create a directory "mongodb_atlas_perf_metrics": 
       
 - Download all the files in "mongodb_atlas_perf_metrics" folder and place it under the "mongodb_atlas_perf_metrics" directory
 
@@ -28,6 +24,10 @@ This plugin monitors the metrics of MongoDb Atlas performance.
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python mongodb_atlas_perf_metrics.py --group_id=<your_group_id> --host=<your_host_name> --port=27017 --public_key=<your_public_key> --private_key=<your_private_key>
+		
+- Move the directroy "mongodb_atlas_perf_metrics"  under Site24x7 Linux Agent plugin directory :
+
+		Linux             ->   /opt/site24x7/monagent/plugins/mongodb_atlas_perf_metrics
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
