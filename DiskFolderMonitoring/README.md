@@ -19,7 +19,7 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
 ## Plugin installation ##
 
 * Create a directory "DiskFolderMonitoring" 
-* 
+
 * Download the file "DiskFolderMonitoring.ps1" and place under DiskFolderMonitoring.
 
 * Edit  DiskFolderMonitoring.ps1 script and update $path with the path of the folder you want to monitor.
