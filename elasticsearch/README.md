@@ -13,27 +13,26 @@ Get to know how to configure the Elasticsearch plugin and the monitoring metrics
 
 ### Plugin Installation  
 
-- Create a directory named "elasticsearch" under the Site24x7 Linux Agent plugin directory: 
-
-		Linux       ->  /opt/site24x7/monagent/plugins/elasticsearch
+- Create a directory named "elasticsearch".
       
 - Download all the files in the "elasticsearch" folder and place it under the "elasticsearch" directory.
-```
-     wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.cfg
-     wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.py
-```
 
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.py
+		
+- Since it's a python plugin, to run in windows server please follow the steps in below link, remaining configuration steps are exactly the same. 
+
+		https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
- ```
- python3 elasticsearch.py --host=<host name> --port=<port no> --node_name=<node name> --username=<elasticsearch username> --password=<elasticsearch password> --sslpath=<ssl file path> --ssl=<ssl option("YES/NO")>
- ```
-Since it's a python plugin, to run in windows server please follow the steps in below link, remaining configuration steps are exactly the same. 
+		python3 elasticsearch.py --host=<host name> --port=<port no> --node_name=<node name> --username=<elasticsearch username> --password=<elasticsearch password> --sslpath=<ssl file path> --ssl=<ssl option("YES/NO")>
+  
+- Move the directory "elasticsearch" under the Site24x7 Linux Agent plugin directory: 
 
-  https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
-
-
+		Linux       ->  /opt/site24x7/monagent/plugins/elasticsearch
+		
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ---
 

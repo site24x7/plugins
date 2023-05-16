@@ -10,33 +10,33 @@ This plugin monitors the collection of File metrics.
 
 ---
 
-##### Linux
-
-- Create a directory "file_monitoring" under Site24x7 Linux Agent plugin directory :
-
-      Linux             ->   /opt/site24x7/monagent/plugins/file_monitoring
-
-##### Windows
-
-- Create a directory "file_monitoring" under Site24x7 Windows Agent plugin directory :
-
-      Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\file_monitoring
-
----
+- Create a directory "file_monitoring".
 
 - Download all the files using the following commands and place it under the "file_monitoring" directory
 
-  	wget https://raw.githubusercontent.com/site24x7/plugins/master/file_monitoring/file_monitoring.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/file_monitoring/file_monitoring.py
       
-  	wget https://raw.githubusercontent.com/site24x7/plugins/master/file_monitoring/file_monitoring.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/file_monitoring/file_monitoring.cfg
 
 - Configure the keys to be monitored, as mentioned in the configuration section below.
 
 - Execute the below command with appropriate arguments to check for the valid json output.
 
-      python file_monitoring.py --filename="<YOUR FILE NAME>" --hashtype="<HASH TYPE OF YOUR CHOICE>" --search_text="<SEARCH TEXT OF YOUR CHOICE>" --case_sensitive="True"
+		python file_monitoring.py --filename="<YOUR FILE NAME>" --hashtype="<HASH TYPE OF YOUR CHOICE>" --search_text="<SEARCH TEXT OF YOUR CHOICE>" --case_sensitive="True"
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+##### Linux
+
+- Move the directory "file_monitoring" under Site24x7 Linux Agent plugin directory :
+
+		Linux             ->   /opt/site24x7/monagent/plugins/file_monitoring
+
+##### Windows
+
+- Move the directory "file_monitoring" under Site24x7 Windows Agent plugin directory :
+
+		Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\file_monitoring
+      
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Configurations
 

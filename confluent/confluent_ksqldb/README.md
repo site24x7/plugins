@@ -15,18 +15,20 @@
 ## Plugin installation
 
 ### Linux
-* Create a directory "confluent_ksqldb" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/confluent_ksqldb
+* Create a directory "confluent_ksqldb".
 
 * Go to the created directory and run the following commands
-    `wget https://raw.githubusercontent.com/site24x7/plugins/master/confluent_ksqldb/confluent_ksqldb.sh`
-    `wget https://raw.githubusercontent.com/site24x7/plugins/master/confluent_ksqldb/ConfluentPlatform.java`
 
-
-### Plugin configuration
----
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/confluent/confluent_ksqldb/confluent_ksqldb.sh
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/confluent/confluent_ksqldb/ConfluentPlatform.java
+		
 * Open confluent_ksqldb.sh and Set the values for **HOSTNAME**, **PORT** , **JAVA_HOME**
 
 * If the java classpath is not set in your machine, run the commaand- `which java`. Copy the output you get and paste it in the *JAVA_HOME* field. Make sure to paste the path to bin directory and not the path to java
+
+* Move the directory "confluent_ksqldb" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/confluent_ksqldb
+
+* The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics captured
 ---

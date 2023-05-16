@@ -2,18 +2,19 @@
 
 ## CPU Statistics plugin installation:
 	
-Create a directory with the name "cpustats", under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/cpustats. 
+* Create a directory with the name "cpustats".
 
-Download the file "cpustats.py" from our GitHub repository and place it under the "cpustats" directory
+* Download the file "cpustats.py" from our GitHub repository using below command and place it under the "cpustats" directory
 
-## Commands to perform the above step:
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/cpustats/cpustats.py
+		
+* Execute the plugin script manually using below command to get valid json output
 
-	cd /opt/site24x7/monagent/plugins/
-	mkdir cpustats
-	cd cpustats
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/cpustats/cpustats.py
+		python cpustats.py
+		
+* Move the directory "cpustats", under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/cpustats.
 
-Once the plugin file is downloaded, the agent will mark it up in the next data collection and you can view it in Site24x7 client
+* The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ## Monitored Attributes : All the system listed cpu attributes in top command output. 
 

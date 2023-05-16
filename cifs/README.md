@@ -12,26 +12,28 @@ This plugin monitors the performance metrics of CIFS mount point status, IP addr
 ---
 ##### Linux 
 
-- Create a directory "cifs" under Site24x7 Linux Agent plugin directory : 
-
-      Linux       ->   /opt/site24x7/monagent/plugins/cifs
+- Create a directory "cifs".
 
 - Open a terminal inside the nfs folder created on the above step and execute the below mentioned commands to download the plugin files.
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/cifs/cifs.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/cifs/cifs.cfg
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/cifs/cifs_check.sh
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/cifs/cifs.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/cifs/cifs.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/cifs/cifs_check.sh
 	
 - Configure the mount point to be monitored in the cifs.cfg file, as mentioned below.
 
-	  [display_name]
-	  mount_folder = “<your_mount_folder_path>,<your_mount_folder_path1>”
+		[display_name]
+		mount_folder = “<your_mount_folder_path>,<your_mount_folder_path1>”
 	  
 - Enter the Folder paths inside the " " separated by commas ','.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python cifs.py --mount_folder=<your_mount_folder_path>,<your_mount_folder_path1>
+		
+- Move the directory "cifs" under Site24x7 Linux Agent plugin directory :
+
+		Linux       ->   /opt/site24x7/monagent/plugins/cifs
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
