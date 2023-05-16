@@ -37,6 +37,8 @@ Make sure following powershell cmdlets installed in the server where you going t
 2. In your windows server goto powershell console and execute below commands
                 ```
                     Import-Module ServerManager
+                ```
+                ```
                     Install-WindowsFeature -Name RSAT-AD-PowerShell
                 ```
 3. And to import the PowerShell Active Directory module, run the below command in the powershell console
