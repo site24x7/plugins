@@ -17,29 +17,26 @@ This plugin monitors the availability and state of mongodb atlas cluster.
       
 - Download all the files in "mongodb_atlas" folder and place it under the "mongodb_atlas" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_atlas/mongodb_atlas.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_atlas/mongodb_atlas.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_atlas/mongodb_atlas.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_atlas/mongodb_atlas.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python mongodb_atlas.py --group_id=<your_group_id> --public_key=<your_public_key> --private_key=<your_private_key>
 		
-- Move the directroy "mongodb_atlas"  under Site24x7 Linux Agent plugin directory :
-
-		Linux             ->   /opt/site24x7/monagent/plugins/mongodb_atlas
-
-
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
-
-### Configurations
-
 - Configure this set up in your cfg file 
                 
 		[mongodb_atlas]
 		group_id = <group_id> 
 		public_key = <public_key>
 		private_key = <your_private_key>
+		
+- Move the directroy "mongodb_atlas"  under Site24x7 Linux Agent plugin directory :
+
+		Linux             ->   /opt/site24x7/monagent/plugins/
+
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Monitored
 

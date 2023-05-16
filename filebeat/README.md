@@ -32,9 +32,7 @@ This plugin monitors the performance of Filebeat.
 ---
 ### Plugin Installation
 
-- Create a directory "filebeat" under Site24x7 Linux Agent plugin directory : 
-
-        Linux             ->   /opt/site24x7/monagent/plugins/filebeat
+- Create a directory "filebeat".
       
 - Download all the files in "filebeat" folder and place it under the "filebeat" directory
 
@@ -44,9 +42,13 @@ This plugin monitors the performance of Filebeat.
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python filebeat.py --host=<your_host_name> --port=<port_number>
+		
+- Move the directory "filebeat" under Site24x7 Linux Agent plugin directory : 
+
+		Linux             ->   /opt/site24x7/monagent/plugins/filebeat
 
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
 ### Configurations

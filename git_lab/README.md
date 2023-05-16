@@ -8,13 +8,13 @@
 ### Plugin configuration
 ---
 
-* Create a directory "git_lab" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/git_lab
+* Create a directory "git_lab".
 
 * Download the files "git_lab.py" , "git_lab.cfg" and place it under the "git_lab" directory
 
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/git_lab/git_lab.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/git_lab/git_lab.py
 
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/git_lab/git_lab.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/git_lab/git_lab.cfg
 
 
 * Open the "git_lab.cfg" file and add the configuration details to it. Sample configuration file looks like: #git_lab.cfg
@@ -33,6 +33,10 @@
 	project_id denotes - actual project id to be monitored
 
 * If you have more than one projects needs to be monitored create one more section and configure it as above.
+
+* Move the directory "git_lab" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/git_lab
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
 ### Metrics captured

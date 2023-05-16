@@ -28,9 +28,7 @@ To run the Jenkins effectively, DevOps team is required to monitor the performan
 
 ### Plugin Installation  
 
-- Create a directory "jenkins_performance" under Site24x7 Linux Agent plugin directory : 
-
-		Linux             ->   /opt/site24x7/monagent/plugins/jenkins_performance
+- Create a directory "jenkins_performance".
       
 - Download all the files in "jenkins_performance" folder and place it under the "jenkins_performance" directory
 
@@ -40,13 +38,8 @@ To run the Jenkins effectively, DevOps team is required to monitor the performan
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python jenkins_performance.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --apikey=<apikey>
-
-
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
----
-
-### Configurations
+		
+- Change the below configurations in "jenkins_performance.cfg" file
 
 		[jenkins_performance]
 		host = <host_name>
@@ -54,6 +47,13 @@ The agent will automatically execute the plugin within five minutes and send per
 		username = <username>
 		password = <password>
 		apikey = <apikey>
+		
+- Move the directory "jenkins_performance" under Site24x7 Linux Agent plugin directory : 
+
+		Linux             ->   /opt/site24x7/monagent/plugins/
+
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 	
 ---
 #### Jenkins performance metrics:

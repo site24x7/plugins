@@ -20,28 +20,31 @@ For more details on the libvirt library , refer https://libvirt.org/index.html.
 ---
 ##### Linux 
 
-- Create a directory "kvm_host" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/kvm_host
+- Create a directory "kvm_host".
 
 - Download all the files in "kvm_host" folder and place it under the "kvm_host" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/kvm_host/kvm_host.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/kvm_host/kvm_host.cfg
-	
-- Configure the keys to be monitored, as mentioned in the configuration section below.
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/kvm_host/kvm_host.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/kvm_host/kvm_host.cfg
+			  	
+- Configure the keys to be monitored, as mentioned in the below configuration, in "kvm_host.cfg"
+
+		[localhost]
+		host="qemu:///system"
+		plugin_version="1"
+		heartbeat="True"
+		
+host - KVM host to be monitored.Incase of remote host ssh login details has to be provides.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python kvm_host.py --host "qemu:///system" --plugin-version "1" --heartbeat "True"
+		
+- Move the directory "kvm_host" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
 
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
-### Configurations
----
-
-	host - KVM host to be monitored.Incase of remote host ssh login details has to be provides.
-	plugin_version = 1
-	heartbeat = True
 
 ### Metrics Captured
 ---

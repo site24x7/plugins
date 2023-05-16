@@ -13,13 +13,13 @@ This plugin can be used to monitor the JMX MBean in the JVM.
 ---
 ##### Linux 
 
-- Create a directory "jmx" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/jmx
+- Create a directory "jmx".
 
 - Download all the files in "jmx" folder and place it under the "jmx" directory
 
-	    wget https://raw.githubusercontent.com/site24x7/plugins/master/jmx/jmx.sh
-	    wget https://raw.githubusercontent.com/site24x7/plugins/master/jmx/JMXMonitoring.java
-        wget https://raw.githubusercontent.com/site24x7/plugins/master/jmx/metrics.txt
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/jmx/jmx.sh
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/jmx/JMXMonitoring.java
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/jmx/metrics.txt
 	
 - Configure the host, port to be monitored, and the java home path in the jmx.sh configuration section.
 
@@ -28,8 +28,10 @@ This plugin can be used to monitor the JMX MBean in the JVM.
 - Execute the below command to check for the valid json output.  
 
 		sh jmx.sh
+		
+- Move the directory "jmx" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/jmx
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
 

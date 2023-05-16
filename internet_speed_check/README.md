@@ -20,13 +20,19 @@ Plugin for Monitoring the Internet speed
 ---
 ##### Linux 
 
-- Create a directory "internet_speed_check" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/internet_speed_check
+- Create a directory "internet_speed_check".
 
 - Download the file "internet_speed_check.py" and place it under the "internet_speed_check" directory
   
-  wget https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/internet_speed_check.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/internet_speed_check.py
 	
-  The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+- Execute the below command to check for valid json output
+
+		python internet_speed_check.py
+  
+- Move the directory "internet_speed_check" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/internet_speed_check
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
 ### Metrics Captured
