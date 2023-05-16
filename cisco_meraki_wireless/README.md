@@ -7,47 +7,67 @@
 * Collect the **BASEURL** **APIKEY** **NETWORKID** informations using the following link : https://developer.cisco.com/meraki/api/#!getting-started
 
 ### Linux
-* Create a directory "cisco_meraki_wireless" under Site24x7 Linux Agent plugin directory using the command:
- 
-    mkdir /opt/site24x7/monagent/plugins/cisco_meraki_wireless
+* Create a directory "cisco_meraki_wireless".
 
 * Download the files "cisco_meraki_wireless.sh" , "MerakiDataCollector.java", "json.jar", "httpcore-4.4.10.jar", "httpclient-4.5.6.jar", "commons-logging-1.2.jar", "commons-codec-1.10.jar" and place it under the "cisco_meraki_wireless" directory using following commands:
+    
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/cisco_meraki_wireless.sh
+    
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/cisco_meraki_wireless.cfg
+    
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/MerakiDataCollector.java
+    
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/json.jar
+    
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/httpcore-4.4.10.jar
+    
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/httpclient-4.5.6.jar
+    
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/commons-logging-1.2.jar
+    
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/commons-codec-1.10.jar
+		
+* Open cisco_meraki_wireless.cfg file and set the values for **APIKEY**, **NETWORKID**, **BASEURL**, **JAVA_HOME**
 
-     cd /opt/site24x7/monagent/plugins/cisco_meraki_wireless
+* Run the commaand- `which java`. Copy the output you get and paste it in the **JAVA_HOME** field. Make sure to paste the path to bin directory and not the path to java.
     
-    `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/cisco_meraki_wireless.sh`
-    
-    `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/cisco_meraki_wireless.cfg`
-    
-    `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/MerakiDataCollector.java`
-    
-    `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/json.jar`
-    
-    `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/httpcore-4.4.10.jar`
-    
-    `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/httpclient-4.5.6.jar`
-    
-    `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/commons-logging-1.2.jar`
-    
-    `wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/commons-codec-1.10.jar`
+* Move the directory "cisco_meraki_wireless" under Site24x7 Linux Agent plugin directory using the command:
+ 
+		Linux		->	/opt/site24x7/monagent/plugins/cisco_meraki_wireless
+
+* The agent will automatically execute the plugin in five minutes interval and send performance data to the Site24x7 data center.
 
 
 ### Windows
-* Create a directory "cisco_meraki_wireless" under Site24x7 Windows Agent plugin directory - C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\cisco_meraki_wireless
-* Download the files "cisco_meraki_wireless.bat" , "MerakiDataCollector.java", "json.jar", "httpcore-4.4.10.jar", "httpclient-4.5.6.jar", "commons-logging-1.2.jar", "commons-codec-1.10.jar" and place it under the "cisco_meraki_wireless" directory
-`https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/cisco_meraki_wireless.bat`
-`wget https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/cisco_meraki_wireless.cfg`
-`https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/MerakiDataCollector.java`
-`https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/json.jar`
-`https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/httpcore-4.4.10.jar`
-`https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/httpclient-4.5.6.jar`
-`https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/commons-logging-1.2.jar`
-`https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/commons-codec-1.10.jar`
+* Create a directory "cisco_meraki_wireless".
 
-### Plugin configuration
+* Download the files "cisco_meraki_wireless.bat" , "MerakiDataCollector.java", "json.jar", "httpcore-4.4.10.jar", "httpclient-4.5.6.jar", "commons-logging-1.2.jar", "commons-codec-1.10.jar" and place it under the "cisco_meraki_wireless" directory
+
+		https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/cisco_meraki_wireless.bat
+		
+		https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/cisco_meraki_wireless.cfg
+		
+		https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/MerakiDataCollector.java
+		
+		https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/json.jar
+		
+		https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/httpcore-4.4.10.jar
+		
+		https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/httpclient-4.5.6.jar
+		
+		https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/commons-logging-1.2.jar
+		
+		https://raw.githubusercontent.com/site24x7/plugins/master/cisco_meraki_wireless/commons-codec-1.10.jar
+		
 * Open cisco_meraki_wireless.cfg file and set the values for **APIKEY**, **NETWORKID**, **BASEURL**, **JAVA_HOME**
+
 * Run the commaand- `which java`. Copy the output you get and paste it in the **JAVA_HOME** field. Make sure to paste the path to bin directory and not the path to java.
-* Once configured the agent will automatically execute the plugin in five minutes interval and send performance data to the Site24x7 data center.
+
+* Move the directory "cisco_meraki_wireless" under Site24x7 Windows Agent plugin directory using the command:
+ 
+		Windows		->	C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\cisco_meraki_wireless
+
+* The agent will automatically execute the plugin in five minutes interval and send performance data to the Site24x7 data center.
 
 
 ### Demo mode

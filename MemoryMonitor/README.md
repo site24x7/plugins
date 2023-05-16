@@ -28,11 +28,15 @@ Plugin to monitor memory related metric like CommittedBytes,PercentCommittedByte
 
 ## Plugin installation ##
 
-* Create a directory "MemoryMonitor" under Site24x7 Windows Agent plugin directory - <Agent Installation Directory>\monitoring\Plugins\FileCountMonitor
+* Create a directory "MemoryMonitor". 
 
-* Download the file "MemoryMonitor.ps1"  
+* Download the file "MemoryMonitor.ps1" and place the script under the "MemoryMonitor" directory.
 
-* place MemoryMonitor.ps1 script under the "MemoryMonitor" directory
+* Execute the script manually using below command to check for valid json output.
+
+		.\MemoryMonitor.ps1
+		
+* Move the directory "MemoryMonitor" under Site24x7 Windows Agent plugin directory - <Agent Installation Directory>\monitoring\Plugins\FileCountMonitor
 
 
 ###### The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center. ######

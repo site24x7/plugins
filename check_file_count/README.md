@@ -10,19 +10,8 @@ This plugin is to check the size of the directory , number of files in the direc
 ---
 ### Plugin Installation
 
-##### Linux
+- Create a directory "check_file_count".
 
-- Create a directory "check_file_count" under Site24x7 Linux Agent plugin directory : 
-
-        Linux             ->   /opt/site24x7/monagent/plugins/check_file_count
-        
-##### Windows 
-
-- Create a directory "check_file_count" under Site24x7 Windows Agent plugin directory : 
-
-      Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\check_file_count
-
----
 - Download all the files in "check_file_count" folder and place it under the "check_file_count" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/check_file_count/check_file_count.py
@@ -31,6 +20,18 @@ This plugin is to check the size of the directory , number of files in the direc
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python check_file_count.py --folder_name=<folder_path> 
+		
+##### Linux
+
+- Move the directory "check_file_count" under Site24x7 Linux Agent plugin directory : 
+
+		Linux             ->   /opt/site24x7/monagent/plugins/check_file_count
+        
+##### Windows 
+
+- Move the directory "check_file_count" under Site24x7 Windows Agent plugin directory : 
+
+		Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\check_file_count
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.

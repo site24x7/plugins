@@ -14,19 +14,21 @@
 
 ## Plugin installation
 
-### Linuxii
-* Create a directory "confluent_kafka" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/confluent_kafka
+### Linux
+* Create a directory "confluent_kafka".
 
 * Go to the created directory and run the following commands
-    `wget https://raw.githubusercontent.com/site24x7/plugins/master/confluent_kafka/confluent_kafka.sh`
-    `wget https://raw.githubusercontent.com/site24x7/plugins/master/confluent_kafka/ConfluentPlatform.java`
 
-
-### Plugin configuration
----
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/confluent/confluent_kafka/confluent_kafka.sh
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/confluent/confluent_kafka/ConfluentPlatform.java
+		
 * Open confluent_kafka.sh and Set the values for **HOSTNAME**, **PORT** , **JAVA_HOME**
 
 * If the java classpath is not set in your machine, run the commaand- `which java`. Copy the output you get and paste it in the *JAVA_HOME* field. Make sure to paste the path to bin directory and not the path to java
+
+* Move the directory "confluent_kafka" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/confluent_kafka
+
+* The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics captured
 ---
