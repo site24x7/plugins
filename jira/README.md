@@ -52,7 +52,7 @@ On-Premise Solution for Atlassian Jira
 
 * Download the files “jira.bat” , “Jira.java” and place it under the “jira” directory
 
-		https://raw.githubusercontent.com/site24x7/plugins/master/jira/jira.sh
+		https://raw.githubusercontent.com/site24x7/plugins/master/jira/jira.bat
 		https://raw.githubusercontent.com/site24x7/plugins/master/jira/Jira.java
 
 * Open jira.bat file. Set the values for **HOSTNAME**, **PORT**, **RMI_UNAME**, **RMI_PASSWORD**. If you have not configured any password for JMX, you don't have to change the RMI_UNAME and RMI_PASSWORD fields. The values for RMI_UNAME and RMI_PASSWORD can also be set through environmental variables.
