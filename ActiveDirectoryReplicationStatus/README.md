@@ -34,10 +34,25 @@ Make sure following powershell cmdlets installed in the server where you going t
 ### Plugin Installation
 1. Download the latest version of Site24x7WindowsAgent and install in your server. 
     https://www.site24x7.com/help/admin/adding-a-monitor/windows-server-monitoring.html
-2. Create a folder named 'ActiveDirectoryReplicationStatus' and place the 'ActiveDirectoryReplicationStatus.ps1' script file under created folder.
-3. After the configurations move the folder "ActiveDirectoryReplicationStatus" into the Plugins directory "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins"
-4. Further in the next DC i.e after 5 mins, user can see the plugin monitor under Plugin > Plugin Integrations. The plugin monitor will also be listed under the respective server monitor's Plugins tab (Server > Server Monitor > Servers > click on the desired server monitor > Plugins Integration). 
-6. User can set up threshold profiles and be alerted when the configured value exceeds.
+2. In your windows server goto powershell console and execute below commands
+
+                
+                   PS C:\> Import-Module ServerManager
+                
+                
+                   PS C:\> Install-WindowsFeature -Name RSAT-AD-PowerShell
+                
+                
+3. And to import the PowerShell Active Directory module, run the below command in the powershell console
+
+                
+                   PS C:\>Import-Module ActiveDirectory
+                
+                
+4. Create a folder named 'ActiveDirectoryReplicationStatus' and place the 'ActiveDirectoryReplicationStatus.ps1' script file under created folder.
+5. Move the folder "ActiveDirectoryReplicationStatus" into the Plugins directory "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins"
+6. Further in the next DC i.e after 5 mins, user can see the plugin monitor under Plugin > Plugin Integrations. The plugin monitor will also be listed under the respective server monitor's Plugins tab (Server > Server Monitor > Servers > click on the desired server monitor > Plugins Integration). 
+7. User can set up threshold profiles and be alerted when the configured value exceeds.
     https://www.site24x7.com/help/admin/configuration-profiles/threshold-and-availability/plugin-monitor.html
 
 
