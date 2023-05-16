@@ -21,7 +21,7 @@ location /api/ {
 ```bash
 sudo systemctl reload nginx
 ```
-5. Please test the nginx status url that returns response without error.  
+5. Please test the nginx status url that should return response without error.  
 
 	For example:		
 	```
