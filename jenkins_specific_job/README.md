@@ -45,9 +45,7 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 
 ### Plugin Installation  
 
-- Create a directory "jenkins_specific_job" under Site24x7 Linux Agent plugin directory : 
-
-		Linux             ->   /opt/site24x7/monagent/plugins/jenkins_specific_job
+- Create a directory "jenkins_specific_job".
       
 - Download all the files in "jenkins_specific_job" folder and place it under the "jenkins_specific_job" directory
 
@@ -58,13 +56,7 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 
 		python jenkins_specific_job.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --jobname=<job_name>
 
-
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
----
-
-### Configurations
-
+- Change the below configurations in "jenkins_specific_job.cfg" file
 
 		[jenkins_specific_job]
 		host=<host_name> 
@@ -72,6 +64,12 @@ The agent will automatically execute the plugin within five minutes and send per
 		username=<username>
 		password=<password> 
 		jobname=<job_name>
+		
+- Move the directory "jenkins_specific_job" under Site24x7 Linux Agent plugin directory : 
+
+		Linux             ->   /opt/site24x7/monagent/plugins/
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
 ### Jenkins specific job monitoring

@@ -20,28 +20,27 @@ For more details on the hping3 library , refer http://wiki.hping.org/94.
 ---
 ##### Linux 
 
-- Create a directory "hping3" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/hping3
+- Create a directory "hping3".
 
 - Download all the files in "hping3" folder and place it under the "hping3" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/hping3/hping3.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/hping3/hping3.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/hping3/hping3.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/hping3/hping3.cfg
 	
 - Configure the keys to be monitored, as mentioned in the configuration section below.
+
+		[localhost]
+		host="localhost"
+		plugin_version="1"
+		heartbeat="True"
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python hping3.py --host "localhost" --plugin-version "1" --heartbeat "True"
+		
+- Move the directory "hping3" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/hping3
 
-
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
-### Configurations
----
-
-	host - Host to be monitored
-	plugin_version = 1
-	heartbeat = True
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Captured
 ---

@@ -13,21 +13,22 @@ This plugin can be used to monitor the JVM memory through JMX Monitoring.
 ---
 ##### Linux 
 
-- Create a directory "jvmmemory" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/jvmmemory
+- Create a directory "jvmmemory".
 
 - Download all the files in "jvmmemory" folder and place it under the "jvmmemory" directory
 
-	    wget https://raw.githubusercontent.com/site24x7/plugins/master/jmx/jvmmemory.sh
-	    wget https://raw.githubusercontent.com/site24x7/plugins/master/jmx/JVMMemoryMonitoring.java
+	    wget https://raw.githubusercontent.com/site24x7/plugins/master/jvmmemory/jvmmemory.sh
+	    wget https://raw.githubusercontent.com/site24x7/plugins/master/jvmmemory/JVMMemoryMonitoring.java
         
 - Configure the java home path in the jvm.sh and the host, port of the application which is using Java path mentioned in jvmmemory.sh file.
 
 - Execute the below command to check for the valid json output.  
 
 		sh jvmmemory.sh
+		
+- Move the directory "jvmmemory" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/jvmmemory
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
 ### Metrics Captured

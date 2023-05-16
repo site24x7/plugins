@@ -13,22 +13,22 @@ This plugin can be used to monitor the JVM through JMX Monitoring.
 ---
 ##### Linux 
 
-- Create a directory "jvm" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/jvm
+- Create a directory "jvm".
 
 - Download all the files in "jvm" folder and place it under the "jvm" directory
 
-	    wget https://raw.githubusercontent.com/site24x7/plugins/master/jmx/jvm.sh
-	    wget https://raw.githubusercontent.com/site24x7/plugins/master/jmx/JVMMonitoring.java
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/jvm/jvm.sh
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/jvm/JVMMonitoring.java
         
 - Configure the java home path in the jvm.sh and the host, port of the application which is using Java path mentioned in jvm.sh file.
 
-- Execute the below command to check for the valid json output.  
+- Execute the below command to check for the valid json output.
 
 		sh jvm.sh
+		
+- Move the directory "jvm" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
-
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Captured
     VmName

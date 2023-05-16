@@ -46,9 +46,7 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 
 ### Plugin Installation  
 
-- Create a directory "jenkins_jvm" under Site24x7 Linux Agent plugin directory : 
-
-		Linux             ->   /opt/site24x7/monagent/plugins/jenkins_jvm
+- Create a directory "jenkins_jvm".
       
 - Download all the files in "jenkins_jvm" folder and place it under the "jenkins_jvm" directory
 
@@ -58,20 +56,22 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python jenkins_jvm.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --apikey=<apikey>
-
-
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
----
-
-### Configurations
+		
+- Change the below configurations in "jenkins_jvm.cfg" file
 
 		[jenkins_jvm]
-		host=<host_name> 
-		port=<port_number> 
-		username=<username> 
-		password=<password> 
-		apikey=<apikey>
+		host = <host_name>
+		port = <port_number>
+		username = <username>
+		password = <password>
+		apikey = <apikey>
+
+- Move the directory "jenkins_jvm" under Site24x7 Linux Agent plugin directory : 
+
+		Linux             ->   /opt/site24x7/monagent/plugins/
+
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ---
 

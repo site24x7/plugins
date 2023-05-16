@@ -10,13 +10,13 @@ ___
 ### Plugin configuration
 ---
 
-* Create a directory "git_hub" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/git_hub
+* Create a directory "git_hub".
 
 * Download the files "git_hub.py" , "git_hub.cfg" and place it under the "git_hub" directory
 
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/git_hub/git_hub.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/git_hub/git_hub.py
 
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/git_hub/git_hub.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/git_hub/git_hub.cfg
 	
 
 * Open the "git_hub.cfg" file and add the configuration details to it.
@@ -37,6 +37,11 @@ ___
 	repo_name denotes - actual repository name to be monitored
 
 * If you have more than one repositories needs to be monitored create one more section and configure it as above.
+
+* Move the directory "git_hub" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/git_hub
+
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
 ### Metrics captured
