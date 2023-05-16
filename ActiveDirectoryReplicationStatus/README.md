@@ -35,8 +35,8 @@ Make sure following powershell cmdlets installed in the server where you going t
 1. Download the latest version of Site24x7WindowsAgent and install in your server. 
     https://www.site24x7.com/help/admin/adding-a-monitor/windows-server-monitoring.html
 2. In your windows server goto powershell console and execute below commands
-             Import-Module ServerManager
-             Install-WindowsFeature -Name RSAT-AD-PowerShell
+                    Import-Module ServerManager
+                    Install-WindowsFeature -Name RSAT-AD-PowerShell
 3. And to import the PowerShell Active Directory module, run Import-Module ActiveDirectory in powershell console.
 4. Create a folder named 'ActiveDirectoryReplicationStatus' and place the 'ActiveDirectoryReplicationStatus.ps1' script file under created folder.
 5. Move the folder "ActiveDirectoryReplicationStatus" into the Plugins directory "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins"
