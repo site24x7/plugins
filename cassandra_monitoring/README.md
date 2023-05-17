@@ -9,7 +9,8 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
 -  Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you intend to run the plugin
 
 -  Install the jmxquery module for python.
-  	pip install jmxquery
+  	
+	pip install jmxquery
 
 -  Set up  the jmx port for Cassandra:
 
