@@ -10,58 +10,58 @@ A Kafka consumer is a client application that pulls event data from one or more 
 ## Prerequisites
 - To enable Kafka Consumer JMX port
 
-Find the following similar code block in the kafka-console-consumer.sh script.
+    Find the following similar code block in the kafka-console-consumer.sh script.
 
-```
-if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
-    export KAFKA_HEAP_OPTS="-Xmx512M"
-fi
-```
-And paste the following lines below the above code block.
+        
+        if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
+            export KAFKA_HEAP_OPTS="-Xmx512M"
+        fi
+        
+    And paste the following lines below the above code block.
 
-```
-export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9997"
-export JMX_PORT=9997
-```
+
+        export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9997"
+        export JMX_PORT=9997
+
 - Restart the kafka consumer after the above changes.
 - Install the jmxquery module for Python3.
 
     ```
     pip install jmxquery
     ```
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you intend to run the plugin.
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you intend to run the plugin.
 
 
 ## Plugin Installation
 
-Create a directory named "kafka_consumer_monitoring" under the Site24x7 Linux Agent plugin directory:
-```
-  Linux    ->   /opt/site24x7/monagent/plugins/kafka_consumer_monitoring
-  ```
-Download all the files in the "kafka_consumer_monitoring" folder and place them under the "kafka_consumer_monitoring" directory.
+- Create a directory named "kafka_consumer_monitoring".
+  
+- Download all the files in the "kafka_consumer_monitoring" folder.
 
-**Execute the below command with appropriate arguments to check for the valid json output:**
+- **Execute the below command with appropriate arguments to check for the valid json output:**
 
-```
-python3 kafka_consumer_monitoring.py --kafka_consumer_host=<KAFKA_CONSUMER_HOST_NAME> kafka_consumer_jmx_port=<KAFKA_CONSUMER_PORT_NO> --kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO> --kafka_topic_name=<KAFKA_TOPIC_NAME> --kafka_consumer_client_id=<KAFKA_CONSUMER_CLIENT_ID> --logs_enabled=False --log_type_name=None --log_file_path=None
-```
 
-Since it's a Python plugin, to run the plugin on a Windows server, please follow the steps in the below link. The remaining configuration steps are the same. https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+        python3 kafka_consumer_monitoring.py --kafka_consumer_host=<KAFKA_CONSUMER_HOST_NAME> kafka_consumer_jmx_port=<KAFKA_CONSUMER_PORT_NO> --kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO> --kafka_topic_name=<KAFKA_TOPIC_NAME> --kafka_consumer_client_id=<KAFKA_CONSUMER_CLIENT_ID> --logs_enabled=False --log_type_name=None --log_file_path=None
 
-### Configuration
-Provide your Kafka Consumer configurations in kafka_consumer_monitoring.cfg file
 
-```
-[kafka_consumer_1]
-kafka_consumer_host=<KAFKA_CONSUMER_HOST_NAME>
-kafka_consumer_jmx_port=<KAFKA_CONSUMER_PORT_NO>
-kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO>
-kafka_topic_name=<KAFKA_TOPIC_NAME>
-kafka_consumer_client_id=<KAFKA_CONSUMER_CLIENT_ID>
-logs_enabled=False
-log_type_name=None
-log_file_path=None
-```
+- After above command with parameters gives expected output, please configure the relevant parameters in the kafka_consumer_monitoring.cfg file.
+
+        [kafka_consumer_1]
+        kafka_consumer_host=<KAFKA_CONSUMER_HOST_NAME>
+        kafka_consumer_jmx_port=<KAFKA_CONSUMER_PORT_NO>
+        kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO>
+        kafka_topic_name=<KAFKA_TOPIC_NAME>
+        kafka_consumer_client_id=<KAFKA_CONSUMER_CLIENT_ID>
+        logs_enabled=False
+        log_type_name=None
+        log_file_path=None
+
+
+- Place the folder "kafka_consumer_monitoring" under the Site24x7 Linux Agent plugin directory:
+
+        Linux    ->   /opt/site24x7/monagent/plugins/kafka_consumer_monitoring
+
+- Since it's a Python plugin, to run the plugin on a Windows server, please follow the steps in the below link. The remaining configuration steps are the same. https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
 
 ## Supported Metrics
 The following metrics are captured by the Kafka Consumer monitoring plugin :
