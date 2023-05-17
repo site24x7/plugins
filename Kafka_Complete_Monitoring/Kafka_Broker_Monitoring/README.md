@@ -14,20 +14,20 @@ A Kafka broker is a single Kafka server that runs on a Kafka cluster. On deploym
 
 - To enable Kafka Broker JMX port
 
-Find the following code block in the kafka-server-start.sh script.
+    Find the following code block in the kafka-server-start.sh script.
 
-```
-if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
-    export KAFKA_HEAP_OPTS="-Xmx1G -Xms1G"
-fi
-```
 
-Paste the following lines below the above code block.
+        if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
+            export KAFKA_HEAP_OPTS="-Xmx1G -Xms1G"
+        fi
 
-```
-export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9999"
-export JMX_PORT=9999
-```
+
+    Paste the following lines below the above code block.
+
+        
+        export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9999"
+        export JMX_PORT=9999
+        
 - Restart the kafka broker after the above changes.
 
 
@@ -36,39 +36,38 @@ export JMX_PORT=9999
   pip install jmxquery
   ```
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 ## Plugin Installation
-Create a directory named "kafka_broker_monitoring" under the Site24x7 Linux Agent plugin directory:
-```
-  Linux    ->   /opt/site24x7/monagent/plugins/kafka_broker_monitoring
-  ```
-Download all the files in the "kafka_broker_monitoring" folder and place them under the "kafka_broker_monitoring" directory.
+- Create a directory named "kafka_broker_monitoring" 
+  
+- Download all the files in the "kafka_broker_monitoring" folder.
 
-Execute the below command with appropriate arguments to check for the valid json output:
-```
-python3 kafka_broker_monitoring.py --kafka_host=<KAFKA_BROKER_HOST_NAME> --kafka_jmx_port=<KAFKA_BROKER_PORT_NO> --kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO> --kafka_topic_name=<KAFKA_TOPIC_NAME> --logs_enabled=False --log_type_name=None --log_file_path=None
-```
+- Execute the below command with appropriate arguments to check for the valid json output:
+    
+        python3 kafka_broker_monitoring.py --kafka_host=<KAFKA_BROKER_HOST_NAME> --kafka_jmx_port=<KAFKA_BROKER_PORT_NO> --kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO> --kafka_topic_name=<KAFKA_TOPIC_NAME> --logs_enabled=False --log_type_name=None --log_file_path=None
+    
+- After above command with parameters gives expected output, please configure the relevant parameters in the kafka_broker_monitoring.cfg file.
 
-Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+        [kafka_broker_1]
+        kafka_host=localhost
+        kafka_jmx_port=9999
+        kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO>
+        kafka_topic_name=<KAFKA_TOPIC_NAME>
+        logs_enabled=False
+        log_type_name=None
+        log_file_path=None
+
+
+
+- Place the "kafka_broker_monitoring" under the Site24x7 Linux Agent plugin directory:
+
+        Linux    ->   /opt/site24x7/monagent/plugins/kafka_broker_monitoring
+        
+  Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
 https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
-
-## Configuration
-Provide your Kafka Broker configurations in kafka_broker_monitoring.cfg file
-
-```
-[kafka_broker_1]
-kafka_host=localhost
-kafka_jmx_port=9999
-kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO>
-kafka_topic_name=<KAFKA_TOPIC_NAME>
-logs_enabled=False
-log_type_name=None
-log_file_path=None
-```
-
-
-
+  
+  
 ## Supported Metrics
 The following metrics are captured by the Kafka Broker monitoring plugin :
 
