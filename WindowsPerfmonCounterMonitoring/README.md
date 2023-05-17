@@ -11,7 +11,6 @@ Download and install the latest version of the [Site24x7 Windows agent] (https:/
   - Login to your server
   - Run the PowerShell prompt as Admin and execute the following:
   - Set-ExecutionPolicy RemoteSigned
-  - Restart the plugin agent service
   - Download and install the latest version of the [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 
