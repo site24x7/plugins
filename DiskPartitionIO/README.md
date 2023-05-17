@@ -29,6 +29,8 @@ Download and install the latest version of the [Site24x7 Windows agent](https://
 
 * Download the file "DiskPartitionIO.ps1" and place under DiskPartitionIO.
 
+* Edit  DiskPartitionIO.ps1 script and assign the $diskpartition variable with desire drive like 'C' or 'D' which you want to monitor DiskIO.
+
 * Move the directory "DiskFolderMonitoring" to Site24x7 Windows Agent plugin directory 
 
 ```
