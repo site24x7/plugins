@@ -1,7 +1,6 @@
 # Plugin for monitoring Atlassian Bit Bucket
 ---
-
-On-Premise Solution for Atlassian Bit Bucket
+A plugin to monitoring the Atlassian Bit Bucket on-premises solution
 
 ### Prerequisites
 
@@ -21,7 +20,7 @@ On-Premise Solution for Atlassian Bit Bucket
 ## Plugin installation
 ___
 
-* Create a directory "bitbucket_jmx".
+* Create a directory "bitbucket".
 * Go to the created directory and run the following commands
 `wget https://raw.githubusercontent.com/site24x7/plugins/master/bitbucket/bitbucket.sh`
 `wget https://raw.githubusercontent.com/site24x7/plugins/master/bitbucket/Bitbucket.java`
@@ -33,7 +32,7 @@ ___
 * **For linux:** If the java classpath is not set in your machine, run the commaand- `which java`. Copy the output you get and paste it in the *JAVA_HOME* field and uncomment it. Make sure to paste the path to bin directory and not the path to java
 * **For windows:** If the java classpath is not set in your machine, you can uncomment **JAVA_HOME** and **PATH** fields and enter the correct path for the respective fields
 
-* Move the folder "bitbucket_jmx" into agent directory.
+* Move the folder "bitbucket" into agent directory.
    
    For Linux
    ```
