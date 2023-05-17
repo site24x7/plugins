@@ -44,7 +44,7 @@ A Kafka consumer is a client application that pulls event data from one or more 
         python3 kafka_consumer_monitoring.py --kafka_consumer_host=<KAFKA_CONSUMER_HOST_NAME> kafka_consumer_jmx_port=<KAFKA_CONSUMER_PORT_NO> --kafka_consumer_partition=<KAFKA_CONSUMER_PARTITION_NO> --kafka_topic_name=<KAFKA_TOPIC_NAME> --kafka_consumer_client_id=<KAFKA_CONSUMER_CLIENT_ID> --logs_enabled=False --log_type_name=None --log_file_path=None
 
 
-- After above command with parameters gives expected output, please configure the relevant parameters in the OracleBlockingLocks.cfg file.
+- After above command with parameters gives expected output, please configure the relevant parameters in the kafka_consumer_monitoring.cfg file.
 
         [kafka_consumer_1]
         kafka_consumer_host=<KAFKA_CONSUMER_HOST_NAME>
