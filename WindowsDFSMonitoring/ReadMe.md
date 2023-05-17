@@ -35,7 +35,7 @@ The Distributed File System (DFS) functions provide the ability to logically gro
           - [DFS_Namespace] is the name of the monitor, you can change the name based on your need.
           - Replace "<Path to the DFS Namespace>" with your the path of DFS Namespace. Don't delete the '\*' as it require to collect metrics. 
 
-After configuring the plugin move the folder "WindowsDFSMonitoring" into the Site24x7 Windows Agent plugin directory:
+After finish the configuration, move the folder "WindowsDFSMonitoring" into the Site24x7 Windows Agent plugin directory:
     Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsDFSMonitoring
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
