@@ -14,7 +14,7 @@ OS Supported : Ubuntu , Centos
   
 - Execute the script manually using below command to check for valid json output.
 
-		pyhton check_updates.py
+		python check_updates.py
 
 - Move the directory "check_updates" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/check_updates
 	
