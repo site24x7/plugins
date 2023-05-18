@@ -11,7 +11,7 @@
 
 ### Plugin Installation  
 
-- Download all the files in the "Redis" folder and place it under the "Redis" directory.
+- Download the below files and place it under the "Redis" directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/Redis.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/Redis.cfg
