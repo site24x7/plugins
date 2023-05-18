@@ -50,32 +50,27 @@
 
 ### Plugin Installation 
 
-      	1) Create a directory "slack_monitoring" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/slack_monitoring
+- Create a directory "slack_monitoring".
+
+- Download the files "slack_monitoring.py" and "slack_monitoring.cfg" and place it under the "slack_monitoring" directory
+
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/slack/slack_monitoring/slack_monitoring.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/slack/slack_monitoring/slack_monitoring.cfg
+		
+- Edit the "slack_monitoring.cfg" file and add the configuration details to it.
+
+ 		[display_name]
+		oauth_token = xoxp-1115218301570-1145293321776-1107217637223-sew12saq185c59db496cad2b6655868ac4e
+		
+oauth_token - oauth token of your slack account
+
+- Execute the below command to check for valid json output
+
+		python slack_monitoring.py --oauth_token="oauth_token"
             
-            mkdir /opt/site24x7/monagent/plugins/slack_monitoring
+- Move the directory "slack_monitoring" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
 
-	2) Download the files "slack_monitoring.py" and place it under the "slack_monitoring" directory
-
-		    wget https://raw.githubusercontent.com/site24x7/plugins/master/slack_monitoring/slack_monitoring.py
-
-        3) Download the file "slack_monitoring.cfg" and place it under the "slack_monitoring" directory
-
-            wget https://raw.githubusercontent.com/site24x7/plugins/master/slack_monitoring/slack_monitoring.cfg
-
-### Plugin Configuration
----
-
-    * Edit the "slack_monitoring.cfg" file and add the configuration details to it. Sample configuration file looks like: 
-    
-        #slack_monitoring.cfg
-
-        [display_name]
-        oauth_token = xoxp-1115218301570-1145293321776-1107217637223-sew12saq185c59db496cad2b6655868ac4e
-
-        oauth_token - oauth token of your slack account
-         
-        display_name  - plugin monitor name to be displayed in site24x7 client
-
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
         
 ### Metrics Captured
     1) total_files

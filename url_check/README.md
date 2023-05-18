@@ -11,39 +11,36 @@ Follow the below steps to configure the URL Check plugin and the monitoring metr
 
 
 ### Plugin installation
----
-##### Linux 
 
-- Create a folder "url_check" under Site24x7 Linux Agent plugin directory : 
-
-      Linux            ->   /opt/site24x7/monagent/plugins/url_check
-
-##### Windows 
-
-- Create a folder "url_check" under Site24x7 Windows Agent plugin directory : 
-
-      Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\url_check
-      
----
+- Create a folder "url_check"
 
 - Download all the files in "url_check" folder and place it under the "url_check" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/url_check/url_check.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/url_check/url_check.cfg
-	
-- Configure the URLs to be monitored, as mentioned in the configuration section below.
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/url_check/url_check.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/url_check/url_check.cfg
+		
+- Configure the URLs to be monitored, as mentioned below in "url_check.cfg"
 
+		[display_name]
+		url=“<your_url>”
+		
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python url_check.py --url=<your_url>
 
+##### Linux 
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+- Move the folder "url_check" under Site24x7 Linux Agent plugin directory : 
 
-### Configurations
----
-	[display_name]
-	url=“<your_url>”
+		Linux            ->   /opt/site24x7/monagent/plugins/
+
+##### Windows 
+
+- Move the folder "url_check" under Site24x7 Windows Agent plugin directory : 
+
+		Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Captured
 ---

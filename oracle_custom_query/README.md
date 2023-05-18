@@ -15,9 +15,7 @@
 
 ### Plugin Installation  
 
-- Create a directory named "oracle_custom_query" under the Site24x7 Linux Agent plugin directory: 
-
-		Linux             ->   /opt/site24x7/monagent/plugins/oracle_custom_query
+- Create a directory named "oracle_custom_query".
       
 - Download all the files in the "oracle_custom_query" folder and place it under the "oracle_custom_query" directory.
 
@@ -25,36 +23,35 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle_custom_query/oracle_custom_query.py
 
 - Execute the following command in your server to install Oracle DB: 
-  ```
-   pip install cx_Oracle
-  ```
+
+		pip install cx_Oracle
+
 - Execute the below command with appropriate arguments to check for the valid json output:
-```
- python3 oracle_custom_query.py --hostname <hostname> --port <port no> --sid <sid> --username <username> --password <password> --oracle_home <oracle home> --query <oracle query>
- ```
 
-
----
-
-### Configurations
-
+		python3 oracle_custom_query.py --hostname <hostname> --port <port no> --sid <sid> --username <username> --password <password> --oracle_home <oracle home> --query <oracle query>
+		
 - Provide your Oracle DB configurations in oracle_custom_query.cfg file.
 
-```
-[query_1]
-hostname=localhost
-port=1521
-sid=<SID>
-username=<USERNAME>
-password=<PASSWORD>
-oracle_home=None
-query="Oracle Query"
-```	
+		[query_1]
+		hostname=localhost
+		port=1521
+		sid=<SID>
+		username=<USERNAME>
+		password=<PASSWORD>
+		oracle_home=None
+		query="Oracle Query"
+
+- Move the directory named "oracle_custom_query" under the Site24x7 Linux Agent plugin directory: 
+
+		Linux             ->   /opt/site24x7/monagent/plugins/
+		
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+---	
 
 The custom query shall be given in the query section of the config file. The name of the columns of the result will be taken as the metric name and the result will be taken as the metric value.
 
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 
 

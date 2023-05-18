@@ -33,9 +33,7 @@
 
 ### Plugin Installation 
 
-- Create a directory "mysql_monitoring" under Site24x7 Linux Agent plugin directory : 
-
-		Linux             ->   /opt/site24x7/monagent/plugins/mysql_monitoring
+- Create a directory "mysql_monitoring".
       
 - Download all the files in "mysql_monitoring" folder and place it under the "mysql_monitoring" directory
 
@@ -45,14 +43,8 @@
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python mysql_monitoring.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> 
-
-
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
----
-
-### Configurations
-
+		
+- Update the below configurations in mysql_monitoring.cfg file:
 
 		[MySQL]
 		host = <hostname>
@@ -64,6 +56,21 @@ The agent will automatically execute the plugin within five minutes and send per
 		log_file_path=<logfilepath>
 
 - Applog is supported for MySQL Monitoring. To enable applog for this plugin, configure logs_enabled=true and configure log_type_name and log_file_path as need.
+
+#### Linux 
+
+- Move the directory "mysql_monitoring" under Site24x7 Linux Agent plugin directory :
+
+		Linux             ->   /opt/site24x7/monagent/plugins/
+		
+#### Windows
+
+- Move the directory "mysql_monitoring" under Site24x7 Windows Agent plugin directory :
+
+		Windows             ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ---
 

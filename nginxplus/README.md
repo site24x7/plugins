@@ -47,27 +47,23 @@ sudo systemctl reload nginx
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
- ```bash
- python3 nginxplus.py --nginx_status_url="http://localhost:80/api/3" --username=<nginxplus username> --password=<nginxplus password> 
- ```
+		python3 nginxplus.py --nginx_status_url="http://localhost:80/api/3" --username=<nginxplus username> --password=<nginxplus password> 
 
 - Once the above command execution given the valid json, further provide the command argument as configurations in nginxplus.cfg file.
-```
-[nginxplus]
-nginx_status_url="http://localhost:80/api/3"
-username=<username>
-password=<password>
-logs_enabled="False"
-log_type_name =None
-log_file_path=None
 
-```	
+		[nginxplus]
+		nginx_status_url="http://localhost:80/api/3"
+		username=<username>
+		password=<password>
+		logs_enabled="False"
+		log_type_name =None
+		log_file_path=None
+	
 - Once the configuration done, move the "nginx" directory under the Site24x7 Linux Agent plugin directory: 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/nginxplus 
+		Linux             ->   /opt/site24x7/monagent/plugins/ 
 
-		
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 In case if user needs to run this nginx plugin in windows server, please follow the steps in below link.
 https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers

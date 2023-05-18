@@ -12,32 +12,27 @@ This plugin monitors the disk partitions and gives information about the total s
 
 ##### Linux
 
-- Create a directory "partition_monitoring" under Site24x7 Linux Agent plugin directory :
-
-      Linux             ->   /opt/site24x7/monagent/plugins/partition_monitoring
-
----
+- Create a directory "partition_monitoring".
 
 - Download all the files using the following commands and place it under the "partition_monitoring" directory
 
-  	wget https://raw.githubusercontent.com/site24x7/plugins/master/partition_monitoring/partition_monitoring.py
-      
-  	wget https://raw.githubusercontent.com/site24x7/plugins/master/partition_monitoring/partition_monitoring.cfg
-
-- Configure the keys to be monitored, as mentioned in the configuration section below.
-
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/partition_monitoring/partition_monitoring.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/partition_monitoring/partition_monitoring.cfg
+		
 - Execute the below command with appropriate arguments to check for the valid json output.
 
-      python partition_monitoring.py --mount_name=<Mount Name in which Disk is mounted on>
+		python partition_monitoring.py --mount_name=<Mount Name in which Disk is mounted on>
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+- Configure the keys to be monitored, as mentioned below in "partition_monitoring.cfg"
 
-### Configurations
+		[display_name]
+		mount_name=<Mount Name>
+      
+- Move the directory "partition_monitoring" under Site24x7 Linux Agent plugin directory :
 
----
+      Linux             ->   /opt/site24x7/monagent/plugins/
 
-    [display_name]
-    mount_name=<Mount Name>
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Captured
 

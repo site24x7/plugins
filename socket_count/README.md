@@ -16,13 +16,19 @@ Plugin for Monitoring the TCP/UDP Port counts
 ---
 ##### Linux 
 
-- Create a directory "socket_count" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/socket_count
+- Create a directory "socket_count".
 
 - Download the file "socket_count.py" and place it under the "socket_count" directory
   
-  wget https://raw.githubusercontent.com/site24x7/plugins/master/socket_count/socket_count.sh
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/socket_count/socket_count.sh
+		
+- Execute the below command to check for the valid json output.
+
+		sh socket_count.sh
+  
+- Move the directory "socket_count" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
 	
-  The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
 ### Metrics Captured

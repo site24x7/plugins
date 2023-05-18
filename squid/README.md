@@ -12,39 +12,37 @@ Follow the below steps to configure the Kong plugin and the monitoring metrics f
 
 ### Plugin installation
 ---
-##### Linux 
 
-- Create a folder "squid" under Site24x7 Linux Agent plugin directory : 
-
-      Linux            ->   /opt/site24x7/monagent/plugins/squid
-
-##### Windows 
-
-- Create a folder "squid" under Site24x7 Windows Agent plugin directory : 
-
-      Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\squid
-      
----
+- Create a folder "squid".
 
 - Download all the files in "squid" folder and place it under the "squid" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/squid/squid.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/squid/squid.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/squid/squid.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/squid/squid.cfg
 	
-- Configure the keys to be monitored, as mentioned in the configuration section below.
+- Configure the keys to be monitored, as mentioned below in "squid.cfg"
+
+		[display_name]
+		host_name=“<your_host_name>”
+		port=“3128”
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python squid.py --host_name=localhost --port=3128
 
+##### Linux 
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+- Move the folder "squid" under Site24x7 Linux Agent plugin directory : 
 
-### Configurations
----
-	[display_name]
-	host_name=“<your_host_name>”
-	port=“3128”
+      Linux            ->   /opt/site24x7/monagent/plugins/
+
+##### Windows 
+
+- Move the folder "squid" under Site24x7 Windows Agent plugin directory : 
+
+      Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+      
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Captured
 ---

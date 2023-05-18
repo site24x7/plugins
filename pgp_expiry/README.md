@@ -26,30 +26,29 @@ For more details on the python-gnupg driver , refer https://pypi.org/project/pyt
 ---
 ##### Linux 
 
-- Create a directory "pgp_expiry" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/pgp_expiry
+- Create a directory "pgp_expiry" .
 
 - Download all the files in "pgp_expiry" folder and place it under the "pgp_expiry" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/pgp_expiry/pgp_expiry.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/pgp_expiry/pgp_expiry.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/pgp_expiry/pgp_expiry.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/pgp_expiry/pgp_expiry.cfg
 	
-- Configure the keys to be monitored, as mentioned in the configuration section below.
+- Configure the keys to be monitored, as mentioned below in "pgp_expiry.cfg"
+
+		[expiry]
+		keys_to_check = "B2E1062C8683440B,23BD06A606281990,B2E1062C86834232,"
+		key_server = "keyserver.ubuntu.com"
+		gpg_location = "/home/local/.gnupg"
+		plugin_version = 1
+		heartbeat = True
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python pgp_expiry.py --keys_to_check "key1,key2,key3" --key_server "keyserver.ubuntu.com" --gpg_location "/home/local/hostname/.gnupg" --plugin-version 1 --heartbeat True
+		
+- Move the directory "pgp_expiry" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
 
-
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
-### Configurations
----
-
-	keys_to_check - comma separated keys to check for expiry
-	key_server - key server name - default : "keyserver.ubuntu.com"
-	gpg_location - gpg location - default "/home/local/.gnupg"
-	plugin_version = 1
-	heartbeat = True
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Captured
 ---

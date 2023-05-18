@@ -24,19 +24,14 @@
 
 ### Plugin Installation 
 
-- Create a directory "mysql_custom_table_row_count" under Site24x7 Linux Agent plugin directory : 
-
-		Linux             ->   /opt/site24x7/monagent/plugins/mysql_custom_table_row_count
+- Create a directory "mysql_custom_table_row_count".
 		
 - Download all the files in "mysql_custom_table_row_count" folder and place it under the "mysql_custom_table_row_count" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_table_row_count/mysql_custom_table_row_count.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_table_row_count/mysql_custom_table_row_count.cfg
 
-- Configurations
-
-  Update the below configurations in mysql_custom_table_row_count.cfg file:
-
+- Update the below configurations in mysql_custom_table_row_count.cfg file:
 
 		[mysql_custom_table_row_count]
 		host = localhost
@@ -46,12 +41,24 @@
 		db = sys
 		query = "select count(*) from metrics"
 		
-- Execute the below command with appropriate arguments to check for the valid json output.  
+- Execute the below command with appropriate arguments to check for the valid json output. 
 
 		python mysql_custom_table_row_count.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --db=<db> --query=<custom_query>
+		
+#### Linux 
+
+- Move the directory "mysql_custom_table_row_count" under Site24x7 Linux Agent plugin directory :
+
+		Linux             ->   /opt/site24x7/monagent/plugins/
+		
+#### Windows
+
+- Move the directory "mysql_custom_table_row_count" under Site24x7 Windows Agent plugin directory :
+
+		Windows             ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
 ---

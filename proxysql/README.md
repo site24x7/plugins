@@ -18,33 +18,30 @@ Follow the below steps to configure the ProxySQL plugin and the monitoring metri
 ---
 ##### Linux 
 
-- Create a folder "proxysql" under Site24x7 Linux Agent plugin directory : 
-
-      Linux            ->   /opt/site24x7/monagent/plugins/proxysql
-
----
+- Create a folder "proxysql".
 
 - Download all the files in "proxysql" folder and place it under the "proxysql" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/proxysql/proxysql.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/proxysql/proxysql.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/proxysql/proxysql.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/proxysql/proxysql.cfg
 	
-- Configure the keys to be monitored, as mentioned in the configuration section below.
+- Configure the keys to be monitored, as mentioned below in proxysql.cfg
+
+		[display_name]
+		host_name=“<your_host_name>”
+		port=“1099”
+		user="<proxysql_user_name>”
+		password="<proxysql_user_password>”
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python proxysql.py --host_name=localhost --port=6032 --user=<proxysql_user_name> --password=<proxysql_user_password>
 
+- Move the folder "proxysql" under Site24x7 Linux Agent plugin directory : 
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
-### Configurations
----
-	[display_name]
-	host_name=“<your_host_name>”
-	port=“1099”
-	user="<proxysql_user_name>”
-	password="<proxysql_user_password>”
+		Linux            ->   /opt/site24x7/monagent/plugins/
+      
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Captured
 ---

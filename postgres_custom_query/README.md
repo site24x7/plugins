@@ -15,9 +15,7 @@
 
 ### Plugin Installation  
 
-- Create a directory named "postgres_custom_query" under the Site24x7 Linux Agent plugin directory: 
-
-		Linux             ->   /opt/site24x7/monagent/plugins/postgres_custom_query
+- Create a directory named "postgres_custom_query".
       
 - Download all the files in the "postgres_custom_query" folder and place it under the "postgres_custom_query" directory.
 
@@ -25,31 +23,28 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres_custom_query/postgres_custom_query.py
 
 - Execute the following command in your server to install psycopg2: 
-  ```
-   pip install psycopg2
-  ```
+
+		pip install psycopg2
+
 - Execute the below command with appropriate arguments to check for the valid json output:
-```
- python3 postgres_custom_query.py --db_name <db_name> --port <port no> --username <username> --password <password> --query < query>
- ```
 
-
-
----
-
-### Configurations
+		python3 postgres_custom_query.py --db_name <db_name> --port <port no> --username <username> --password <password> --query < query>
 
 - Provide your Postgres DB configurations in postgres_custom_query.cfg file.
 
-```
-    [custom_metric_1]
-    db_name='postgres'
-    username=None
-    password=None
-    hostname='localhost'
-    port=5432
-    query="SELECT buffers_checkpoint, buffers_backend, maxwritten_clean, checkpoints_req, checkpoints_timed, buffers_alloc FROM pg_stat_bgwriter;"
-```	
+		[custom_metric_1]
+		db_name='postgres'
+		username=None
+		password=None
+		hostname='localhost'
+		port=5432
+		query="SELECT buffers_checkpoint, buffers_backend, maxwritten_clean, checkpoints_req, checkpoints_timed, buffers_alloc FROM pg_stat_bgwriter;"
+    
+- Move the directory "postgres_custom_query" under the Site24x7 Linux Agent plugin directory: 
+
+		Linux             ->   /opt/site24x7/monagent/plugins/
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 The custom query shall be given in the query section of the config file. The name of the columns of the result will be taken as the metric name and the result will be taken as the metric value.
 
@@ -60,6 +55,4 @@ Query to be given :
 
 Metrics captured :
 <img src="https://i.imgur.com/onxWKO6.png"/>
-		
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 

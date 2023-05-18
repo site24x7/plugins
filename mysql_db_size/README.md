@@ -38,31 +38,40 @@ Note:
 	
 Plugin Installation:
 ===================
-Download and install the latest version of the Site24x7 Linux agent in the server where you plan to run the plugin. If it is installed successfully, you will see a Linux server monitor in the Site24x7 Control Panel. This confirms that the agent is able to communicate with our data center.
 
-Create a directory with the name "mysql_db_size", under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/mysql_db_size
+- Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
-Download the file ["mysql_db_size.py" from our GitHub repository](https://raw.githubusercontent.com/site24x7/plugins/master/mysql_db_size/mysql_db_size.py)  and place it under the "mysql_db_size.py" directory
+- Create a directory with the name "mysql_db_size".
 
-Commands to perform the above step:
-	
-	cd /opt/site24x7/monagent/plugins/
-	mkdir mysql_db_size.py
-	cd mysql_db_size.py
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_db_size.py/mysql_db_size.py
-	
+- Download the file "mysql_db_size.py" and place it under the "mysql_custom_query" directory
 
-Configurations:
-==============
-In order to change the monitoring configurations, go to plugins directory and edit the required plugin file.
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_db_size/mysql_db_size.py
+		
+- Update the below configurations in mysql_db_size.py file in #Config Section:
 
-For e.g. mysql => /opt/site24x7agent/monagent/plugins/mysql_db_size.py/mysql_db_size.py
+		MYSQL_HOST = "localhost"
+		MYSQL_PORT="3306"
+		MYSQL_USERNAME="root"
+		MYSQL_PASSWORD=""
+		
+- Execute the below command to check for valid json output.
 
-#Config Section:
-	MYSQL_HOST = "localhost"
-	MYSQL_PORT="3306"
-	MYSQL_USERNAME="root"
-	MYSQL_PASSWORD=""
+		python mysql_db_size.py
+		
+#### Linux 
+
+- Move the directory "mysql_db_size" under Site24x7 Linux Agent plugin directory :
+
+		Linux             ->   /opt/site24x7/monagent/plugins/
+		
+#### Windows
+
+- Move the directory "mysql_db_size" under Site24x7 Windows Agent plugin directory :
+
+		Windows             ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 	
 
 Metrics Captured:

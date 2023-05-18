@@ -14,18 +14,14 @@
 
 ### Plugin Installation 
 
-- Create a folder named "mssql_custom_query" under the Site24x7 Windows Agent plugin directory:
-
-		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\mssql_custom_query
+- Create a folder named "mssql_custom_query".
 		
 - Download all the files in "mssql_custom_query" folder and place it under the "mssql_custom_query" directory
 
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/mssql_custom_query.ps1
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/mssql_custom_query.cfg
 
-- Configurations
-  Update the below configurations in mssql_custom_query.cfg file:
-
+- Update the below configurations in mssql_custom_query.cfg file:
 
 		[mssql_custom_query]
 		SQLServer = <server_name> 
@@ -37,9 +33,13 @@
 - This plugin will monitor only the first row of the result of the query.So, use TOP clause in the query as below to return only one row from the result.
 
 		query = "select TOP 1 * from sys.assemblies"
+		
+- Move the folder "mssql_custom_query" under the Site24x7 Windows Agent plugin directory:
+
+		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 To view performance charts and set thresholds for the various performance metrics:
 

@@ -11,25 +11,23 @@ Follow the below steps to configure the Systemd plugin and the monitoring metric
 		
 
 ### Plugin installation
----
-##### Linux 
 
-- Create a folder "systemd" under Site24x7 Linux Agent plugin directory : 
-
-      Linux            ->   /opt/site24x7/monagent/plugins/systemd
-
----
+- Create a folder "systemd".
 
 - Download the file in "systemd" folder and place it under the "systemd" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/systemd/systemd.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/systemd/systemd.py
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python systemd.py
+		
+- Move the folder "systemd" under Site24x7 Linux Agent plugin directory : 
+
+		Linux            ->   /opt/site24x7/monagent/plugins/
 
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
 ### Metrics Captured

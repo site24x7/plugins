@@ -20,30 +20,28 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 
 ##### Linux
 
-- Create a directory "prestodb" under Site24x7 Linux Agent plugin directory :
-
-      Linux             ->   /opt/site24x7/monagent/plugins/prestodb
+- Create a directory "prestodb".
 
 - Download all the files in "prestodb" folder and place it under the "prestodb" directory
 
-      wget https://raw.githubusercontent.com/site24x7/plugins/master/prestodb/prestodb.py
-      wget https://raw.githubusercontent.com/site24x7/plugins/master/prestodb/prestodb.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/prestodb/prestodb.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/prestodb/prestodb.cfg
 
-- Configure the host and port of the prestodb to be montiored in prestodb.cfg, as mentioned in the configuration section below..
+- Configure the host and port of the prestodb to be montiored in prestodb.cfg, as mentioned below
+
+		[display_name]
+		host = “<your_host_name>”
+		port = “<port number you mentioned in etc/config.properties>”
 
 - Execute the below command with appropriate arguments to check for the valid json output.
 
-      python prestodb.py --host=localhost --port=36799
+		python prestodb.py --host=localhost --port=36799
+	      
+- Move the directory "prestodb" under Site24x7 Linux Agent plugin directory :
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+		Linux             ->   /opt/site24x7/monagent/plugins/]
 
-### Configurations
-
----
-
-    [display_name]
-    host = “<your_host_name>”
-    port = “<port number you mentioned in etc/config.properties>”
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Captured
 

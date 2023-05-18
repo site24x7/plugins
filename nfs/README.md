@@ -12,28 +12,28 @@ This plugin monitors the performance metrics of NFS mount point status, IP addre
 ---
 ##### Linux 
 
-- Create a directory "nfs" under Site24x7 Linux Agent plugin directory : 
-
-      Linux       ->   /opt/site24x7/monagent/plugins/nfs
+- Create a directory "nfs".
 
 - Open a terminal inside the nfs folder created on the above step and execute the below mentioned commands to download the plugin files.
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs.py
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs.cfg
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs_check.sh
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs_check.sh
 	
 - Configure the mount point to be monitored in the nfs.cfg file, as mentioned below.
 
-	  [display_name]
-	  mount_folder = “<your_mount_folder_path>”
+		[display_name]
+		mount_folder = “<your_mount_folder_path>”
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python nfs.py --mount_folder=<your_mount_folder_path>
 
+- Move the directory "nfs" under Site24x7 Linux Agent plugin directory : 
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+		Linux       ->   /opt/site24x7/monagent/plugins/
 
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Captured
 ---
