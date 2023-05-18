@@ -22,7 +22,7 @@
 
 - Create a folder named "mssql_certificate_expiry_monitoring".
 		
-- Download all the files in "mssql_certificate_expiry_monitoring" folder from the GitHub repository and place it in the "mssql_certificate_expiry_monitoring" directory.
+- Download the below files and place it in the "mssql_certificate_expiry_monitoring" directory.
 
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_certificate_expiry_monitoring/mssql_certificate_expiry_monitoring.ps1
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_certificate_expiry_monitoring/mssql_certificate_expiry_monitoring.cfg
