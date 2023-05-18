@@ -16,7 +16,7 @@
 
 - Create a folder named "mssql_custom_query".
 		
-- Download all the files in "mssql_custom_query" folder and place it under the "mssql_custom_query" directory
+- Download the below files in "mssql_custom_query" folder and place it under the "mssql_custom_query" directory
 
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/mssql_custom_query.ps1
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/mssql_custom_query.cfg
