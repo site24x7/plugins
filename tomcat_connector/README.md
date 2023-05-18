@@ -41,7 +41,7 @@
 
 - Create a directory named "tomcat_connector".
       
-- Download all the files in the "tomcat_connector" folder and place it under the "tomcat_connector" directory.
+- Download below files and place it under the "tomcat_connector" directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/tomcat_connector/tomcat_connector.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/tomcat_connector/tomcat_connector.cfg
