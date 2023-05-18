@@ -76,7 +76,7 @@
 
 		Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 		
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Monitored
 

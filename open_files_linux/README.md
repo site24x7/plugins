@@ -6,17 +6,26 @@ open-files-linux plugin is used for collecting the stats regarding the number of
   
 open file stats plugin installation:
 ==============
-In order to change the monitoring configurations, go to plugins directory and edit the required plugin file.
 
-For e.g. open\_files\_linux => /opt/site24x7agent/monagent/plugins/open\_files\_linux/open\_files\_linux.py
+- Create a directory "open_files_linux".
 
-commands to perform the above steps:
+- Open a terminal inside the open_files_linux folder created on the above step and execute the below mentioned commands to download the plugin files.
 
-	cd /opt/site24x7/monagent/plugins/
-	mkdir open_files_linux
-	cd open_files_linux
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/open_files_linux/open_files_linux.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/open_files_linux/open_files_linux.py
+	
+- Configure the PROC_FILE to be monitored in the open_files_linux.py file, as mentioned below.
 
+		PROC_FILE = "/proc/sys/fs/file-nr"
+
+- Execute the below command with appropriate arguments to check for the valid json output.  
+
+		python open_files_linux.py
+
+- Move the directory "open_files_linux" under Site24x7 Linux Agent plugin directory : 
+
+		Linux       ->   /opt/site24x7/monagent/plugins/
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 open_files_linux Attributes:
 ===========================

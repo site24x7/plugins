@@ -14,23 +14,28 @@ Follow the below steps to configure the Redis Sentinel plugin and to monitor met
 ---
 ##### Linux 
 
-- Create a folder "redis_sentinel" under Site24x7 Linux Agent plugin directory : 
-
-      Linux            ->   /opt/site24x7/monagent/plugins/redis_sentinel
-
----
+- Create a folder "redis_sentinel".
 
 - Download the file in "redis_sentinel" folder and place it under the "redis_sentinel" directory
 
-	  wget https://raw.githubusercontent.com/site24x7/plugins/master/redis_sentinel/redis_sentinel.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/redis_sentinel/redis_sentinel.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/redis_sentinel/redis_sentinel.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output. 
 
-	  python redis_sentinel.py --port=<PORT_FOR_REDIS_SENTINEL> --master=<MASTER_NAME_TO_MONITOR>
+		python redis_sentinel.py --port=<PORT_FOR_REDIS_SENTINEL> --master=<MASTER_NAME_TO_MONITOR>
 
+- Provide the below configurations in "redis_sentinel.cfg"
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+		[DISPLAY_NAME]
+		port=<PORT FOR REDIS SENTINEL>
+		master=<MASTER NAME TO MONITOR>
+		
+- Move the folder "redis_sentinel" under Site24x7 Linux Agent plugin directory : 
 
+		Linux            ->   /opt/site24x7/monagent/plugins/
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Captured
 ---

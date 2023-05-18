@@ -24,13 +24,10 @@ Monitor the availability and performance of your SAP HANA database with SAP HANA
 
 ### Plugin Installation
 
-- Create a directory named "sap_hana_database" under the Site24x7 Linux Agent plugin directory: 
-
-		Linux             ->   /opt/site24x7/monagent/plugins/sap_hana_database
+- Create a directory named "sap_hana_database".
 		
 - Download all the files in "sap_hana_database" folder and place it under the "sap_hana_database" directory
 
-		
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/sap_hana_database/sap_hana_database.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/sap_hana_database/sap_hana_database.cfg
 	
@@ -59,7 +56,11 @@ Monitor the availability and performance of your SAP HANA database with SAP HANA
 		
  In the above, fill in the System ID, Instance number and hostname with applicable details.
  
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center
+- Move the directory "sap_hana_database" under the Site24x7 Linux Agent plugin directory: 
+
+		Linux             ->   /opt/site24x7/monagent/plugins/
+ 
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 		
 ### Performance Metrics
 

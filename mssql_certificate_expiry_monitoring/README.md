@@ -20,18 +20,14 @@
 
 ### Plugin Installation 
 
-- Create a folder named "mssql_certificate_expiry_monitoring" under the Site24x7 Windows Agent plugin directory:
-
-		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\mssql_certificate_expiry_monitoring
+- Create a folder named "mssql_certificate_expiry_monitoring".
 		
 - Download all the files in "mssql_certificate_expiry_monitoring" folder from the GitHub repository and place it in the "mssql_certificate_expiry_monitoring" directory.
 
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_certificate_expiry_monitoring/mssql_certificate_expiry_monitoring.ps1
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_certificate_expiry_monitoring/mssql_certificate_expiry_monitoring.cfg
 
-- Configurations
-  Add the below configurations in mssql_certificate_expiry_monitoring.cfg file:
-
+- Add the below configurations in mssql_certificate_expiry_monitoring.cfg file:
 
 		[1]
 		server="server_name"
@@ -39,17 +35,21 @@
 		username="user_name"
 		password="password"
 		
+- Move the folder "mssql_certificate_expiry_monitoring" under the Site24x7 Windows Agent plugin directory:
+
+		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+---
+
 ### Metrics Monitored
 
 		Certificate Name
 		Certificate Issuer Name 
 		Certificate Start Date
 		Certificate Expiry Date
-
-
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
----
 
 
 

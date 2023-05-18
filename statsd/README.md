@@ -4,17 +4,41 @@ Monitor your statsd server metrics.
 
 ### statsd Plugin installation
 ---
+
+- Create a directory "statsd".
+
 ##### Linux 
 
-- Create a directory "statsd" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/statsd
 - Download the file "statsd.py" and place it under the "statsd" directory
+
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/statsd/statsd.py
+
+- Change the host name and port in statsd.py
+
+- Execute the below command to check for valid json output.
+
+		python statsd.py
+		
+- Move the directory "statsd" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
 
 ##### Windows
  
-- Create a directory "statsd" under Site24x7 Linux Agent plugin directory - C:\Program Files\Site24x7\WinAgent\monitoring\Plugins\statsd
-- Download the file "statsd.py" and place it under the "statsd" directory
-- Download "statsd.ps1" and place it under "statsd" directory
+- Download the file "statsd.py" and "statsd.ps1" and place it under the "statsd" directory
+
+		https://raw.githubusercontent.com/site24x7/plugins/master/statsd/statsd.py
+		https://raw.githubusercontent.com/site24x7/plugins/master/statsd/statsd.ps1
+
 - Replace `$python="C:\Python27\python.exe"` in "statsd.ps1" file with your python path `$python=<python exe path>`
+
+- Change the host name and port in statsd.py
+
+- Execute the below command to check for valid json output.
+
+		.\statsd.ps1
+
+- Move the directory "statsd" under Site24x7 Windows Agent plugin directory - C:\Program Files\Site24x7\WinAgent\monitoring\Plugins\
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### etcd_self Plugin configurations
 ---
