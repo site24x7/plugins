@@ -26,7 +26,7 @@
 
 - Create a directory "mysql_custom_query".
 
-- Download all the files in "mysql_custom_query" folder and place it under the "mysql_custom_query" directory
+- Download the below files and place it under the "mysql_custom_query" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_query/mysql_custom_query.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_query/mysql_custom_query.cfg
