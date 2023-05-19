@@ -29,7 +29,7 @@
 ### Plugin Installation 
 
 - Create a directory "mysql_monitoring".
-- Copy and execute the below command to download the pymysql module in the "mysql_monitoring" folder.
+- Copy and execute the below command under the "mysql_monitoring" folder to download the pymysql module.
 	
 		wget https://github.com/site24x7/plugins/raw/master/mysql_monitoring/pymysql/pymysql.zip && unzip pymysql.zip && rm pymysql.zip
 		
