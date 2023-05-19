@@ -5,13 +5,8 @@
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
-
-- Intsall Pymysql module with following command
-
-		pip install PyMySQL
-- Pymysql(v1.0.3) works only for python with version>=3.7 	
-
+- Download and install the latest version of the [Site24x7 Linux agent/Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Install python with version>=3.7 
 - To create a MySQL user:
 
 		CREATE USER username@hostname IDENTIFIED BY 'password';
@@ -34,8 +29,11 @@
 ### Plugin Installation 
 
 - Create a directory "mysql_monitoring".
-      
-- Download all the files in "mysql_monitoring" folder and place it under the "mysql_monitoring" directory
+- Download the pymysql module in the  "mysql_monitoring" folder.
+	
+		wget https://github.com/site24x7/plugins/raw/master/mysql_monitoring/pymysql/pymysql.zip && unzip pymysql.zip && rm pymysql.zip
+		
+- Download  the below files in "mysql_monitoring" folder and place it under the "mysql_monitoring" directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/mysql_monitoring.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/mysql_monitoring.cfg
@@ -43,8 +41,8 @@
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python mysql_monitoring.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> 
-		
-- Update the below configurations in mysql_monitoring.cfg file:
+
+- After above command with parameters gives expected output, please configure the relevant parameters in the mysql_monitoring.cfg file.
 
 		[MySQL]
 		host = <hostname>
@@ -57,21 +55,9 @@
 
 - Applog is supported for MySQL Monitoring. To enable applog for this plugin, configure logs_enabled=true and configure log_type_name and log_file_path as need.
 
-#### Linux 
+- Place the "mysql_monitoring" folder under Site24x7 Linux Agent plugin directory : 
 
-- Move the directory "mysql_monitoring" under Site24x7 Linux Agent plugin directory :
-
-		Linux             ->   /opt/site24x7/monagent/plugins/
-		
-#### Windows
-
-- Move the directory "mysql_monitoring" under Site24x7 Windows Agent plugin directory :
-
-		Windows             ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
-
-
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
-
+		Linux             ->   /opt/site24x7/monagent/plugins/mysql_monitoring
 ---
 
 ### Failover monitoring supported
@@ -275,6 +261,8 @@ The agent will automatically execute the plugin within five minutes and user can
 		14.Skip counter-Skip Counter denotes the number of events from the source that a replica server should skip.
 
 
+_The pymysql source can be found [here](https://github.com/PyMySQL/PyMySQL/tree/main)._
 
+_Zoho Corporation has made this into one single [zip file](https://github.com/site24x7/plugins/tree/master/mysql_monitoring/pymysql/pymysql.zip) and is licensed under the same [license](https://github.com/PyMySQL/PyMySQL/blob/main/LICENSE) which can be found [here](https://github.com/site24x7/plugins/tree/master/mysql_monitoring/pymysql/LICENSE.txt)._
 
 
