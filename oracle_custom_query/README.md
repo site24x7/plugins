@@ -52,6 +52,6 @@ The agent will automatically execute the plugin within five minutes and user can
 The custom query shall be given in the query section of the config file. The name of the columns of the result will be taken as the metric name and the result will be taken as the metric value.
 
 
+_The cx_Oracle source can be found [here](https://github.com/oracle/python-cx_Oracle)._
 
-
-
+_Zoho Corporation has made this into one single [executable](https://github.com/site24x7/plugins/tree/master/oracle_custom_query/cx_Oracle/cx_Oracle_linux) and is licensed under the same [license](https://github.com/oracle/python-cx_Oracle/blob/main/LICENSE.txt) which can be found [here](https://github.com/site24x7/plugins/blob/master/oracle_custom_query/cx_Oracle/LICENSE.txt)._
