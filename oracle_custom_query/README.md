@@ -16,15 +16,19 @@
 ### Plugin Installation  
 
 - Create a directory named "oracle_custom_query".
-      
-- Download all the files in the "oracle_custom_query" folder and place it under the "oracle_custom_query" directory.
+- Download the cx_Oracle python module in the "oracle_custom_query".
+	- For Linux 	
+		```
+		wget https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_linux/cx_Oracle.cpython-36m-x86_64-linux-gnu.so
+		```
+	- For Windows download the module file from below link.
+	
+		https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_windows/cx_Oracle.cp38-win32.pyd     
+- Download the below files in the "oracle_custom_query" folder and place it under the "oracle_custom_query" directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle_custom_query/oracle_custom_query.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle_custom_query/oracle_custom_query.py
 
-- Execute the following command in your server to install Oracle DB: 
-
-		pip install cx_Oracle
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
