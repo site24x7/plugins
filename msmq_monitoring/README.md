@@ -21,7 +21,7 @@ Hence the MSMQ performance monitoring provides comprehensive performance metrics
       
 - Download all the files and place it under the "msmq_monitoring" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/msmq_monitoring/msmq_monitoring.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/msmq_monitoring/msmq_monitoring.ps1
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/msmq_monitoring/msmq_monitoring.cfg
 
 
