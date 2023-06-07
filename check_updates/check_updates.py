@@ -10,7 +10,7 @@ if PYTHON_MAJOR_VERSION == 3:
 elif PYTHON_MAJOR_VERSION == 2:
             import platform 
             
-os_info = distro.name(
+os_info = distro.name()
 PLUGIN_VERSION = "1"
 HEARTBEAT="true"
 
