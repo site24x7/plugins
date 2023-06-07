@@ -6,11 +6,11 @@ import subprocess
 
 PYTHON_MAJOR_VERSION = sys.version_info[0]
 if PYTHON_MAJOR_VERSION == 3:
-            import distro as platform
+            import distro 
 elif PYTHON_MAJOR_VERSION == 2:
             import platform 
             
-os_info = platform.linux_distribution()[0].lower()
+os_info = distro.name(
 PLUGIN_VERSION = "1"
 HEARTBEAT="true"
 
