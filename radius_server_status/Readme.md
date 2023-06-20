@@ -11,16 +11,16 @@ RADIUS enables a company to maintain user profiles in a central database that al
 
 ## Installation Steps:
 
-- Create a directory "radius_access_accept"
+- Create a directory "radius_server_status"
 
 - Download the below files and place under the above created directory
           ```
-           https://raw.githubusercontent.com/site24x7/plugins/master/radius_access_accept/radius_access_accept.cfg
-           https://github.com/site24x7/plugins/raw/master/radius_access_accept/radius_access_accept.ps1
+           https://raw.githubusercontent.com/site24x7/plugins/master/radius_server_status/radius_server_status.cfg
+           https://github.com/site24x7/plugins/raw/master/radius_server_status/radius_server_status.ps1
           ```
-- Open and edit the downloaded file radius_access_accept.cfg
+- Open and edit the downloaded file radius_server_status.cfg
 
-- The radius_access_accept.cfg file will contains the below content
+- The radius_server_status.cfg file will contains the below content
 
           [Radius Server Status]
           ip = localhost
@@ -33,13 +33,13 @@ RADIUS enables a company to maintain user profiles in a central database that al
 - port is the port used by the radius server for authentication
 - device_password is the shared secret key 
 
-After finish the configuration, move the folder "radius_access_accept" into the Site24x7 Linux Agent plugin directory:
+After finish the configuration, move the folder "radius_server_status" into the Site24x7 Linux Agent plugin directory:
 
-        radius_access_accept  -->  /opt/site24x7/monagent/plugins/
+        radius_server_status  -->  /opt/site24x7/monagent/plugins/
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
-python3 radius_access_accept.py --ip=<ip-of-radius-server> --port=<port-no-of-radius-server> --device_password=<shared-secret-key> 
+python3 radius_server_status.py --ip=<ip-of-radius-server> --port=<port-no-of-radius-server> --device_password=<shared-secret-key> 
 ```
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
