@@ -108,7 +108,7 @@ if __name__=="__main__":
     hostname="127.0.0.1"
     port=3000
     username='admin'
-    password='suraj'
+    password='admin_password'
     node_id="BB90C7D8FE07440"
 
     import argparse
