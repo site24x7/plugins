@@ -11,27 +11,29 @@ RADIUS enables a company to maintain user profiles in a central database that al
 
 ## Installation Steps:
 
-- Create a directory "radius_server_status"
 
-- Download the below files and place under the above created directory
-          ```
-           https://raw.githubusercontent.com/site24x7/plugins/master/radius_server_status/radius_server_status.cfg
-           https://github.com/site24x7/plugins/raw/master/radius_server_status/radius_server_status.ps1
-          ```
-- Open and edit the downloaded file radius_server_status.cfg
+To install the Radius Server Status plugin, please follow these steps:
 
-- The radius_server_status.cfg file will contains the below content
+- Create a directory named "radius_server_status" on your system.
+
+- Download the necessary files and place them inside the "radius_server_status" directory.
+  
+- Locate and open the downloaded file "radius_server_status.cfg" using a text editor.
+
+- Edit the "radius_server_status.cfg" file and update its contents with the following:
 
           [Radius Server Status]
           ip = localhost
           port = 1812
           device_password = testing123
 
+- Where,
+     - [Radius Server Status] is the name of the monitor. You can change it to a name that suits your requirements.
+     - ip is the IP address of your Radius server. Replace "localhost" with the actual IP address of your server.
+     - port is the port number used by the Radius server for authentication. Update it if your Radius server uses a different port.
+     - device_password is the shared secret key used for authentication between the client and the Radius server. Replace "testing123" with your actual shared secret key.
 
-- [Radius Server Status] is the name of the monitor, you can change the name based on your need.
-- ip is the IP address of your radius server          
-- port is the port used by the radius server for authentication
-- device_password is the shared secret key 
+- Ensure that the IP address, port, and device password match your specific configuration. Modify them if necessary.
 
 After finish the configuration, move the folder "radius_server_status" into the Site24x7 Linux Agent plugin directory:
 
