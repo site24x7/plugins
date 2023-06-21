@@ -46,4 +46,4 @@ python3 radius_server_status.py --ip=<ip-of-radius-server> --port=<port-no-of-ra
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
-The plugin only checks if the radius server is online by sending a Access-Request packet. If the Access-Accept packet is received the plugin monitor will be in up state and down in vice versa. 
+The Radius Server Status plugin will then send an Access-Request packet to the specified Radius server and monitor the response. If an Access-Accept packet is received, the plugin monitor will be in the "up" state, indicating that the Radius server is online. If there is no response or an Access-Reject packet is received, the monitor will be in the "down" state, indicating that the Radius server is offline.
