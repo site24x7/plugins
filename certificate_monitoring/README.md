@@ -36,11 +36,18 @@ The agent will automatically execute the plugin within five minutes and user can
        thumbprint=<thumbprint of the certificate>
        certName=<certificate name>
 
-Where,
-- certPath - path to the certificate.
-- certName - the name given to the certName will be the name of the plugin monitor.
-- thumbprint - the thumbprint of the certificate.
-- Navigate to where the certificate is then double click on the certificate. Then click on details and scroll down and find thumbprint. Please copy the thumbprint and paste it in the cfg file.
+- certPath refers to the path of the certificate file on your system. Provide the full path to the certificate file in the configuration.
+
+- certName is the name assigned to the certificate, which will also be used as the name of the plugin monitor. Choose a descriptive name for the certificate.
+
+- thumbprint represents the thumbprint of the certificate. To obtain the thumbprint, follow these steps:
+
+     - Navigate to the location where the certificate is stored on your system.
+     - Double-click on the certificate file to open it.
+     - In the certificate details, click on the "Details" tab.
+     - Scroll down to locate the thumbprint value.
+     - Copy the thumbprint value and paste it into the appropriate field in the configuration file.
+
        
 ### Metrics Captured
 
