@@ -24,12 +24,13 @@ This plugin monitors the performance metrics of NFS mount point status, IP addre
 
 		[display_name]
 		mount_folder = “<your_mount_folder_path>,<your_mount_folder_path1>”
+- Enter the Folder paths inside the " " quotation marks separated by commas ','.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python nfs.py --mount_folder=<your_mount_folder_path>,<your_mount_folder_path1>
   
-- Enter the Folder paths inside the " " quotation marks separated by commas ','.
+
 
 - Move the directory "nfs" under Site24x7 Linux Agent plugin directory : 
 
