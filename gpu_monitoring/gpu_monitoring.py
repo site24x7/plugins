@@ -26,7 +26,7 @@ cmd = 'gpustat -cp'
 p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
 (output, err) = p.communicate()
 p_status = p.wait()
-core_output = output.split('\n')
+core_output = output.decode().split('\n')
 for each in core_output:
     if each.startswith('['):
         core_out_line = each.split()    
