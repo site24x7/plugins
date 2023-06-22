@@ -47,7 +47,7 @@ def get_nfs_mount_data (output, ipaddr,count,mpath):
     except Exception as e:
         data['status'] = 0
         data['msg'] = str(e)
-        #print(e)
+
         
     return data
     
@@ -84,7 +84,7 @@ def get_nfs_mount_info (output,count):
     except Exception as e:
         data['status'] = 0
         data['msg'] = str(e)
-        #print(e)
+
     
     return data
 
@@ -125,7 +125,7 @@ def metricCollector(MOUNT,folder):
     except Exception as e:
         data['status']=0
         data['msg']=str(e)
-        #print('1\n',e)
+
     
     return data
 
