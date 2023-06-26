@@ -13,7 +13,15 @@
 	```
 	```
 	grant create session to {username}
+ 	```
+ - Export the LD_LIBRARY_PATH
 	```
+ 	export LD_LIBRARY_PATH=/path/of/ld_library/
+ 	```
+ - Restart the Site24x7 Agent
+	```
+ 	/opt/site24x7/monagent/bin/monagent restart
+ 	```
 ---
 
 
