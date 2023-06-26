@@ -22,7 +22,7 @@ This plugin monitors the certificates in windows certificate store
 
 - Execute the below command with appropriate arguments to check for the valid json output.
 
-      .\certificate_monitoring.ps1 -certPath "<path to the certificate store>" -certName "<Certificate Name>"
+      .\certificate_monitoring.ps1 -certPath "<path to the certificate store>" -certName "<Certificate Name>" -thumbprint "<thumbprint of the certificate>"
 - Move the folder "certificate_monitoring"  into the Site24x7 Windows Agent plugin directory :
 
       Windows     ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\certificate_monitoring
@@ -33,7 +33,21 @@ The agent will automatically execute the plugin within five minutes and user can
 ---
        [display_name]
        certPath=<cerificate path>
+       thumbprint=<thumbprint of the certificate>
        certName=<certificate name>
+
+- certPath refers to the path of the certificate file on your system. Provide the full path to the certificate file in the configuration.
+
+- certName is the name assigned to the certificate, which will also be used as the name of the plugin monitor. Choose a descriptive name for the certificate.
+
+- thumbprint represents the thumbprint of the certificate. To obtain the thumbprint, follow these steps:
+
+     - Navigate to the location where the certificate is stored on your system.
+     - Double-click on the certificate file to open it.
+     - In the certificate details, click on the "Details" tab.
+     - Scroll down to locate the thumbprint value.
+     - Copy the thumbprint value and paste it into the appropriate field in the configuration file.
+
        
 ### Metrics Captured
 

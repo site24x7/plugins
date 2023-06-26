@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import json
 import platform
@@ -14,12 +14,12 @@ PLUGIN_VERSION = "1"
 HEARTBEAT="true"
 
 METRIC_UNITS = {
-    "client_ip_address" : "ip",
     "mount_point" : "path",
-    "disk_usage" : "%",
     "nfs_version" : "version",
     "shared_directory" : "path",
-    "server_ip_address" : "ip"
+    "server_ip_address" : "ip",
+    "domain" : "",
+    "mount_permission" : ""
 }
 
 ERROR_MSG=[]
@@ -28,54 +28,68 @@ MOUNT = ""
 
 result = {}
 
-def nfs_details (output):
+def get_nfs_mount_data (output, ipaddr,count,mpath):
     data = {}
+
     try:
+
         output = ' '.join(output.split())
         output = output.split(" ")
-        output[5] = output[5].replace('%%1', '')
-        output[5] = output[5].replace('%%0', '')
-        server = output[0].split(":")
-        data['server_ip_address'] = str(server[0])
-        data['shared_directory'] = str(server[1])
-        data['mount_point'] = str(output[5])
-        data['disk_usage'] = int(output[4].replace('%', ''))
-            
+        server = output[0].split(ipaddr)
+        data['Folder '+count+' Shared Directory'] = server[1]
+        data[mpath+' Disk Usage'] = int(output[4].replace('%', ''))
+        try:
+           data[mpath+' Status'] =1
+        except:
+           pass
+        METRIC_UNITS[mpath + ' Disk Usage'] = "%"
+
     except Exception as e:
         data['status'] = 0
         data['msg'] = str(e)
+
         
     return data
     
     
-def mount_metrics (output):
+def get_nfs_mount_info (output,count):
     data = {}
     try:
         output = ' '.join(output.split())
         output = output.split(" ")
+
         for out in output:
-            if "vers" in out and "clientaddr" in out:
+            if "vers" in out or "domain" in out:
                 out = out.split(",")
                 for each in out:
+
                     if "vers" in each:
                         each = each.split("=")    
-                        data['nfs_version'] = str(each[1])
-                    if "clientaddr" in each:
-                        each = each.split("=")
-                        data['client_ip_address'] = str(each[1])
+                        data['nfs Version'] = str(each[1])
+
                     if each=="rw":
-                        data['mount_permission'] = "read/write"
+                        data['Folder '+count+' Mount Permission'] = "read/write"
+
                     if each=="ro":
-                        data['mount_permission'] = "read only"
-    
+                        data['Folder '+count+' Mount Permission'] = "read only"
+
+                    if "addr" in each:
+                        each = each.split("=")
+                        data['Folder ' +count+' Server IP Address'] = str(each[1])
+
+                    if "domain" in each:
+                        each = each.split("=")
+                        data['Folder '+count+' Domain'] = str(each[1])
+        
     except Exception as e:
         data['status'] = 0
         data['msg'] = str(e)
+
     
     return data
 
 
-def metricCollector():
+def metricCollector(MOUNT,folder):
     data = {}
 
     try:
@@ -85,22 +99,33 @@ def metricCollector():
         top_output = proc.communicate()[0]
         top_output=top_output.strip()
         top_output=top_output.decode("utf-8")
+        data['Folder '+folder+' Mount Point'] = MOUNT
+        
         if "@@@@@@" in top_output:
             output = top_output.split("@@@@@@")
             top_output = output[1]
             output = output[0]
+            
+
         if '%%' in top_output:
-            data.update(nfs_details(top_output))
-            data.update(mount_metrics(output))
+            data.update(get_nfs_mount_info(output,folder))
+            data.update(get_nfs_mount_data(top_output, data["Folder "+folder+' Server IP Address'],folder,MOUNT))
+            data["Folder "+folder+" Status"]= "Mounted"
+            data["Folder "+folder+" Status"]= "Mounted"
+            
+            
         elif '-1' in top_output:
-            data['status']=0
-            data['msg']= MOUNT+" is unmounted"
+            data["Folder "+folder+" Status"]= "Unmounted"
+            data[MOUNT+' Status'] =0
+
         elif '-2' in top_output:
-            data['status']=0
-            data['msg']= MOUNT+" - NFS Server Host is not reachable"
+            data["Folder "+folder+" Status"]= "Server not reachable"
+            data[MOUNT+' Status'] =0
+
     except Exception as e:
         data['status']=0
         data['msg']=str(e)
+
     
     return data
 
@@ -112,9 +137,14 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     if args.mount_folder:
-        MOUNT = args.mount_folder
-    
-    result = metricCollector()
+        folders = args.mount_folder
+        folders=folders.split(",")
+    n=1
+
+    for i in folders:
+        result_collector = metricCollector(i,str(n))
+        n+=1
+        result.update(result_collector )
     
     result['plugin_version'] = PLUGIN_VERSION
     result['heartbeat_required']=HEARTBEAT

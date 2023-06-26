@@ -23,11 +23,14 @@ This plugin monitors the performance metrics of NFS mount point status, IP addre
 - Configure the mount point to be monitored in the nfs.cfg file, as mentioned below.
 
 		[display_name]
-		mount_folder = “<your_mount_folder_path>”
+		mount_folder = “<your_mount_folder_path>,<your_mount_folder_path1>”
+- Enter the Folder paths inside the " " quotation marks separated by commas ','.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python nfs.py --mount_folder=<your_mount_folder_path>
+		python nfs.py --mount_folder=<your_mount_folder_path>,<your_mount_folder_path1>
+  
+
 
 - Move the directory "nfs" under Site24x7 Linux Agent plugin directory : 
 
@@ -35,18 +38,19 @@ This plugin monitors the performance metrics of NFS mount point status, IP addre
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
+
 ### Metrics Captured
 ---
-	client_ip_address -> IP Address of the client connected to the NFS Server
+	Folder 1,2,etc,. Mount Permission -> Mount permmision for the client to the mount point 
 
-	mount_permission -> Mount permmision for the client to the mount point 
+	Folder 1,2,etc,. Mount Point -> Mount point path on the client, which is connected to the NFS Server.
 
-	mount_point -> Mount point path on the client, which is connected to the NFS Server.
+	Folder 1,2,etc,. Server IP Address -> IP Address of the server connected with the NFS Client
 
-	server_ip_address -> IP Address of the server connected with the NFS Client
+	Folder 1,2,etc,. Shared Directory -> The path to the directory which is shared by the NFS Server
 
-	shared_directory -> The path to the directory which is shared by the NFS Server
+	<Folder Name> Disk Usage -> Percentage of the space used on the NFS Server
 
-	disk_usage -> Percentage of the space used on the NFS Server
+	nfs Version -> Version of the NFS installed in the Client
 
-	nfs_version -> Version of the NFS installed in the Client
+	Folder 1,2,etc,. Status -> Domain name of the NFS Server

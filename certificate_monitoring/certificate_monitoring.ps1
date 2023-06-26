@@ -1,25 +1,28 @@
-param([string]$certPath , [string]$certName)
+param([string]$certPath , [string]$thumbprint ,[string]$certname)
 
 $version = 1 
 $heartbeat = "true"
 
-$displayname = $certName + " certificate_monitoring"
+$displayname = $certname + " certificate_monitoring"
 
 Function Get-Data() 
 {    
-    param([string]$certpath , [string]$certName)
+    param([string]$certpath , [string]$thumbprint)
     $certificates = Get-ChildItem -path $certpath
     $cert_info = $null
     foreach($cert in $certificates)
     {
-        if($cert.FriendlyName -eq $certName)
+    #Write-Host "----"( $cert | Select-Object thumbprint) "----"
+        if($cert.thumbprint -eq $thumbprint)
         {
             $cert_info = $cert
+            
             break;
         }
     }
     # Version , Signature algorithm ,Valid from,valid to ,Friendly name, how many day left , Subject Name, the certificate is expired
     $data = @{}
+    #Write-Host $certificates
     $data.Add("certificate_version", $cert_info.Version)
     $data.Add("signature_algorithm", $cert_info.SignatureAlgorithm.FriendlyName)
     $data.Add("subject_name", $cert_info.Subject)
@@ -47,6 +50,5 @@ $mainJson = @{}
 $mainJson.Add("plugin_version", $version)
 $mainJson.Add("heartbeat_required", $heartbeat)
 $mainJson.Add("displayname", $displayname) 
-$mainJson.Add("data", (Get-Data $certPath $certName)) 
+$mainJson.Add("data", (Get-Data $certPath $thumbprint)) 
 return $mainJson | ConvertTo-Json
-
