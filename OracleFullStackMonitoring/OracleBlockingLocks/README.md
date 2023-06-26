@@ -13,7 +13,17 @@
 	```
 	```
 	grant create session to {username}
+ 	```
+ - Export the LD_LIBRARY_PATH
+   
+   	Example :
 	```
+ 	export LD_LIBRARY_PATH=/opt/oracle/product/19c/dbhome_1/lib
+ 	```
+ - Restart the Site24x7 Agent
+	```
+ 	/opt/site24x7/monagent/bin/monagent restart
+ 	```
 ---
 
 
@@ -26,9 +36,8 @@
 		```
 		wget https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_linux/cx_Oracle.cpython-36m-x86_64-linux-gnu.so
 		```
-	- For Windows download the module file from below link.
+	- To install cx_Oracle on windows check this [KBase](https://support.site24x7.com/portal/en/kb/articles/install-and-configure-oracle-plugin-in-windows)
 	
-		https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_windows/cx_Oracle.cp38-win32.pyd
 	
 - Download the below files in the "OracleBlockingLocks" folder and place it under the "OracleBlockingLocks" directory.
 
