@@ -6,20 +6,24 @@
 
 - Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 - Install python3.7 or higher version on the server.
-- Install cx_Oracle module for python
-```
-  pip3 install cx_Oracle
-```
-- To install cx_Oracle on windows check this [KBase](https://support.site24x7.com/portal/en/kb/articles/install-and-configure-oracle-plugin-in-windows)
-
 - Roles need to be granted for the user to be used in plugin
 
-```
-grant select_catalog_role to {username}
-```
-```
-grant create session to {username}
-```
+	```
+	grant select_catalog_role to {username}
+	```
+	```
+	grant create session to {username}
+	```
+ - Export the LD_LIBRARY_PATH
+   
+   	Example :
+	```
+ 	export LD_LIBRARY_PATH=/opt/oracle/product/19c/dbhome_1/lib
+ 	```
+ - Restart the Site24x7 Agent
+	```
+ 	/opt/site24x7/monagent/bin/monagent restart
+ 	```
 ---
 
 
