@@ -14,6 +14,16 @@
 	```
 	grant create session to {username}
 	```
+ - Export the LD_LIBRARY_PATH
+   
+   	Example :
+	```
+ 	export LD_LIBRARY_PATH=/opt/oracle/product/19c/dbhome_1/lib
+ 	```
+ - Restart the Site24x7 Agent
+	```
+ 	/opt/site24x7/monagent/bin/monagent restart
+ 	```
 ---
 
 
