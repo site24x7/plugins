@@ -231,6 +231,8 @@ class MySQL(object):
             db = pymysql.connect(host=self.host,user=self.username,passwd=self.password,port=int(self.port))
             self.connection = db
         except Exception as e:
+            global con_error
+            con_error=str(e)
             traceback.print_exc()
             return False
         return True
@@ -253,7 +255,8 @@ class MySQL(object):
     def metricCollector(self):
         data = {}
 
-        bool_result,data = self.checkPreRequisites(data)
+        #bool_result,data = self.checkPreRequisites(data)
+        bool_result = True
         
         if bool_result==False:
             return data
@@ -267,7 +270,7 @@ class MySQL(object):
 
             if not self.getDbConnection():
                 data['status']=0
-                data['msg']='Connection Error'
+                data['msg']='Connection Error: '+con_error
                 return data
     
             try:
@@ -448,4 +451,3 @@ if __name__ == "__main__":
     mysql_plugins = MySQL(args)
     result = mysql_plugins.metricCollector()
     print(json.dumps(result, indent=4, sort_keys=True))
-
