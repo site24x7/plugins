@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import json
 import os
+import warnings
+warnings.filterwarnings("ignore")
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
