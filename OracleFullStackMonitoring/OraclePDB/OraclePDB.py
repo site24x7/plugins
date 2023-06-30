@@ -64,8 +64,8 @@ class oracle:
                 self.maindata[PDB_Name+'_OpenTime']=str(row[5]).split()[0]
              
                 
-             c.close()
-             conn.close()
+            c.close()
+            conn.close()
 
 
 
