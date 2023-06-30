@@ -19,9 +19,9 @@ All the plugins listed are made from the perspective of **Oracle Database Tuning
 - Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 - Python 3.7 or higher version should be installed.
 - Install **oracledb** module for python
-		```
-		pip3 install oracledb
-		```
+	```
+	pip3 install oracledb
+	```
 
 - Roles need to be granted
 
