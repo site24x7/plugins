@@ -5,8 +5,8 @@
 ## Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
-- Install python3.7 or higher version on the server.
-- Roles need to be granted for the user to be used in plugin
+- Install **python3.7** or higher version on the server.
+- Roles need to be granted for the user in oracledb to be used in plugin
 
 	```
 	grant select_catalog_role to {username}
@@ -14,16 +14,7 @@
 	```
 	grant create session to {username}
  	```
- - Export the LD_LIBRARY_PATH
-   
-   	Example :
-	```
- 	export LD_LIBRARY_PATH=/opt/oracle/product/19c/dbhome_1/lib
- 	```
- - Restart the Site24x7 Agent
-	```
- 	/opt/site24x7/monagent/bin/monagent restart
- 	```
+
 ---
 
 
@@ -31,13 +22,10 @@
 ### Plugin Installation  
 
 - Create a directory named "OracleBlockingLocks".
-- Download the cx_Oracle python module in the "OracleBlockingLocks".
-	- For Linux 	
-		```
-		wget https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_linux/cx_Oracle.cpython-36m-x86_64-linux-gnu.so
-		```
-	- To install cx_Oracle on windows check this [KBase](https://support.site24x7.com/portal/en/kb/articles/install-and-configure-oracle-plugin-in-windows)
-	
+- Install the **oracledb** python module.
+	```
+	pip3 install oracledb
+	```
 	
 - Download the below files in the "OracleBlockingLocks" folder and place it under the "OracleBlockingLocks" directory.
 

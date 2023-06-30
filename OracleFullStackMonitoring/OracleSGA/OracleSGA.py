@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import json
 import os
+import warnings
+warnings.filterwarnings("ignore")
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
@@ -124,7 +126,7 @@ class oracle:
 
 
         try:
-            import cx_Oracle
+            import oracledb
         except Exception as e:
             self.maindata['status'] = 0
             self.maindata['msg'] = str(e)
@@ -132,7 +134,7 @@ class oracle:
 
         try:
             try:
-                conn = cx_Oracle.connect(user=self.username, password=self.password, dsn=f"{self.hostname}:{self.port}/{self.sid}")
+                conn = oracledb.connect(user=self.username, password=self.password, dsn=f"{self.hostname}:{self.port}/{self.sid}")
                 c = conn.cursor()
             except Exception as e:
                 self.maindata['status']=0

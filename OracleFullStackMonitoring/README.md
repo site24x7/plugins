@@ -17,21 +17,20 @@ All the plugins listed are made from the perspective of **Oracle Database Tuning
 ## Prerequisites for the Plugins
 
 - Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Python 3.7 or higher version should be installed.
+- Install **oracledb** module for python
+	```
+	pip3 install oracledb
+	```
 
-- Install cx_Oracle module for python
-	- For Linux 	
-		```
-		wget https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_linux/cx_Oracle.cpython-36m-x86_64-linux-gnu.so
-		```
-  - To install cx_Oracle on windows check this [KBase](https://support.site24x7.com/portal/en/kb/articles/install-and-configure-oracle-plugin-in-windows)
 - Roles need to be granted
 
-```
-grant select_catalog_role to {username}
-```
-```
-grant create session to {username}
-```
+	```
+	grant select_catalog_role to {username}
+	```
+	```
+	grant create session to {username}
+	```
 
 
 
@@ -48,7 +47,4 @@ Steps to use the [SetenvPrerequisites.py](https://github.com/site24x7/plugins/bl
 - Execute the **SetenvPrerequisites.py** file
 - Once Excuted the **SetenvPrerequisites.py** will ask for **sysdba username and passsword**, based on the details provided in the ".cfg" file the db will be connected and the necessary previlieges will be granted 
 
-_The cx_Oracle source can be found [here](https://github.com/oracle/python-cx_Oracle)._
-
-_Zoho Corporation has made this into one single [executable](https://github.com/site24x7/plugins/tree/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_linux) and is licensed under the same [license](https://github.com/oracle/python-cx_Oracle/blob/main/LICENSE.txt) which can be found [here](https://github.com/site24x7/plugins/blob/master/OracleFullStackMonitoring/cx_Oracle/LICENSE.txt)._
 
