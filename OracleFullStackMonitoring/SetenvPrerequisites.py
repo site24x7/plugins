@@ -12,13 +12,13 @@ def setenv(args):
     port=args['port']
 
     try:
-        import cx_Oracle
+        import oracledb
     except Exception as e:
         print(str(e))
 
     try:
         try:
-            conn = cx_Oracle.connect(sysusername,syspassword,hostname+':'+str(port)+'/'+sid)
+            conn = oracledb.connect(sysusername,syspassword,hostname+':'+str(port)+'/'+sid)
             c = conn.cursor()
         except Exception as e:
             print(str(e))

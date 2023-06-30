@@ -14,29 +14,17 @@
 	```
 	grant create session to {username}
 	```
-- Export the LD_LIBRARY_PATH
-   
-   	Example :
-	```
- 	export LD_LIBRARY_PATH=/opt/oracle/product/19c/dbhome_1/lib
- 	```
-- Restart the Site24x7 Agent
-	```
- 	/opt/site24x7/monagent/bin/monagent restart
- 	```
+
 ---
 
 ### Plugin Installation  
 
 - Create a directory named "OracleSGA".
-- Download the cx_Oracle python module in the "OracleSGA".
-	- For Linux 	
-		```
-		wget https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_linux/cx_Oracle.cpython-36m-x86_64-linux-gnu.so
-		```
-	- For Windows download the module file from below link.
-	
-		https://github.com/site24x7/plugins/raw/master/OracleFullStackMonitoring/cx_Oracle/cx_Oracle_windows/cx_Oracle.cp38-win32.pyd
+- Install the **oracledb** python module.
+	```
+	pip3 install oracledb
+	```
+
 	
 - Download the below files in the "OracleSGA" folder and place it under the "OracleSGA" directory.
 
