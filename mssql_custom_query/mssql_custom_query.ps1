@@ -2,6 +2,7 @@ param([string]$SQLServer , [string]$SQLDBName , [string]$query , [string]$sqluse
 $version = 1 #If any changes in the plugin metrics, increment the plugin version here. 
 $heartbeat = "true"
 $dataObj = @{}
+$mainJson=@{}
 #incase of sql server authentication
 $sqlserverauthetication = $false # make it $false for windows authentication
 Function Get-Data()
@@ -9,8 +10,9 @@ Function Get-Data()
         
         $units = @{}
         try{
-            $results=Invoke-Sqlcmd -ConnectionString "Data Source=$SQLServer; User Id=$sqlusername; Password =$sqlpassword" -Query "$query"
+            $results=Invoke-Sqlcmd -ConnectionString "Data Source=$SQLServer; User Id=$sqlusername; Password =$sqlpassword; Initial Catalog=$SQLDBName" -Query "$query" -ErrorAction Stop 
             $resultlen = $results | Measure-Object | select -ExpandProperty Count
+            $results
             if($results)
             {
                 $isConnectionSuccessful = "Yes"
@@ -29,23 +31,26 @@ Function Get-Data()
 	    {
 		$isOutputReturned = "No"
 		$error = "No error"
-               $dataObj.Add("error",$error)
+        $dataObj.Add("error",$error)
+        $connection.Close()
 	    }
          }
          catch{
                 $isConnectionSuccessful = "No"
                 $isOutputReturned = "No"
-                $error = "Exception in SQL connection"
-                $dataObj.Add("error",$error)
+                $error = "Exception in SQL connection:"+$_.Exception.Message
+                $mainJson.Add("status",0)
+                $mainJson.Add("msg",$error)
          }
         $dataObj.Add("isOutputReturned",$isOutputReturned)
         $dataObj.Add("isConnectionSuccessful",$isConnectionSuccessful)
-        $dataObj.Add("units",$units)
         return 1
 	
 }
-$dataObj.Add("plugin_version", $version)
-$dataObj.Add("heartbeat_required", $heartbeat)
+
 $data =Get-Data
 
-$dataObj | ConvertTo-Json
+$mainJson.add("data",$dataObj)
+$mainJson.Add("plugin_version", $version)
+$mainJson.Add("heartbeat_required", $heartbeat)
+return $mainJson | ConvertTo-Json
