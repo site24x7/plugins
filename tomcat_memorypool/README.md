@@ -1,6 +1,5 @@
-# Tomcat Connector Monitoring
+# Tomcat MemoryPool Monitoring
 
-- Tomcat Connector is a component that handles communication between the Tomcat server and external clients, such as web browsers or other web servers. 
                                                                                               
 ## Prerequisites
 
@@ -8,32 +7,32 @@
 
 #### Linux
 
-- Navigate to below directory
+- Navigate to the below directory
 
 		/opt/tomcat/conf
 		
 - Open tomcat-users.xml
 
-- Add below roles are added to the user.
+- Add the below roles are added to the user.
 
 		<user username="user" password="user" roles="manager-gui,admin-gui"/>
   		<user username="user" password="user" roles="manager-script"/>
   		
-- Restart tomcat server
+- Restart Tomcat server
 		
 #### Windows
 
-- Naviagate to below directory
+- Navigate to below directory
 
 		<tomcat_dowloaded_directory>\conf
 		
 - Open tomcat-users.xml
-- Add below roles are added to the user.
+- Add the below roles are added to the user.
 
 		<user username="user" password="user" roles="manager-gui,admin-gui"/>
   		<user username="user" password="user" roles="manager-script"/>
   
-- Removing Manager Page restriction. This applies only for tomcat 8 onward's.
+- Removing Manager Page restriction. This applies only to Tomcat 8 onward.
   
 	- Open the `context.xml` file.
   	```
@@ -59,62 +58,41 @@
    	- Follow the same steps and do the same for **Host Manager**.
    		- ``` vi /opt/tomcat/webapps/host-manager/META-INF/context.xml ```
 
-- Restart tomcat server after the above changes.
+- Restart the Tomcat server after the above changes.
 ---
 
 ### Plugin Installation  
 
-- Create a directory named "tomcat_connector".
+- Create a directory named "tomcat_memorypool".
       
-- Download below files and place it under the "tomcat_connector" directory.
+- Download the below files and place them under the "tomcat_memorypool" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/tomcat_connector/tomcat_connector.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/tomcat_connector/tomcat_connector.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/tomcat_memorypool/tomcat_memorypool.py
 
-- Execute the below command with appropriate arguments to check for the valid json output:
+- Execute the below command with appropriate arguments to check for the valid JSON output:
 
-		python tomcat_connector.py --host='hostname' --port='port' --username='username' --password='password'
+		python tomcat_memorypool.py
 		
 ---
 
-### Configurations
 
-- Provide your tomcat configurations in tomcat_connector.cfg file.
-
-		[1]
-		host = 'localhost'
-		port = '8080'
-		username = 'admin'
-		password = 'admin'
 		
-### Move plugin under Site24x7 agent
+### Move the plugin under the Site24x7 agent
 
 #### Linux
 
-- Move "tomcat_connector" directory under the Site24x7 Linux Agent plugin directory: 
+- Move "tomcat_memorypool" directory under the Site24x7 Linux Agent plugin directory: 
 
 		Linux             ->   /opt/site24x7/monagent/plugins/
 		
 #### Windows
 
-- Move "tomcat_connector" directory under the Site24x7 Windows Agent plugin directory: 
+- Move "tomcat_memorypool" directory under the Site24x7 Windows Agent plugin directory: 
 
 		Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 		
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+The agent will automatically execute the plugin within five minutes and the user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
-### Metrics Monitored
-
-		Bytes Received
-		Bytes Sent
-		Error Count
-		Name
-		Processing Time
-		Request Count
-		Thread Allowed
-		Thread Busy
-		Thread Count
-		Tomcat Version
 
 
 
