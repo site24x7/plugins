@@ -33,7 +33,7 @@
 
         [mongo_db_atlas]
         mongo_connect_string =<mongodb connection string>
-        dbname=<monogdb database name>
+        dbname=<mongodb database name>
 
 
 - Execute the below command with appropriate arguments which were given in the configuration to check for the valid output with JSON format.
