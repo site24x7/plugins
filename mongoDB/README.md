@@ -39,8 +39,8 @@
 		dbname ="mydatabase"
 		authdb="admin"
 		tls="False"
-		tlscertificatekeyfile=None
-		tlscertificatekeyfilepassword=None
+		tlscertificatekeyfile="None"
+		tlscertificatekeyfilepassword="None"
 		tlsallowinvalidcertificates="True"
 
 
