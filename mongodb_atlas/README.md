@@ -45,13 +45,17 @@
  		Linux             ->   /opt/site24x7/monagent/plugins/mongodb_atlas
 		
 **Note:** 
+
 `While entering the connection string make sure to encode the password if it has special characters.`
 
 **Example Password:**
+
 `Actual Password: test@123`
+
 `Encoded Password: test%40123`
 
 **Example Connection String:**
+
 `mongodb+srv://test:test%40123@atlascluster.xyltq3c.mongodb.net/?retryWrites=true&w=majority`
 
 
