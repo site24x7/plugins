@@ -34,8 +34,8 @@
 		[mongo_db]
 		host ="localhost"
 		port ="27017"
-		username =None
-		password =None
+		username ="None"
+		password ="None"
 		dbname ="mydatabase"
 		authdb="admin"
 		tls="False"
