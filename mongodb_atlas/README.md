@@ -1,66 +1,63 @@
-Plugin for monitoring MongoDb Atlas Cluster
-==============================================
-
-This plugin monitors the availability and state of mongodb atlas cluster.
-
+# MongoDB Atlas Monitoring
+                                                                                              
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent/Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
-		
-- Create a cluster in https://www.mongodb.com and get your public_key and private_key to access API.
-
-- Add your Current IP address on the API key settings everytime you start your mongodb atlas
+- Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+---
 
 ### Plugin Installation  
 
-- Create a directory "mongodb_atlas" :
+- Create a directory named "mongodb_atlas" in your server.		
       
-- Download all the files in "mongodb_atlas" folder and place it under the "mongodb_atlas" directory
+- Download the below files and place it under the "mongodb_atlas" directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_atlas/mongodb_atlas.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_atlas/mongodb_atlas.cfg
-
-- Execute the below command with appropriate arguments to check for the valid json output.  
-
-		python mongodb_atlas.py --group_id=<your_group_id> --public_key=<your_public_key> --private_key=<your_private_key>
 		
-- Configure this set up in your cfg file 
-                
-		[mongodb_atlas]
-		group_id = <group_id> 
-		public_key = <public_key>
-		private_key = <your_private_key>
+### Prerequisites
+
+ - Execute the following command in your server to install pymongo: 
+
+		pip install pymongo
 		
-- Move the directroy "mongodb_atlas"  under Site24x7 Linux Agent plugin directory :
+		
+ Note: Please install the compatibility version of pymongo for your existing Python version
+| Python Version | Reference link contains list of compatible pymongo versions                  |
+| -------------- | ---------------------------------------------------------------------------- |
+| Python 3       | https://www.mongodb.com/docs/drivers/pymongo/#python-3-compatibility         |
+| Python 2       | https://www.mongodb.com/docs/drivers/pymongo/#python-2-compatibility         |
 
-		Linux             ->   /opt/site24x7/monagent/plugins/
+### Configurations
+
+- Provide your mongodb_atlas configurations in mongodb_atlas.cfg file.
+
+        [mongo_db_atlas]
+        mongo_connect_string =<mongodb connection string>
+        dbname=<monogdb database name>
 
 
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+- Execute the below command with appropriate arguments which were given in the configuration to check for the valid output with JSON format.
 
-### Metrics Monitored
+    python3 mongodb_atlas.py  --mongo_connect_string <mongodb connection string> --dbname <monogdb database name>
+		
+		
+- Once above execution was given valid output, then copy the mongodb_atlas directory to Site24x7 Linux Agent plugin directory: 
+ 		Linux             ->   /opt/site24x7/monagent/plugins/mongodb_atlas
+		
+**Note :** 
+`While entering the connection string make sure to encode the password if it has special characters.`
+
+**Example Password :**
+`Actual Password : test@123`
+`Encoded Password : test%40123`
+
+**Example Connection String :**
+`mongodb+srv://test:test%40123@atlascluster.xyltq3c.mongodb.net/?retryWrites=true&w=majority`
 
 
----
 
-	analytics_nodes          ->	Number of analytics nodes in the region.
-	clustertype              ->	Type of the cluster
-	disksize                 ->	Capacity, in gigabytes, of the host's root volume. 
-	electable_nodes          ->	Number of electable nodes in the region.
-	maxinstance_size         ->	Maximum instance size to which your cluster can automatically scale.
-	mininstanc_size          ->	Minimum instance size to which your cluster can automatically scale.
-	mongodb_majorversion     ->	Major version of MongoDB the cluster runs
-	mongodb_version          ->	Version of MongoDB the cluster runs
-	mongo_uri_updated        ->	Timestamp in date and time format in UTC when the connection string was last updated. 
-	name                     ->	Name of the cluster to retrieve.
-	numshards                ->	Positive integer that specifies the number of shards for a sharded cluster.
-	pitenabled               ->	Flag that indicates if the cluster uses Continuous Cloud Backup backups.
-	priority                 ->	Election priority of the region. 
-	provider_backup_enabled  ->	Flag that indicates if the cluster uses Cloud Backups for backups.
-	providername             ->	Cloud service provider on which Atlas provisioned the hosts.
-	readonly_nodes           ->	Number of read-only nodes in the region.
-	replication_factor       ->	Number of replica set members
-	rootcert_type            ->	Certificate Authority that MongoDB Atlas clusters use.
-	srvaddress               ->	Connection string for connecting to the Atlas cluster. 
-	statename                ->	Current state of the cluster. 
-	zonename                 ->	Name for the zone.
+The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7. 
+
+To see the mongodb_atlas monitor in the Site24x7's web client, login Site24x7 with your account, navigate to Server tab -> Plugin Integration -> list of plugin monitors -> user can check the mongodb_atlas monitor.
+
+
