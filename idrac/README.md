@@ -28,7 +28,7 @@
 		
 #### Windows
 
-- Follow the steps in [k-base] (https://support.site24x7.com/portal/en/kb/articles/idrac-monitoring-for-windows) for iDrac plugins installation
+- Follow the steps in [k-base](https://support.site24x7.com/portal/en/kb/articles/idrac-monitoring-for-windows) for iDrac plugins installation
 
 ---
 
