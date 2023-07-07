@@ -8,7 +8,7 @@
 
 - Execute the following command in your server to install snmpwalk: 
 
-		sudo apt install snmp
+		sudo apt install snmpd
 		
 #### Windows
 
