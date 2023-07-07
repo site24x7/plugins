@@ -14,12 +14,17 @@
   		On Ubuntu install snmpwalk using apt-get
   		sudo apt–get install snmp
   
-- Set Environment variable:
-- 
+- After installation, export the net-snmp path in $PATH variable.
+
+    		Example:
+  		export PATH=$PATH:/var/lib/net-snmp/bin
+
 - Test snmpwalk for iDrac:
-  	snmpwalk -v <version> -c <community-name> <OID>
-        Example:
-  		snmpwalk -v 2c -c public 10.19.1.0 1.3.6.1.4.1.674.10892.5.4.600.50.1.5
+  
+  		command:
+  			snmpwalk -v <version> -c <community-name> <OID>
+        	Example:
+  			snmpwalk -v 2c -c public 10.19.1.0 1.3.6.1.4.1.674.10892.5.4.600.50.1.5
 		
 #### Windows
 
