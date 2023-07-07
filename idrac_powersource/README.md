@@ -4,15 +4,31 @@
 
 - Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
-#### LInux 
+#### Linux 
 
 - Execute the following command in your server to install snmpwalk: 
 
-		sudo apt install snmp
+		On Centos/RedHat machines you can install snmpwalk using Yum:
+  			yum install net–snmp–utils
+
+  		On Ubuntu install snmpwalk using apt-get:
+  			sudo apt–get install snmp
+  
+- After installation, export the net-snmp path in the $PATH variable.
+
+    		Example:
+  			export PATH=$PATH:/var/lib/net-snmp/bin
+
+- Test SNMP walk for iDrac:
+  
+  		Command:
+  			snmpwalk -v <version> -c <community-name> <OID>
+        	Example:
+  			snmpwalk -v 2c -c public 10.19.1.0 1.3.6.1.4.1.674.10892.5.4.600.50.1.5
 		
 #### Windows
 
-- Install the latest version of the Net-SNMP package for windows.
+- Follow the steps in [k-base](https://support.site24x7.com/portal/en/kb/articles/idrac-monitoring-for-windows) for iDrac plugins installation
 
 ---
 
