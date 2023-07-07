@@ -8,11 +8,22 @@
 
 - Execute the following command in your server to install snmpwalk: 
 
-		sudo apt install snmpd
+		On Centos/RedHat machines you can install snmpwalk using Yum
+  		yum install net–snmp–utils
+
+  		On Ubuntu install snmpwalk using apt-get
+  		sudo apt–get install snmp
+  
+- Set Environment variable:
+- 
+- Test snmpwalk for iDrac:
+  	snmpwalk -v <version> -c <community-name> <OID>
+        Example:
+  		snmpwalk -v 2c -c public 10.19.1.0 1.3.6.1.4.1.674.10892.5.4.600.50.1.5
 		
 #### Windows
 
-- Install the latest version of the Net-SNMP package for windows.
+- Follow the steps in k-base for iDrac plugins installation(https://support.site24x7.com/portal/en/kb/articles/idrac-monitoring-for-windows)
 
 ---
 
