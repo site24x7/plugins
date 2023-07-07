@@ -4,22 +4,22 @@
 
 - Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
-#### LInux 
+#### Linux 
 
 - Execute the following command in your server to install snmpwalk: 
 
-		On Centos/RedHat machines you can install snmpwalk using Yum
-  		yum install net–snmp–utils
+		On Centos/RedHat machines you can install snmpwalk using Yum:
+  			yum install net–snmp–utils
 
-  		On Ubuntu install snmpwalk using apt-get
-  		sudo apt–get install snmp
+  		On Ubuntu install snmpwalk using apt-get:
+  			sudo apt–get install snmp
   
-- After installation, export the net-snmp path in $PATH variable.
+- After installation, export the net-snmp path in the $PATH variable.
 
     		Example:
-  		export PATH=$PATH:/var/lib/net-snmp/bin
+  			export PATH=$PATH:/var/lib/net-snmp/bin
 
-- Test snmpwalk for iDrac:
+- Test SNMP walk for iDrac:
   
   		command:
   			snmpwalk -v <version> -c <community-name> <OID>
