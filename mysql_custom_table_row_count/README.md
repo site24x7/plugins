@@ -17,6 +17,7 @@
 - Pymysql(v1.0.3) works only for python with version>=3.7 	
 
 - For the given user and password in the configuration, you need to Grant privileges by executing the below query.
+  
 		GRANT SELECT ON mysql.* TO "username"@"hostname" IDENTIFIED BY "password";
 		FLUSH PRIVILEGES;
 
