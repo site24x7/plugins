@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 import json
+import time
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
-METRICS_UNITS={}
+METRICS_UNITS={'execution_time':'ms'}
 
 class appname:
 
@@ -24,6 +25,7 @@ class appname:
     def metriccollector(self):
         
         try:
+            start_time=time.time()
             import psycopg2
 
         except Exception as e:
@@ -51,6 +53,9 @@ class appname:
                 
                 cursor.close()
                 connection.close()
+                end_time=time.time()
+                total_time=(end_time-start_time) * 1000
+                self.maindata['execution_time']="%.3f" % total_time 
                     
 
 
@@ -72,8 +77,9 @@ class appname:
 
 if __name__=="__main__":
 
+    
     DB = 'postgres'                 
-    USERNAME = None       
+    USERNAME = None
     PASSWORD = None
     HOSTNAME = 'localhost'            
     PORT = 5432 
