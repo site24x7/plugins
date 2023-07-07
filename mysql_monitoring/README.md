@@ -24,7 +24,7 @@
   		UPDATE mysql.user SET Repl_client_priv='Y' WHERE user='site24x7' AND host='localhost';
 		FLUSH PRIVILEGES;
 
-  For mariadb please use the following command:
+  For MariatDB, use the following command:
   
 		CREATE USER site24x7@localhost IDENTIFIED BY 'site24x7';
 		GRANT SUPER ON *.* TO 'site24x7'@'localhost';
