@@ -1,15 +1,17 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 
 Site24x7 MySql Plugin
 
 """
 import traceback
-import re
-import json
-import os
-"""import subprocess
 import time
+import json
+import re
+import os
+
+"""import subprocess
+
 import sys
 """
 VERSION_QUERY = 'SELECT VERSION()'
@@ -44,7 +46,7 @@ MYSQL_DB="sys"
 MYSQL_QUERY = "select * from metrics LIMIT 1"
 
 #Mention the units of your metrics in this python dictionary. If any new metrics are added make an entry here for its unit.
-METRICS_UNITS={}
+METRICS_UNITS={'execution_time':'ms'}
 
 class MySQL(object):
     
@@ -115,6 +117,8 @@ class MySQL(object):
                 db = pymysql.connect(host=self.host, user=self.username, passwd=self.password, port=int(self.port),db=self.db)
             self.connection = db
         except Exception as e:
+            global con_error
+            con_error=str(e)
             try:
                 import pymysql
                 _status, _output = MySQL.get_sock_path()
@@ -146,8 +150,9 @@ class MySQL(object):
         return bool_result,data
 
     def metricCollector(self):
-
-        bool_result,self.data = self.checkPreRequisites(self.data)
+    
+        bool_result = True
+        start_time=time.time()
         
         if bool_result==False:
             return self.data
@@ -161,7 +166,8 @@ class MySQL(object):
 
             if not self.getDbConnection():
                 self.data['status']=0
-                self.data['msg']='Connection Error'
+                self.data['msg']='Connection Error'+con_error
+                print(con_error)
                 return self.data
     
             try:
@@ -172,11 +178,16 @@ class MySQL(object):
                 self.data['status'] = 0
                 self.data['msg'] = e
 
+            
+            end_time=time.time()
+            total_time=(end_time-start_time) * 1000
+            self.data['execution_time']="%.3f" % total_time 
             self.data['plugin_version'] = PLUGIN_VERSION
             self.data['heartbeat_required']=HEARTBEAT
             if len(METRICS_UNITS) > 0 :  self.data['units'] = METRICS_UNITS
-
-        return self.data
+            
+            return self.data
+            
 
 if __name__ == "__main__":
 
@@ -194,7 +205,7 @@ if __name__ == "__main__":
     configurations = {'host': args.host, 'port': args.port, 'user': args.username, 'password': args.password, 'db' : args.db, 'query' : args.query}
 
     mysql_plugins = MySQL(configurations)
-    
+
     result = mysql_plugins.metricCollector()
-    
+
     print(json.dumps(result, indent=4, sort_keys=True))
