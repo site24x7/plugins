@@ -8,8 +8,8 @@ PLUGIN_VERSION=1
 HEARTBEAT=True
 
 METRICS_UNITS={
-    "Used Space":"bytes",
-    "Tablespace Size":"bytes",
+    "Used Space":"mb",
+    "Tablespace Size":"mb",
     "Used Percent":"%"
 }
 
@@ -55,19 +55,24 @@ class oracle:
 
         try:
             try:
+                db_block_size=8192
                 conn = oracledb.connect(user=self.username, password=self.password, dsn=f"{self.hostname}:{self.port}/{self.sid}")
                 c = conn.cursor()
             except Exception as e:
                 self.maindata['status']=0
                 self.maindata['msg']='Exception while making connection: '+str(e)
                 return self.maindata
-        
+
+            c.execute("select value from v$parameter where name = 'db_block_size'")
+            for row in c:
+                db_block_size=row[0]
+                break
 
             c.execute(metric_queries['tbsquery1'])                
             for row in c:
                 self.maindata['Name']=row[0]
-                self.maindata['Used Space']=row[1]
-                self.maindata['Tablespace Size']=row[2]
+                self.maindata['Used Space']=int(row[1])*int(db_block_size)/1024/1024
+                self.maindata['Tablespace Size']=int(row[2])*int(db_block_size)/1024/1024
                 self.maindata['Used Percent']=row[3]
 
             c.execute(metric_queries['tbsquery2'])                
