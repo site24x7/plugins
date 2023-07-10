@@ -68,16 +68,30 @@ The agent will automatically execute the plugin within five minutes and send per
 The following metrics are captured in the OracleTablespaceDetails Plugin:
 
 - **Name**
+  
+    Name of the tablespace
 
 - **Used Space**
 
+    Tablespace used space in MB
+
 - **Tablepsace Size***
+
+    Tablespace size in MB
 
 - **Used Percent**
 
+    Tablespace usage in percent(%)
+
 - **Content**
+
+   Type of content stored in the tablespace
 
 - **Log**
 
+   Status of logging in the tablespace
+
 - **TB_Status**
+
+    Availability of the tablespace
 
