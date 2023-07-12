@@ -300,8 +300,8 @@ if __name__ == "__main__":
 
     host ="127.0.0.1"
     port ="27017"
-    username =None
-    password =None
+    username ="None"
+    password ="None"
     dbname ="mydatabase"
     authdb="admin"
 
