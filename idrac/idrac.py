@@ -1,11 +1,4 @@
-'''
-Created on 02-Feb-2023
-
-@author: anita-1372
-'''
-
-
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 import json
 import SNMPUtil
