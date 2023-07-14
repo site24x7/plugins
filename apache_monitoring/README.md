@@ -100,45 +100,77 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 
 ## Plugin Installation  
 
-- Once installed the respective agent in the server, create a directory named "apache_monitoring".
-      
-- Download all the files in the "apache_monitoring" folder and place it under the "apache_monitoring" directory.
+1. Create a folder named _apache\_monitoring_.
+2. For Linux servers, follow the steps below to update the correct Python path in the plugin script:  
+	- Execute both the commands below to check the Python path (python or python3) in your Linux server. Only the correct command will return an output and will indicate the correct Python path.  
 
-		wget https://github.com/site24x7/plugins/raw/master/apache_monitoring/apache_monitoring.py
-		wget https://github.com/site24x7/plugins/raw/master/apache_monitoring/apache_monitoring.cfg
+	`which python`   
+	
+	OR  
+	
+	`which python3`
 
-- Execute the below command with appropriate arguments to check for the valid json output:
+	For example, if the `which python3` command returns an output `/usr/bin/python3` , the output is the correct Python path.  
 
-	 ```bash
-	 python3 apache_monitoring.py --url=<apache stats url> --username=<apache username> --password=<apache password> 
-	 ```
+	- Open the apache_monitoring.py in a text editor and update the Python path based on the output you received in the previous step and save the script. The path is denoted in the first line of the script: `#!/usr/bin/python` 
 
-- Once the above command execution given the valid json, further provide the command argument as configurations in apache_monitoring.cfg file.
+	For example, if your Python path based on the previous step is `/usr/bin/python3` , then update the first line of the script as follows:
+`#!/usr/bin/python3`
+
+3. Download the [apache\_monitoring.py](https://raw.githubusercontent.com/site24x7/plugins/master/apache\_monitoring/apache_monitoring.py) and the [apache\_monitoring.cfg](https://raw.githubusercontent.com/site24x7/plugins/master/apache\_monitoring/apache_monitoring.cfg) files from our [GitHub repository](https://github.com/site24x7/plugins), and place them in the _apache\_monitoring_ folder.  
+
 	```
-		[localhost]
-		url = "http://localhost:80/server-status?auto"
-		username = None
-		password = None
-		timeout = 30
-		plugin_version = "1"
-		heartbeat = "true"
-		logs_enabled = "true"
-		log_type_name = "Apache Access Logs"
-		log_file_path = "/var/log/apache*/access.log*"
-	```	
-- In case, if user configured virtualHost and to monitor multiple domains status using same plugin. Please follow the below link to configure those domains to monitor.
-https://www.site24x7.com/help/admin/adding-a-monitor/plugins/custom-plugins.html#multiple-config
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.py
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.cfg
+	```
 
-- Once the configuration done, move the "apache_monitoring" directory under the Site24x7 Linux Agent plugin directory: 
+ 
+4. To check if the plugin is working, execute the command below with appropriate arguments and check for a valid JSON output with applicable metrics and their corresponding value.  
 
-		 	Linux             ->   /opt/site24x7/monagent/plugins/apache_monitoring 	
+```
+	python3 apache_monitoring.py --url=<apache stats url> --username=<apache username> --password=<apache password>
+```
 
-		
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+5. Add the applicable configurations in the _apache\_monitoring.cfg_ file.  
+	You can also configure [Apache access logs](https://www.site24x7.com/help/log-management/apache-access.html) to view the top failed requests, the URLs that take the longest to retrieve data, and more.  
+```
+	[localhost]
+	url ="http://localhost:80/server-status?auto"
+	username=None
+	password =None
+	timeout="30"
+	plugin_version ="1"
+	heartbeat ="true"
+	logs_enabled ="true"
+	log_type_name ="Apache Access Logs"
+	log_file_path ="/var/log/apache2/access.log"
+```
 
+6. Follow the steps in this [article](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers) to learn how to run the Python script on a Windows server. You don't need to do this for Linux.  
 
-In case if user needs to run this apache_monitoring plugin in windows server, please follow the steps in below link.
-https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+7. If you have virtual hosts configured and/or need to monitor the status of multiple domains using the same plugin, refer [this link](https://www.site24x7.com/help/admin/adding-a-monitor/plugins/custom-plugins.html#multiple-config) to configure the domains.
+
+8. Move the _apache\_monitoring_ folder to the _Site24x7 server monitoring plugins directory_.
+For Linux: /opt/site24x7/monagent/plugins/
+For Windows: C:\Program Files (x86)\Site24x7\WinAgent\monitoring\plugins\
+
+The agent will automatically execute the plugin within five minutes and display performance data in Site24x7.
+
+To view the plugin monitor and associated performance charts:
+
+1. Log in to Site24x7.
+
+2. Navigate to **Plugins** and click the required monitor.
+
+#### **Troubleshooting Tips**
+
+- [Configure status URL for Apache monitoring](https://support.site24x7.com/portal/en/kb/articles/configure-status-url-apache)
+
+- [Enable SSL for Apache monitoring](https://support.site24x7.com/portal/en/kb/articles/enable-ssl)
+
+- [Change the port for Apache monitoring](https://support.site24x7.com/portal/en/kb/articles/change-port)
+
+- [Error handling for Apache monitoring](https://www.site24x7.com/help/admin/adding-a-monitor/plugins/plugins-error-handling.html)
 
 
 
