@@ -42,11 +42,9 @@ class JFrogArtifactory:
     def get_artifactory_info(self):
     
         try:
-            url = f"{self.artifactory_url}/api/system/ping"
-            license_url = f"{self.artifactory_url}/system/licenses"           
+            url = f"{self.artifactory_url}/api/system/ping"          
             headers = {"Authorization": f"Bearer {self.api_key}"}
             response = requests.get(url, headers=headers)
-            response1 = requests.get(license_url, headers=headers)
             if response.status_code == 200:
                 info = response.json()
                 self.maindata['status'] = 1
