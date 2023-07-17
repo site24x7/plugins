@@ -101,14 +101,25 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 ## Plugin Installation  
 
 1. Create a folder named _apache\_monitoring_.
-2. For Linux servers, follow the steps below to update the correct Python path in the plugin script:  
-	- Execute both the commands below to check the Python path (python or python3) in your Linux server. Only the correct command will return an output and will indicate the correct Python path.  
+2. Download the [apache\_monitoring.py](https://raw.githubusercontent.com/site24x7/plugins/master/apache\_monitoring/apache_monitoring.py) and the [apache\_monitoring.cfg](https://raw.githubusercontent.com/site24x7/plugins/master/apache\_monitoring/apache_monitoring.cfg) files from our [GitHub repository](https://github.com/site24x7/plugins), and place them in the _apache\_monitoring_ folder.  
 
-	`which python`   
-	
+	```
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.py
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.cfg
+	```
+ 
+3. For Linux servers, follow the steps below to update the correct Python path in the plugin script:  
+	- Execute both the commands below to check the Python path (python or python3) in your Linux server. Only the correct command will return an output and will indicate the correct Python path.
+
+
+	```
+ 	which python
+ 	```  
 	OR  
 	
-	`which python3`
+	```
+	which python3
+ 	```
 
 	For example, if the `which python3` command returns an output `/usr/bin/python3` , the output is the correct Python path.  
 
@@ -116,16 +127,8 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 
 	For example, if your Python path based on the previous step is `/usr/bin/python3` , then update the first line of the script as follows:
 `#!/usr/bin/python3`
-
-3. Download the [apache\_monitoring.py](https://raw.githubusercontent.com/site24x7/plugins/master/apache\_monitoring/apache_monitoring.py) and the [apache\_monitoring.cfg](https://raw.githubusercontent.com/site24x7/plugins/master/apache\_monitoring/apache_monitoring.cfg) files from our [GitHub repository](https://github.com/site24x7/plugins), and place them in the _apache\_monitoring_ folder.  
-
-	```
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.py
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.cfg
-	```
-
  
-4. To check if the plugin is working, execute the command below with appropriate arguments and check for a valid JSON output with applicable metrics and their corresponding value.  
+5. To check if the plugin is working, execute the command below with appropriate arguments and check for a valid JSON output with applicable metrics and their corresponding value.  
 
 ```
 	python3 apache_monitoring.py --url=<apache stats url> --username=<apache username> --password=<apache password>
