@@ -28,7 +28,8 @@ JFrog Artifactory is a universal repository manager used in software development
 		api_key = <api-key> 
 		artifactory_url = <artifactory_url>
 Note for the above parameters:
-         -api_key - Generate the API key and add it if there is any authentication present. Otherwise set the parameter as 'None'
-         -  artifactory_url - Add the Artifactory's URL with port. 
+
+ - api_key - Generate the API key and add it if there is any authentication present. Otherwise set the parameter as 'None'
+ - artifactory_url - Add the Artifactory's URL with port. 
 eg: "http://127.0.1.1:8082/artifactory"
 		
