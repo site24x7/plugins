@@ -32,10 +32,10 @@ Learn more https://www.site24x7.com/plugins/memcached-monitoring.html
 
 - Place the "mysql_monitoring" folder under Site24x7 Linux Agent plugin directory : 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/mysql_monitoring
+		Linux             ->   /opt/site24x7/monagent/plugins/memcached
 
   ##### Windows 
 
 - Create a folder named "windows_gpu_monitoring" under Site24x7 Windows Agent plugin directory: 
 
-		Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\windows_gpu_monitoring
+		Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\memcached
