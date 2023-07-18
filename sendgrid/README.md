@@ -23,7 +23,8 @@ Know how to configure the SendGrid plugin and the monitoring metrics for providi
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
 		python sendgrid.py  --api_key=<api_key>
-- Then give the configurations in the sendgrid.cfg file.
+  
+- Then place the configurations in the sendgrid.cfg file.
 
 		[account_1]
 		api_key=<api_key>
