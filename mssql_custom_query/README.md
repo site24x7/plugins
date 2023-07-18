@@ -33,7 +33,10 @@
 - This plugin will monitor only the first row of the result of the query.So, use TOP clause in the query as below to return only one row from the result.
 
 		query = "select TOP 1 * from sys.assemblies"
-		
+
+  #### Note:
+  - If your custom query returns multiple rows based on specific criteria, you have the flexibility to utilize aggregation functions according to your needs, enabling manipulation of the retrieved rows.
+  - Reference: https://learn.microsoft.com/en-us/sql/t-sql/functions/aggregate-functions-transact-sql?view=sql-server-ver16
 - Move the folder "mssql_custom_query" under the Site24x7 Windows Agent plugin directory:
 
 		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
