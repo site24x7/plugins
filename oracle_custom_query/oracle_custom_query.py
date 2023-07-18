@@ -2,6 +2,8 @@
 import json
 import os
 import time
+import warnings
+warnings.filterwarnings("ignore")
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
@@ -28,7 +30,7 @@ class oracle:
     def metriccollector(self):
         
         try:
-            import cx_Oracle
+            import oracledb
         except Exception as e:
             self.maindata['status'] = 0
             self.maindata['msg'] = str(e)
@@ -38,7 +40,7 @@ class oracle:
             start_time=time.time()
 
             try:
-                conn = cx_Oracle.connect(self.username,self.password,self.hostname+':'+str(self.port)+'/'+self.sid)
+                conn = oracledb.connect(user=self.username, password=self.password, dsn=f"{self.hostname}:{self.port}/{self.sid}")
                 c = conn.cursor()
             except Exception as e:
                 self.maindata['status']=0
@@ -94,5 +96,4 @@ if __name__=="__main__":
 
     result=obj.metriccollector()
     print(json.dumps(result,indent=True))
-
 
