@@ -39,6 +39,9 @@
 		hostname='localhost'
 		port=5432
 		query="SELECT buffers_checkpoint, buffers_backend, maxwritten_clean, checkpoints_req, checkpoints_timed, buffers_alloc FROM pg_stat_bgwriter;"
+  #### Note:
+  -  If your custom query returns multiple rows based on specific criteria, you have the flexibility to utilize aggregation functions according to your needs, enabling manipulation of the retrieved rows.
+  -  Reference - https://www.postgresql.org/docs/9.5/functions-aggregate.html
     
 - Move the directory "postgres_custom_query" under the Site24x7 Linux Agent plugin directory: 
 

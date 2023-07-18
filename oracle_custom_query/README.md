@@ -37,6 +37,9 @@
 		password=<PASSWORD>
 		oracle_home=None
 		query="Oracle Query"
+  #### Note:
+  -  If your custom query returns multiple rows based on specific criteria, you have the flexibility to utilize aggregation functions according to your needs, enabling manipulation of the retrieved rows.
+  -  Reference - https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Aggregate-Functions.html#GUID-62BE676B-AF18-4E63-BD14-25206FEA0848
 
 - Move the directory named "oracle_custom_query" under the Site24x7 Linux Agent plugin directory: 
 

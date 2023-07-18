@@ -34,7 +34,10 @@
 		username	= "<username>"
 		password 	= "<password>"
 		sample_db	= "<sample_db>"
-		query          = "<DB2 Query>	
+		query          = "<DB2 Query>
+  #### Note:
+  - If your custom query returns multiple rows based on specific criteria, you have the flexibility to utilize aggregation functions according to your needs, enabling manipulation of the retrieved rows.
+  - Reference - https://www.ibm.com/docs/en/db2-for-zos/11?topic=functions-aggregate
 		
 - Execute the below command with appropriate arguments to check for the valid json output:
 

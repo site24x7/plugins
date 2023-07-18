@@ -64,6 +64,9 @@
 		  password = 
 		  db = sys
 		  query = "select * from metrics LIMIT 1"
+  #### Note:
+  -  If your custom query returns multiple rows based on specific criteria, you have the flexibility to utilize aggregation functions according to your needs, enabling manipulation of the retrieved rows.
+  - Reference - https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html
 
 - Applog is supported for MySQL Monitoring. To enable applog for this plugin, configure logs_enabled=true and configure log_type_name and log_file_path as need.
 
