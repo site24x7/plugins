@@ -16,7 +16,6 @@ API_KEY is used for authorization while getting the stats from sendgrid server.
 Find more info on how to create API keys in the below url
 https://sendgrid.com/docs/User_Guide/Settings/api_keys.html
 '''
-API_KEY = '<apikey>'
 
 METRIC_UNITS = {}
 
@@ -55,8 +54,7 @@ if __name__ == "__main__":
     parser.add_argument("--api_key",help="api key for sendgrid",default=None)
     args=parser.parse_args()
 
-    API_KEY=args.api_key
-    s = SendGrid(API_KEY)
+    s = SendGrid(args.api_key)
     
     result = s.metricsCollector()
     
