@@ -12,7 +12,7 @@ Learn more https://www.site24x7.com/plugins/memcached-monitoring.html
 
 - Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
-- Execute the following command in your server to install Redis: 
+- Execute the following command in your server: 
 
 		pip install python-memcached
 ---
