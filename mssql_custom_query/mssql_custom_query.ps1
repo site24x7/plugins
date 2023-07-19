@@ -10,7 +10,7 @@ Function Get-Data()
         
         $units = @{}
         try{
-            $results=Invoke-Sqlcmd -ConnectionString "Data Source=$SQLServer; User Id=$sqlusername; Password =$sqlpassword; Initial Catalog=$SQLDBName" -Query "$query" -ErrorAction Stop 
+            $results=Invoke-Sqlcmd -ConnectionString "Data Source=$SQLServer; User Id=$sqlusername; Password =$sqlpassword; Initial Catalog=$SQLDBName;TrustServerCertificate=True;Encrypt=False" -Query "$query" -ErrorAction Stop 
             $resultlen = $results | Measure-Object | select -ExpandProperty Count
             $results
             if($results)
