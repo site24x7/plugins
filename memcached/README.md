@@ -25,7 +25,7 @@ Learn more https://www.site24x7.com/plugins/memcached-monitoring.html
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/memcached/memcached.py
 
-- Execute the below command with appropriate arguments to check for the valid JSON output:
+- Edit the memcached.py file with appropriate arguments and Execute the below command to check for the valid JSON output:
 
 		python memcached.py
   
