@@ -6,9 +6,7 @@ Windows Performance Counters provide a high-level abstraction layer that provide
 
 - Download and install the latest version of the [Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
-- To run Powershell plugin, ensure the below policy has been set.
-
-  - Login to your server
+- After installation of the Site24x7 Windows agent, to run Powershell plugin, ensure the below policy has been set.
   - Run the PowerShell prompt as Admin and execute the following:
   - Set-ExecutionPolicy RemoteSigned
 
