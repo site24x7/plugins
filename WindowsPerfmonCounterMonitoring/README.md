@@ -7,7 +7,7 @@ Windows Performance Counters provide a high-level abstraction layer that provide
 - Download and install the latest version of the [Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 - After installation of the Site24x7 Windows agent, to run Powershell plugin, ensure the below policy has been set.
-  - Run the PowerShell prompt as Admin and execute the following:
+  - Run the PowerShell prompt as Admin and execute the following 
   - Set-ExecutionPolicy RemoteSigned
 
 
@@ -21,7 +21,7 @@ Windows Performance Counters provide a high-level abstraction layer that provide
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/WindowsPerfmonCounterMonitoring/WindowsPerfmonCounterMonitoring.cfg
 	```
 		
-3. To monitor desired Windows perfmon counters, you need the exact names of the performance counters. To get the counter name from the Windows Performance Monitor [read](https://support.site24x7.com/portal/en/kb/articles/add-perfmon-counters-in-windows this article).
+3. To monitor desired Windows perfmon counters, you need the exact names of the performance counters. To get the counter name from the Windows Performance Monitor [read](https://support.site24x7.com/portal/en/kb/articles/add-perfmon-counters-in-windows) this article.
 
 5. Open the "WindowsPerfmonCounterMonitoring.cfg" and in the counters config, configure your desired perfmon counters, units and displaynames. The value of each is separated by a comma. Example as follows
 
