@@ -4,27 +4,27 @@ Windows Performance Counters provide a high-level abstraction layer that provide
 	
 ## **Prerequisite**
 
-Download and install the latest version of the [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+Download and install the latest version of the [Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 - To run powershell plugin, ensure the below policy has been set.
 
   - Login to your server
   - Run the PowerShell prompt as Admin and execute the following:
   - Set-ExecutionPolicy RemoteSigned
-  - Download and install the latest version of the [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+  - Download and install the latest version of the [Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 
 ## **Plugin installation**
 
 1. Create a folder named "WindowsPerfmonCounterMonitoring" 
 
-2. Download below files and place them under the created "WindowsPerfmonCounterMonitoring" directory.
+2. Download the below files and place them under the created "WindowsPerfmonCounterMonitoring" directory.
 	```
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/WindowsPerfmonCounterMonitoring/WindowsPerfmonCounterMonitoring.ps1
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/WindowsPerfmonCounterMonitoring/WindowsPerfmonCounterMonitoring.cfg
 	```
 		
-3. To monitor desired Windows perfmon counters, you need the exact names of the performance counters. To get the counter name from the Windows Performance Monitor [read] (https://support.site24x7.com/portal/en/kb/articles/add-perfmon-counters-in-windows this article).
+3. To monitor desired Windows perfmon counters, you need the exact names of the performance counters. To get the counter name from the Windows Performance Monitor [read](https://support.site24x7.com/portal/en/kb/articles/add-perfmon-counters-in-windows this article).
 
 5. Open the "WindowsPerfmonCounterMonitoring.cfg" and in the counters config, configure your desired perfmon counters, units and displaynames. The value of each is separated by a comma. Example as follows
 
