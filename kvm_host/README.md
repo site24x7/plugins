@@ -26,6 +26,8 @@ For more details on the libvirt library , refer https://libvirt.org/index.html.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/kvm_host/kvm_host.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/kvm_host/kvm_host.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the kvm_host.py script.
 			  	
 - Configure the keys to be monitored, as mentioned in the below configuration, in "kvm_host.cfg"
 
