@@ -26,5 +26,7 @@ Learn more https://www.site24x7.com/plugins/haproxy-monitoring.html
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the haproxy.py script.
   
 - Execute the below command with appropriate arguments to check for the valid JSON output:
-
-    python haproxy.py --username='username' --password='password' --hostname='hostname' --port='port'
+  
+	```
+	python haproxy.py --username='username' --password='password' --hostname='hostname' --port='port'
+	```
