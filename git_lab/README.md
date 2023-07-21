@@ -24,8 +24,8 @@
 	#git_lab.cfg
 	
 		[display_name]
-		personal_access_token='9LdYrk1ju3avs-Xth&jkQyu'
-		project_id='1689076'
+		personal_access_token='<give your token>'
+		project_id='<projectid>'
 
 	display name denotes - plugin monitor name to be displayed in site24x7 client
 	
