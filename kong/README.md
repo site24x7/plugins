@@ -20,6 +20,8 @@ Follow the below steps to configure the Kong plugin and the monitoring metrics f
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/kong/kong.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/kong/kong.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the kong.py script.
 	
 - Configure the keys to be monitored, as mentioned in the configuration section below.
 

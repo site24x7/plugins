@@ -21,6 +21,8 @@ This plugin monitors the performance and availability of MongoDb Atlas cluster n
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_atlas_perf_metrics/mongodb_atlas_perf_metrics.py
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_atlas_perf_metrics/mongodb_atlas_perf_metrics.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mongodb_atlas_perf_metrics.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python mongodb_atlas_perf_metrics.py --group_id=<your_group_id> --host=<your_host_name> --port=27017 --public_key=<your_public_key> --private_key=<your_private_key>

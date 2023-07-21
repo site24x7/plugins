@@ -12,6 +12,8 @@ open file stats plugin installation:
 - Open a terminal inside the open_files_linux folder created on the above step and execute the below mentioned commands to download the plugin files.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/open_files_linux/open_files_linux.py
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the open_files_linux.py script.
 	
 - Configure the PROC_FILE to be monitored in the open_files_linux.py file, as mentioned below.
 

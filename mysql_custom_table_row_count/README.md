@@ -32,6 +32,8 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_table_row_count/mysql_custom_table_row_count.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_table_row_count/mysql_custom_table_row_count.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mysql_custom_table_row_count.py script.
+
 - Update the below configurations in mysql_custom_table_row_count.cfg file:
 
 		[mysql_custom_table_row_count]

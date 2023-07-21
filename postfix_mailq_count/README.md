@@ -16,6 +16,8 @@ Plugin for Monitoring the Postfix Mail Queue Count
 - Download the file "postfix_mailq_count.py" and place it under the "postfix_mailq_count" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/postfix_mailq_count/postfix_mailq_count.py
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the postfix_mailq_count.py script.
 		
 - Move the directory "postfix_mailq_count" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
 	

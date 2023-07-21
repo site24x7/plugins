@@ -10,6 +10,8 @@
   
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ping_check/ping_check.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ping_check/ping_check.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the ping_check.py script.
 		
 - Configure the Host to be monitored in the file ping_check.cfg
 
