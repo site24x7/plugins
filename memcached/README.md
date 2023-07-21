@@ -25,6 +25,8 @@ Learn more https://www.site24x7.com/plugins/memcached-monitoring.html
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/memcached/memcached.py
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the memcached.py script.
+
 - Edit the memcached.py file with appropriate arguments and Execute the below command to check for the valid JSON output:
 
 		python memcached.py
