@@ -15,9 +15,9 @@ Learn more https://www.site24x7.com/plugins/glassfish-plugin-monitoring.html
 
 ### Plugin Installation  
 
-- Create a directory named "sendgrid"
+- Create a directory named "glassfish_jvm_memory"
 
-- Download the below files and place it under the "sendgrid" directory.
+- Download the below files and place it under the "glassfish_jvm_memory" directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/glassfish_jvm_memory/glassfish_jvm_memory.py
 
