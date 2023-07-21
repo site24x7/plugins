@@ -29,6 +29,8 @@
 
 ### Configurations
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mongodb_atlas.py script.
+
 - Provide your mongodb_atlas configurations in mongodb_atlas.cfg file.
 
         [mongo_db_atlas]
