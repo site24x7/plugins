@@ -26,7 +26,9 @@ For more details on the hping3 library , refer http://wiki.hping.org/94.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/hping3/hping3.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/hping3/hping3.cfg
-	
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the hping3.py script.
+
 - Configure the keys to be monitored, as mentioned in the configuration section below.
 
 		[localhost]

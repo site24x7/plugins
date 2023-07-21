@@ -53,6 +53,8 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_jvm/jenkins_jvm.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_jvm/jenkins_jvm.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the jenkins_jvm.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python jenkins_jvm.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --apikey=<apikey>

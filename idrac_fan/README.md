@@ -44,6 +44,8 @@ Supported versions: 1 and 2c
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_fan/idrac_fan.cfg
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_fan/SNMPUtil.py
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the idrac_fan.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 		python idrac_fan.py --hostname='hostname' --snmp_version='2c' --snmp_community_str='public'

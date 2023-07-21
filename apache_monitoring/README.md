@@ -108,27 +108,10 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.cfg
 	```
  
-3. For Linux servers, follow the steps below to update the correct Python path in the plugin script:  
-	- Execute both the commands below to check the Python path (python or python3) in your Linux server. Only the correct command will return an output and will indicate the correct Python path.
+3. Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the apache_monitoring.py script.
 
-
-	```
- 	which python
- 	```  
-	OR  
-	
-	```
-	which python3
- 	```
-
-	For example, if the `which python3` command returns an output `/usr/bin/python3` , the output is the correct Python path.  
-
-	- Open the apache_monitoring.py in a text editor and update the Python path based on the output you received in the previous step and save the script. The path is denoted in the first line of the script: `#!/usr/bin/python` 
-
-	For example, if your Python path based on the previous step is `/usr/bin/python3` , then update the first line of the script as follows:
-`#!/usr/bin/python3`
  
-5. To check if the plugin is working, execute the command below with appropriate arguments and check for a valid JSON output with applicable metrics and their corresponding value.  
+4. To check if the plugin is working, execute the command below with appropriate arguments and check for a valid JSON output with applicable metrics and their corresponding value.  
 
 ```
 	python3 apache_monitoring.py --url=<apache stats url> --username=<apache username> --password=<apache password>
