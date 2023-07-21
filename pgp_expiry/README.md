@@ -32,6 +32,8 @@ For more details on the python-gnupg driver , refer https://pypi.org/project/pyt
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/pgp_expiry/pgp_expiry.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/pgp_expiry/pgp_expiry.cfg
+  
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the pgp_expiry.py script.
 	
 - Configure the keys to be monitored, as mentioned below in "pgp_expiry.cfg"
 
