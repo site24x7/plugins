@@ -15,7 +15,8 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/git_lab/git_lab.py
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/git_lab/git_lab.cfg
-
+  
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the git_lab.py script.
 
 * Open the "git_lab.cfg" file and add the configuration details to it. Sample configuration file looks like: #git_lab.cfg
 	
