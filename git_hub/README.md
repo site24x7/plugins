@@ -17,7 +17,8 @@ ___
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/git_hub/git_hub.py
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/git_hub/git_hub.cfg
-	
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the git_hub.py script.
 
 * Open the "git_hub.cfg" file and add the configuration details to it.
 	Sample configuration file looks like:
