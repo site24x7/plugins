@@ -49,6 +49,8 @@ sudo systemctl reload nginx
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/nginx.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/nginx.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the nginx.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 		python3 nginx.py --nginx_status_url=<nginx stats url> --username=<nginx username> --password=<nginx password> 
