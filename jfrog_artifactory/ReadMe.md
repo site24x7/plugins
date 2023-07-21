@@ -18,6 +18,8 @@ JFrog Artifactory is a universal repository manager used in software development
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jfrog_artifactory/jfrog_artifactory.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the jfrog_artifactory.py script.
+
 - To check if the plugin is working, execute the command below with appropriate arguments and check for a valid JSON output with applicable metrics and their corresponding values.  
 
 		python jfrog_artifactory.py --api_key=<api-key>  --artifactory_url=<artifactory-url>
