@@ -19,6 +19,8 @@ This plugin monitors the performance metrics of NFS mount point status, IP addre
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs.cfg
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/nfs/nfs_check.sh
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the nfs.py script.
 	
 - Configure the mount point to be monitored in the nfs.cfg file, as mentioned below.
 
