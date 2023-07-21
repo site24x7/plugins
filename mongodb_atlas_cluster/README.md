@@ -18,6 +18,8 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_atlas_cluster/mongodb_atlas_cluster.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongodb_atlas_cluster/mongodb_atlas_cluster.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mongodb_atlas_cluster.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output:
 	```
     python3 monogdb_atlas_cluster.py --public_key=<public_key> --private_key=<private_key>--group_project_id=<group or project id> --cluster_name=<atlas cluster name>	 
