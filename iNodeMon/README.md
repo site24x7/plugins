@@ -6,6 +6,7 @@ iNode is a data structure in a Unix-style file system which stores the attribute
 ## Prerequisites
 
 - Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Download and install Python version 3 or higher.
 
 - To monitor additional inodes, the user can edit line number 19 by adding inodes separated by commas.Example as follows,
 
