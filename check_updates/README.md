@@ -12,6 +12,8 @@ OS Supported : Ubuntu , Centos
   
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.py
   
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the check_updates.py script.
+  
 - Execute the script manually using below command to check for valid json output.
 
 		python check_updates.py
