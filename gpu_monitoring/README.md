@@ -17,7 +17,9 @@
 - Download the file "gpu_monitoring.py" and place it under the "gpu_monitoring" directory
   
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/gpu_monitoring/gpu_monitoring.py
-		
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the gpu_monitoring.py script.
+  
 - Execute the below command to check for valid json output
 
 		pyhton gpu_monitoring.py
