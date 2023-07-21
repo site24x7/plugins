@@ -25,6 +25,8 @@ Plugin for Monitoring the Internet speed
 - Download the file "internet_speed_check.py" and place it under the "internet_speed_check" directory
   
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/internet_speed_check.py
+  
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the internet_speed_check.py script.
 	
 - Execute the below command to check for valid json output
 
