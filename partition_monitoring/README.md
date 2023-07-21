@@ -18,6 +18,8 @@ This plugin monitors the disk partitions and gives information about the total s
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/partition_monitoring/partition_monitoring.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/partition_monitoring/partition_monitoring.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the partition_monitoring.py script.
 		
 - Execute the below command with appropriate arguments to check for the valid json output.
 
