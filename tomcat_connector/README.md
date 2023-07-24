@@ -71,6 +71,8 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/tomcat_connector/tomcat_connector.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/tomcat_connector/tomcat_connector.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the tomcat_connector.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 		python tomcat_connector.py --host='hostname' --port='port' --username='username' --password='password'
