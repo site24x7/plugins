@@ -18,6 +18,8 @@ The plugin will report the following metrics.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/tcp_udp_connections/tcp_udp_connections.py
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the tcp_udp_connections.py script.
+
 - Move the folder "tcp_udp_connections" under "/opt/site24x7/monagent/plugins/" 
 
 #### For Windows servers - 
