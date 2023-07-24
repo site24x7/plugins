@@ -30,6 +30,8 @@ Monitor the availability and performance of your SAP HANA database with SAP HANA
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/sap_hana_database/sap_hana_database.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/sap_hana_database/sap_hana_database.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the sap_hana_database.py script.
 	
 - Add the below configurations in sap_hana_database.cfg file:
 
