@@ -21,6 +21,8 @@ Follow the below steps to configure the Redis Sentinel plugin and to monitor met
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/redis_sentinel/redis_sentinel.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/redis_sentinel/redis_sentinel.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the redis_sentinel.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output. 
 
 		python redis_sentinel.py --port=<PORT_FOR_REDIS_SENTINEL> --master=<MASTER_NAME_TO_MONITOR>
