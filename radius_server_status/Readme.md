@@ -17,6 +17,18 @@ To install the Radius Server Status plugin, please follow these steps:
 - Create a directory named "radius_server_status" on your system.
 
 - Download the necessary files and place them inside the "radius_server_status" directory.
+
+  ```
+  wget https://raw.githubusercontent.com/site24x7/plugins/master/radius_server_status/radius_server_status.py
+  wget https://raw.githubusercontent.com/site24x7/plugins/master/radius_server_status/radius_server_status.cfg
+  ```
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the radius_server_status.py script.
+
+- Execute the below command with appropriate arguments to check for the valid json output:
+```
+python3 radius_server_status.py --ip=<ip-of-radius-server> --port=<port-no-of-radius-server> --device_password=<shared-secret-key> 
+```
   
 - Locate and open the downloaded file "radius_server_status.cfg" using a text editor.
 
@@ -39,11 +51,10 @@ After finish the configuration, move the folder "radius_server_status" into the 
 
         radius_server_status  -->  /opt/site24x7/monagent/plugins/
 
-- Execute the below command with appropriate arguments to check for the valid json output:
-```
-python3 radius_server_status.py --ip=<ip-of-radius-server> --port=<port-no-of-radius-server> --device_password=<shared-secret-key> 
-```
+
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+#### Note:
 
 The Radius Server Status plugin will then send an Access-Request packet to the specified Radius server and monitor the response. If an Access-Accept packet is received, the plugin monitor will be in the "up" state, indicating that the Radius server is online. If there is no response or an Access-Reject packet is received, the monitor will be in the "down" state, indicating that the Radius server is offline.

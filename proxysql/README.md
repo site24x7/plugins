@@ -24,7 +24,9 @@ Follow the below steps to configure the ProxySQL plugin and the monitoring metri
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/proxysql/proxysql.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/proxysql/proxysql.cfg
-	
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the proxysql.py script.
+  
 - Configure the keys to be monitored, as mentioned below in proxysql.cfg
 
 		[display_name]

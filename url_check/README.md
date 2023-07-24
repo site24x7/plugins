@@ -18,6 +18,8 @@ Follow the below steps to configure the URL Check plugin and the monitoring metr
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/url_check/url_check.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/url_check/url_check.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the url_check.py script.
 		
 - Configure the URLs to be monitored, as mentioned below in "url_check.cfg"
 

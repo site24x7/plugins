@@ -20,6 +20,8 @@ Know how to configure the SendGrid plugin and the monitoring metrics for providi
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/sendgrid/sendgrid.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/sendgrid/sendgrid.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the sendgrid.py script.
+
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
 		python sendgrid.py  --api_key=<api_key>

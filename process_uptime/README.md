@@ -17,6 +17,8 @@ Plugin for Monitoring Uptime of a Process
   
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/process_uptime/process_uptime.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/process_uptime/process_uptime.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the process_uptime.py script.
 	
 - Edit the file process_uptime.cfg and provide the process to be monitored
 Make sure the given process is unique . If more than one process runs in the same name desired output wont be obtained.

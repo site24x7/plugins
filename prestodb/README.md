@@ -27,6 +27,8 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/prestodb/prestodb.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/prestodb/prestodb.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the prestodb.py script.
+
 - Configure the host and port of the prestodb to be montiored in prestodb.cfg, as mentioned below
 
 		[display_name]

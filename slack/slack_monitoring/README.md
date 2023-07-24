@@ -56,6 +56,8 @@
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/slack/slack_monitoring/slack_monitoring.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/slack/slack_monitoring/slack_monitoring.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the slack_monitoring.py script.
 		
 - Edit the "slack_monitoring.cfg" file and add the configuration details to it.
 

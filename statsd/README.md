@@ -7,11 +7,15 @@ Monitor your statsd server metrics.
 
 - Create a directory "statsd".
 
+
+
 ##### Linux 
 
 - Download the file "statsd.py" and place it under the "statsd" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/statsd/statsd.py
+
+-  Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the statsd.py script.
 
 - Change the host name and port in statsd.py
 

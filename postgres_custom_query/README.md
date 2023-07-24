@@ -20,7 +20,9 @@
 - Download all the files in the "postgres_custom_query" folder and place it under the "postgres_custom_query" directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres_custom_query/postgres_custom_query.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres_custom_query/postgres_custom_query.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres_custom_query/postgres_custom_query.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the postgres_custom_query.py script.
 
 - Execute the following command in your server to install psycopg2: 
 

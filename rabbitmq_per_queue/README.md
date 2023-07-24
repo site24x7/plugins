@@ -20,6 +20,8 @@ This plugin monitors the individual rabbitmq queues
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/rabbitmq_per_queue/rabbitmq_per_queue.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/rabbitmq_per_queue/rabbitmq_per_queue.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the rabbitmq_per_queue.py script.
 	
 - Configure the keys to be monitored, as mentioned below in rabbitmq_per_queue.cfg
 

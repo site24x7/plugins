@@ -14,6 +14,8 @@ RabbitMQ is a message broker tool that routes messages between producers and con
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/rabbitmq/rabbitmq.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/rabbitmq/rabbitmq.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the rabbitmq.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 		python rabbitmq.py --host=<RABBITMQ_HOST> --port=<RABBITMQ_PORT> --username=<RABBITMQ_USERNAME> --password=<RABBITMQ_PASSWORD>

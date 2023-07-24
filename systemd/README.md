@@ -18,6 +18,8 @@ Follow the below steps to configure the Systemd plugin and the monitoring metric
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/systemd/systemd.py
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the systemd.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python systemd.py

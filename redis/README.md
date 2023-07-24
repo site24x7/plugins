@@ -16,6 +16,8 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/Redis.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/Redis.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the Redis.py script.
+
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
 		python Redis.py --host=<REDIS_HOST> --port=<REDIS_PORT> --password=<REDIS_PASSWORD> --dbs=<REDIS_DBS> 
