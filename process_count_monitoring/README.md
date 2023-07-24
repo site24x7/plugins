@@ -26,6 +26,8 @@ It can be used in monitoring the nproc limit for oracle user. Since the default 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/process_count_monitoring/process_count_monitoring.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/process_count_monitoring/process_count_monitoring.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the process_count_monitoring.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 		python3 process_count_monitoring.py --user_name=<USER NAME> 
