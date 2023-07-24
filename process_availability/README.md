@@ -20,6 +20,8 @@ This plugin monitors if the specified process is running in the current machine 
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/process_availability/process_availability.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/process_availability/process_availability.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the process_availability.py script.
 	
 - Configure the keys to be monitored, in "process_availability.cfg" as mentioned below.
 
