@@ -20,6 +20,11 @@ WordPress is a CMS that enables you to manage your website’s content (CMS for 
       
 - Download all the files in the "wordpress_monitor_individual_plugin_performance" folder and place it under the "wordpress_monitor_individual_plugin_performance" directory.
 
+        wget https://raw.githubusercontent.com/site24x7/plugins/master/wordpress_monitor_individual_plugin_performance/wordpress_monitor_individual_plugin_performance.py
+        wget https://raw.githubusercontent.com/site24x7/plugins/master/wordpress_monitor_individual_plugin_performance/wordpress_monitor_individual_plugin_performance.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the wordpress_monitor_individual_plugin_performance.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
 python3 wordpress_monitor_individual_plugin_performance.py --url="http://<Domain or Website>/wp-json/wp/v2/plugins" --username="<Wordpress UserName>" --app_password="<Application Password>" --plugin_path="<Exact Name of Plugin>,<path to the plugin folder>"
