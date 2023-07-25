@@ -10,7 +10,7 @@ WordPress is a CMS that enables you to manage your website’s content (CMS for 
 
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 - The plugin is using "http://yourwebsite.com/wp-json/wp/v2/plugins" Wordpress API endpoint to fetch plugins state. Incase if user disabled the Wordpress API, please enable for this end point.
 - Install linux/windows agent in the server where the wordpress application is running.
 
@@ -45,7 +45,8 @@ plugin_path = "<Exact Name of Plugin>,<path to the plugin folder>"
 
 - Specify the correct name of the plugin and the folder path separtated by commas. If you dont know the path to the folder go under '/var/www/html/wp-content/plugins/', you will find the plugin folder. 
 
-  #### Generating Application passwordz
+#### Generating Application password
+
   In case if user doesn't have application password, please follow the below steps.
   
   - Open your wordpress site and login in wp-admin page.
