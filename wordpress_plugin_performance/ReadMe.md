@@ -10,7 +10,7 @@ WordPress is a CMS that enables you to manage your website’s content (CMS for 
 
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 -The plugin is using "http://yourwebsite.com/wp-json/wp/v2/plugins" Wordpress API endpoint to fetch plugins state. Incase if user disabled the Wordpress API, please enable for this end point.
 - Install linux/windows agent in the server where wordpress application is running.
 
@@ -23,6 +23,7 @@ WordPress is a CMS that enables you to manage your website’s content (CMS for 
 wget https://raw.githubusercontent.com/site24x7/plugins/master/wordpress_plugin_performance/wordpress_plugin_performance.cfg
 wget https://raw.githubusercontent.com/site24x7/plugins/master/wordpress_plugin_performance/wordpress_plugin_performance.py
 ```
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the wordpress_plugin_performance.py script.
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 ```
@@ -39,7 +40,7 @@ app_password = "<Application Password>"
 ```
 - The "http://yourwebsite.com/wp-json/wp/v2/plugins" is the REST API endpoint for fetching the status of the wordpress plugins. Provide the equivalent endpoint with 'http or https://localhost or domain name/wp-json/wp/v2/plugins'. Provide equivalent URL used for your Wordpress setup.
 - Make sure that Wordpress username is the administrator or an user with access to the REST API. And enter the application password generated in your wordpress site->Admin login->users->all users->Application password. Do not enter the password of the user.
-  #### Generating Application password
+#### Generating Application password
   In case if user doesn't have application password, please follow the below steps.
   
   - Open your wordpress site and login in wp-admin page.
