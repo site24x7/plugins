@@ -22,10 +22,7 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_db2/ibm_db2_tablespace/ibm_db2_tablespace.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_db2/ibm_db2_tablespace/ibm_db2_tablespace.cfg
 
-- Execute the following command in your server to install ibm_db: 
-  ```
-   pip install ibm_db
-  ```
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the ibm_db2_tablespace.py script.
 - Execute the below command with appropriate arguments to check for the valid json output:
 	```
 	 python3 ibm_db2_tablespace.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name> --tbsp_name <tablespace name>
@@ -52,7 +49,7 @@ Since it's a python plugin, to run in windows server please follow the steps in 
   username	= "<username>"
   password 	= "<password>"
   sample_db	= "<sample_db>"
-  tbsp_name ="<tablespace name>
+  tbsp_name 	= "<tablespace name>
 ```	
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
