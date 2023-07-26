@@ -29,15 +29,6 @@ Get to know how to configure the Elasticsearch plugin and the monitoring metrics
 
 		python3 elasticsearch.py --host=<host name> --port=<port no> --node_name=<node name> --username=<elasticsearch username> --password=<elasticsearch password> --sslpath=<ssl file path> --ssl=<ssl option("YES/NO")>
 
-  
-- Move the directory "elasticsearch" under the Site24x7 Linux Agent plugin directory: 
-
-		Linux       ->  /opt/site24x7/monagent/plugins/elasticsearch
-		
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
-
----
-
 ### Configurations
 
 - Provide your elasticsearch configurations elasticsearch.cfg file.
@@ -54,8 +45,15 @@ logs_enabled = "false"
 log_type_name = None
 log_file_path = None
 ```	
+	
+  
+- Move the directory "elasticsearch" under the Site24x7 Linux Agent plugin directory: 
+
+		Linux       ->  /opt/site24x7/monagent/plugins/elasticsearch
 		
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+---
 
 ## Supported Metrics
 
