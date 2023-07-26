@@ -22,10 +22,8 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_db2/ibm_db2_core/ibm_db2_core.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_db2/ibm_db2_core/ibm_db2_core.cfg
 
-- Execute the following command in your server to install ibm_db: 
-  ```
-   pip install ibm_db
-  ```
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the ibm_db2_core.py script.
+ 
 - Execute the below command with appropriate arguments to check for the valid json output:
 	```
 	 python3 ibm_db2_core.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name>
@@ -47,8 +45,8 @@ Since it's a python plugin, to run in windows server please follow the steps in 
 - Provide your IBM MQ configurations in ibm_db2_core.cfg file.
 	```
 	  [ibm_db_2]
-	  host 		= "<hostname>"
-	  port 		= "<port>"
+	  host 	= "<hostname>"
+	  port 	= "<port>"
 	  username	= "<username>"
 	  password 	= "<password>"
 	  sample_db	= "<sample_db>"
