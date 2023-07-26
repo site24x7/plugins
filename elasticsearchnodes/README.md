@@ -40,7 +40,7 @@ host= <ELASTICSEARCH_HOST>
 port= <ELASTICSEARCH_PORT>
 username= <ELASTICSEARCH_USERNAME>
 password= <ELASTICSEARCH_PASSWORD>
-NODE=<ELASTICSEARCH_NODE_NAME>
+node_name= <ELASTICSEARCH_NODE_NAME>
 ```	
 
 - Move the directory "elasticsearchnodes" under the Site24x7 Linux Agent plugin directory: 
