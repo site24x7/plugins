@@ -21,11 +21,9 @@
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibmdb2_custom_query/ibmdb2_custom_query.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibmdb2_custom_query/ibmdb2_custom_query.cfg
+  
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the ibmdb2_custom_query.py script.
 
-- Execute the following command in your server to install ibm_db: 
-
-		pip install ibm_db
-		
 - Provide your IBM DB2 configurations in ibmdb2_custom_query.cfg file.
 
 		[ibm_db_2]
@@ -34,7 +32,7 @@
 		username	= "<username>"
 		password 	= "<password>"
 		sample_db	= "<sample_db>"
-		query          = "<DB2 Query>
+		query         = "<DB2 Query>
   #### Note:
   - If your custom query returns multiple rows based on specific criteria, you have the flexibility to utilize aggregation functions according to your needs, enabling manipulation of the retrieved rows.
   - Reference - https://www.ibm.com/docs/en/db2-for-zos/11?topic=functions-aggregate
