@@ -24,7 +24,7 @@
 		
 - Provide your litespeed_monitoring configurations in litespeed_monitoring.cfg file.
 
-		[ols_monitoring]
+		[ls_monitoring]
 		metric_path='/tmp/lshttpd/'
 		virtual_host='_AdminVHost'
 		logs_enabled='False'
