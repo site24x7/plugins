@@ -29,14 +29,8 @@ Learn more https://www.site24x7.com/plugins/elasticsearch-monitoring.html
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python3 elasticsearchcluster.py --host=<host name> --port=<port no> --username=<elasticsearchcluster username> --password=<elasticsearchcluster password> 
-- Move the directory "elasticsearchcluster" under the Site24x7 Linux Agent plugin directory: 
+		python3 elasticsearchcluster.py --host=<host name> --port=<port no> --username=<elasticsearchcluster username> --password=<elasticsearchcluster password>
 
-		Linux       ->  /opt/site24x7/monagent/plugins/elasticsearchcluster
-		
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
-
----
 
 ### Configurations
 
@@ -47,6 +41,12 @@ host= <ELASTICSEARCH_HOST>
 port= <ELASTICSEARCH_PORT>
 username= <ELASTICSEARCH_USERNAME>
 password= <ELASTICSEARCH_PASSWORD>
-```	
+```
+
+- Move the directory "elasticsearchcluster" under the Site24x7 Linux Agent plugin directory: 
+
+		Linux       ->  /opt/site24x7/monagent/plugins/elasticsearchcluster
 		
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+---
