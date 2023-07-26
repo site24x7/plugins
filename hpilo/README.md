@@ -22,4 +22,4 @@ Know how to configure the HP iLO plugin and the monitoring metrics for providing
   
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
-      python hpilo<component>.py 
+      python ilo<component>.py 
