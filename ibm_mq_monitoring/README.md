@@ -26,9 +26,7 @@ Hence using our plugin, technician can monitor the performance  attributes of IB
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq_monitoring/ibm_mq_monitoring.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq_monitoring/ibm_mq_monitoring.cfg
 
-- Execute the following command in your server to install pymqi: 
-
-		pip install pymqi
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the ibm_mq_monitoring.py script.
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 	 ```
