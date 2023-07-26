@@ -6,7 +6,7 @@ Get to know how to configure the Elasticsearch plugin and the monitoring metrics
                                                                                               
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 ---
 
@@ -19,22 +19,15 @@ Get to know how to configure the Elasticsearch plugin and the monitoring metrics
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.cfg
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.py
-		
-- Since it's a python plugin, to run in windows server please follow the steps in below link, remaining configuration steps are exactly the same. 
 
-		https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the elasticsearch.py script.
+		
+- Since it's a python plugin, to run in windows server please follow the steps given [here](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers), remaining configuration steps are exactly the same. 
+
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 		python3 elasticsearch.py --host=<host name> --port=<port no> --node_name=<node name> --username=<elasticsearch username> --password=<elasticsearch password> --sslpath=<ssl file path> --ssl=<ssl option("YES/NO")>
-  
-- Move the directory "elasticsearch" under the Site24x7 Linux Agent plugin directory: 
-
-		Linux       ->  /opt/site24x7/monagent/plugins/elasticsearch
-		
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
-
----
 
 ### Configurations
 
@@ -52,8 +45,15 @@ logs_enabled = "false"
 log_type_name = None
 log_file_path = None
 ```	
+	
+  
+- Move the directory "elasticsearch" under the Site24x7 Linux Agent plugin directory: 
+
+		Linux       ->  /opt/site24x7/monagent/plugins/elasticsearch
 		
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+---
 
 ## Supported Metrics
 

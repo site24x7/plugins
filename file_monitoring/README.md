@@ -4,7 +4,7 @@ This plugin monitors the collection of File metrics.
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 ### Plugin installation
 
@@ -17,6 +17,8 @@ This plugin monitors the collection of File metrics.
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/file_monitoring/file_monitoring.py
       
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/file_monitoring/file_monitoring.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the file_monitoring.py script.
 
 - Configure the keys to be monitored, as mentioned in the configuration section below.
 

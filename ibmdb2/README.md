@@ -22,6 +22,8 @@ This plugin works only for IBM DB2 plugin with version upto 10.5.
 
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/ibmdb2/ibmdb2.py
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/ibmdb2/ibmdb2.cfg
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the ibmdb2.py script.
 	
 - Configure the mount point to be monitored in the ibmdb2.cfg file, as mentioned below.
 

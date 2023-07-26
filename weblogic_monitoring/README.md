@@ -69,11 +69,10 @@ Monitor the availability and performance of your Weblogic Server with Site24x7's
 
  ```
   wget https://raw.githubusercontent.com/site24x7/plugins/master/weblogic_monitoring/weblogic_monitoring.py
- ```
- ```
   wget https://raw.githubusercontent.com/site24x7/plugins/master/weblogic_monitoring/weblogic_monitoring.cfg
  ```
-
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the weblogic_monitoring.py script.
+  
 - Execute the following command in your server to install jmxquery
   
   ```
