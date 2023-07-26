@@ -39,6 +39,8 @@ This plugin monitors the performance of Filebeat.
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/filebeat/filebeat.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/filebeat/filebeat.cfg
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the filebeat.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python filebeat.py --host=<your_host_name> --port=<port_number>
