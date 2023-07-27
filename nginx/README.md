@@ -56,7 +56,7 @@
 
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
-		python3 nginx.py --nginx_status_url=<nginx stats url> --username=<nginx username> --password=<nginx password> --cafile=<cafile>
+		python3 nginx.py --url=<nginx stats url> --username=<nginx username> --password=<nginx password> --cafile=<cafile>
 
 - Once the above command execution gives the valid JSON, further provide the command argument as configurations in nginx.cfg file.
 
