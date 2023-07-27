@@ -61,7 +61,6 @@
 - Once the above command execution gives the valid JSON, further provide the command argument as configurations in nginx.cfg file.
 
 		[nginx]
-		plugin_version=1
 		url="http://localhost/nginx_status"
 		username=None
 		password=None
