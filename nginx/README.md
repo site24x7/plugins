@@ -62,7 +62,7 @@
 
 		[nginx]
 		plugin_version=1
-		nginx_status_url="http://localhost/nginx_status"
+		url="http://localhost/nginx_status"
 		username=None
 		password=None
   		cafile=None
