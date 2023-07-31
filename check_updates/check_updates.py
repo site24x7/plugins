@@ -28,9 +28,10 @@ def get_command_output(command):
     p_status = p.wait()
     return output
 
-if 'centos' in os_info or 'red hat' in os_info:
+if 'CentOS' in os_info or 'Red Hat' in os_info:
         out = get_command_output(command)
         if out:
+            out=out.decode()
             out = out.rstrip()
             count = out.split("needed for security")
             security_count = count[0].split()[0]
