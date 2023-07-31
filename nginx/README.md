@@ -2,7 +2,7 @@
                                                                                               
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 #### Enable nginx_status to get metrics -
 
@@ -108,7 +108,6 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 - **Count of dropped connections**
 
     Dropped connections count
-
 
 
 
