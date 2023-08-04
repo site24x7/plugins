@@ -7,7 +7,7 @@ Follow the below steps to configure the ProxySQL plugin and the monitoring metri
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 - Plugin Uses "mysql.connector" python library. This module is MySQL driver written in Python which does not depend on MySQL C client libraries and implements the DB API  
 
