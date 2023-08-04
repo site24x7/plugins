@@ -51,7 +51,7 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_query/mysql_custom_query.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_query/mysql_custom_query.cfg
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mysql_custom_query.py script.
+
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
@@ -72,10 +72,15 @@
 
 - Applog is supported for MySQL Monitoring. To enable applog for this plugin, configure logs_enabled=true and configure log_type_name and log_file_path as need.
 
+---
+
+#### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mysql_custom_query.py script.
+
 - Place the "mysql_custom_query" folder under Site24x7 Linux Agent plugin directory : 
 
 		Linux             ->   /opt/site24x7/monagent/plugins/mysql_custom_query
----
 		
 #### Windows
 

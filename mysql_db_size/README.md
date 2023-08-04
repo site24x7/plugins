@@ -7,28 +7,33 @@ Plugin is for monitoring the individual size of databases present in MYSQL.
 
 PreRequisites
 =============
-    Our Linux server monitoring agent should be installed in the network or on the specific host where the MySQL instance is running.
 
-    Site24x7 MySQL plugin uses "pymysql" module to get the performance metrics of MySQL servers
+- Our Linux server monitoring agent should be installed in the network or on the specific host where the MySQL instance is running.
+- Download and install Python version 3 or higher.
+- Site24x7 MySQL plugin uses "pymysql" module to get the performance metrics of MySQL servers.
 
 How to install pymysql
 ======================
 
 Execute the following command in your server to install pymsql:
+
 	pip install pymysql
 
 To install python to a specific python : 
+
 	python3 -m pip install pymysql	
 
 How to install pip
 ===================
 
 For CentOS, Fedora, RHEL:
+
 	yum install python-devel
 	yum install python-pip (or)
 	easy_install pip	
 
 For Debian, Ubuntu :
+
 	apt-get update
 	apt-get -y install python-pip (or)
 	easy_install pip
@@ -46,8 +51,6 @@ Plugin Installation:
 - Download the file "mysql_db_size.py" and place it under the "mysql_custom_query" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_db_size/mysql_db_size.py
-
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mysql_db_size.py script.
 		
 - Update the below configurations in mysql_db_size.py file in #Config Section:
 
@@ -62,6 +65,8 @@ Plugin Installation:
 		
 #### Linux 
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mysql_db_size.py script.
+  
 - Move the directory "mysql_db_size" under Site24x7 Linux Agent plugin directory :
 
 		Linux             ->   /opt/site24x7/monagent/plugins/
