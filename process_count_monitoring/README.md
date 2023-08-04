@@ -15,7 +15,7 @@ It can be used in monitoring the nproc limit for oracle user. Since the default 
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you intend  to run the plugin.
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you intend  to run the plugin.
 
 ### Plugin Installation
 
