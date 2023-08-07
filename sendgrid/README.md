@@ -20,7 +20,6 @@ Know how to configure the SendGrid plugin and the monitoring metrics for providi
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/sendgrid/sendgrid.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/sendgrid/sendgrid.cfg
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the sendgrid.py script.
 
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
@@ -40,11 +39,13 @@ Know how to configure the SendGrid plugin and the monitoring metrics for providi
 		[account_2]
 		api_key=<api_key>
 
-  ##### note :
+  ##### Note :
 
   - Each header should have different name. eg: [account_1], [account_2], [account_3], etc,.
   
   #### Linux
+  
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the sendgrid.py script.
 
 - Place the "sendgrid" folder under Site24x7 Linux Agent plugin directory : 
 

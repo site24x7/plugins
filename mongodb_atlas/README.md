@@ -39,11 +39,12 @@
 
 
 - Execute the below command with appropriate arguments which were given in the configuration to check for the valid output with JSON format.
-
-    python3 mongodb_atlas.py  --mongo_connect_string <mongodb connection string> --dbname <monogdb database name>
+	```
+	python3 mongodb_atlas.py  --mongo_connect_string <mongodb connection string> --dbname <monogdb database name>
+	```
 		
-		
-- Once the above execution was given valid output, then copy the mongodb_atlas directory to the Site24x7 Linux Agent plugin directory: 
+- Once the above execution was given valid output, then copy the mongodb_atlas directory to the Site24x7 Linux Agent plugin directory:
+  
  		Linux             ->   /opt/site24x7/monagent/plugins/mongodb_atlas
 		
 **Note:** 

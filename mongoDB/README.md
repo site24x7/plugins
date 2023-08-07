@@ -51,7 +51,8 @@
 		python mongoDB.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbname=<dbname> --authdb=<authdb> --tls=False 
 		
 		
-- Once above execution was given valid output, then copy the mongoDB directory to Site24x7 Linux Agent plugin directory: 
+- Once above execution was given valid output, then copy the mongoDB directory to Site24x7 Linux Agent plugin directory:
+  
  		Linux             ->   /opt/site24x7/monagent/plugins/mongoDB
 		
 

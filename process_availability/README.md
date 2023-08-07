@@ -5,9 +5,9 @@ This plugin monitors if the specified process is running in the current machine 
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/help/admin/adding-a-monitor/linux-server-monitoring.html#add-linux-server-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/help/admin/adding-a-monitor/linux-server-monitoring.html#add-linux-server-monitor) in the server where you plan to run the plugin. 
 
-- Plugin Uses "subprocess" python library. This module is used to execute the ps command and get data
+- Plugin Uses "subprocess" python library. This module is used to execute the ps command and get data.
 
 
 ### Plugin installation
@@ -34,7 +34,9 @@ This plugin monitors if the specified process is running in the current machine 
 
 		python process_availability.py --process="java" --plugin_version="1" --heartbeat="True"
 		
-- Move the directory "process_availability" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
+- Move the directory "process_availability" under Site24x7 Linux Agent plugin directory
+
+		/opt/site24x7/monagent/plugins/
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 

@@ -21,12 +21,12 @@ Configure the host, port, username and password in the python plugin to get the 
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mesos_agent/mesos_agent.py
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mesos_agent.py script.
-
 - Edit the mesos_agent.py file with appropriate arguments and Execute the below command to check for the valid JSON output:
 
 		python mesos_agent.py
   #### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mesos_agent.py script.
 
 - Place the "mesos_agent" folder under Site24x7 Linux Agent plugin directory : 
 
