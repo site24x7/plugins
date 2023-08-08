@@ -58,15 +58,22 @@ A Kafka broker is a single Kafka server that runs on a Kafka cluster. On deploym
         log_type_name=None
         log_file_path=None
 
+#### Linux
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the kafka_broker_monitoring.py script.
 
 - Place the "kafka_broker_monitoring" under the Site24x7 Linux Agent plugin directory:
 
         Linux    ->   /opt/site24x7/monagent/plugins/kafka_broker_monitoring
-        
-  Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
-https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
   
+#### Windows
+        
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+-  Further move the folder "kafka_broker_monitoring" into the  Site24x7 Windows Agent plugin directory:
+
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\kafka_broker_monitoring
+
   
 ## Supported Metrics
 The following metrics are captured by the Kafka Broker monitoring plugin :
