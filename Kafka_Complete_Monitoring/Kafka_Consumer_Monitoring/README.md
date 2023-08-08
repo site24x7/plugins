@@ -57,11 +57,20 @@ A Kafka consumer is a client application that pulls event data from one or more 
         log_file_path=None
 
 
-- Place the folder "kafka_consumer_monitoring" under the Site24x7 Linux Agent plugin directory:
+#### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the kafka_consumer_monitoring.py script.
+
+- Place the "kafka_consumer_monitoring" under the Site24x7 Linux Agent plugin directory:
 
         Linux    ->   /opt/site24x7/monagent/plugins/kafka_consumer_monitoring
+#### Windows
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+-  Further move the folder "kafka_consumer_monitoring" into the  Site24x7 Windows Agent plugin directory:
 
-- Since it's a Python plugin, to run the plugin on a Windows server, please follow the steps in the below link. The remaining configuration steps are the same. https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\kafka_consumer_monitoring
+
 
 ## Supported Metrics
 The following metrics are captured by the Kafka Consumer monitoring plugin :
