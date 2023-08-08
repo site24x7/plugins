@@ -1,11 +1,8 @@
 #!/usr/bin/python3
 
-import re
 import json
-import os
 import ibm_db
 import traceback
-import sys
 PLUGIN_VERSION = "1"
 
 HEARTBEAT="true"
@@ -73,74 +70,78 @@ class DB2(object):
             data['msg']='Connection Error'
             return data
         
-        #No of bufferpools available
 
         bufferpool = self.executeQuery(self.connection, 'SELECT COUNT(*) as NO_OF_BUFFERPOOLS FROM syscat.bufferpools')
+        if not (bufferpool['NO_OF_BUFFERPOOLS'] is None):
+            data['no_of_bufferpools']=bufferpool['NO_OF_BUFFERPOOLS']
 
-		#The BP_HITRATIO administrative view returns bufferpool hit ratios, including total hit ratio, data hit ratio, XDA hit ratio and index hit 
-         #ratio, for all bufferpools and all database partitions in the the currently connected database
-		
+        metrics={
+        'bufferpool_metric_list' : [  'no_of_bufferpools',
+                                    'total_logical_reads',
+                                    'total_physical_reads',
+                                    'total_hit_ratio_percent',
+                                    'data_logical_reads',
+                                    'data_physical_reads',
+                                    'data_hit_ratio_percent',
+                                    'index_logical_reads',
+                                    'index_hit_ratio_percent',
+                                    'xda_logical_reads',
+                                    'xda_hit_ratio_percent'
+                                ],
+
+
+        'logutilization_metric_list' : ["log_utilization_percent",
+                                     "total_log_used_kb",
+                                     "total_log_available_kb"
+                                    ],
+
+        'database_metric_list'   :  ['appls_cur_cons', 
+                                    'appls_in_db2', 
+                                    'connections_top',
+                                    'db_status', 
+                                    'deadlocks', 
+                                    'lock_list_in_use', 
+                                    'lock_timeouts', 
+                                    'lock_wait_time', 
+                                    'lock_waits', 
+                                    'num_locks_held', 
+                                    'num_locks_waiting', 
+                                    'rows_modified', 
+                                    'rows_read', 
+                                    'rows_returned', 
+                                    'total_cons']
+        }
+
         bufferpool_metrics = self.executeQuery(self.connection, 'SELECT SUM(TOTAL_LOGICAL_READS) as TOTAL_LOGICAL_READS,SUM(TOTAL_PHYSICAL_READS) as TOTAL_PHYSICAL_READS,AVG(TOTAL_HIT_RATIO_PERCENT) as TOTAL_HIT_RATIO_PERCENT,SUM(DATA_LOGICAL_READS) as DATA_LOGICAL_READS,SUM(DATA_PHYSICAL_READS) as DATA_PHYSICAL_READS,AVG(DATA_HIT_RATIO_PERCENT) as DATA_HIT_RATIO_PERCENT,SUM(INDEX_LOGICAL_READS) as INDEX_LOGICAL_READS,AVG(INDEX_HIT_RATIO_PERCENT) as INDEX_HIT_RATIO_PERCENT,SUM(XDA_LOGICAL_READS) as XDA_LOGICAL_READS,AVG(XDA_HIT_RATIO_PERCENT) as XDA_HIT_RATIO_PERCENT FROM SYSIBMADM.BP_HITRATIO')
-       
-        #Overall DB2 log utilization parameters.
+        for metric in metrics['bufferpool_metric_list']:
+            if metric.upper() in bufferpool_metrics:
+                data[metric]=bufferpool_metrics[metric.upper()]
+            else:
+                data[metric]=0            
 
         logutilization_metrics=self.executeQuery(self.connection,"SELECT AVG(LOG_UTILIZATION_PERCENT) as LOG_UTILIZATION_PERCENT,SUM(TOTAL_LOG_USED_KB) as TOTAL_LOG_USED_KB, SUM(TOTAL_LOG_AVAILABLE_KB) as TOTAL_LOG_AVAILABLE_KB FROM SYSIBMADM.LOG_UTILIZATION")
-      
-        if not (bufferpool['NO_OF_BUFFERPOOLS'] is None):
-            data['no_of_bufferpools']=bufferpool['NO_OF_BUFFERPOOLS']    #the current number of bufferpools
-   
-        if not (bufferpool_metrics['TOTAL_LOGICAL_READS'] is None):
-            data['total_logical_reads']=int(bufferpool_metrics['TOTAL_LOGICAL_READS'])     #Total logical reads from bufferpool which is the total of data,index and xda logical reads
+        for metric in metrics['logutilization_metric_list']:
+            if metric.upper() in logutilization_metrics:
+                data[metric]=logutilization_metrics[metric.upper()]      
+            else:
+                data[metric]=0
 
-        if not (bufferpool_metrics['TOTAL_PHYSICAL_READS'] is None):
-            data['total_physical_reads']=int(bufferpool_metrics['TOTAL_PHYSICAL_READS'])   #Total physical reads from bufferpool which is the total phyiscal reads of data,index and XDA.
-
-        if not (bufferpool_metrics['TOTAL_HIT_RATIO_PERCENT'] is None):
-            data['total_hit_ratio_percent']=float(bufferpool_metrics['TOTAL_HIT_RATIO_PERCENT'])  #Buffer pool hit ratio is a measure of how often a page access (a getpage) is satisfied without requiring an I/O operation.
-
-        if not (bufferpool_metrics['DATA_LOGICAL_READS'] is None): 
-            data['data_logical_reads']=int(bufferpool_metrics['DATA_LOGICAL_READS'])  #Bufferpool data logical reads
-
-        if not (bufferpool_metrics['DATA_PHYSICAL_READS'] is None):
-            data['data_physical_reads']=int(bufferpool_metrics['DATA_PHYSICAL_READS'])   #Bufferpool data physical reads
-
-        if not (bufferpool_metrics['DATA_HIT_RATIO_PERCENT'] is None):
-            data['data_hit_ratio_percent']=float(bufferpool_metrics['DATA_HIT_RATIO_PERCENT'])   #Individual hit ratio for data bufferpool
-
-        if not (bufferpool_metrics['INDEX_LOGICAL_READS'] is None):
-            data['index_logical_reads']=int(bufferpool_metrics['INDEX_LOGICAL_READS'])   #Bufferpool index logical reads
-
-        if not (bufferpool_metrics['INDEX_HIT_RATIO_PERCENT'] is None):
-            data['index_hit_ratio_percent']=float(bufferpool_metrics['INDEX_HIT_RATIO_PERCENT'])   #Bufferpool index hit ratio
-
-        if not (bufferpool_metrics['XDA_LOGICAL_READS'] is None):
-            data['xda_logical_reads']=int(bufferpool_metrics['XDA_LOGICAL_READS'])    #Bufferpool XDA logical reads
-
-        if not (bufferpool_metrics['XDA_HIT_RATIO_PERCENT'] is None):
-            data['xda_hit_ratio_percent']=float(bufferpool_metrics['XDA_HIT_RATIO_PERCENT'])     #Bufferpool XDA hit ratio percent
-      
-        if not (logutilization_metrics['LOG_UTILIZATION_PERCENT'] is None):
-            data['log_utilization_percent']=float(logutilization_metrics['LOG_UTILIZATION_PERCENT'])     #The LOG_UTILIZATION administrative view returns information about log utilization for the currently connected database.Percent utilization of total log space.
-
-        if not (logutilization_metrics['TOTAL_LOG_USED_KB'] is None):
-            data['total_log_used_kb']=int(logutilization_metrics['TOTAL_LOG_USED_KB'])    #Total log space used
-
-        if not (logutilization_metrics['TOTAL_LOG_AVAILABLE_KB'] is None):
-            data['total_log_available_kb']=int(logutilization_metrics['TOTAL_LOG_AVAILABLE_KB'])   
-
-
-        database_metric_list=['appls_cur_cons', 'appls_in_db2', 'connections_top','db_status', 'deadlocks', 'last_backup', 'lock_list_in_use', 'lock_timeouts', 'lock_wait_time', 'lock_waits', 'num_locks_held', 'num_locks_waiting', 'rows_modified', 'rows_read', 'rows_returned', 'total_cons']
-        database_metric_query=f'SELECT {", ".join(database_metric_list)} FROM TABLE(MON_GET_DATABASE(-1))'
+        database_metric_query=f'SELECT {", ".join(metrics["database_metric_list"])} FROM TABLE(MON_GET_DATABASE(-1))'
         database_metrics=self.executeQuery(self.connection,database_metric_query)
-
-        for metric in database_metric_list:
-            if metric in database_metrics:
-                data[metric]=database_metrics[metric]
+        for metric in metrics['database_metric_list']:
+            if metric.upper() in database_metrics:
+                data[metric]=database_metrics[metric.upper()]
             else:
                 data[metric]=0
         
+        ibm_db.close(self.connection)
+        
+
         data['units']=METRICS_UNITS
         return data
+
+
+
 
 if __name__ == "__main__":
 
@@ -158,4 +159,4 @@ if __name__ == "__main__":
     result = db2_plugins.metricCollector()
 
     print(json.dumps(result, indent=4, sort_keys=True))
-   
+    
