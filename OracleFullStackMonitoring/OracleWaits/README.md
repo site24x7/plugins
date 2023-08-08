@@ -49,13 +49,21 @@
     oracle_home=None
 
 ```	
-- Move the "OracleWaits" folder into the Site24x7 Linux Agent plugin directory: 
-	```
-	Linux             ->   /opt/site24x7/monagent/plugins/OracleWaits
-	```
-	```
-	Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\OracleWaits
-	```
+#### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the OracleWaits.py script.
+
+- Place the "OracleWaits" under the Site24x7 Linux Agent plugin directory:
+
+        Linux    ->   /opt/site24x7/monagent/plugins/OracleWaits
+
+#### Windows
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+-  Further move the folder "OracleWaits" into the  Site24x7 Windows Agent plugin directory:
+
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\OracleWaits
+
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
