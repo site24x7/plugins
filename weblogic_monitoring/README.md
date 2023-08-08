@@ -7,7 +7,7 @@ Oracle Weblogic Server is a unified and scalable platform for developing and dep
 Monitor the availability and performance of your Weblogic Server with Site24x7's Weblogic Monitoring plugin integration.
 
 ## Prerequisites
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you intend to run the plugin
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you intend to run the plugin
 
 - Install the jmxquery module for python. 
 
