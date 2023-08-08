@@ -17,10 +17,17 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/LinuxCommandMonitoring/LinuxCommandMonitoring.cfg
 
 
-- Edit the LinuxCommandMonitoring.py file with appropriate arguments and Execute the below command to check for the valid JSON output:
+- Execute the below command to check for the valid JSON output:
 
 		python LinuxCommandMonitoring.py --cmd=<command> --regex=<Regex> --displayname=<Display-Name>
-
+  
+- Edit the LinuxCommandMonitoring.cfg file with appropriate arguments eg:
+  
+		[command_1]
+		cmd="grep -c ^processor /proc/cpuinfo"
+		regex=None
+		displayname="cpu_cores"
+  
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the LinuxCommandMonitoring.py script.
 
 - Place the "LinuxCommandMonitoring" under the Site24x7 Linux Agent plugin directory:
