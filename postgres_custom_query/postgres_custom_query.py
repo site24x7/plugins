@@ -41,11 +41,11 @@ class appname:
                                   database=self.db_name)
 
             cursor=connection.cursor()
-
+            
             try:
+                
                 cursor.execute(self.query)
                 colnames = [desc[0] for desc in cursor.description]
-                
                 tot=len(colnames)
                 data=cursor.fetchone()
                 for i in range(tot):
@@ -69,8 +69,11 @@ class appname:
         except Exception as e:
             self.maindata['msg']=str(e)
             self.maindata['status']=0
-            cursor.close()
-            connection.close()
+            try:
+            	cursor.close()
+            	connection.close()
+            except:
+            	pass
             return self.maindata
 
         return self.maindata
