@@ -34,27 +34,34 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 
 		python apache_solr.py --host_name=localhost --port=18983 --domain_name=<your_domain_name>
 
-- Move the folder apache_solr into the agent directory.
+#### Configurations
+- Edit apache_solr.cfg with approriate configurations
 
-	For Linux 
 	```
-	      Linux             ->   /opt/site24x7/monagent/plugins/apache_solr
-	```
-	
-	For Windows
-	```
-	      Windows           ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\apache_solr
-	```
-
-
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
-
-### Configurations
----
 	[display_name]
 	host_name = “<your_host_name>”
 	port = “18983”
 	domain_name = “<your_domain_name>”
+	```
+#### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the apache_solr.py script.
+
+- Place the "apache_solr" under the Site24x7 Linux Agent plugin directory:
+
+        Linux    ->   /opt/site24x7/monagent/plugins/apache_solr
+
+#### Windows
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+-  Further move the folder "apache_solr" into the  Site24x7 Windows Agent plugin directory:
+
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\apache_solr
+
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+
 
 ### Metrics Captured
 ---
