@@ -1,6 +1,11 @@
 # Plugin for Monitoring Software Updates Count on amazonlinux
 
 
+## Prerequisites
+
+- Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install Python version 3 or higher.
+  
 ### Plugin installation
 ---
  
@@ -12,9 +17,13 @@
 		
 - Execute the script manually using below command to check for valid json output.
 
-		pyhton check_updates_amazonlinux.py
+		python check_updates_amazonlinux.py
+  
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the check_updates_amazonlinux.py script.
 		
-- Move the directory "check_updates_amazonlinux" under the Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/check_updates_amazonlinux
+- Move the directory "check_updates_amazonlinux" under the Site24x7 Linux Agent plugin directory
+
+  		/opt/site24x7/monagent/plugins/check_updates_amazonlinux
 	
   The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
