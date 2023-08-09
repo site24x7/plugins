@@ -1,4 +1,4 @@
-#Confluent Platform Plugin
+# Confluent Platform Plugin
 ---
 
 ## Plugin Setup
