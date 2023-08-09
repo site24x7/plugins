@@ -46,26 +46,34 @@ Follow the below steps to configure the ActiveMQ plugin and the monitoring metri
 
 		python activemq.py –-host_name=localhost -–port=1099 -–broker_name=<your_broker_name> --destination_name=<your_queue_name>
 
-- Move the folder "activemq" into the Site24x7 Agent plugin directory :
-
-	For Linux
-
-	      Linux            ->   /opt/site24x7/monagent/plugins/activemq
-
-	Windows 
-
-	      Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\activemq
-
-
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
-
-### Configurations
----
+#### Configurations
+-  Edit the activemq.cfg file with appropriate arguments
+	```
 	[display_name]
 	host_name=“<your_host_name>”
 	port=“1099”
 	broker_name=“<your_broker_name>”
 	destination_name=“<your_destination_name>”
+	```
+#### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the activemq.py script.
+
+- Place the "activemq" under the Site24x7 Linux Agent plugin directory:
+
+        Linux    ->   /opt/site24x7/monagent/plugins/activemq
+
+#### Windows
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+-  Further move the folder "activemq" into the  Site24x7 Windows Agent plugin directory:
+
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\activemq
+
+
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
 
 ### Metrics Captured
 

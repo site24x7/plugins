@@ -47,13 +47,20 @@
 	    log_file_path=None
 	    oracle_home=None
 	```	
-- Move the "OracleCore" folder into the Site24x7 Linux Agent plugin directory: 
-	```
-	Linux             ->   /opt/site24x7/monagent/plugins/OracleCore
-	```
-	```
-	Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\OracleCore
-	```
+#### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the OracleCore.py script.
+
+- Place the "OracleCore" under the Site24x7 Linux Agent plugin directory:
+
+        Linux    ->   /opt/site24x7/monagent/plugins/OracleCore
+#### Windows
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+-  Further move the folder "OracleCore" into the  Site24x7 Windows Agent plugin directory:
+
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\OracleCore
+
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 

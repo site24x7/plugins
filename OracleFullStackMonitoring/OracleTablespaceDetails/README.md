@@ -50,13 +50,21 @@
     oracle_home=None
 
 	```	
-- Move the "OracleTablespaceDetails" folder into the Site24x7 Linux Agent plugin directory: 
-	```
-	Linux             ->   /opt/site24x7/monagent/plugins/OracleTablespaceDetails
-	```
-	```
-	Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\OracleTablespaceDetails
-	```
+#### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the OracleTablespaceDetails.py script.
+
+- Place the "OracleTablespaceDetails" under the Site24x7 Linux Agent plugin directory:
+
+        Linux    ->   /opt/site24x7/monagent/plugins/OracleTablespaceDetails
+
+#### Windows
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+-  Further move the folder "OracleTablespaceDetails" into the  Site24x7 Windows Agent plugin directory:
+
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\OracleTablespaceDetails
+
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 

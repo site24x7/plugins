@@ -49,13 +49,20 @@
 	    log_file_path=None
 	    oracle_home=None
 	```	
-- Move the "OraclePDB" folder into the Site24x7 Linux Agent plugin directory: 
-	```
-	Linux             ->   /opt/site24x7/monagent/plugins/OraclePDB
-	```
-	```
-	Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\OraclePDB
-	```
+#### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the OraclePDB.py script.
+
+- Place the "OraclePDB" under the Site24x7 Linux Agent plugin directory:
+
+        Linux    ->   /opt/site24x7/monagent/plugins/OraclePDB
+#### Windows
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+-  Further move the folder "OraclePDB" into the  Site24x7 Windows Agent plugin directory:
+
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\OraclePDB
+
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 

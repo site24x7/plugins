@@ -22,18 +22,22 @@ Learn more https://www.site24x7.com/plugins/couchbase-monitoring.html
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/couchserver/couchserver.py
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the couchserver.py script.
 
 - Edit the couchserver.py file with appropriate arguments and Execute the below command to check for the valid JSON output:
 
 		python couchserver.py
   #### Linux
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the couchserver.py script.
+  
 - Place the "couchserver" folder under Site24x7 Linux Agent plugin directory : 
 
 		Linux             ->   /opt/site24x7/monagent/plugins/couchserver
 
   #### Windows 
+
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
 
 - Move the folder "couchserver" under Site24x7 Windows Agent plugin directory: 
 

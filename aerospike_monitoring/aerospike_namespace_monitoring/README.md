@@ -3,7 +3,9 @@
                                                                                             
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+
+- Download and install Python version 3 or higher.
 
 - Install aerospike module for python
 ```
@@ -30,16 +32,10 @@
 
 		python3 aerospike_namespace_monitoring.py --hostname=<name of the host> --port=<port> --tls_enable=<true/false> --tls_name=<tls name> --cafile=<cafile path>  --username=<username> --password=<password>  --node_id=<node id> --namespace=<namespace>
 
-
-- Move the directory "aerospike_namespace_monitoring" under Site24x7 Linux Agent plugin directory.
-
-
----
-
-### Configurations
+#### Configurations
 
 - Provide your aerospike_namespace_monitoring configurations in aerospike_namespace_monitoring.cfg file.
-```
+    ```
     [Aerospike Namespace Monitoring]
     hostname=<HOSTNAME>
     port=<PORT>
@@ -53,9 +49,28 @@
     logs_enabled=False
     log_type_name=<LOG TYPE NAME>
     log_file_path=<LOG FILE PATH>
-```	
+    ```	
+
+#### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the aerospike_namespace_monitoring.py script.
+
+- Place the "aerospike_namespace_monitoring" under the Site24x7 Linux Agent plugin directory:
+
+        Linux    ->   /opt/site24x7/monagent/plugins/aerospike_namespace_monitoring
+
+#### Windows
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+-  Further move the folder "aerospike_namespace_monitoring" into the  Site24x7 Windows Agent plugin directory:
+
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\aerospike_namespace_monitoring
+
+
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
+---
 
 ## Supported Metrics
 The following metrics are captured in the aerospike_namespace_monitoring Plugin

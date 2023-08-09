@@ -57,13 +57,22 @@ Install the Apache Kafka Producer plugin to monitor key Kafka producer metrics a
         
 
 
- - Place the kafka_producer_monitoring folder under the Site24x7 Linux Agent plugin directory:
+#### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the kafka_producer_monitoring.py script.
+
+- Place the "kafka_producer_monitoring" under the Site24x7 Linux Agent plugin directory:
 
         Linux    ->   /opt/site24x7/monagent/plugins/kafka_producer_monitoring
-
-
-Since this is a Python plugin, to run the plugin in a Windows server, please follow the steps in the below link. The remaining configuration steps are the same. 
+  
+#### Windows
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
 https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+
+-  Further move the folder "kafka_producer_monitoring" into the  Site24x7 Windows Agent plugin directory:
+
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\kafka_producer_monitoring
+
 
 
 #### Supported Metrics

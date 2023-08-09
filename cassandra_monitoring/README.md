@@ -9,9 +9,9 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
 -  Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you intend to run the plugin
 
 -  Install the jmxquery module for python.
-  	
+	```
 	pip install jmxquery
-
+	```
 -  Set up  the jmx port for Cassandra:
 
     1.  Open the cassandra-env.sh file from the location "/etc/cassandra"
@@ -74,17 +74,12 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
     ```
      python3 cassandra_monitoring.py --hostname localhost --port 7199 --logs_enabled False
     ```
-- Move the folder "cassandra_monitoring" into the Site24x7 Linux Agent plugin directory:
-    ```
-     Linux             ->   /opt/site24x7/monagent/plugins/cassandra_monitoring
-    ```
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
-
-
+    
 #### Configurations
 
 
 -  Provide your Cassandra configurations in the cassandra_monitoring.cfg file.
+  
     ```
     [cassandra_1]
     hostname=<HOSTNAME>
@@ -93,8 +88,26 @@ The agent will automatically execute the plugin within five minutes and user can
     log_type_name=None
     log_file_path=None
     ```
+#### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the cassandra_monitoring.py script.
+
+- Place the "cassandra_monitoring" under the Site24x7 Linux Agent plugin directory:
+
+        Linux    ->   /opt/site24x7/monagent/plugins/cassandra_monitoring
+
+#### Windows
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+
+-  Further move the folder "cassandra_monitoring" into the  Site24x7 Windows Agent plugin directory:
+    ```
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\cassandra_monitoring
+    ```
     
-**The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.**
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+----
 
 ### Supported Metrics
 The following metrics are captured in the Cassandra monitoring plugin:
