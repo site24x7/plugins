@@ -20,8 +20,8 @@ https://clickhouse-driver.readthedocs.io/en/latest/installation.html
 
 - Download the below files and place it under the "clickhouse_asyncmetrics" directory.
 
-		https://raw.githubusercontent.com/site24x7/plugins/master/clickhouse/clickhouse_asyncmetrics/clickhouse_asyncmetrics.py
-		https://raw.githubusercontent.com/site24x7/plugins/master/clickhouse/clickhouse_asyncmetrics/clickhouse_asyncmetrics.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/clickhouse/clickhouse_asyncmetrics/clickhouse_asyncmetrics.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/clickhouse/clickhouse_asyncmetrics/clickhouse_asyncmetrics.cfg
 
 
 - Edit the clickhouse_asyncmetrics.py file with appropriate arguments and Execute the below command to check for the valid JSON output:
