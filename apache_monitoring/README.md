@@ -1,12 +1,12 @@
 # Plugin for Apache Monitoring
 
-The Apache HTTP Server, commonly known as Apache, is the world's most used web server software. Configure Site24x7 Apache plugin to monitor the performance of your apache server and stay on top of issues at all times.
+The Apache HTTP Server, commonly known as Apache, is the world's most used web server software. Configure the Site24x7 Apache plugin to monitor the performance of your Apache server and stay on top of issues at all times.
 
 ## Prerequisites
 
 Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
-#### Perform the following configuration in Apache configuration file to get the performance metrics - 
+#### Perform the following configuration in the Apache configuration file to get the performance metrics - 
 1. Enable mod_status
 
 - Apache configuration file is located at one of the following locations, depending on your Linux distribution.
@@ -17,7 +17,7 @@ Download and install the latest version of the [Site24x7 Linux agent](https://ww
 	    /etc/httpd/conf/httpd.conf
 	```
 
-- Open terminal and run the following command to open Apache configuration file "/etc/httpd/conf/httpd.conf".
+- Open the terminal and run the following command to open the Apache configuration file "/etc/httpd/conf/httpd.conf".
 
   	``` 	$ sudo vi /etc/httpd/conf/httpd.conf 	```
 
@@ -57,7 +57,7 @@ Download and install the latest version of the [Site24x7 Linux agent](https://ww
 		</Location>
 	```
 
-The above configuration works for default Apache configuration. If you want to change the URL at which the dashboard is available, then change /server-status in location tag as per your requirement.
+The above configuration works for the default Apache configuration. If you want to change the URL at which the dashboard is available, then change /server-status in the location tag as per your requirement.
 
 
 Also, this configuration will not work for Virtual Hosts. If you have configurated Virtual Hosts, then you need to place this location block inside the VirtualHost block, as shown below.
@@ -74,7 +74,7 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 			  …
 		     </VirtualHost>
 
-3. After completing all the changes restart the apache server using the below linux command.
+3. After completing all the changes restart the Apache server using the below Linux command.
 	```
 	service apache restart
 	```
@@ -92,11 +92,11 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 	Content-Type: text/html; charset=ISO-8859-1
 
 	```
-	It can also be mannually checked using the browser by entering the below url.
+	It can also be manually checked using the browser by entering the below URL.
 	```
 	http://localhost:80/server-status?auto
 	```
-*Note : The url will differ based on what you have entered in the apache configuration.*
+*Note : The URL will differ based on what you have entered in the Apache configuration.*
 
 ## Plugin Installation  
 
@@ -104,20 +104,17 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 2. Download the [apache\_monitoring.py](https://raw.githubusercontent.com/site24x7/plugins/master/apache\_monitoring/apache_monitoring.py) and the [apache\_monitoring.cfg](https://raw.githubusercontent.com/site24x7/plugins/master/apache\_monitoring/apache_monitoring.cfg) files from our [GitHub repository](https://github.com/site24x7/plugins), and place them in the _apache\_monitoring_ folder.  
 
 	```
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.py
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.py && sed -i "1s|^.*|#! $(which python3)|" apache_monitoring.py
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.cfg
 	```
  
-3. Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the apache_monitoring.py script.
-
- 
-4. To check if the plugin is working, execute the command below with appropriate arguments and check for a valid JSON output with applicable metrics and their corresponding value.  
+3. To check if the plugin is working, execute the command below with appropriate arguments and check for a valid JSON output with applicable metrics and their corresponding value.  
 
 ```
 	python3 apache_monitoring.py --url=<apache stats url> --username=<apache username> --password=<apache password>
 ```
 
-5. Add the applicable configurations in the _apache\_monitoring.cfg_ file.  
+4. Add the applicable configurations in the _apache\_monitoring.cfg_ file.  
 	You can also configure [Apache access logs](https://www.site24x7.com/help/log-management/apache-access.html) to view the top failed requests, the URLs that take the longest to retrieve data, and more.  
 ```
 	[localhost]
@@ -132,11 +129,11 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 	log_file_path ="/var/log/apache2/access.log"
 ```
 
-6. Follow the steps in this [article](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers) to learn how to run the Python script on a Windows server. You don't need to do this for Linux.  
+5. Follow the steps in this [article](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers) to learn how to run the Python script on a Windows server. You don't need to do this for Linux.  
 
-7. If you have virtual hosts configured and/or need to monitor the status of multiple domains using the same plugin, refer [this link](https://www.site24x7.com/help/admin/adding-a-monitor/plugins/custom-plugins.html#multiple-config) to configure the domains.
+6. If you have virtual hosts configured and/or need to monitor the status of multiple domains using the same plugin, refer [this link](https://www.site24x7.com/help/admin/adding-a-monitor/plugins/custom-plugins.html#multiple-config) to configure the domains.
 
-8. Move the _apache\_monitoring_ folder to the _Site24x7 server monitoring plugins directory_.
+7. Move the _apache\_monitoring_ folder to the _Site24x7 server monitoring plugins directory_.
 For Linux: /opt/site24x7/monagent/plugins/
 For Windows: C:\Program Files (x86)\Site24x7\WinAgent\monitoring\plugins\
 
@@ -173,7 +170,7 @@ bytes_per_sec records the total amount of data the web server is transferring pe
 - **Bytes per Request**
 The average number of bytes being transferred per HTTP request is obtained using the metric bytes_per_req.
 - **Processes**
-Processes denotes the number of async processes.
+Processes denote the number of async processes.
 - **Connections Async Closing**
 Connections Async Closing shows the number of async connections that are in the closing state.
 - **Connections Async Keep Alive**
