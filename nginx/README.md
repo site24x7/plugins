@@ -46,7 +46,7 @@ sudo systemctl reload nginx
       
 - Download all the files in the "nginx" folder and place it under the "nginx" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/nginx.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/nginx.py && sed -i "1s|^.*|#! $(which python3)|" nginx.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/nginx.cfg
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the nginx.py script.
