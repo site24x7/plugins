@@ -44,7 +44,7 @@ if 'CentOS' in os_info or 'Red Hat' in os_info:
                  if each.isdigit():
                      data['packages_to_be_updated']=each
                 
-else:    
+elif 'Ubuntu' in os_info  :
     file_path='/var/lib/update-notifier/updates-available'
     lines = [line.strip('\n') for line in open(file_path)]
     for line in lines:
@@ -53,4 +53,7 @@ else:
                 data['packages_to_be_updated'] = line.split()[0]
             if ('updates are security updates' in line) or ('updates are standard security updates' in line):
                 data['security_updates'] = line.split()[0]
+else:
+    data['msg']=f"{os_info} not supported"
+    data['status']=0
 print(json.dumps(data))
