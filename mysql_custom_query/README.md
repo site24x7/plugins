@@ -48,7 +48,7 @@
 		
 - Download  the below files in "mysql_custom_query" folder and place it under the "mysql_custom_query" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_query/mysql_custom_query.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_query/mysql_custom_query.py && sed -i "1s|^.*|#! $(which python3)|" mysql_custom_query.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_custom_query/mysql_custom_query.cfg
 
 
