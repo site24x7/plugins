@@ -28,7 +28,7 @@
 	
 - Download the below files in the "OracleSGA" folder and place it under the "OracleSGA" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleSGA/OracleSGA.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleSGA/OracleSGA.py && sed -i "1s|^.*|#! $(which python3)|" OracleSGA.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleSGA/OracleSGA.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output:
@@ -49,9 +49,6 @@
 	    oracle_home=None
 	```	
 #### Linux
-
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the OracleSGA.py script.
-
 - Place the "OracleSGA" under the Site24x7 Linux Agent plugin directory:
 
         Linux    ->   /opt/site24x7/monagent/plugins/OracleSGA
