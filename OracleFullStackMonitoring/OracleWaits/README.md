@@ -27,7 +27,7 @@
 	
 - Download the below files in the "OracleWaits" folder and place it under the "OracleWaits" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleWaits/OracleWaits.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleWaits/OracleWaits.py && sed -i "1s|^.*|#! $(which python3)|" OracleWaits.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleWaits/OracleWaits.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output:
@@ -50,9 +50,6 @@
 
 ```	
 #### Linux
-
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the OracleWaits.py script.
-
 - Place the "OracleWaits" under the Site24x7 Linux Agent plugin directory:
 
         Linux    ->   /opt/site24x7/monagent/plugins/OracleWaits
