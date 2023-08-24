@@ -70,13 +70,11 @@
   -  If your custom query returns multiple rows based on specific criteria, you have the flexibility to utilize aggregation functions according to your needs, enabling manipulation of the retrieved rows.
   - Reference - https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html
 
-- Applog is supported for MySQL Monitoring. To enable applog for this plugin, configure logs_enabled=true and configure log_type_name and log_file_path as need.
+- Applog is supported for MySQL Monitoring. To enable applog for this plugin, configure logs_enabled=true and configure log_type_name and log_file_path as needed.
 
 ---
 
 #### Linux
-
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mysql_custom_query.py script.
 
 - Place the "mysql_custom_query" folder under Site24x7 Linux Agent plugin directory : 
 
@@ -89,7 +87,7 @@
 		Windows             ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 
 
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+The agent will automatically execute the plugin within five minutes and the user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
 ---
