@@ -29,7 +29,7 @@
 	
 - Download the below files in the "OraclePDB" folder and place it under the "OraclePDB" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OraclePDB/OraclePDB.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OraclePDB/OraclePDB.py && sed -i "1s|^.*|#! $(which python3)|" OraclePDB.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OraclePDB/OraclePDB.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output:
@@ -50,9 +50,6 @@
 	    oracle_home=None
 	```	
 #### Linux
-
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the OraclePDB.py script.
-
 - Place the "OraclePDB" under the Site24x7 Linux Agent plugin directory:
 
         Linux    ->   /opt/site24x7/monagent/plugins/OraclePDB
