@@ -29,7 +29,7 @@
 	
 - Download the below files in the "OracleBlockingLocks" folder and place it under the "OracleBlockingLocks" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleBlockingLocks/OracleBlockingLocks.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleBlockingLocks/OracleBlockingLocks.py && sed -i "1s|^.*|#! $(which python3)|" OracleBlockingLocks.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleBlockingLocks/OracleBlockingLocks.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output:
@@ -50,8 +50,6 @@
 	    oracle_home=None
 	```	
 #### Linux
-
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the OracleBlockingLocks.py script.
 
 - Place the "OracleBlockingLocks" under the Site24x7 Linux Agent plugin directory:
 
