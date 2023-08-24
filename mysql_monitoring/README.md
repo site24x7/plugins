@@ -44,8 +44,6 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/mysql_monitoring.py && sed -i "1s|^.*|#! $(which python3)|" mysql_monitoring.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/mysql_monitoring.cfg
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mysql_monitoring.py script.
-
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 		python mysql_monitoring.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> 
