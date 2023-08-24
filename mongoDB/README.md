@@ -11,7 +11,7 @@
       
 - Download the below files and place it under the "mongoDB" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.py  && sed -i "1s|^.*|#! $(which python3)|" mongoDB.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.cfg
 		
 ### Prerequisites
@@ -28,8 +28,6 @@
 | Python 2       | https://www.mongodb.com/docs/drivers/pymongo/#python-2-compatibility         |
 
 ### Configurations
-
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the mongoDB.py script.
 
 - Provide your MongoDb configurations in mongoDB.cfg file.
 
