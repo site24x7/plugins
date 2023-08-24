@@ -27,7 +27,7 @@
 	
 - Download the below files in the "OracleCore" folder and place it under the "OracleCore" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleCore/OracleCore.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleCore/OracleCore.py && sed -i "1s|^.*|#! $(which python3)|" OracleCore.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleCore/OracleCore.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output:
@@ -48,16 +48,13 @@
 	    oracle_home=None
 	```	
 #### Linux
-
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the OracleCore.py script.
-
 - Place the "OracleCore" under the Site24x7 Linux Agent plugin directory:
 
         Linux    ->   /opt/site24x7/monagent/plugins/OracleCore
 #### Windows
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
 https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
--  Further move the folder "OracleCore" into the  Site24x7 Windows Agent plugin directory:
+-  Further, move the folder "OracleCore" into the  Site24x7 Windows Agent plugin directory:
 
         Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\OracleCore
 
