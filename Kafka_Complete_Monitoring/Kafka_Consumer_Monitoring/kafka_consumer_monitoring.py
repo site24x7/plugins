@@ -80,7 +80,7 @@ class kafka:
             else:
                     applog["logs_enabled"]=False
             self.maindata['applog'] = applog
-            self.maindata['tags']=f"Client_ID:{self.kafka_consumer_client_id},Kafka_Host:{self.kafka_consumer_host},Kafka_Topic:{self.kafka_topic_name}"
+            self.maindata['tags']=f"Consumer_Client_ID:{self.kafka_consumer_client_id},Kafka_Consumer_Host:{self.kafka_consumer_host},Kafka_Topic:{self.kafka_topic_name}"
 
 
 
