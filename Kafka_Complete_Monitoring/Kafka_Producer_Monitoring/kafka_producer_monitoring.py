@@ -14,7 +14,7 @@ METRICS_UNITS={
     "Batch Size Avg":"Bytes"}
 
 
-class appname:
+class kafka:
 
     def __init__(self,args):
         
@@ -55,11 +55,12 @@ class appname:
                     
                 jmxQuery = [jmx.JMXQuery(metric_queries[metric])]
                 metric_result = jmxConnection.query(jmxQuery)
-                data=metric_result[0].value
-                if math.isnan(data):
-                    self.maindata[metric]=-1
-                else:
-                    self.maindata[metric]=data
+                if metric_result:
+                    data=metric_result[0].value
+                    if math.isnan(data):
+                        self.maindata[metric]=-1
+                    else:
+                        self.maindata[metric]=data
 
             self.maindata["Client ID"]=self.kafka_producer_client_id
 
@@ -72,6 +73,7 @@ class appname:
             else:
                     applog["logs_enabled"]=False
             self.maindata['applog'] = applog
+            self.maindata['tags']=f"Client_ID:{self.kafka_producer_client_id},Kafka_Host:{self.kafka_producer_host}"
 
 
         except Exception as e: 
@@ -103,7 +105,7 @@ if __name__=="__main__":
     parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
     args=parser.parse_args()
 
-    obj=appname(args)
+    obj=kafka(args)
 
     result=obj.metriccollector()
     print(json.dumps(result,indent=True))
