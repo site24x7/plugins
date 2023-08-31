@@ -11,7 +11,7 @@ METRICS_UNITS={
 }
 
 
-class appname:
+class kafka:
 
     def __init__(self,args):
         
@@ -57,11 +57,12 @@ class appname:
                     
                 jmxQuery = [jmx.JMXQuery(metric_queries[metric])]
                 metric_result = jmxConnection.query(jmxQuery)
-                data=metric_result[0].value
-                if math.isnan(data):
-                    self.maindata[metric]=-1
-                else:
-                    self.maindata[metric]=data
+                if metric_result:
+                    data=metric_result[0].value
+                    if math.isnan(data):
+                        self.maindata[metric]=-1
+                    else:
+                        self.maindata[metric]=data
 
             
             self.maindata["Topic Name"]=self.kafka_topic_name
@@ -79,6 +80,7 @@ class appname:
             else:
                     applog["logs_enabled"]=False
             self.maindata['applog'] = applog
+            self.maindata['tags']=f"Client_ID:{self.kafka_consumer_client_id},Kafka_Host:{self.kafka_consumer_host},Kafka_Topic:{self.kafka_topic_name}"
 
 
 
@@ -114,7 +116,7 @@ if __name__=="__main__":
     
     args=parser.parse_args()
 
-    obj=appname(args)
+    obj=kafka(args)
 
     result=obj.metriccollector()
     print(json.dumps(result,indent=True))
