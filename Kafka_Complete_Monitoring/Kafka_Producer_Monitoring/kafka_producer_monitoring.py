@@ -73,7 +73,7 @@ class kafka:
             else:
                     applog["logs_enabled"]=False
             self.maindata['applog'] = applog
-            self.maindata['tags']=f"Client_ID:{self.kafka_producer_client_id},Kafka_Host:{self.kafka_producer_host}"
+            self.maindata['tags']=f"Producer_Client_ID:{self.kafka_producer_client_id},Kafka_Producer_Host:{self.kafka_producer_host}"
 
 
         except Exception as e: 
