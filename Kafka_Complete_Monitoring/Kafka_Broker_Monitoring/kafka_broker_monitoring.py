@@ -85,7 +85,7 @@ class kafka:
                     applog["logs_enabled"]=False
 
             self.maindata['applog'] = applog
-            self.maindata['tags']=f"Kafka_Host:{self.kafka_host},Kafka_Topic:{self.kafka_topic_name}"
+            self.maindata['tags']=f"Kafka_Broker_Host:{self.kafka_host},Kafka_Topic:{self.kafka_topic_name}"
 
 
         except Exception as e:
