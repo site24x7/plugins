@@ -59,7 +59,7 @@ class kafka:
                 "Young Generation GC Time":"java.lang:type=GarbageCollector,name=G1 Young Generation/CollectionTime",
                 "Old Generation GC Count":"java.lang:type=GarbageCollector,name=G1 Old Generation/CollectionCount",
                 "Old Generation GC Time":"java.lang:type=GarbageCollector,name=G1 Old Generation/CollectionTime",
-                f"Log End Offset(Partition : {self.kafka_consumer_partition})":f"kafka.log:type=Log,name=LogEndOiffset,topic={self.kafka_topic_name},partition={self.kafka_consumer_partition}"
+                f"Log End Offset(Partition : {self.kafka_consumer_partition})":f"kafka.log:type=Log,name=LogEndOffset,topic={self.kafka_topic_name},partition={self.kafka_consumer_partition}"
 
                 }
 
