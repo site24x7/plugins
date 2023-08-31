@@ -13,17 +13,12 @@ METRICS_UNITS={
     "Bytes Out Per Sec":"/sec",
     "Network Request Rate":"/sec",
     "Network Error Rate":"/sec"
-
-
-
-
 }
 
-
-class appname:
+class kafka:
 
     def __init__(self,args):
-        
+
         self.maindata={}
         self.maindata['plugin_version'] = PLUGIN_VERSION
         self.maindata['heartbeat_required']=HEARTBEAT
@@ -37,9 +32,9 @@ class appname:
         self.logtypename=args.log_type_name
         self.logfilepath=args.log_file_path
 
-    
+
     def metriccollector(self):
-        
+
         try:
             global jmx
             import jmxquery as jmx
@@ -70,11 +65,12 @@ class appname:
 
 
             for metric in metric_queries:
-                    
+
                 jmxQuery = [jmx.JMXQuery(metric_queries[metric])]
                 metric_result = jmxConnection.query(jmxQuery)
-                self.maindata[metric]=metric_result[0].value
-                
+                if metric_result:
+                    self.maindata[metric]=metric_result[0].value
+
             self.maindata["Topic Name"]=self.kafka_topic_name
             self.maindata["Partition No."]=f"Partition No : {self.kafka_consumer_partition}"
 
@@ -89,7 +85,8 @@ class appname:
                     applog["logs_enabled"]=False
 
             self.maindata['applog'] = applog
-            
+            self.maindata['tags']=f"Kafka_Host:{self.kafka_host},Kafka_Topic:{self.kafka_topic_name}"
+
 
         except Exception as e:
             self.maindata['msg']=str(e)
@@ -119,9 +116,7 @@ if __name__=="__main__":
     parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
     args=parser.parse_args()
 
-    obj=appname(args)
+    obj=kafka(args)
 
     result=obj.metriccollector()
     print(json.dumps(result,indent=True))
-
-

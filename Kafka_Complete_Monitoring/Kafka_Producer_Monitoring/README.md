@@ -40,6 +40,10 @@ Install the Apache Kafka Producer plugin to monitor key Kafka producer metrics a
 - Create a directory named "kafka_producer_monitoring".
 
 - Download all the files in the "kafka_producer_monitoring" folder and place them under the "kafka_producer_monitoring" directory.
+  ```
+  wget https://raw.githubusercontent.com/site24x7/plugins/master/Kafka_Complete_Monitoring/Kafka_Producer_Monitoring/kafka_producer_monitoring.py &&  sed -i "1s|^.*|#! $(which python3)|" kafka_producer_monitoring.py
+  wget https://raw.githubusercontent.com/site24x7/plugins/master/Kafka_Complete_Monitoring/Kafka_Producer_Monitoring/kafka_producer_monitoring.cfg
+  ```
 
 - Execute the below command with appropriate arguments to check for the valid json output:
   

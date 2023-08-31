@@ -37,6 +37,10 @@ A Kafka consumer is a client application that pulls event data from one or more 
 - Create a directory named "kafka_consumer_monitoring".
   
 - Download all the files in the "kafka_consumer_monitoring" folder.
+  ```
+  wget https://raw.githubusercontent.com/site24x7/plugins/master/Kafka_Complete_Monitoring/Kafka_Consumer_Monitoring/kafka_consumer_monitoring.py && sed -i "1s|^.*|#! $(which python3)|" kafka_consumer_monitoring.py
+  wget https://raw.githubusercontent.com/site24x7/plugins/master/Kafka_Complete_Monitoring/Kafka_Consumer_Monitoring/kafka_consumer_monitoring.cfg
+  ```
 
 - **Execute the below command with appropriate arguments to check for the valid json output:**
 
