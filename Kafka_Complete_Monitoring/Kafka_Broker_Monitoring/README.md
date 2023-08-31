@@ -42,6 +42,10 @@ A Kafka broker is a single Kafka server that runs on a Kafka cluster. On deploym
 - Create a directory named "kafka_broker_monitoring" 
   
 - Download all the files in the "kafka_broker_monitoring" folder.
+  ```
+  wget https://raw.githubusercontent.com/site24x7/plugins/master/Kafka_Complete_Monitoring/Kafka_Broker_Monitoring/kafka_broker_monitoring.py && sed -i "1s|^.*|#! $(which python3)|" kafka_broker_monitoring.py
+  wget https://raw.githubusercontent.com/site24x7/plugins/master/Kafka_Complete_Monitoring/Kafka_Broker_Monitoring/kafka_broker_monitoring.cfg
+  ```
 
 - Execute the below command with appropriate arguments to check for the valid json output:
     
