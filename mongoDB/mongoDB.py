@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#! /usr/bin/python3
 
 import collections
 import datetime
@@ -156,17 +156,17 @@ class MongoDB(object):
                 stats=db.command('dbstats')
                 self.connection.close()
 
-            except pymongo.errors.ServerSelectionTimeoutError:
+            except pymongo.errors.ServerSelectionTimeoutError as e:
                 data['status']=0
-                data['msg']='No mongoDB server is available to connect'
+                data['msg']='No mongoDB server is available to connect.\n '+str(e)
                 return data
-            except pymongo.errors.ConnectionFailure:
+            except pymongo.errors.ConnectionFailure as e:
                 data['status']=0
-                data['msg']='Connection to database failed'
+                data['msg']='Connection to database failed. '+str(e)
                 return data
-            except pymongo.errors.ExecutionTimeout:
+            except pymongo.errors.ExecutionTimeout as e:
                 data['status']=0
-                data['msg']='Execution of database command failed'
+                data['msg']='Execution of database command failed'+str(e)
                 return data
 
             #Version
