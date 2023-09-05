@@ -13,13 +13,4 @@ Know how to configure the HP iLO plugin and the monitoring metrics for providing
 
 ### Plugin Installation  
 
-- Create a directory named "hpilo<component>"
-
-- Download the files and place it under the "hpilo<component>" directory.
-
-
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the hpilo<component>.py script.
-  
-- Execute the below command with appropriate arguments to check for the valid JSON output:
-
-      python ilo<component>.py 
+- Refer to each plugin's github readme help doc.
