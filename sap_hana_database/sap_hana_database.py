@@ -166,7 +166,7 @@ class Sap_hana(object):
             self.resultjson["Plan Cache Hit Ratio"]=result[0][1]
             
         except Exception as e:
-            self.resultjson["msg"]="Error:" + str(traceback.print_exc())
+            self.resultjson["msg"]="Error:" + str(e)
             self.resultjson["status"]=0
             
         applog={}
