@@ -44,7 +44,7 @@ class Jenkins(object):
             data=response["gauges"]
             self.resultjson["jobs_count"]=data["jenkins.job.count.value"]["value"]
             data=response["meters"]
-            self.resultjson["jobs_scheduled_rate"]=data1["jenkins.job.scheduled"]["mean_rate"]
+            self.resultjson["jobs_scheduled_rate"]=data["jenkins.job.scheduled"]["mean_rate"]
             data=response["timers"]
             self.resultjson["jobs_blocked_duration"]=data["jenkins.job.blocked.duration"]["mean"]
             self.resultjson["jobs_buildable_duration"]=data["jenkins.job.buildable.duration"]["mean"]
