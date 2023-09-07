@@ -10,7 +10,7 @@ PLUGIN_VERSION = "1"
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT="true"
 
-TOPCOMMAND='top', '-b', '-n', '1'
+TOPCOMMAND='top','-b', '-n', '1'
 
 def metricCollector():
     data = {}
@@ -19,7 +19,7 @@ def metricCollector():
 
     try:
         proc = subprocess.Popen(TOPCOMMAND,stdout=subprocess.PIPE,close_fds=True)
-        top_output = proc.communicate()[0]
+        top_output = proc.communicate()[0].decode()
         for line in top_output.split('\n'):
             if not line:
                 continue
@@ -29,17 +29,17 @@ def metricCollector():
                     if 'zombie' in zombies_raw:
                         data['zombies'] = zombies_raw.split()[0]
                         break
-                except Exception as exception:
+                except Exception as e:
                     data['status']=0
-                    data['msg']='error while parsing top output'
+                    data['msg']=str(e)
 
-    except Exception as exception:
+    except Exception as e:
         data['status']=0
-        data['msg']='error while executing top command'
+        data['msg']='error while parsing top output'+str(e)
     
     return data
 
 
 if __name__ == '__main__':
     
-    print json.dumps(metricCollector(), indent=4, sort_keys=True)
+    print(json.dumps(metricCollector(), indent=4, sort_keys=True))
