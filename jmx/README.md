@@ -6,7 +6,7 @@ This plugin can be used to monitor the JMX MBean in the JVM.
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/help/admin/adding-a-monitor/linux-server-monitoring.html#add-linux-server-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/help/admin/adding-a-monitor/linux-server-monitoring.html#add-linux-server-monitor) in the server where you plan to run the plugin. 
 - Plugin uses JDK to communicate with JMX MBean to get the metrics for monitoring.
 
 ### Plugin installation
