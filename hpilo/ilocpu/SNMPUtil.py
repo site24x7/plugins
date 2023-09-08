@@ -40,7 +40,7 @@ class SNMPPARSER:
     def executeSNMPCommand(self):
         
         snmp_command = self.command+ ' -O q -v '+ self.snmp_version + ' -c ' + self.snmp_community +' '+ self.host +' '+ self.oids  
-        if self.mibs and os.path.exists(self.mibs) : snmp_command = snmp_command + ' -M '+ self.mibs
+        if self.mibs and os.path.exists(self.mibs) : snmp_command = snmp_command + ' -m '+ self.mibs
         #print(snmp_command)
         status, output = run(snmp_command)  # query snmp data
         

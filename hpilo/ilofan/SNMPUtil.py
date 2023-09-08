@@ -3,9 +3,10 @@ import commands
 import sys
 import json
 import re
+import os
 
 
-### Monitoring HP ILo Servers - SNMPUtil
+### Monitoring HP - Integrated Lights Out Servers - SNMPUtil
 
 ### It uses net-snmp packages to execut the snmp commands to get the data from the network devices
 ### snmpget, snmpwalk commands are supported
@@ -39,6 +40,7 @@ class SNMPPARSER:
     def executeSNMPCommand(self):
         
         snmp_command = self.command+ ' -O q -v '+ self.snmp_version + ' -c ' + self.snmp_community +' '+ self.host +' '+ self.oids  
+        if self.mibs and os.path.exists(self.mibs) : snmp_command = snmp_command + ' -m '+ self.mibs
         #print(snmp_command)
         status, output = run(snmp_command)  # query snmp data
         
