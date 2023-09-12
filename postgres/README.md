@@ -23,7 +23,7 @@ Learn more https://www.site24x7.com/plugins/postgres-monitoring.html
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python3 postgres.py  --host <host_name> --port <port no> --username <username> --password <password> --db_name <db_name>
+		python3 postgres.py  --host <host_name> --port <port no> --username <username> --password <password> --db <db_name>
 
 - Provide your Postgres DB configurations in postgres.cfg file.
 
