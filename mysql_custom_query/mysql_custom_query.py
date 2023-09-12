@@ -92,7 +92,7 @@ class MySQL(object):
                     #metric['msg'] = str(len(result)) + " rows returned"
                 except Exception as ee:
                     metric['status'] = 0
-                    metric['msg'] = ee
+                    metric['msg'] = str(ee)
                     traceback.print_exc()
             else :
                 empty_rows = [{column[0]:'-' for column in columns}] 
@@ -103,7 +103,7 @@ class MySQL(object):
         except Exception as e:
             traceback.print_exc()
             metric['status'] = 0
-            metric['msg'] = e
+            metric['msg'] = str(e)
         cursor.close()
         con.close()
         return metric
@@ -130,7 +130,7 @@ class MySQL(object):
             except Exception as e:
                 #traceback.print_exc()
                 self.data['status'] = 0
-                self.data['msg'] = e
+                self.data['msg'] = str(e)
                 return False
         return True
 
@@ -176,7 +176,7 @@ class MySQL(object):
             except Exception as e:
                 #traceback.format_exc()
                 self.data['status'] = 0
-                self.data['msg'] = e
+                self.data['msg'] = str(e)
 
             
             end_time=time.time()
