@@ -131,7 +131,7 @@ class MongoDB(object):
             from pymongo import MongoClient
         except ImportError:
             data['status']=0
-            data['msg']='pymongo module not installed'
+            data['msg']='pymongo module not installed\n Solution : Use the following command to install pymongo\n pip install pymongo \n(or)\n pip3 install pymongo'
             return data
         
         try:
