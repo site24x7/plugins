@@ -265,7 +265,7 @@ class MySQL(object):
                 import pymysql
             except Exception:
                 data['status']=0
-                data['msg']='pymysql module not installed\n Solution : Use the following command to install pymongo\n pip install pymysql \n(or)\n pip3 install pymysql'
+                data['msg']='pymysql module not installed\n Solution : Use the following command to install pymysql\n pip install pymysql \n(or)\n pip3 install pymysql'
                 return data
 
             if not self.getDbConnection():
