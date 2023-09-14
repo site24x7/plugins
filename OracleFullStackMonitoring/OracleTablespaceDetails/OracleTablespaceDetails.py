@@ -50,7 +50,7 @@ class oracle:
             import oracledb
         except Exception as e:
             self.maindata['status'] = 0
-            self.maindata['msg'] = str(e)
+            self.maindata['msg'] = str(e) + "\n Solution : Use the following command to install oracledb\n pip install oracledb \n(or)\n pip3 install oracledb"
             return self.maindata
 
         try:
