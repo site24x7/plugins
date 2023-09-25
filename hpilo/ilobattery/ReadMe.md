@@ -48,7 +48,7 @@ Supported versions: 1 and 2c
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/hpilo/ilobattery/ilobattery.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/hpilo/ilobattery/cpqhlth.mib
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/hpilo/ilobattery/SNMPUtil.py
-- Add the configurations such as hostname, snmp version, mib file path, etc,. in ilobattery.py.
+- Add the configurations such as Host(IP Address), snmp version, mib file path, etc,. in ilobattery.py.
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 		python ilobattery.py 
