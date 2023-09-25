@@ -15,7 +15,8 @@
 			sudo apt–get install snmp
 - After installation, export the net-snmp path in the $PATH variable.
 
-		Example:
+  Example:
+  
 			export PATH=$PATH:/var/lib/net-snmp/bin
 
 - Test SNMP walk for ilobattery:
