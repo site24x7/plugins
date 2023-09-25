@@ -29,7 +29,7 @@
 #### Windows
 
 - Install the latest version of the Net-SNMP package. [Follow these steps](https://support.site24x7.com/portal/en/kb/articles/install-net-snmp-package-in-windows-for-plugins) to install and configure it.
-- And also add Net-SNMP path to system variables. Then open command prompt or cmd.
+- And also add Net-SNMP path to user variables. Then open command prompt or cmd.
 - Test SNMP walk for ilobattery:
   
 			snmpwalk  -v  <version>  -c  <community-name>  <ip-address>  <OID>
