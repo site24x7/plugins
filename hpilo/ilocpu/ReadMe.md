@@ -19,7 +19,7 @@
 
 			export PATH=$PATH:/var/lib/net-snmp/bin
 
-- Test SNMP walk for ilobattery:
+- Test SNMP walk for ilocpu:
   
 			snmpwalk  -v  <version>  -c  <community-name>  <ip-address>  <OID>
 	Example:
