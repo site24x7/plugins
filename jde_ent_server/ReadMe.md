@@ -36,7 +36,7 @@ Use this Plugin to monitor the status and zombie process, etc,. of the jde ENT S
 
 5. Further move the folder "jde_entserver" into the Site24x7 Windows Agent plugin directory:
 
-	Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\jde_entserver
+		Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\jde_entserver
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations. 
 
