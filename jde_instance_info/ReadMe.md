@@ -21,7 +21,7 @@ Use this Plugin to monitor the status and online users of the JDE Web Server and
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/jde_instance_info/jde_instance_info.ps1
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/jde_instance_info/jde_instance_info.cfg
 	```
-3. The plugin uses "https://example.com:8999/manage/mgmtrestservice/instanceinfometric" api endpoint to fetch the data from the server. Please enable the endpoint if it is blocked.
+3. The plugin uses "https://example.com:8999/manage/mgmtrestservice/instanceinfometric", "/manage/mgmtrestservice/targettype", "/manage/mgmtrestservice/instancestate" api endpoints to fetch the data from the server. Please enable the endpoints if it is blocked.
 
 4. Open the "jde_instance_info.cfg" and enter the url, agentHostName, jde home, etc,. in  the file. Eg:
 
