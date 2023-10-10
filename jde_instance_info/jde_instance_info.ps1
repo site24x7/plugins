@@ -22,7 +22,7 @@ $headers = @{
 
  
 
-$version = 4
+$version = 1
 $heartbeat = "true"
 $Status = 1
 $msg = $null
