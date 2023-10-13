@@ -14,11 +14,12 @@
 
 - Create a directory "vpn_check" 
 
-- Download the files "vpn_check.py" , "isp.sh" and place it under the "vpn_check" directory
-  
+- Download the files "vpn_check.py" , "vpn_check.cfg" , "isp.sh" and place it under the "vpn_check" directory
+	```
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/vpn_check/vpn_check.py
-
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/vpn_check/vpn_check.cfg
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/vpn_check/isp.sh
+ 	```
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the vpn_check.py script.
 
