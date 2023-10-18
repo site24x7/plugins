@@ -15,16 +15,15 @@ Learn more https://www.site24x7.com/plugins/postgres-monitoring.html
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.cfg
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the postgres.py script.
-
 - Execute the following command in your server to install psycopg2: 
 
 		apt install libpq-dev python3-dev
 		pip install psycopg2
-
+  
+- Ensure 'pg_read_all_stats' permission is provided to the user. For example, create a user 'site24x7' with password 'site24x7' and provide 'pg_read_all_stats' permission to the 'site24x7' user created.
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python3 postgres.py  --host <host_name> --port <port no> --username <username> --password <password> --db <db_name>
+		python3 postgres.py  --host "ip-address" --port "port-no" --username "username" --password "password" --db "db-name"
 
 - Provide your Postgres DB configurations in postgres.cfg file.
 
@@ -36,9 +35,20 @@ Learn more https://www.site24x7.com/plugins/postgres-monitoring.html
     password=None
     db=postgres
     ```
-  
+    
+  #### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the postgres.py script.
 - Move the directory "postgres" under the Site24x7 Linux Agent plugin directory: 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/
+		/opt/site24x7/monagent/plugins/
+  #### Windows 
+
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+
+- Move the folder "postgres" under Site24x7 Windows Agent plugin directory: 
+
+		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
