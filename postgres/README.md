@@ -17,8 +17,10 @@ Learn more https://www.site24x7.com/plugins/postgres-monitoring.html
 
 - Execute the following command in your server to install psycopg2: 
 
+		apt install libpq-dev python3-dev
 		pip install psycopg2
-
+  
+- Ensure 'pg_read_all_stats' permission is provided to the user. For example, create a user 'site24x7' with password 'site24x7' and provide 'pg_read_all_stats' permission to the 'site24x7' user created.
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 		python3 postgres.py  --host "ip-address" --port "port-no" --username "username" --password "password" --db "db-name"
