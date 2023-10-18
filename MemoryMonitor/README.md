@@ -1,7 +1,6 @@
 # Server Memory Monitor #
 
-Plugin to monitor memory related metric like CommittedBytes,PercentCommittedBytesInUse,SystemCacheResidentBytes etc
-
+This plugin monitors the Windows OS Memory performance consists of counters that describe the behaviour of physical and virtual memory on the computer. Physical memory is the amount of random access memory on the computer. Virtual memory consists of the space in physical memory and on disk. Many of the memory counters monitor paging, which is the movement of pages of code and data between disk and physical memory. Excessive paging, a symptom of a memory shortage, can cause delays which interfere with all system processes. 
 #### OS Supported : Windows ####
 
 #### Attributes ####
