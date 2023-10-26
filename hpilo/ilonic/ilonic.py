@@ -1,11 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
-import commands
 import json
 import sys
 import re
 import SNMPUtil
 
+PYTHON_MAJOR_VERSION = sys.version_info[0]
+
+if PYTHON_MAJOR_VERSION == 3:
+    import subprocess as commands
+elif PYTHON_MAJOR_VERSION == 2:
+    import commands
 ### Monitoring HP Integrated Lights Out (iLo)  Servers - Battery Performance
 
 ### It uses snmpwalk command to get the hadrware data from the HP Integrated Lights Out (iLo)  Servers.
