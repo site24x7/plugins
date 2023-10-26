@@ -1,10 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
-import commands
 import json
 import sys
 import re
 import SNMPUtil
+
+PYTHON_MAJOR_VERSION = sys.version_info[0]
+
+if PYTHON_MAJOR_VERSION == 3:
+    import subprocess as commands
+elif PYTHON_MAJOR_VERSION == 2:
+    import commands
 
 ### Monitoring HP Integrated Lights Out (iLo)  Servers - Battery Performance
 
@@ -109,10 +115,9 @@ if __name__ == '__main__':
     try:
         output = parser.getData()
         result = output['data']
-	result['plugin_version'] = PLUGIN_VERSION
+        result['plugin_version'] = PLUGIN_VERSION
         result['heartbeat_required']=HEARTBEAT
         result['units'] = output['units']
     except ValueError as e:
         result['msg'] = str(e)
     print(json.dumps(result, indent=2, sort_keys=True))
-    
