@@ -1,10 +1,15 @@
 
-import commands
 import sys
 import json
 import re
 import os
 
+PYTHON_MAJOR_VERSION = sys.version_info[0]
+
+if PYTHON_MAJOR_VERSION == 3:
+    import subprocess as commands
+elif PYTHON_MAJOR_VERSION == 2:
+    import commands
 
 ### Monitoring HP - Integrated Lights Out Servers - SNMPUtil
 
