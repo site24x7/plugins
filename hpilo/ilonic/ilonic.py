@@ -114,10 +114,9 @@ if __name__ == '__main__':
     try:
         output = parser.getData()
         result = output['data']
-	result['plugin_version'] = PLUGIN_VERSION
+        result['plugin_version'] = PLUGIN_VERSION
         result['heartbeat_required']=HEARTBEAT
         result['units'] = output['units']
     except ValueError as e:
         result['msg'] = str(e)
     print(json.dumps(result, indent=2, sort_keys=True))
-    
