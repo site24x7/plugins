@@ -46,6 +46,8 @@ class ClickHouse:
         data = {}
         for key in self.metrics:
             if key in METRICS : data[key] = self.metrics[key]
+        data['plugin_version']=1
+        data['heartbeat_required']="true"
     
         return dict(data)        
     
