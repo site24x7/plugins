@@ -52,7 +52,58 @@
 - Once above execution was given valid output, then copy the mongoDB directory to Site24x7 Linux Agent plugin directory:
   
  		Linux             ->   /opt/site24x7/monagent/plugins/mongoDB
-		
+
+  
+### Performace Metrics
+
+- Asserts Msg per sec
+- Asserts Regular per sec
+- Asserts User per sec
+- Asserts Warning per sec
+- Bytes Currently in the Cache
+- Concurrent Transactions Read Available
+- Concurrent Transactions Read Out
+- Concurrent Transactions Read Total Tickets
+- Concurrent Transactions Write Available
+- Concurrent Transactions Write Out
+- Concurrent Transactions Write Total Tickets
+- Connections Available
+- Current Connections
+- Document Deleted per sec
+- Document Inserted per sec
+- Document Returned per sec
+- Document Updated per sec
+- Extra Info Page Faults per sec
+- Memory Bits
+- Memory Mapped
+- Memory Resident
+- Memory Virtual
+- Metrics cursor Open NoTimeout
+- Metrics cursor Open Pinned
+- Metrics cursor Open Total
+- Metrics cursor Timed Out
+- Network Bytes In per sec
+- Network Bytes Out per sec
+- Network Num Requests per sec
+- OpLatencies Commands Latency
+- OpLatencies Reads Latency
+- OpLatencies Writes Latency
+- Opcounters Command per sec
+- Opcounters Delete per sec
+- Opcounters Getmore per sec
+- Opcounters Insert per sec
+- Opcounters Query per sec
+- Opcounters Update per sec
+- Stats Collections
+- Stats Data Size
+- Stats Index Size
+- Stats Indexes
+- Stats Objects
+- Stats Storage Size
+- Total Connections Created
+- Total no of dbs
+- Uptime
+- version	
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7. 
 
