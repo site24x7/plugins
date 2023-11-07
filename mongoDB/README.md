@@ -56,54 +56,104 @@
   
 ### Performace Metrics
 
-- Asserts Msg per sec
-- Asserts Regular per sec
-- Asserts User per sec
-- Asserts Warning per sec
-- Bytes Currently in the Cache
-- Concurrent Transactions Read Available
-- Concurrent Transactions Read Out
-- Concurrent Transactions Read Total Tickets
-- Concurrent Transactions Write Available
-- Concurrent Transactions Write Out
-- Concurrent Transactions Write Total Tickets
-- Connections Available
-- Current Connections
-- Document Deleted per sec
-- Document Inserted per sec
-- Document Returned per sec
-- Document Updated per sec
-- Extra Info Page Faults per sec
-- Memory Bits
-- Memory Mapped
-- Memory Resident
-- Memory Virtual
-- Metrics cursor Open NoTimeout
-- Metrics cursor Open Pinned
-- Metrics cursor Open Total
-- Metrics cursor Timed Out
-- Network Bytes In per sec
-- Network Bytes Out per sec
-- Network Num Requests per sec
-- OpLatencies Commands Latency
-- OpLatencies Reads Latency
-- OpLatencies Writes Latency
-- Opcounters Command per sec
-- Opcounters Delete per sec
-- Opcounters Getmore per sec
-- Opcounters Insert per sec
-- Opcounters Query per sec
-- Opcounters Update per sec
-- Stats Collections
-- Stats Data Size
-- Stats Index Size
-- Stats Indexes
-- Stats Objects
-- Stats Storage Size
-- Total Connections Created
-- Total no of dbs
-- Uptime
-- version	
+
+- **Asserts Msg per sec**: The rate at which message assertion failures occur per second.
+
+- **Asserts Regular per sec**: The rate at which regular assertion failures occur per second.
+
+- **Asserts User per sec**: The rate at which user-related assertion failures occur per second.
+
+- **Asserts Warning per sec**: The rate at which assertion warning failures occur per second.
+
+- **Bytes Currently in the Cache**: The number of bytes currently stored in the cache.
+
+- **Concurrent Transactions Read Available**: The number of available concurrent transactions for reading operations.
+
+- **Concurrent Transactions Read Out**: The number of concurrent transactions for reading operations that are currently active.
+
+- **Concurrent Transactions Read Total Tickets**: The total number of tickets available for concurrent read transactions.
+
+- **Concurrent Transactions Write Available**: The number of available concurrent transactions for write operations.
+
+- **Concurrent Transactions Write Out**: The number of concurrent transactions for write operations that are currently active.
+
+- **Concurrent Transactions Write Total Tickets**: The total number of tickets available for concurrent write transactions.
+
+- **Connections Available**: The number of available database connections.
+
+- **Current Connections**: The current number of active database connections.
+
+- **Document Deleted per sec**: The rate at which documents are being deleted from the database per second.
+
+- **Document Inserted per sec**: The rate at which documents are being inserted into the database per second.
+
+- **Document Returned per sec**: The rate at which documents are being retrieved from the database per second.
+
+- **Document Updated per sec**: The rate at which documents are being updated in the database per second.
+
+- **Extra Info Page Faults per sec**: The rate at which page faults involving extra information occur per second.
+
+- **Memory Bits**: The number of memory bits.
+
+- **Memory Mapped**: Memory mapped value.
+
+- **Memory Resident**: The amount of memory marked as "resident" in the system.
+
+- **Memory Virtual**: The total virtual memory size.
+
+- **Metrics cursor Open NoTimeout**: The number of open cursor metrics without timeouts.
+
+- **Metrics cursor Open Pinned**: The number of open cursor metrics that are pinned.
+
+- **Metrics cursor Open Total**: The total number of open cursor metrics.
+
+- **Metrics cursor Timed Out**: The number of cursor metrics that have timed out.
+
+- **Network Bytes In per sec**: The rate at which bytes are being received over the network per second.
+
+- **Network Bytes Out per sec**: The rate at which bytes are being sent out over the network per second.
+
+- **Network Num Requests per sec**: The rate at which network requests are being made per second.
+
+- **OpLatencies Commands Latency**: Latency for processing commands, possibly in microseconds.
+
+- **OpLatencies Reads Latency**: Latency for read operations, possibly in microseconds.
+
+- **OpLatencies Writes Latency**: Latency for write operations, possibly in microseconds.
+
+- **Opcounters Command per sec**: The rate at which command operations are counted per second.
+
+- **Opcounters Delete per sec**: The rate at which delete operations are counted per second.
+
+- **Opcounters Getmore per sec**: The rate at which "get more" operations are counted per second.
+
+- **Opcounters Insert per sec**: The rate at which insert operations are counted per second.
+
+- **Opcounters Query per sec**: The rate at which query operations are counted per second.
+
+- **Opcounters Update per sec**: The rate at which update operations are counted per second.
+
+- **Stats Collections**: The number of collections.
+
+- **Stats Data Size**: The size of data.
+
+- **Stats Index Size**: The size of indexes.
+
+- **Stats Indexes**: The number of indexes.
+
+- **Stats Objects**: The number of objects.
+
+- **Stats Storage Size**: The size of storage.
+
+- **Total Connections Created**: The total number of connections created since the database/server started.
+
+- **Total no of dbs**: The total number of databases on the system.
+
+- **Uptime**: The total uptime of the database or system.
+
+- **version**: The version of the MongoDB database.
+
+
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7. 
 
