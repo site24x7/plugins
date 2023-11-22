@@ -113,7 +113,7 @@ class Redis(object):
             import redis
         except Exception:
             data['status']=0
-            data['msg']='Redis Module Not Installed\n Dependency missing:'redis' Python client library\n Install with command,\n\n pip3 install redis\n'
+            data['msg']="Redis Module Not Installed\nDependency missing:'redis' Python client library\nInstall with command,\n\n pip3 install redis\n"
             return data 
         stats = None
         try:
