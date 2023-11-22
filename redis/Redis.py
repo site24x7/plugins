@@ -113,8 +113,8 @@ class Redis(object):
             import redis
         except Exception:
             data['status']=0
-            data['msg']='Redis Module Not Installed\n Solution : Use the following command to install redis\n pip install redis \n(or)\n pip3 install redis'
-            return data
+            data['msg']='Redis Module Not Installed\n Dependency missing:'redis' Python client library\n Install with command,\n\n pip3 install redis\n'
+            return data 
         stats = None
         try:
             redis_connection = redis.StrictRedis(
