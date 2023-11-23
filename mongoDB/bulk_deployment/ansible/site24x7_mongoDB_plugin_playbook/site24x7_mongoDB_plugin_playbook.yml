@@ -5,14 +5,14 @@
    vars:
       mongoDB_host: "mongoDB_host"
       mongoDB_port: "27017"
-      mongoDB_username: 'TestUser'                      # mongoDB username    [Enter "'None'" in case of no username]
-      mongoDB_password: 'Test@123654'                   # mongoDB password    [Enter "'None'" in case of no password]
+      mongoDB_username: '"None"'                      # mongoDB username    [default value "'None'" incase of no username]
+      mongoDB_password: '"None"'                      # mongoDB password    [default value "'None'" incase of no password]
       mongoDB_dbname: "mydatabase"
-      mongoDB_authdb: "admin"                            # mongoDB authentication database
-      mongoDB_tls: True                                  # mongoDB TLS option (True/False)    [Enter "False" in case of no  TLS]
-      mongoDB_tlscertificatekeyfile: 'ssl/mongodb.pem'   # mongoDB TLS certificate path       [Enter '"None"' in case of no TLS]
-      mongoDB_tlscertificatekeyfilepassword: 'pass@432'  # mongoDB TLS certificate password   [Enter '"None"' in case of no TLS]
-      mongoDB_tlsallowinvalidcertificates: False         # mongoDB invalid TLS certificate (True/False) 
+      mongoDB_authdb: "admin"                         # mongoDB authentication database
+      mongoDB_tls: False                              # mongoDB TLS option (True/False)    [default value "False" incase of no TLS]
+      mongoDB_tlscertificatekeyfile: '"None"'         # mongoDB TLS certificate path       [default value '"None"' incase of no TLS]
+      mongoDB_tlscertificatekeyfilepassword: '"None"' # mongoDB TLS certificate password   [default value '"None"' incase of no TLS]
+      mongoDB_tlsallowinvalidcertificates: False      # mongoDB invalid TLS certificate (True/False)   [default value "False" incase of no TLS]
 
 
   
