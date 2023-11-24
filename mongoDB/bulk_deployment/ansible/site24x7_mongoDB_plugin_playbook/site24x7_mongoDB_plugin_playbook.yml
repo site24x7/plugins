@@ -110,11 +110,11 @@
        - { regex: 'username =', line: 'username ={{mongoDB_username}}' }
        - { regex: 'password =', line: 'password ={{mongoDB_password}}' }
        - { regex: 'dbname =', line: 'dbname ={{mongoDB_dbname}}' }
-       - { regex: 'authdb=', line: 'authdb ={{mongoDB_authdb}}' }
-       - { regex: 'tls=', line: 'tls ={{mongoDB_tls}}' }
-       - { regex: 'tlscertificatekeyfile=', line: 'tlscertificatekeyfile ={{mongoDB_tlscertificatekeyfile}}' }
-       - { regex: 'tlscertificatekeyfilepassword=', line: 'tlscertificatekeyfilepassword ={{mongoDB_tlscertificatekeyfilepassword}}' }
-       - { regex: 'tlsallowinvalidcertificates=', line: 'tlsallowinvalidcertificates ={{mongoDB_tlsallowinvalidcertificates}}' }
+       - { regex: 'authdb =', line: 'authdb ={{mongoDB_authdb}}' }
+       - { regex: 'tls =', line: 'tls ={{mongoDB_tls}}' }
+       - { regex: 'tlscertificatekeyfile =', line: 'tlscertificatekeyfile ={{mongoDB_tlscertificatekeyfile}}' }
+       - { regex: 'tlscertificatekeyfilepassword =', line: 'tlscertificatekeyfilepassword ={{mongoDB_tlscertificatekeyfilepassword}}' }
+       - { regex: 'tlsallowinvalidcertificates =', line: 'tlsallowinvalidcertificates ={{mongoDB_tlsallowinvalidcertificates}}' }
      when: mongoDB_file_check.stat.exists
 
 
