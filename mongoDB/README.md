@@ -1,21 +1,11 @@
 # MongoDB Monitoring
-                                                                                              
+**Note:**
+
+The MongoDB plugin supports bulk installation across multiple servers through automation using Ansible. To install the plugin using Ansible, refer to this MongoDB Ansible playbook.
+                                                                     
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
----
-
-### Plugin Installation  
-
-- Create a directory named "mongoDB" in your server.		
-      
-- Download the below files and place it under the "mongoDB" directory.
-
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.py  && sed -i "1s|^.*|#! $(which python3)|" mongoDB.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.cfg
-		
-### Prerequisites
-
+- Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
  - Execute the following command in your server to install pymongo: 
 
 		pip install pymongo
@@ -26,10 +16,24 @@
 | -------------- | ---------------------------------------------------------------------------- |
 | Python 3       | https://www.mongodb.com/docs/drivers/pymongo/#python-3-compatibility         |
 | Python 2       | https://www.mongodb.com/docs/drivers/pymongo/#python-2-compatibility         |
+---
 
-### Configurations
+## Plugin Installation  
 
-- Provide your MongoDb configurations in mongoDB.cfg file.
+- Create a directory named "mongoDB" in your server.		
+      
+- Download the below files and place it under the "mongoDB" directory.
+
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.py  && sed -i "1s|^.*|#! $(which python3)|" mongoDB.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.cfg
+  
+- Execute the below command with appropriate arguments to check for the valid JSON output:
+
+		python3 mongoDB.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbname=<dbname> --authdb=<authdb> --tls=False 
+
+
+
+- After the above command with parameters gives the expected output, please configure the relevant parameters in the mongoDB.cfg file.
 
 		[mongo_db]
 		host ="localhost"
@@ -44,9 +48,7 @@
 		tlsallowinvalidcertificates="True"
 
 
-- Execute the below command with appropriate arguments which were given in the configuration to check for the valid output with JSON format.
 
-		python mongoDB.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbname=<dbname> --authdb=<authdb> --tls=False 
 		
 		
 - Once above execution was given valid output, then copy the mongoDB directory to Site24x7 Linux Agent plugin directory:
