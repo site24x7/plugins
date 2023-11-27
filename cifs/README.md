@@ -34,7 +34,7 @@ This plugin monitors the performance metrics of CIFS mount point status, IP addr
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python cifs.py --mount_folder="your_mount_folder_path , your_mount_folder_path1"
+		python cifs.py --mount_folder= “ mount_folder_path-1 , your_mount_folder_path-2 ”
 		
 - Move the directory "cifs" under Site24x7 Linux Agent plugin directory :
 
