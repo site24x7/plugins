@@ -25,7 +25,7 @@ This plugin monitors the performance metrics of NFS mount point status, IP addre
 - Configure the mount point to be monitored in the nfs.cfg file, as mentioned below.
 
 		[display_name]
-		mount_folder = “<your_mount_folder_path>,<your_mount_folder_path1>”
+		mount_folder = “ mount_folder_path-1 , mount_folder_path-2 ”
 		plugin_version = 1
 
 - Enter the Folder paths inside the " " quotation marks separated by commas ','.
@@ -34,7 +34,7 @@ This plugin monitors the performance metrics of NFS mount point status, IP addre
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python nfs.py --mount_folder=<your_mount_folder_path>,<your_mount_folder_path1>
+		python nfs.py --mount_folder= “ mount_folder_path-1 , your_mount_folder_path-2 ”
   
 
 
