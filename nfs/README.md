@@ -26,7 +26,11 @@ This plugin monitors the performance metrics of NFS mount point status, IP addre
 
 		[display_name]
 		mount_folder = “<your_mount_folder_path>,<your_mount_folder_path1>”
+		plugin_version = 1
+
 - Enter the Folder paths inside the " " quotation marks separated by commas ','.
+
+- Increase the plugin version if you need to add folders after plugin registration.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
