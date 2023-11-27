@@ -134,8 +134,10 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--mount_folder', help="nfs mount point", type=str)
+    parser.add_argument('--plugin_version', help="plugin version", type=str, default=PLUGIN_VERSION)
     result={}
     args = parser.parse_args()
+    PLUGIN_VERSION=args.plugin_version
     if args.mount_folder != None:
         folders = args.mount_folder
         folders=folders.split(",")
