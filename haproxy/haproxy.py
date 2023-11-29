@@ -44,19 +44,23 @@ class appname:
                 import pandas as pd
 
             except Exception as e:
+                self.maindata['status']=0
                 self.maindata['msg']=str(e)
                 return self.maindata
             
             try:
                 response = requests.get(url = self.url,  auth = HTTPBasicAuth(self.username,  self.password))
                 if response.status_code==401:
+                     self.maindata['status']=0
                      self.maindata['msg']="Authentication failed: Invalid credentials"
                      return self.maindata
                 elif response.status_code == 403:
+                    self.maindata['status']=0
                     self.maindata['msg']='Authentication failed: Access denied'
                     return self.maindata
 
             except requests.exceptions.RequestException as e:
+                 self.maindata['status']=0
                  self.maindata['msg']=str(e)
                  return self.maindata
             res=response.text
@@ -83,6 +87,7 @@ class appname:
 
                       
         except Exception as e:
+             self.maindata['status']=0
              self.maindata['msg']=str(e)
              return self.maindata
 
