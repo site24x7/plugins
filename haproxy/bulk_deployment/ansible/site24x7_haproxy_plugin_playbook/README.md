@@ -29,8 +29,8 @@ To run the playbook, provide the HAProxy configuration details in the `vars` sec
    vars:
       HAProxy_hostname: "localhost"
       HAProxy_port: "8404"
-      HAProxy_username: '"None"'                             # HAProxy username    [Enter '"None"' in case of no username]
-      HAProxy_password: '"None"'                             # HAProxy password    [Enter '"None"' in case of no password]
+      HAProxy_username: "test_user"                             # HAProxy username    [Enter '"None"' in case of no username]
+      HAProxy_password: "test_password"                         # HAProxy password    [Enter '"None"' in case of no password]
       HAProxy_logs_enabled: "False"
       HAProxy_log_type_name: "None"
       HAProxy_log_file_path: "None"

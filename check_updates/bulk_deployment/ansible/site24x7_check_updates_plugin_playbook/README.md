@@ -2,7 +2,7 @@
 # Site24x7 Check Updates Plugin Playbook
 
 
-### Use this playbook to install the Site24x7 Check Updates plugin in multiple nodes.
+### An Ansible playbook to install the Site24x7 Check Updates plugin on all your Linux servers to monitor the number of pending security updates.
 
 ---
 
