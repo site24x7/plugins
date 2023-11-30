@@ -2,7 +2,7 @@
 # Site24x7 Check Updates Plugin Playbook
 
 
-### Use this playbook to install the Site24x7 Check Updates plugin in multiple nodes.
+### A playbook to install Site24x7 CheckUpdates plugins on all your Linux Servers and monitor the number of pending security updates. 
 
 ---
 
