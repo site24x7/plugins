@@ -23,7 +23,31 @@ The playbook performs the following processes that are required for the Site24x7
 - Finally, it moves the `haproxy` directory along with the `haproxy.py` and `haproxy.cfg` files into the `/opt/site24x7/monagent/plugins` directory.
 
 ### Prerequisites 
-To run the playbook, provide the HAProxy configuration details in the `vars` section of the playbook as shown below.
+
+- The plugin requires the stats page to be enabled in the HAProxy to fetch the metrics, to enable the stats module in bulk, the `site24x7_haproxy_config_enable_stats.yaml` can be optionally used to enable the stats module in the haproxy config file located at `/etc/haproxy/haproxy.cfg`. In order to run the playbook execute the below command.
+```
+ansible-playbook haproxy_config.yml -b
+```
+
+by running the playbook the below code block will be pasted in the `/etc/haproxy/haproxy.cfg` file.
+
+```cfg
+Site24x7 - Enable HAProxy stats
+frontend stats
+  mode http
+  timeout client 10s
+  bind *:8404
+  stats enable
+  stats uri /stats
+  stats refresh 10s
+Site24x7 - Enable HAProxy stats
+
+```
+
+
+
+
+- To run the playbook, provide the HAProxy configuration details in the `vars` section of the playbook as shown below.
 
 ```yaml
    vars:
