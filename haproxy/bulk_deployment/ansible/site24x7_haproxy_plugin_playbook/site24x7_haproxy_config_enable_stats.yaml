@@ -1,0 +1,23 @@
+---
+ - name: HAProxy stats enable playbook.
+   hosts: all
+   become: true
+   tasks:
+   - name: Checking the haproxy.cfg file.
+     stat:
+      path: /etc/haproxy/haproxy.cfg
+     register: haproxy_config_check
+
+   - name: Configuring the haproxy.cfg file
+     blockinfile:
+      path: /etc/haproxy/haproxy.cfg
+      block: |
+        frontend stats
+          mode http
+          timeout client 10s
+          bind *:8404
+          stats enable
+          stats uri /stats
+          stats refresh 10s
+      marker: "Site24x7 - Enable HAProxy stats"
+     when: haproxy_config_check.stat.exists
