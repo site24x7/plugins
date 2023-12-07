@@ -119,12 +119,23 @@ class esk:
         self.password=args.password
         self.ssl_option=args.ssl_option
         self.cafile=args.cafile
+        self.logsenabled=args.logs_enabled
+        self.logtypename=args.log_type_name
+        self.logfilepath=args.log_file_path
 
         if self.ssl_option.lower()=="true":
             self.url="https://"+self.hostname+":"+str(self.port)
         elif self.ssl_option.lower()=="false":
             self.url="http://"+self.hostname+":"+str(self.port)
 
+        applog={}
+        
+        if(self.logsenabled in ['True', 'true', '1']):
+            applog["logs_enabled"]=True
+            applog["log_type_name"]=self.logtypename
+            applog["log_file_path"]=self.logfilepath
+        else:
+            applog["logs_enabled"]=False
 
         self.dictCounterValues = {}
         self.loadCounterValues()
@@ -334,7 +345,9 @@ if __name__=="__main__":
     parser.add_argument('--password', help='Password of the Elasticsearch', nargs='?', default=password)
     parser.add_argument('--ssl_option', help='Option for Elasticsearch ssl', nargs='?', default=ssl_option)
     parser.add_argument('--cafile', help='cafile for the Elasticsearch', nargs='?', default=cafile)
-
+    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
+    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
+    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
     args=parser.parse_args()
     obj=esk(args)
 
