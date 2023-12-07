@@ -112,9 +112,9 @@ class esk:
         self.maindata['heartbeat_required']=HEARTBEAT
         self.maindata['units']=METRICS_UNITS
 
-        self.hostname=args.hostname
+        self.hostname=args.host
         self.port=args.port
-        self.nodename=args.nodename
+        self.nodename=args.node_name
         self.username=args.username
         self.password=args.password
         self.ssl_option=args.ssl_option
@@ -338,9 +338,9 @@ if __name__=="__main__":
 
     import argparse
     parser=argparse.ArgumentParser()
-    parser.add_argument('--hostname', help='Host to be monitored',nargs='?', default=hostname)
+    parser.add_argument('--host', help='Host to be monitored',nargs='?', default=hostname)
     parser.add_argument('--port',     help='Port number', type=int,  nargs='?', default=port)
-    parser.add_argument('--nodename', help='Node name to be monitored', nargs='?', default=nodename)
+    parser.add_argument('--node_name', help='Node name to be monitored', nargs='?', default=nodename)
     parser.add_argument('--username', help='Username of the Elasticsearch', nargs='?', default=username)
     parser.add_argument('--password', help='Password of the Elasticsearch', nargs='?', default=password)
     parser.add_argument('--ssl_option', help='Option for Elasticsearch ssl', nargs='?', default=ssl_option)
