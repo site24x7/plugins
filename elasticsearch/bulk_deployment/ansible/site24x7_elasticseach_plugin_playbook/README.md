@@ -1,14 +1,14 @@
 
-# Site24x7 elasticsearch Plugin Playbook
+# Site24x7 Elasticsearch Plugin Playbook
 
 
-### Use this playbook to install the Site24x7 elasticsearch plugin in multiple elasticsearch nodes.
+### Use this playbook to install the Site24x7 Elasticsearch plugin in multiple Elasticsearch nodes.
 
 ---
 
 ### How does it work?
 
-The playbook performs the following processes that are required for the Site24x7 elasticsearch plugin to collect performance metrics.
+The playbook performs the following processes that are required for the Site24x7 Elasticsearch plugin to collect performance metrics.
 
 - Installs `python3` if not found.
 - Installs `pip3` if not found.
@@ -22,7 +22,7 @@ The playbook performs the following processes that are required for the Site24x7
 - Finally, it moves the `elasticsearch` directory along with the `elasticsearch.py` and `elasticsearch.cfg` files into the `/opt/site24x7/monagent/plugins` directory.
 
 ### Prerequisites 
-To run the playbook, provide the elasticsearch configuration details in the `vars` section of the playbook as shown below.
+To run the playbook, provide the Elasticsearch configuration details in the `vars` section of the playbook as shown below.
 
 ```yaml
    vars:
@@ -39,27 +39,27 @@ The details below are required to set the values in the [elasticsearch.cfg](http
 
 - **elasticsearch_host**
 
-    Name of elasticsearch host
+    Name of the Elasticsearch host
 
 - **elasticsearch_port**
 
-    Elasticsearch port number
+    The Elasticsearch port number
 
 - **elasticsearch_node_name**
 
-    Elasticsearch node name
+    The name of the Elasticsearch node
 
 - **elasticsearch_username**
 
-    Username set for the elasticsearch instance
+    The username set for the Elasticsearch instance
 
 - **elasticsearch_password**
 
-    Password set for the elasticsearch user.
+    The password set for the Elasticsearch user.
 
 - **elasticsearch_ssl_option**
 
-    Elasticsearch ssl option (True/False)
+    Elasticsearch SSL option (True/False)
 
 - **elasticsearch_cafile**
 

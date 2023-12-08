@@ -19,7 +19,7 @@ The playbook performs the following processes that are required for the Site24x7
    with read, write, and execute permission.
 - Configures the `mongoDB.cfg` file based on the values provided in the `vars` section of the playbook.
 - Executes the `mongoDB.py` file to check for a valid JSON output.
-- Finally, it moves the `mongoDB` directory along with the `mongoDB.py` and `mongoDB.cfg` files into the `/opt/site24x7/monagent/plguins` directory.
+- Finally, it moves the `mongoDB` directory along with the `mongoDB.py` and `mongoDB.cfg` files into the `/opt/site24x7/monagent/plugins` directory.
 
 ### Prerequisites 
 To run the playbook, provide the MongoDB configuration details in the `vars` section of the playbook as shown below.
