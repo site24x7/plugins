@@ -1,5 +1,5 @@
 ---
- - name: "Site24x7 Redis Plugin Installation"
+ - name: "Site24x7 redis Plugin Installation"
    hosts: all 
    become: yes
    vars:
