@@ -120,9 +120,8 @@ class oracle:
                                         ) UNION (
                                         SELECT i.inst_id, 0 AS num FROM gv$session s, gv$instance i
                                         WHERE i.inst_id=s.inst_id))
-                                        GROUP BY inst_id"""
-                
-                
+                                        GROUP BY inst_id""",
+                "blocking_locks":"SELECT count(*) FROM gv$session WHERE blocking_session IS NOT NULL"                    
             }
 
 
@@ -130,14 +129,13 @@ class oracle:
             import oracledb
         except Exception as e:
             self.maindata['status'] = 0
-            self.maindata['msg'] = str(e)
+            self.maindata['msg'] = str(e) + "\n Solution : Use the following command to install oracledb\n pip install oracledb \n(or)\n pip3 install oracledb"
             return self.maindata
 
         try:
             try:
-            
-            	conn = oracledb.connect(user=self.username, password=self.password, dsn=f"{self.hostname}:{self.port}/{self.sid}")
-            	c = conn.cursor()
+                conn = oracledb.connect(user=self.username, password=self.password, dsn=f"{self.hostname}:{self.port}/{self.sid}")
+                c = conn.cursor()
             except Exception as e:
                 self.maindata['status']=0
                 self.maindata['msg']='Exception while making connection: '+str(e)
@@ -172,7 +170,6 @@ class oracle:
                 count=row[0]
                 self.maindata['Rman Failed Backup Count']=count
                 
-
             c.execute(metric_queries['dict_cache_ratio'])
             for row in c:
                 count=row[0]
@@ -182,7 +179,12 @@ class oracle:
             for row in c:
                 count=row[0]
                 self.maindata['Long Running Queries']=count
-             
+
+            c.execute(metric_queries['blocking_locks'])
+            for row in c:
+                count=row[0]
+                self.maindata['Blocking Locks']=count       
+            
             c.close()
             conn.close()
                 
@@ -201,8 +203,6 @@ class oracle:
         except Exception as e:
             self.maindata['msg']=str(e)
             self.maindata['status']=0
-
-        
 
 
         return self.maindata
