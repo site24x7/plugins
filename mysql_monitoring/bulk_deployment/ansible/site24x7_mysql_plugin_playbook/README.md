@@ -20,7 +20,7 @@ There are two playbooks you need to use to install the plugin:
 - Downloads the files [mysql_monitoring.py](https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/mysql_monitoring.py) and [mysql_monitoring.cfg](https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/mysql_monitoring.cfg) from the [Plugins repository](https://github.com/site24x7/plugins/tree/master/mysql_monitoring) with read, write, and execute permission.
 - Configures the `mysql_monitoring.cfg` file based on the values provided in the `vars` section of the playbook.
 - Executes the `mysql_monitoring.py` file to check for a valid JSON output.
-- Finally, it moves the `mysql_monitoring` directory along with the `mysql_monitoring.py` and `mysql_monitoring.cfg` files into the `/opt/site24x7/monagent/plguins` directory.
+- Finally, it moves the `mysql_monitoring` directory along with the `mysql_monitoring.py` and `mysql_monitoring.cfg` files into the `/opt/site24x7/monagent/plugins` directory.
 
 ### Create a Site24x7 MySQL user using the site24x7_mysql_grant_privileges.yml playbook:
 
