@@ -34,6 +34,8 @@ class oracle:
         self.sid=args.sid
         self.hostname=args.hostname
         self.port=args.port
+        self.tls=args.tls
+        self.wallet_location=args.wallet_location
 
         self.logsenabled=args.logs_enabled
         self.logtypename=args.log_type_name
@@ -127,6 +129,8 @@ class oracle:
 
         try:
             import oracledb
+            oracledb.init_oracle_client()
+
         except Exception as e:
             self.maindata['status'] = 0
             self.maindata['msg'] = str(e) + "\n Solution : Use the following command to install oracledb\n pip install oracledb \n(or)\n pip3 install oracledb"
@@ -134,7 +138,16 @@ class oracle:
 
         try:
             try:
-                conn = oracledb.connect(user=self.username, password=self.password, dsn=f"{self.hostname}:{self.port}/{self.sid}")
+                if self.tls=="True":
+                    dsn=f"""   (DESCRIPTION=
+                            (ADDRESS=(PROTOCOL=tcps)(HOST={self.hostname})(PORT={self.port}))
+                            (CONNECT_DATA=(SERVICE_NAME={self.sid}))
+                            (SECURITY=(MY_WALLET_DIRECTORY={self.wallet_location}))
+                            (SECURITY=(SSL_SERVER_CERT_DN=ON))
+                            )"""
+                else:
+                        dsn=f"{self.hostname}:{self.port}/{self.sid}"
+                conn = oracledb.connect(user=self.username, password=self.password, dsn=dsn)
                 c = conn.cursor()
             except Exception as e:
                 self.maindata['status']=0
@@ -218,7 +231,9 @@ if __name__=="__main__":
     sid="ORCLCDB"
     username=None
     password=None
-    oracle_home='/opt/oracle/product/19c/dbhome_1'
+    tls="False"
+    wallet_location=None
+    oracle_home=None
 
 
 
@@ -230,6 +245,9 @@ if __name__=="__main__":
     parser.add_argument('--sid', help='sid for oracle',default=sid)
     parser.add_argument('--username', help='username for oracle',default=username)
     parser.add_argument('--password', help='password for oracle',default=password)
+    parser.add_argument('--tls', help='tls support for oracle',default=tls)
+    parser.add_argument('--wallet_location', help='oracle wallet location',default=wallet_location)
+
     parser.add_argument('--oracle_home',help='oracle home path',default=oracle_home)
 
 

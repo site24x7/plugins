@@ -221,3 +221,11 @@ The following metrics are captured in the OracleCore Plugin:
 - **Total PGA Inuse**
 
     Total amount of memory inuse
+
+### Oracle Blocking Locks
+
+- **Blocking Locks**
+
+    Total count of blocking locks
+
+
