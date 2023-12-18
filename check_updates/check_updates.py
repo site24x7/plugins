@@ -27,33 +27,38 @@ def get_command_output(command):
     (output, err) = p.communicate()
     p_status = p.wait()
     return output
+try:
+    if 'CentOS' in os_info or 'Red Hat' in os_info:
+            out = get_command_output(command)
+            if out:
+                out=out.decode()
+                out = out.rstrip()
+                count = out.split("needed for security")
+                security_count = count[0].split()[0]
+                if security_count == 'No':
+                    data['security_updates'] = 0
+                else:
+                    data['security_updates'] = security_count
+                    packages_count = count[1].split()
+                    for each in packages_count:
+                        if each.isdigit():
+                            data['packages_to_be_updated']=each
+                    
+    elif 'Ubuntu' in os_info  :
+        file_path='/var/lib/update-notifier/updates-available'
+        lines = [line.strip('\n') for line in open(file_path)]
+        for line in lines:
+            if line:
+                if ( 'packages can be updated' in line ) or ('can be installed immediately' in line ) or ('can be applied immediately' in line):
+                    data['packages_to_be_updated'] = line.split()[0]
+                if ('updates are security updates' in line) or ('updates are standard security updates' in line):
+                    data['security_updates'] = line.split()[0]
+    else:
+        data['msg']=f"{os_info} not supported"
+        data['status']=0
 
-if 'CentOS' in os_info or 'Red Hat' in os_info:
-        out = get_command_output(command)
-        if out:
-            out=out.decode()
-            out = out.rstrip()
-            count = out.split("needed for security")
-            security_count = count[0].split()[0]
-            if security_count == 'No':
-                data['security_updates'] = 0
-            else:
-               data['security_updates'] = security_count
-            packages_count = count[1].split()
-            for each in packages_count:
-                 if each.isdigit():
-                     data['packages_to_be_updated']=each
-                
-elif 'Ubuntu' in os_info  :
-    file_path='/var/lib/update-notifier/updates-available'
-    lines = [line.strip('\n') for line in open(file_path)]
-    for line in lines:
-        if line:
-            if ( 'packages can be updated' in line ) or ('can be installed immediately' in line ) or ('can be applied immediately' in line):
-                data['packages_to_be_updated'] = line.split()[0]
-            if ('updates are security updates' in line) or ('updates are standard security updates' in line):
-                data['security_updates'] = line.split()[0]
-else:
-    data['msg']=f"{os_info} not supported"
+except Exception as e:
+    data['msg']=str(e)
     data['status']=0
+
 print(json.dumps(data))
