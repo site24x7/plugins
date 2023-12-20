@@ -146,4 +146,3 @@
      ignore_errors: true
      when: "plugin_path_check.stat.exists and '\"status\": 0' not in elasticsearch_python_output.stdout"
 
-
