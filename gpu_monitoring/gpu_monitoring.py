@@ -24,9 +24,11 @@ class Plugin():
                 self.data[f"GPU{row.index}"] = str(f"{row.name}")
                 self.data[f"GPU{row.index} Total Memory"] = str(f"{str(row.memory_total)}MB")
                 self.data[f"GPU{row.index} - Memory"] = float(row.memory_used)
+                self.data[f"GPU{row.index} - Temperature"] = row.temperature
                 self.data["units"][f"GPU{row.index} - Memory"] = "MB"
                 self.data[f"GPU{row.index} - Utilization"] = float(row.utilization)
                 self.data["units"][f"GPU{row.index} - Utilization"] = "%"
+                self.data["units"][f"GPU{row.index} - Temperature"] = "C"
                 memory_usage.append(float(row.memory_used))
                 memory_total.append(float(row.memory_total))
             self.data["Average Memory - Percentage"] = round(sum(memory_usage)*100/sum(memory_total),2)
