@@ -5,10 +5,10 @@
    vars:
       Oracle_host: "localhost"
       Oracle_port: "2484"
-      Oracle_username: "suraj"                           
-      Oracle_password: "suraj"    
+      Oracle_username: "None"                           
+      Oracle_password: "None"    
       Oracle_home: "/opt/oracle/product/19c/dbhome_1"                         
-      Oracle_sid: "ORCLCDB"
+      Oracle_sid: "ORCL"
       Oracle_tablespace_names: '[\"SYSTEM\",\"USERS\"]'
       Oracle_tablespace_name: "SYSTEM"
       Oracle_tls: "True"
