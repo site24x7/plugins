@@ -1,0 +1,576 @@
+---
+ - name: "Site24x7 Oracle Plugins Installation"
+   hosts: all 
+   become: yes
+   vars:
+      Oracle_host: "localhost"
+      Oracle_port: "2484"
+      Oracle_username: "suraj"                           
+      Oracle_password: "suraj"    
+      Oracle_home: "/opt/oracle/product/19c/dbhome_1"                         
+      Oracle_sid: "ORCLCDB"
+      Oracle_tablespace_names: '[\"SYSTEM\",\"USERS\"]'
+      Oracle_tablespace_name: "SYSTEM"
+      Oracle_tls: "True"
+      Oracle_wallet_location: "/opt/oracle/product/19c/dbhome_1/wallet"                          
+
+
+  
+   tasks:    
+  # Site24x7 Oracle Plugins Prerequisites Check
+
+   - name: "Python3 Installation Check."
+     command: "python3 --version"
+     register: python_version_output
+     ignore_errors: yes
+
+   - name: "Installing Python if not found (for CentOS/RedHat/Oracle Linux)."
+     yum:
+        name: python3
+        state: present
+     when: "not python_version_output.stdout and ansible_facts['os_family'] == 'RedHat'"
+
+   - name: "pip3 Installation Check."
+     command: "pip3 --version"
+     register: pip_version_output
+     ignore_errors: yes
+
+   - name: "Installing pip3 if not found (for RedHat/CentOS)."
+     yum:
+        name: python3-pip
+        state: present
+     when: "not pip_version_output.stdout and ansible_facts['os_family'] == 'RedHat'"
+
+   - name: "Installing oracledb Python3 Package."
+     pip:
+        name: oracledb
+        state: present
+        executable: pip3
+     ignore_errors: yes
+
+   - name: "Site24x7 Agent Directory Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp"
+     register: agent_path_check
+
+   - name: "Hosts with no Site24x7 Agent Directory"
+     debug:
+      msg: "Agent Directory not found"
+     when: not agent_path_check.stat.exists
+
+
+
+
+  # Site24x7 OracleCore Plugin Prerequisite Setup
+
+   - name: "Site24x7 OracleCore Temp Plugins Directory Creation."
+     file:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleCore"
+      state: directory
+     when: agent_path_check.stat.exists
+
+   - name: "Site24x7 Plugin Directory Check"
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleCore"
+     register: plugin_path_check
+
+   - name: "Download the Site24x7 OracleCore Plugin Files."
+     get_url:
+        url: "{{ item }}"
+        dest: "/opt/site24x7/monagent/temp/plugins/OracleCore"
+        mode: 0744
+     loop: ["https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleCore/OracleCore.py","https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleCore/OracleCore.cfg"]
+     when: plugin_path_check.stat.exists
+
+   - name: "Site24x7 OracleCore Config File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleCore/OracleCore.cfg"
+     register: OracleCore_config_file_check   
+
+  # Site24x7 OracleCore Plugin Config File Setup
+
+   - name: "Site24x7 OracleCore configuration."
+     lineinfile: 
+       path: "/opt/site24x7/monagent/temp/plugins/OracleCore/OracleCore.cfg"
+       regexp: "{{ item.regex }}"
+       line: "{{ item.line }}"
+     loop:
+       - { regex: 'hostname =', line: 'hostname ={{Oracle_host}}' }
+       - { regex: 'port =', line: 'port ={{Oracle_port}}' }
+       - { regex: 'username =', line: 'username ={{Oracle_username}}' }
+       - { regex: 'password =', line: 'password ={{Oracle_password}}' }
+       - { regex: 'oracle_home =', line: 'oracle_home ={{Oracle_home}}' }
+       - { regex: 'sid =', line: 'sid ={{Oracle_sid}}' }
+       - { regex: 'tls =', line: 'tls ={{Oracle_tls}}' }
+       - { regex: 'wallet_location =', line: 'wallet_location ={{Oracle_wallet_location}}' }
+     when: OracleCore_config_file_check.stat.exists
+
+
+  # Site24x7 OracleCore Python File Setup
+
+   - name: "Site24x7 OracleCore Python File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleCore/OracleCore.py"
+     register: OracleCore_python_file_check
+
+   - name: "Extracting Python3 Default Path."
+     command: which python3
+     register: python3_path
+
+   - set_fact:
+      actual_path: "{{ '#!'+python3_path.stdout }}"
+
+   - name: "Setting the Default Python Path for the Site24x7 OracleCore Plugin"
+     lineinfile:
+       path: "/opt/site24x7/monagent/temp/plugins/OracleCore/OracleCore.py"
+       regexp: "#!"
+       line: "{{actual_path}}"
+     when: OracleCore_python_file_check.stat.exists
+
+   - name: "Checking the Site24x7 OracleCore Plugin Output"
+     shell: "/opt/site24x7/monagent/temp/plugins/OracleCore/OracleCore.py --hostname={{Oracle_host}} --port={{Oracle_port}} --username={{Oracle_username}} --password={{Oracle_password}} --oracle_home={{Oracle_home}} --sid={{Oracle_sid}} --tls={{Oracle_tls}} --wallet_location={{Oracle_wallet_location}}"
+     register: OracleCore_python_output
+     when: OracleCore_python_file_check.stat.exists
+
+   - name: "Site24x7 OracleCore plugins with Error !"
+     debug:
+      msg: "Site24x7 OracleCore Plugin OUTPUT error ! \n {{ OracleCore_python_output.stdout }}"
+     when: "'\"status\": 0' in OracleCore_python_output.stdout and OracleCore_python_file_check.stat.exists"
+
+   - name: "Moving the Site24x7 OracleCore Folder to the Plugins Directory"
+     command: "mv  /opt/site24x7/monagent/temp/plugins/OracleCore /opt/site24x7/monagent/plugins"
+     ignore_errors: true
+     when: "plugin_path_check.stat.exists and '\"status\": 0' not in OracleCore_python_output.stdout"
+
+####################################################################################################################
+
+
+
+
+
+  # Site24x7 OracleSGA Plugin Prerequisite Setup
+
+   - name: "Site24x7 OracleSGA Temp Plugins Directory Creation."
+     file:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleSGA"
+      state: directory
+     when: agent_path_check.stat.exists
+
+   - name: "Site24x7 Plugin Directory Check"
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleSGA"
+     register: plugin_path_check
+
+   - name: "Download the Site24x7 OracleSGA Plugin Files."
+     get_url:
+        url: "{{ item }}"
+        dest: "/opt/site24x7/monagent/temp/plugins/OracleSGA"
+        mode: 0744
+     loop: ["https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleSGA/OracleSGA.py","https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleSGA/OracleSGA.cfg"]
+     when: plugin_path_check.stat.exists
+
+   - name: "Site24x7 OracleSGA Config File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleSGA/OracleSGA.cfg"
+     register: OracleSGA_config_file_check   
+
+  # Site24x7 OracleSGA Plugin Config File Setup
+
+   - name: "Site24x7 OracleSGA configuration."
+     lineinfile: 
+       path: "/opt/site24x7/monagent/temp/plugins/OracleSGA/OracleSGA.cfg"
+       regexp: "{{ item.regex }}"
+       line: "{{ item.line }}"
+     loop:
+       - { regex: 'hostname =', line: 'hostname ={{Oracle_host}}' }
+       - { regex: 'port =', line: 'port ={{Oracle_port}}' }
+       - { regex: 'username =', line: 'username ={{Oracle_username}}' }
+       - { regex: 'password =', line: 'password ={{Oracle_password}}' }
+       - { regex: 'oracle_home =', line: 'oracle_home ={{Oracle_home}}' }
+       - { regex: 'sid =', line: 'sid ={{Oracle_sid}}' }
+       - { regex: 'tls =', line: 'tls ={{Oracle_tls}}' }
+       - { regex: 'wallet_location =', line: 'wallet_location ={{Oracle_wallet_location}}' }
+     when: OracleSGA_config_file_check.stat.exists
+
+
+  # Site24x7 OracleSGA Python File Setup
+
+   - name: "Site24x7 OracleSGA Python File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleSGA/OracleSGA.py"
+     register: OracleSGA_python_file_check
+
+   - name: "Extracting Python3 Default Path."
+     command: which python3
+     register: python3_path
+
+   - set_fact:
+      actual_path: "{{ '#!'+python3_path.stdout }}"
+
+   - name: "Setting the Default Python Path for the Site24x7 OracleSGA Plugin"
+     lineinfile:
+       path: "/opt/site24x7/monagent/temp/plugins/OracleSGA/OracleSGA.py"
+       regexp: "#!"
+       line: "{{actual_path}}"
+     when: OracleSGA_python_file_check.stat.exists
+
+   - name: "Checking the Site24x7 OracleSGA Plugin Output"
+     shell: "/opt/site24x7/monagent/temp/plugins/OracleSGA/OracleSGA.py --hostname={{Oracle_host}} --port={{Oracle_port}} --username={{Oracle_username}} --password={{Oracle_password}} --oracle_home={{Oracle_home}} --sid={{Oracle_sid}} --tls={{Oracle_tls}} --wallet_location={{Oracle_wallet_location}}"
+     register: OracleSGA_python_output
+     when: OracleSGA_python_file_check.stat.exists
+
+   - name: "Site24x7 OracleSGA plugins with Error !"
+     debug:
+      msg: "Site24x7 OracleSGA Plugin OUTPUT error ! \n {{ OracleSGA_python_output.stdout }}"
+     when: "'\"status\": 0' in OracleSGA_python_output.stdout and OracleSGA_python_file_check.stat.exists"
+
+   - name: "Moving the Site24x7 OracleSGA Folder to the Plugins Directory"
+     command: "mv  /opt/site24x7/monagent/temp/plugins/OracleSGA /opt/site24x7/monagent/plugins"
+     ignore_errors: true
+     when: "plugin_path_check.stat.exists and '\"status\": 0' not in OracleSGA_python_output.stdout"
+
+####################################################################################################################
+
+
+
+
+  # Site24x7 OraclePDB Plugin Prerequisite Setup
+
+   - name: "Site24x7 OraclePDB Temp Plugins Directory Creation."
+     file:
+      path: "/opt/site24x7/monagent/temp/plugins/OraclePDB"
+      state: directory
+     when: agent_path_check.stat.exists
+
+   - name: "Site24x7 Plugin Directory Check"
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OraclePDB"
+     register: plugin_path_check
+
+   - name: "Download the Site24x7 OraclePDB Plugin Files."
+     get_url:
+        url: "{{ item }}"
+        dest: "/opt/site24x7/monagent/temp/plugins/OraclePDB"
+        mode: 0744
+     loop: ["https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OraclePDB/OraclePDB.py","https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OraclePDB/OraclePDB.cfg"]
+     when: plugin_path_check.stat.exists
+
+   - name: "Site24x7 OraclePDB Config File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OraclePDB/OraclePDB.cfg"
+     register: OraclePDB_config_file_check   
+
+  # Site24x7 OraclePDB Plugin Config File Setup
+
+   - name: "Site24x7 OraclePDB configuration."
+     lineinfile: 
+       path: "/opt/site24x7/monagent/temp/plugins/OraclePDB/OraclePDB.cfg"
+       regexp: "{{ item.regex }}"
+       line: "{{ item.line }}"
+     loop:
+       - { regex: 'hostname =', line: 'hostname ={{Oracle_host}}' }
+       - { regex: 'port =', line: 'port ={{Oracle_port}}' }
+       - { regex: 'username =', line: 'username ={{Oracle_username}}' }
+       - { regex: 'password =', line: 'password ={{Oracle_password}}' }
+       - { regex: 'oracle_home =', line: 'oracle_home ={{Oracle_home}}' }
+       - { regex: 'sid =', line: 'sid ={{Oracle_sid}}' }
+       - { regex: 'tls =', line: 'tls ={{Oracle_tls}}' }
+       - { regex: 'wallet_location =', line: 'wallet_location ={{Oracle_wallet_location}}' }
+     when: OraclePDB_config_file_check.stat.exists
+
+
+  # Site24x7 OraclePDB Python File Setup
+
+   - name: "Site24x7 OraclePDB Python File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OraclePDB/OraclePDB.py"
+     register: OraclePDB_python_file_check
+
+   - name: "Extracting Python3 Default Path."
+     command: which python3
+     register: python3_path
+
+   - set_fact:
+      actual_path: "{{ '#!'+python3_path.stdout }}"
+
+   - name: "Setting the Default Python Path for the Site24x7 OraclePDB Plugin"
+     lineinfile:
+       path: "/opt/site24x7/monagent/temp/plugins/OraclePDB/OraclePDB.py"
+       regexp: "#!"
+       line: "{{actual_path}}"
+     when: OraclePDB_python_file_check.stat.exists
+
+   - name: "Checking the Site24x7 OraclePDB Plugin Output"
+     shell: "/opt/site24x7/monagent/temp/plugins/OraclePDB/OraclePDB.py --hostname={{Oracle_host}} --port={{Oracle_port}} --username={{Oracle_username}} --password={{Oracle_password}} --oracle_home={{Oracle_home}} --sid={{Oracle_sid}} --tls={{Oracle_tls}} --wallet_location={{Oracle_wallet_location}}"
+     register: OraclePDB_python_output
+     when: OraclePDB_python_file_check.stat.exists
+
+   - name: "Site24x7 OraclePDB plugins with Error !"
+     debug:
+      msg: "Site24x7 OraclePDB Plugin OUTPUT error ! \n {{ OraclePDB_python_output.stdout }}"
+     when: "'\"status\": 0' in OraclePDB_python_output.stdout and OraclePDB_python_file_check.stat.exists"
+
+   - name: "Moving the Site24x7 OraclePDB Folder to the Plugins Directory"
+     command: "mv  /opt/site24x7/monagent/temp/plugins/OraclePDB /opt/site24x7/monagent/plugins"
+     ignore_errors: true
+     when: "plugin_path_check.stat.exists and '\"status\": 0' not in OraclePDB_python_output.stdout"
+
+####################################################################################################################
+
+
+
+
+  # Site24x7 OracleWaits Plugin Prerequisite Setup
+
+   - name: "Site24x7 OracleWaits Temp Plugins Directory Creation."
+     file:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleWaits"
+      state: directory
+     when: agent_path_check.stat.exists
+
+   - name: "Site24x7 Plugin Directory Check"
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleWaits"
+     register: plugin_path_check
+
+   - name: "Download the Site24x7 OracleWaits Plugin Files."
+     get_url:
+        url: "{{ item }}"
+        dest: "/opt/site24x7/monagent/temp/plugins/OracleWaits"
+        mode: 0744
+     loop: ["https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleWaits/OracleWaits.py","https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleWaits/OracleWaits.cfg"]
+     when: plugin_path_check.stat.exists
+
+   - name: "Site24x7 OracleWaits Config File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleWaits/OracleWaits.cfg"
+     register: OracleWaits_config_file_check   
+
+  # Site24x7 OracleWaits Plugin Config File Setup
+
+   - name: "Site24x7 OracleWaits configuration."
+     lineinfile: 
+       path: "/opt/site24x7/monagent/temp/plugins/OracleWaits/OracleWaits.cfg"
+       regexp: "{{ item.regex }}"
+       line: "{{ item.line }}"
+     loop:
+       - { regex: 'hostname =', line: 'hostname ={{Oracle_host}}' }
+       - { regex: 'port =', line: 'port ={{Oracle_port}}' }
+       - { regex: 'username =', line: 'username ={{Oracle_username}}' }
+       - { regex: 'password =', line: 'password ={{Oracle_password}}' }
+       - { regex: 'oracle_home =', line: 'oracle_home ={{Oracle_home}}' }
+       - { regex: 'sid =', line: 'sid ={{Oracle_sid}}' }
+       - { regex: 'tls =', line: 'tls ={{Oracle_tls}}' }
+       - { regex: 'wallet_location =', line: 'wallet_location ={{Oracle_wallet_location}}' }
+     when: OracleWaits_config_file_check.stat.exists
+
+
+  # Site24x7 OracleWaits Python File Setup
+
+   - name: "Site24x7 OracleWaits Python File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleWaits/OracleWaits.py"
+     register: OracleWaits_python_file_check
+
+   - name: "Extracting Python3 Default Path."
+     command: which python3
+     register: python3_path
+
+   - set_fact:
+      actual_path: "{{ '#!'+python3_path.stdout }}"
+
+   - name: "Setting the Default Python Path for the Site24x7 OracleWaits Plugin"
+     lineinfile:
+       path: "/opt/site24x7/monagent/temp/plugins/OracleWaits/OracleWaits.py"
+       regexp: "#!"
+       line: "{{actual_path}}"
+     when: OracleWaits_python_file_check.stat.exists
+
+   - name: "Checking the Site24x7 OracleWaits Plugin Output"
+     shell: "/opt/site24x7/monagent/temp/plugins/OracleWaits/OracleWaits.py --hostname={{Oracle_host}} --port={{Oracle_port}} --username={{Oracle_username}} --password={{Oracle_password}} --oracle_home={{Oracle_home}} --sid={{Oracle_sid}} --tls={{Oracle_tls}} --wallet_location={{Oracle_wallet_location}}"
+     register: OracleWaits_python_output
+     when: OracleWaits_python_file_check.stat.exists
+
+   - name: "Site24x7 OracleWaits plugins with Error !"
+     debug:
+      msg: "Site24x7 OracleWaits Plugin OUTPUT error ! \n {{ OracleWaits_python_output.stdout }}"
+     when: "'\"status\": 0' in OracleWaits_python_output.stdout and OracleWaits_python_file_check.stat.exists"
+
+   - name: "Moving the Site24x7 OracleWaits Folder to the Plugins Directory"
+     command: "mv  /opt/site24x7/monagent/temp/plugins/OracleWaits /opt/site24x7/monagent/plugins"
+     ignore_errors: true
+     when: "plugin_path_check.stat.exists and '\"status\": 0' not in OracleWaits_python_output.stdout"
+
+####################################################################################################################
+
+
+
+
+  # Site24x7 OracleTablespaceDetails Plugin Prerequisite Setup
+
+   - name: "Site24x7 OracleTablespaceDetails Temp Plugins Directory Creation."
+     file:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceDetails"
+      state: directory
+     when: agent_path_check.stat.exists
+
+   - name: "Site24x7 Plugin Directory Check"
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceDetails"
+     register: plugin_path_check
+
+   - name: "Download the Site24x7 OracleTablespaceDetails Plugin Files."
+     get_url:
+        url: "{{ item }}"
+        dest: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceDetails"
+        mode: 0744
+     loop: ["https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleTablespaceDetails/OracleTablespaceDetails.py","https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleTablespaceDetails/OracleTablespaceDetails.cfg"]
+     when: plugin_path_check.stat.exists
+
+   - name: "Site24x7 OracleTablespaceDetails Config File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceDetails/OracleTablespaceDetails.cfg"
+     register: OracleTablespaceDetails_config_file_check   
+
+  # Site24x7 OracleTablespaceDetails Plugin Config File Setup
+
+   - name: "Site24x7 OracleTablespaceDetails configuration."
+     lineinfile: 
+       path: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceDetails/OracleTablespaceDetails.cfg"
+       regexp: "{{ item.regex }}"
+       line: "{{ item.line }}"
+     loop:
+       - { regex: 'hostname =', line: 'hostname ={{Oracle_host}}' }
+       - { regex: 'port =', line: 'port ={{Oracle_port}}' }
+       - { regex: 'username =', line: 'username ={{Oracle_username}}' }
+       - { regex: 'password =', line: 'password ={{Oracle_password}}' }
+       - { regex: 'tablespace_name =', line: 'tablespace_name ={{Oracle_tablespace_name}}' }
+       - { regex: 'oracle_home =', line: 'oracle_home ={{Oracle_home}}' }
+       - { regex: 'sid =', line: 'sid ={{Oracle_sid}}' }
+       - { regex: 'tls =', line: 'tls ={{Oracle_tls}}' }
+       - { regex: 'wallet_location =', line: 'wallet_location ={{Oracle_wallet_location}}' }
+     when: OracleTablespaceDetails_config_file_check.stat.exists
+
+
+  # Site24x7 OracleTablespaceDetails Python File Setup
+
+   - name: "Site24x7 OracleTablespaceDetails Python File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceDetails/OracleTablespaceDetails.py"
+     register: OracleTablespaceDetails_python_file_check
+
+   - name: "Extracting Python3 Default Path."
+     command: which python3
+     register: python3_path
+
+   - set_fact:
+      actual_path: "{{ '#!'+python3_path.stdout }}"
+
+   - name: "Setting the Default Python Path for the Site24x7 OracleTablespaceDetails Plugin"
+     lineinfile:
+       path: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceDetails/OracleTablespaceDetails.py"
+       regexp: "#!"
+       line: "{{actual_path}}"
+     when: OracleTablespaceDetails_python_file_check.stat.exists
+
+   - name: "Checking the Site24x7 OracleTablespaceDetails Plugin Output"
+     shell: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceDetails/OracleTablespaceDetails.py --hostname={{Oracle_host}} --port={{Oracle_port}} --username={{Oracle_username}} --password={{Oracle_password}} --tablespace_name ={{Oracle_tablespace_name}} --oracle_home={{Oracle_home}} --sid={{Oracle_sid}} --tls={{Oracle_tls}} --wallet_location={{Oracle_wallet_location}}"
+     register: OracleTablespaceDetails_python_output
+     when: OracleTablespaceDetails_python_file_check.stat.exists
+
+   - name: "Site24x7 OracleTablespaceDetails plugins with Error !"
+     debug:
+      msg: "Site24x7 OracleTablespaceDetails Plugin OUTPUT error ! \n {{ OracleTablespaceDetails_python_output.stdout }}"
+     when: "'\"status\": 0' in OracleTablespaceDetails_python_output.stdout and OracleTablespaceDetails_python_file_check.stat.exists"
+
+   - name: "Moving the Site24x7 OracleTablespaceDetails Folder to the Plugins Directory"
+     command: "mv  /opt/site24x7/monagent/temp/plugins/OracleTablespaceDetails /opt/site24x7/monagent/plugins"
+     ignore_errors: true
+     when: "plugin_path_check.stat.exists and '\"status\": 0' not in OracleTablespaceDetails_python_output.stdout"
+
+####################################################################################################################
+
+
+
+
+  # Site24x7 OracleTablespaceUsage Plugin Prerequisite Setup
+
+   - name: "Site24x7 OracleTablespaceUsage Temp Plugins Directory Creation."
+     file:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceUsage"
+      state: directory
+     when: agent_path_check.stat.exists
+
+   - name: "Site24x7 Plugin Directory Check"
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceUsage"
+     register: plugin_path_check
+
+   - name: "Download the Site24x7 OracleTablespaceUsage Plugin Files."
+     get_url:
+        url: "{{ item }}"
+        dest: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceUsage"
+        mode: 0744
+     loop: ["https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleTablespaceUsage/OracleTablespaceUsage.py","https://raw.githubusercontent.com/site24x7/plugins/master/OracleFullStackMonitoring/OracleTablespaceUsage/OracleTablespaceUsage.cfg"]
+     when: plugin_path_check.stat.exists
+
+   - name: "Site24x7 OracleTablespaceUsage Config File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceUsage/OracleTablespaceUsage.cfg"
+     register: OracleTablespaceUsage_config_file_check   
+
+  # Site24x7 OracleTablespaceUsage Plugin Config File Setup
+
+   - name: "Site24x7 OracleTablespaceUsage configuration."
+     lineinfile: 
+       path: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceUsage/OracleTablespaceUsage.cfg"
+       regexp: "{{ item.regex }}"
+       line: "{{ item.line }}"
+     loop:
+       - { regex: 'hostname =', line: 'hostname ={{Oracle_host}}' }
+       - { regex: 'port =', line: 'port ={{Oracle_port}}' }
+       - { regex: 'username =', line: 'username ={{Oracle_username}}' }
+       - { regex: 'password =', line: 'password ={{Oracle_password}}' }
+       - { regex: 'tablespace_names =', line: 'tablespace_names ={{Oracle_tablespace_names}}' }
+       - { regex: 'oracle_home =', line: 'oracle_home ={{Oracle_home}}' }
+       - { regex: 'sid =', line: 'sid ={{Oracle_sid}}' }
+       - { regex: 'tls =', line: 'tls ={{Oracle_tls}}' }
+       - { regex: 'wallet_location =', line: 'wallet_location ={{Oracle_wallet_location}}' }
+     when: OracleTablespaceUsage_config_file_check.stat.exists
+
+
+  # Site24x7 OracleTablespaceUsage Python File Setup
+
+   - name: "Site24x7 OracleTablespaceUsage Python File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceUsage/OracleTablespaceUsage.py"
+     register: OracleTablespaceUsage_python_file_check
+
+   - name: "Extracting Python3 Default Path."
+     command: which python3
+     register: python3_path
+
+   - set_fact:
+      actual_path: "{{ '#!'+python3_path.stdout }}"
+
+   - name: "Setting the Default Python Path for the Site24x7 OracleTablespaceUsage Plugin"
+     lineinfile:
+       path: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceUsage/OracleTablespaceUsage.py"
+       regexp: "#!"
+       line: "{{actual_path}}"
+     when: OracleTablespaceUsage_python_file_check.stat.exists
+
+   - name: "Checking the Site24x7 OracleTablespaceUsage Plugin Output"
+     shell: "/opt/site24x7/monagent/temp/plugins/OracleTablespaceUsage/OracleTablespaceUsage.py --hostname={{Oracle_host}} --port={{Oracle_port}} --username={{Oracle_username}} --password={{Oracle_password}} --tablespace_names={{Oracle_tablespace_names}} --oracle_home={{Oracle_home}} --sid={{Oracle_sid}} --tls={{Oracle_tls}} --wallet_location={{Oracle_wallet_location}}"
+     register: OracleTablespaceUsage_python_output
+     when: OracleTablespaceUsage_python_file_check.stat.exists
+
+   - name: "Site24x7 OracleTablespaceUsage plugins with Error !"
+     debug:
+      msg: "Site24x7 OracleTablespaceUsage Plugin OUTPUT error ! \n {{ OracleTablespaceUsage_python_output.stdout }}"
+     when: "'\"status\": 0' in OracleTablespaceUsage_python_output.stdout and OracleTablespaceUsage_python_file_check.stat.exists"
+
+   - name: "Moving the Site24x7 OracleTablespaceUsage Folder to the Plugins Directory"
+     command: "mv  /opt/site24x7/monagent/temp/plugins/OracleTablespaceUsage /opt/site24x7/monagent/plugins"
+     ignore_errors: true
+     when: "plugin_path_check.stat.exists and '\"status\": 0' not in OracleTablespaceUsage_python_output.stdout"
