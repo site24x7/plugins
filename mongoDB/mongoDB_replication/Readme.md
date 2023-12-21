@@ -27,7 +27,7 @@
   
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
-		python3 mongoDB_replication.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --dbname=<dbname> --authdb=<authdb> --tls=False 
+		python3 mongoDB_replication.py --host "ip_address" --port "port_number" --username "username" --password "password" --dbname "dbname" --authdb "authdb" --tls "False" 
 
 
 
