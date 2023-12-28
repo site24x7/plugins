@@ -32,8 +32,10 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/ScheduledTask/Sch
 
 3. Modify the ScheduledTask.cfg file with the task name to monitor the particular task.
 
+
+   For example:
+
 ```
-For example:
 [Scheduled_task]
 taskName="\OfficeSoftwareProtectionPlatform\SvcRestartTask"
 ```
