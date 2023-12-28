@@ -55,7 +55,7 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		  python mysql_custom_query.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --db=<db> --query=<custom_query>
+		  python mysql_custom_query.py --host "host_name" --port "port_number" --username "username" --password "password" --db "db" --query "custom_query"
 
 - After above command with parameters gives expected output, please configure the relevant parameters in the mysql_custom_query.cfg file.
 
