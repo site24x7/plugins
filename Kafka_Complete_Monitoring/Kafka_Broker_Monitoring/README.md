@@ -49,7 +49,7 @@ A Kafka broker is a single Kafka server that runs on a Kafka cluster. On deploym
 
 - Execute the below command with appropriate arguments to check for the valid json output:
     
-        python3 kafka_broker_monitoring.py --kafka_host "KAFKA_BROKER_HOST_NAME" --kafka_jmx_port "KAFKA_BROKER_PORT_NO" --kafka_consumer_partition "KAFKA_CONSUMER_PARTITION_NO" --kafka_topic_name "KAFKA_TOPIC_NAME" --logs_enabled "False" --log_type_name "None" --log_file_path "None"
+        python3 kafka_broker_monitoring.py --kafka_host "KAFKA_BROKER_HOST_IP" --kafka_jmx_port "KAFKA_BROKER_PORT_NO" --kafka_consumer_partition "KAFKA_CONSUMER_PARTITION_NO" --kafka_topic_name "KAFKA_TOPIC_NAME" --logs_enabled "False" --log_type_name "None" --log_file_path "None"
     
 - After above command with parameters gives expected output, please configure the relevant parameters in the kafka_broker_monitoring.cfg file.
 
