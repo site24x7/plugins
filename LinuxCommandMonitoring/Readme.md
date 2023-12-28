@@ -19,7 +19,7 @@
 
 - Execute the below command to check for the valid JSON output:
 
-		python LinuxCommandMonitoring.py --cmd=<command> --regex=<Regex> --displayname=<Display-Name>
+		python LinuxCommandMonitoring.py --cmd "command" --regex "Regex" --displayname "Display-Name"
   
 - Edit the LinuxCommandMonitoring.cfg file with appropriate arguments eg:
   
