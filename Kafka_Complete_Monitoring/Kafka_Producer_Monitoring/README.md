@@ -47,7 +47,7 @@ Install the Apache Kafka Producer plugin to monitor key Kafka producer metrics a
 
 - Execute the below command with appropriate arguments to check for the valid json output:
   
-        python3 kafka_producer_monitoring.py --kafka_producer_host "KAFKA_PRODUCER_HOST_NAME" --kafka_producer_jmx_port "KAFKA_PRODUCER_PORT_NO" --kafka_producer_client_id "KAFKA_PRODUCER_CLIENT_ID" --logs_enabled "False" --log_type_name "None" --log_file_path "None"
+        python3 kafka_producer_monitoring.py --kafka_producer_host "KAFKA_PRODUCER_HOST_IP" --kafka_producer_jmx_port "KAFKA_PRODUCER_PORT_NO" --kafka_producer_client_id "KAFKA_PRODUCER_CLIENT_ID" --logs_enabled "False" --log_type_name "None" --log_file_path "None"
 
 - After above command with parameters gives expected output, please configure the relevant  parameters in the kafka_producer_monitoring.cfg file.
 
