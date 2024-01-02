@@ -25,7 +25,7 @@ This plugin monitors the performance and availability of MongoDb Atlas cluster n
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python mongodb_atlas_perf_metrics.py --group_id=<your_group_id> --host=<your_host_name> --port=27017 --public_key=<your_public_key> --private_key=<your_private_key>
+		python mongodb_atlas_perf_metrics.py --group_id="group_id" --host="host_name" --port=27017 --public_key="public_key" --private_key="private_key"
 		
 - Move the directroy "mongodb_atlas_perf_metrics"  under Site24x7 Linux Agent plugin directory :
 
@@ -38,15 +38,15 @@ The agent will automatically execute the plugin within five minutes and send per
 ### Configurations
 ---
 - Configure this set up in your cfg file.  
+				
+		["mongodb_atlas_perf_metrics"]
+		group_id="group_id"
+		host="hostname"
+		port="2701"
+		public_key = "public_key"
+		private_key = "private_key"
 
-                
-		
-		[mongodb_atlas_perf_metrics]
-		group_id=<your_group_id> 
-		host=<your_host_name> 
-		port=<port_number> 
-		public_key=<your_public_key> 
-		private_key=<your_private_key>
+
 
 ### Metrics Monitored
 ---
