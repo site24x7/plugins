@@ -22,16 +22,16 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 	```
-    python3 monogdb_atlas_cluster.py --public_key=<public_key> --private_key=<private_key>--group_project_id=<group or project id> --cluster_name=<atlas cluster name>	 
+    python3 monogdb_atlas_cluster.py --public_key="public_key" --private_key="private_key"--group_project_id="group or project id" --cluster_name="atlas cluster name"
     ```
 - After the above command with parameters gives the expected output, please configure the relevant parameters in the mongodb_atlas_cluster.cfg file.
 
 	```
-    [mongodb_atlas]
-    group_id= <your_group_id>
-    public_key = <your_public_key>
-    private_key = <your_private_key>
-    cluster_name=<cluster_name>
+	[mongodb_atlas]
+	group_project_id= "your_group_id"
+	public_key = "your_public_key"
+	private_key = "your_private_key"
+	cluster_name= "cluster_name"
 
 	```	
 - Move the "mongodb_atlas_cluster" folder into the Site24x7 Linux Agent plugin directory: 
