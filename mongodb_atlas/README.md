@@ -33,17 +33,17 @@
 
 - Provide your mongodb_atlas configurations in mongodb_atlas.cfg file.
 
-        [mongo_db_atlas]
-        mongo_connect_string =<mongodb connection string>
-        dbname=<mongodb database name>
+		[mongo_db_atlas]
+		mongo_connect_string ="mongodb+srv://<username>:<password>@<cluster-name>.mongodb.net/<database>?retryWrites=true&w=majority"
+		dbname="test"
 
 
-- Execute the below command with appropriate arguments which were given in the configuration to check for the valid output with JSON format.
+- Execute the below command with appropriate arguments that were given in the configuration to check for the valid output with JSON format.
 	```
-	python3 mongodb_atlas.py  --mongo_connect_string <mongodb connection string> --dbname <monogdb database name>
+	python3 mongodb_atlas.py  --mongo_connect_string="mongodb+srv://<username>:<password>@<cluster-name>.mongodb.net/<database>?retryWrites=true&w=majority" --dbname="test"
 	```
 		
-- Once the above execution was given valid output, then copy the mongodb_atlas directory to the Site24x7 Linux Agent plugin directory:
+- Once the above execution is given valid output, then copy the mongodb_atlas directory to the Site24x7 Linux Agent plugin directory:
   
  		Linux             ->   /opt/site24x7/monagent/plugins/mongodb_atlas
 		
