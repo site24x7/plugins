@@ -19,14 +19,14 @@ Hence the MSMQ performance monitoring provides comprehensive performance metrics
 
 - Create a directory named "msmq_monitoring".
       
-- Download all the files and place it under the "msmq_monitoring" directory.
+- Download all the files and place them under the "msmq_monitoring" directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/msmq_monitoring/msmq_monitoring.ps1
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/msmq_monitoring/msmq_monitoring.cfg
 
 
 
-- Execute the below command with appropriate arguments to check for the valid json output:
+- Execute the below command with appropriate arguments to check for the valid JSON output:
 
 	 ```
 	.\msmq_monitoring.ps1 -queueName "queuename"
@@ -43,7 +43,7 @@ Hence the MSMQ performance monitoring provides comprehensive performance metrics
 - Provide your MSMQ configurations in msmq_monitoring.cfg file.
 ```
     [msmq]
-    queueName=<queuename>
+    queueName="queuename"
 ```	
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
