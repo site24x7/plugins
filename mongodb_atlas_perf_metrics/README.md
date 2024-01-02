@@ -1,4 +1,4 @@
-Plugin for monitoring MongoDb Atlas performance
+Plugin for monitoring MongoDB Atlas performance
 ==============================================
 
 This plugin monitors the performance and availability of MongoDb Atlas cluster node.
