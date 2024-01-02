@@ -40,7 +40,7 @@
 
 - Execute the below command with appropriate arguments that were given in the configuration to check for the valid output with JSON format.
 	```
-	python3 mongodb_atlas.py  --mongo_connect_string "mongodb+srv://<username>:<password>@<cluster-name>.mongodb.net/<database>?retryWrites=true&w=majority" --dbname="test"
+	python3 mongodb_atlas.py  --mongo_connect_string="mongodb+srv://<username>:<password>@<cluster-name>.mongodb.net/<database>?retryWrites=true&w=majority" --dbname="test"
 	```
 		
 - Once the above execution is given valid output, then copy the mongodb_atlas directory to the Site24x7 Linux Agent plugin directory:
