@@ -67,7 +67,8 @@ class cassandra:
                     
                 jmxQuery = [jmx.JMXQuery(metric_queries[metric])]
                 metric_result = jmxConnection.query(jmxQuery)
-                self.maindata[metric]=metric_result[0].value
+                if metric_result:
+                    self.maindata[metric]=metric_result[0].value
             self.maindata["Cassandra Host Name"]=self.hostname
 
             applog={}
