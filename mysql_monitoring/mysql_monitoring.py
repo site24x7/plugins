@@ -21,7 +21,6 @@ MYSQL_HOST = "localhost"
 MYSQL_PORT="3306"
 
 MYSQL_USERNAME="user"
-
 MYSQL_PASSWORD=""
 
 METRICS_JSON={
@@ -155,6 +154,22 @@ METRICS_JSON={
     "Key_write_requests":"write_requests",
     "Key_writes":"key_writes" 
     }
+
+REPLICATION_JSON={
+    "Slave_IO_State": "slave_IO_state",
+    "Master_Host":"master_host",
+    "Master_User":"master_user",
+    "Connect_Retry":"connect_retry",
+    "Master_Server_Id":"master_server_id",
+    "Master_Retry_Count":"master_retry_count",
+    "Skip_Counter":"skip_counter",
+    "Relay_Log_Space":"relay_log_space",
+    "Seconds_Behind_Master":"seconds_behind_master",
+    "Last_IO_Errno":"last_IO_errno",
+    "Last_SQL_Errno":"last_sql_errno",
+    "Slave_IO_Running":"slave_IO_running",
+    "Slave_SQL_Running":"slave_sql_running"
+}
     
 #Mention the units of your metrics in this python dictionary. If any new metrics are added make an entry here for its unit.
 METRICS_UNITS={'uptime':'seconds',
@@ -265,7 +280,7 @@ class MySQL(object):
                 import pymysql
             except Exception:
                 data['status']=0
-                data['msg']='pymysql module not installed'
+                data['msg']='pymysql module not installed\n Solution : Use the following command to install pymysql\n pip install pymysql \n(or)\n pip3 install pymysql'
                 return data
 
             if not self.getDbConnection():
@@ -286,27 +301,17 @@ class MySQL(object):
                     return data
                 
                 cursor.execute('SHOW SLAVE STATUS')
+                myresult_slave_key=cursor.description
                 myresult_slave=cursor.fetchall()
                 cursor.execute('SHOW MASTER STATUS')
                 myresult_master=cursor.fetchall()
                 if myresult_master:
                         data['mysql_node_type']='Master'
                 elif myresult_slave : 
-                    for entry in myresult_slave:
-                        data['slave_IO_state'] = entry[0]
-                        data['master_host']=entry[1]
-                        data['master_user']=entry[2]
-                        data['connect_retry']=entry[4]
-                        data['master_server_id']=entry[39]
-                        data['master_retry_count']=entry[45]
-                        data['skip_counter'] = entry[20]
-                        data['relay_log_space'] = entry[22]
-                        data['seconds_behind_master'] = entry[32] if entry[32] is not None else 0
-                        data['last_IO_errno'] = entry[34]
-                        data['last_sql_errno'] = entry[36]
-                        data['slave_IO_running'] = 0 if entry[10] == 'No' else 1
-                        data['slave_sql_running'] = 0 if entry[11] == 'No' else 1
-                        data['mysql_node_type']='Slave'
+                    for i in range(len(myresult_slave[0])):
+                        if REPLICATION_JSON.get(myresult_slave_key[i][0]):
+                            data[REPLICATION_JSON[myresult_slave_key[i][0]]]=myresult_slave[0][i]
+                    data['mysql_node_type']='Slave'
                 else:
                         data['mysql_node_type']='Standalone'
                         
@@ -344,7 +349,6 @@ class MySQL(object):
                 data["max_data_length"] = 0
                 data["rows_count"] = 0
                 global_metrics = self.executeQuery_mysql(con,'SHOW GLOBAL STATUS')
-                
                 global_variables = self.executeQuery_mysql(con,'SHOW VARIABLES') 
                 """global_db = self.executeQuery_mysql(con, 'SELECT table_schema "DB Name",ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) "DB Size in MB" FROM information_schema.tables GROUP BY table_schema;')
        

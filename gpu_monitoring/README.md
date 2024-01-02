@@ -2,10 +2,10 @@
 
 ### PreRequisites
 
-- Plugin Uses "gpustat" python module to get the gpu device performance metrics	
-	
-      Execute the following command in your server to install gpustat - pip install gpustat
-
+- Plugin Uses "gpustat" python module to get the gpu device performance metrics. Execute the following command in your server to install gpustat
+	```
+	pip install gpustat
+	```
 - Plugin Uses "gpustat -cp" command to get the individual core utilization
 
 ### Plugin installation

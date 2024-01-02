@@ -1,7 +1,5 @@
-#!/usr/bin/python
-"""
-  Site24x7 Redis Plugin
-"""
+#!/usr/bin/python3
+
 import json,sys
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
@@ -115,21 +113,20 @@ class Redis(object):
             import redis
         except Exception:
             data['status']=0
-            data['msg']='Redis Module Not Installed'
-            return data
+            data['msg']="Redis Module Not Installed\nDependency missing:'redis' Python client library\nInstall with command,\n\n pip3 install redis\n"
+            return data 
         stats = None
-        for db in self.dbs.split(','):
-            try:
-                redis_connection = redis.StrictRedis(
+        try:
+            redis_connection = redis.StrictRedis(
                     host=self.host,
                     port=self.port,
                     db=int(self.dbs),
                     password=self.password
-                )
-                stats = redis_connection.info()
-            except Exception as e:
-                data['status']=0
-                data['msg']=str(e)
+            )
+            stats = redis_connection.info()
+        except Exception as e:
+            data['status']=0
+            data['msg']=str(e)
         if not stats:
             return data
         total_keys=0
@@ -171,8 +168,3 @@ if __name__ == '__main__':
     result=redis_plugin.metricCollector()
  
     print(json.dumps(result, indent=4, sort_keys=True))
-
-
-
-
-

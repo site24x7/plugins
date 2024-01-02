@@ -25,12 +25,12 @@ Follow the below steps to configure the Kong plugin and the monitoring metrics f
 - Configure the keys to be monitored, as mentioned below in "squid.cfg"
 
 		[display_name]
-		host_name=“<your_host_name>”
+		host_name=“your_host_ip”
 		port=“3128”
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python squid.py --host_name=localhost --port=3128
+		python squid.py --host_name "localhost" --port "3128"
 
 ##### Linux 
 

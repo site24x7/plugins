@@ -55,8 +55,10 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
+
 		python3 mysql_custom_query.py --host="localhost" --port="3306" --username="root" --password="password" --db="sys" --query="select * from metrics LIMIT 1"
   
+
 - After above command with parameters gives expected output, please configure the relevant parameters in the mysql_custom_query.cfg file.
 
 		  [mysql_custom_query]

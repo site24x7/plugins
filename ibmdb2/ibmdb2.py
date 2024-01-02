@@ -62,7 +62,7 @@ class DB2(object):
             import ibm_db
         except Exception:
             data['status']=0
-            data['msg']='ibm_db module not installed'
+            data['msg']='ibm_db module not installed' + "\n Solution : Use the following command to install ibm_db\n pip install ibm_db \n(or)\n pip3 install ibm_db"
             return data
 
         if not self.getDbConnection():

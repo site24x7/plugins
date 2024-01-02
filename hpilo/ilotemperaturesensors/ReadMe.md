@@ -15,19 +15,27 @@
 			sudo apt–get install snmp
 - After installation, export the net-snmp path in the $PATH variable.
 
-		Example:
+  Example:
+  
 			export PATH=$PATH:/var/lib/net-snmp/bin
 
 - Test SNMP walk for ilotemperaturesensors:
 
-			snmpwalk -v <version> -c <community-name> <OID>
+			snmpwalk  -v  <version>  -c  <community-name>  <ip-address>  <OID>
 	Example:
 
-			snmpwalk  -v  2c  -c  public  10.19.1.0  1.3.6.1.4.1.232.6.2.6.1
+			snmpwalk  -v  2c  -c  public  10.19.1.0  1.3.6.1.4.1.232.6.2.6.1 
 		
 #### Windows
 
-- Follow the steps in [k-base](https://support.site24x7.com/portal/en/kb/articles/ilotemperaturesensors-monitoring-for-windows) for ilotemperaturesensors plugins installation
+- Install the latest version of the Net-SNMP package. [Follow these steps](https://support.site24x7.com/portal/en/kb/articles/install-net-snmp-package-in-windows-for-plugins) to install and configure it.
+- And also add Net-SNMP path to user variables. Then open command prompt or cmd.
+- Test SNMP walk for ilobattery:
+  
+			snmpwalk  -v  <version>  -c  <community-name>  <ip-address>  <OID>
+	Example:
+
+			snmpwalk  -v  2c  -c  public  10.19.1.0  1.3.6.1.4.1.232.6.2.6.1 
 
 ---
 
@@ -41,20 +49,22 @@ Supported versions: 1 and 2c
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/hpilo/ilotemperaturesensors/ilotemperaturesensors.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/hpilo/ilotemperaturesensors/cpqhlth.mib
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/hpilo/ilotemperaturesensors/SNMPUtil.py
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the ilotemperaturesensors.py script.
-- Add the configurations such as hostname, snmp version, mib file path, etc,. in ilotemperaturesensors.py.
+
+- Add the configurations such as Host(IP Address), snmp version, mib file path, etc,. in ilotemperaturesensors.py.
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 		python ilotemperaturesensors.py 
 		
 #### Linux
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the ilotemperaturesensors.py script.
 - Move the directory named "ilotemperaturesensors" under the Site24x7 Linux Agent plugin directory: 
 
 		Linux             ->   /opt/site24x7/monagent/plugins/
 		
 ##### Windows 
 
+- Follow the [Instructions](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers) to set the python path in environment and system variables.
 - Move the folder named "ilotemperaturesensors" under Site24x7 Windows Agent plugin directory: 
 
 		Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\

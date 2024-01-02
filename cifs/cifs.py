@@ -123,17 +123,21 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--mount_folder', help="cifs mount point", type=str)
+    parser.add_argument('--plugin_version', help="plugin version", type=str, default=PLUGIN_VERSION)
     
     args = parser.parse_args()
-    if args.mount_folder:
+    PLUGIN_VERSION=args.plugin_version
+    if args.mount_folder != None:
         folders = args.mount_folder
         folders=folders.split(",")
-    n=1
-
-    for i in folders:
-        result_collector = metricCollector(i,str(n))
-        n+=1
-        result.update(result_collector )
+        n=1
+        for i in folders:
+                result_collector = metricCollector(i,str(n))
+                n+=1
+                result.update(result_collector )
+    else:
+        result['status']=0
+        result['msg']="Please provide the CIFS mount points in cfg file"
     
     result['plugin_version'] = PLUGIN_VERSION
     result['heartbeat_required']=HEARTBEAT

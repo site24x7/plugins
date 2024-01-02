@@ -20,7 +20,7 @@
 
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
-		python Redis.py --host=<REDIS_HOST> --port=<REDIS_PORT> --password=<REDIS_PASSWORD> --dbs=<REDIS_DBS> 
+		python Redis.py --host "REDIS_HOST_IP" --port "REDIS_PORT" --password "REDIS_PASSWORD" --dbs "REDIS_DBS" 
 
 - Move the "Redis" directory to the Site24x7 Linux Agent plugin directory: 
 
@@ -34,10 +34,10 @@
 - Provide your Redis configurations in Redis.cfg file.
 
 		[redis]
-		host = <REDIS_HOST>
-		port = <REDIS_PORT>
-		password = <REDIS_PASSWORD>
-		dbs = <REDIS_DBS>
+		host = "REDIS_HOST"
+		port = "REDIS_PORT"
+		password = "REDIS_PASSWORD"
+		dbs = "REDIS_DBS"
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 

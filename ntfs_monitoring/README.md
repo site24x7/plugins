@@ -14,8 +14,8 @@
       
 - Download all the files and place it under the "ntfs_monitoring" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/ntfs_monitoring/ntfs_monitoring.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/ntfs_monitoring/ntfs_monitoring.cfg
+		https://raw.githubusercontent.com/site24x7/plugins/master/ntfs_monitoring/ntfs_monitoring.ps1
+		https://raw.githubusercontent.com/site24x7/plugins/master/ntfs_monitoring/ntfs_monitoring.cfg
 
 
 

@@ -134,18 +134,22 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--mount_folder', help="nfs mount point", type=str)
-    
+    parser.add_argument('--plugin_version', help="plugin version", type=str, default=PLUGIN_VERSION)
+    result={}
     args = parser.parse_args()
-    if args.mount_folder:
+    PLUGIN_VERSION=args.plugin_version
+    if args.mount_folder != None:
         folders = args.mount_folder
         folders=folders.split(",")
-    n=1
+        n=1
+        for i in folders:
+                result_collector = metricCollector(i,str(n))
+                n+=1
+                result.update(result_collector )
+    else:
+        result['status']=0
+        result['msg']="Please provide the nfs mount points in cfg file"
 
-    for i in folders:
-        result_collector = metricCollector(i,str(n))
-        n+=1
-        result.update(result_collector )
-    
     result['plugin_version'] = PLUGIN_VERSION
     result['heartbeat_required']=HEARTBEAT
     result['units'] = METRIC_UNITS
