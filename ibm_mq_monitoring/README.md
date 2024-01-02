@@ -30,7 +30,7 @@ Hence using our plugin, technician can monitor the performance  attributes of IB
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 	 ```
-	 python3 ibm_mq_monitoring.py --queue_manager_name=<name of the queue manager> --channel_name=<channel name> --queue_name=<queue_name> --host=<host name> --port=<port number>  --username=<optional - username> --password=<optional - password> 
+	 python3 ibm_mq_monitoring.py --queue_manager_name="QMGR" --channel_name="channel_name" --queue_name="queue_name" --host="localhost" --port="1415" --username="ibm_mq_username" --password="ibm_mq_password" --logs_enabled="False" --log_type_name="None" --log_file_path="None"
 	 ```
  - Move the folder "ibm_mq_monitoring" into the  Site24x7 Linux Agent plugin directory: 
 
@@ -49,14 +49,17 @@ Since it's a python plugin, to run in windows server please follow the steps in 
 
 - Provide your IBM MQ configurations in ibm_mq_monitoring.cfg file.
 ```
-    [ibm_mq]
-    queue_manager_name=<QUEUE MANAGER NAME>
-    channel_name=<CHANNEL NAME>
-    queue_name = <QUEUE NAME>
-    host=<HOST NAME>
-    port = <PORT NUMBER>
-    username=<IBM MQ USERNAME>
-    password = <IBM MQ PASSWORD>
+	[ibm_mq]
+	queue_manager_name ="QMGR"
+	channel_name="channel_name"
+	queue_name="queue_name"
+	host="localhost"
+	port="1415"
+	username="ibm_mq_username"
+	password ="ibm_mq_password"
+	logs_enabled = "False"
+	log_type_name = "None"
+	log_file_path = "None"
 ```	
 		
 		
