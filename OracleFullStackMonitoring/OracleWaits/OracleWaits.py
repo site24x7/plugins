@@ -23,7 +23,7 @@ class oracle:
         self.sid=args.sid
         self.hostname=args.hostname
         self.port=args.port
-        self.tls=args.tls
+        self.tls=args.tls.lower()
         self.wallet_location=args.wallet_location
 
         self.logsenabled=args.logs_enabled
