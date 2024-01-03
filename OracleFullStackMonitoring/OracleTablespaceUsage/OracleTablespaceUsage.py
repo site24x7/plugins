@@ -22,7 +22,7 @@ class oracle:
         self.hostname=args.hostname
         self.port=args.port
         self.tablespace_names=json.loads(args.tablespace_names)
-        self.tls=args.tls
+        self.tls=args.tls.lower()
         self.wallet_location=args.wallet_location
 
         self.logsenabled=args.logs_enabled
