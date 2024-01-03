@@ -30,7 +30,7 @@ class oracle:
         self.hostname=args.hostname
         self.port=args.port
         self.tablespace_name=args.tablespace_name
-        self.tls=args.tls
+        self.tls=args.tls.lower()
         self.wallet_location=args.wallet_location
 
         self.logsenabled=args.logs_enabled
