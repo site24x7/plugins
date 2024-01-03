@@ -17,7 +17,7 @@ OS Supported: Ubuntu, Centos
 
 		bash check_updates.sh
 
-- Move the directory "check_updates" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/check_updates
+- Move the directory "check_updates" into the Site24x7 Linux Agent plugin directory - `/opt/site24x7/monagent/plugins/check_updates`
 	
   The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
