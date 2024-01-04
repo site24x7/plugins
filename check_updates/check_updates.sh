@@ -10,12 +10,12 @@ if [[ -e /etc/os-release ]]; then
 
     distro_name=$(grep "^NAME" /etc/os-release | cut -d '=' -f2)
     if [[ $? -ne 0 ]]; then
-        PLUGIN_OUTPUT=$PLUGIN_OUTPUT"status:0|msg:Distro name not found|"
+        PLUGIN_OUTPUT=$PLUGIN_OUTPUT"status:0|msg:Distro name not found"
         echo $PLUGIN_OUTPUT
         exit $?
     fi
 else
-    PLUGIN_OUTPUT=$PLUGIN_OUTPUT"status:0|msg:/etc/os-release file not found|"
+    PLUGIN_OUTPUT=$PLUGIN_OUTPUT"status:0|msg:/etc/os-release file not found"
     echo $PLUGIN_OUTPUT
     exit $?
 fi
@@ -23,7 +23,6 @@ fi
 
      
 # Ubuntu
-
 if [[ $distro_name == "\"Ubuntu\"" ]]; then
 
     ubuntu_updates_file=/var/lib/update-notifier/updates-available
@@ -58,7 +57,7 @@ if [[ $distro_name == "\"Ubuntu\"" ]]; then
         fi    
 
     else
-        PLUGIN_OUTPUT=$PLUGIN_OUTPUT"status:0|msg:/var/lib/update-notifier/updates-available not found.|"
+        PLUGIN_OUTPUT=$PLUGIN_OUTPUT"status:0|msg:/var/lib/update-notifier/updates-available not found."
         echo $PLUGIN_OUTPUT
         exit 1
     fi
@@ -67,32 +66,33 @@ fi
 if [[ -z $updates ]]; then
     update_count="0"
 else
-    update_count=${updates:0:1}
+    updates=$( echo $updates | cut -d " " -f1)
+    update_count=$updates
 
 fi
 
 if [[ -z $security_updates ]]; then
     security_update_count="0"
 else
-    security_update_count=${security_updates:0:1}
+	security_updates=$(echo $security_updates | cut -d " " -f1)
+	security_update_count=$security_updates
 
 fi
 
 
 # CentOS
-
 if [[ $distro_name == "\"CentOS Linux\"" ]]; then
 
     centos_updates_info=$(yum check-update --security | tail -n 1)  
     if [[ $? -ne 0 ]]; then
-        PLUGIN_OUTPUT=$PLUGIN_OUTPUT"status:0|msg:Error during executing \"yum check-update --security | tail -n 1\" command.|"
+        PLUGIN_OUTPUT=$PLUGIN_OUTPUT"status:0|msg:Error during executing \"yum check-update --security | tail -n 1\" command."
         echo $PLUGIN_OUTPUT
         exit 1    
     fi
 
     out_verify=$(echo $centos_updates_info | grep -E "^([0-9]{1,3}|No) packages needed for security; ([0-9]{1,3}|No) packages available")
     if [[ $out_verify != $centos_updates_info ]]; then
-        PLUGIN_OUTPUT=$PLUGIN_OUTPUT"status:0|msg:Error in command execution.|"
+        PLUGIN_OUTPUT=$PLUGIN_OUTPUT"status:0|msg:Error in command execution."
         echo $PLUGIN_OUTPUT
         exit 1
     fi
