@@ -26,7 +26,7 @@
  
 - Execute the below command with appropriate arguments to check for the valid json output:
 	```
-	 python3 ibmdb2.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name>
+	 python3 ibmdb2.py --host "hostname" --port "port no" --username "username" --password "password" --sample_db "db name"
 	 ```
 - Move the folder "ibmdb2" into the Site24x7 Linux Agent plugin directory: 
 
@@ -45,11 +45,11 @@ Since it's a python plugin, to run in windows server please follow the steps in 
 - Provide your IBM MQ configurations in ibmdb2.cfg file.
 	```
 	  [ibm_db_2]
-	  host 	= "<hostname>"
-	  port 	= "<port>"
-	  username	= "<username>"
-	  password 	= "<password>"
-	  sample_db	= "<sample_db>"
+	  host 	= "ip-address"
+	  port 	= "port"
+	  username	= "username"
+	  password 	= "password"
+	  sample_db	= "sample_db"
 	```	
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
