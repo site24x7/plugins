@@ -82,8 +82,8 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
   
     ```
     [cassandra_1]
-    hostname=<HOSTNAME>
-    port=<PORT NUMBER>
+    hostname="IP ADDRESS"
+    port="PORT NUMBER"
     logs_enabled=False
     log_type_name=None
     log_file_path=None
