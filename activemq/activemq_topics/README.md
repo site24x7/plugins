@@ -54,7 +54,7 @@ Restart the instance after making the above changes.
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
   ```
-  python3 activemq_topics.py --hostname <hostname> --port <port> --broker_name <broker_name> --topic_name <topic_name>
+  python3 activemq_topics.py --hostname "ip-address" --port "port" --broker_name "broker_name" --topic_name "topic_name"
   ```
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
@@ -69,7 +69,7 @@ broker_name=broker_name
 topic_name=topic_name
 logs_enabled="False"
 log_type_name=None
-log_file_path==None
+log_file_path=None
 ```
 ### Metrics Captured
 

@@ -44,16 +44,16 @@ Follow the below steps to configure the ActiveMQ plugin and the monitoring metri
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python activemq.py –-host_name=localhost -–port=1099 -–broker_name=<your_broker_name> --destination_name=<your_queue_name>
+		python activemq.py –-host_name="localhost" -–port="1099" -–broker_name="your_broker_name" --destination_name="your_queue_name"
 
 #### Configurations
 -  Edit the activemq.cfg file with appropriate arguments
 	```
 	[display_name]
-	host_name=“<your_host_name>”
+	host_name=“your_ip_address”
 	port=“1099”
-	broker_name=“<your_broker_name>”
-	destination_name=“<your_destination_name>”
+	broker_name=“your_broker_name”
+	destination_name=“your_destination_name”
 	```
 #### Linux
 
