@@ -32,16 +32,16 @@ This plugin monitors the collection of detailed performance-oriented metrics thr
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python apache_solr.py --host_name=localhost --port=18983 --domain_name=<your_domain_name>
+		python apache_solr.py --host_name=localhost --port=18983 --domain_name=your_domain_name
 
 #### Configurations
 - Edit apache_solr.cfg with approriate configurations
 
 	```
 	[display_name]
-	host_name = “<your_host_name>”
+	host_name = “your_host_name”
 	port = “18983”
-	domain_name = “<your_domain_name>”
+	domain_name = “your_domain_name”
 	```
 #### Linux
 

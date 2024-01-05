@@ -25,7 +25,7 @@
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the ibmdb2_tablespace.py script.
 - Execute the below command with appropriate arguments to check for the valid json output:
 	```
-	 python3 ibmdb2_tablespace.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name> --tbsp_name <tablespace name>
+	 python3 ibmdb2_tablespace.py --host "ip address" --port "port no" --username "username" --password "password" --sample_db "db name" --tbsp_name "tablespace name"
 	 ```
  - Move the folder "ibmdb2_tablespace" into the Site24x7 Linux Agent plugin directory: 
 
@@ -44,12 +44,12 @@ Since it's a python plugin, to run in windows server please follow the steps in 
 - Provide your IBM DB2 configurations in ibmdb2_tablespace.cfg file.
 ```
   [ibm_db_2]
-  host 		= "<hostname>"
-  port 		= "<port>"
-  username	= "<username>"
-  password 	= "<password>"
-  sample_db	= "<sample_db>"
-  tbsp_name 	= "<tablespace name>
+  host 		= "hostname"
+  port 		= "port"
+  username	= "username"
+  password 	= "password"
+  sample_db	= "sample_db"
+  tbsp_name 	= "tablespace name"
 ```	
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
