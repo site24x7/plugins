@@ -20,14 +20,14 @@ This plugin is to check the size of the directory , number of files in the direc
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python check_file_count.py --folder_name=<folder_path> 
+		python check_file_count.py --folder_name=folder_path
 
 
 #### Configurations
 - Edit the check_file_count.cfg file with appropriate arguments
 
 		[check_file_count]
-		folder_name=<folder_path>
+		folder_name="folder_path"
 #### Linux
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the check_file_count.py script.
