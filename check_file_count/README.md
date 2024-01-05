@@ -20,7 +20,7 @@ This plugin is to check the size of the directory , number of files in the direc
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python check_file_count.py --folder_name=folder_path
+		python check_file_count.py --folder_name="folder_path"
 
 
 #### Configurations
