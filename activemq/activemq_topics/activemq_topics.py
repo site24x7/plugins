@@ -88,7 +88,7 @@ class appname:
                 result[metric_arg[metric]] = output
         except Exception as e:
             if "javax.management.AttributeNotFoundException: No such attribute" in str(e):
-              print(str(e))
+              pass
             else:
               result["status"] = 0
               result["msg"] = str(e)
