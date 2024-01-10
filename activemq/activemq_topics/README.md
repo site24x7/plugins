@@ -62,11 +62,11 @@ The agent will automatically execute the plugin within five minutes and send per
 ### Configurations
 ---
 ```
-[active mq_topics]
-hostname=hostname
-port=port
-broker_name=broker_name
-topic_name=topic_name
+[active mq]
+hostname="localhost"
+port="1009"
+broker_name="broker_name"
+topic_name="topic_name"
 logs_enabled="False"
 log_type_name=None
 log_file_path=None
