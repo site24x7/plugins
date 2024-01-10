@@ -32,12 +32,16 @@ Restart the instance after making the above changes.
 ---
 ##### Linux 
 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the activemq_topics.py script.
+
 - Create a folder "activemq" under Site24x7 Linux Agent plugin directory : 
 
       Linux            ->   /opt/site24x7/monagent/plugins/activemq_topics
 
 ##### Windows 
 
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
 - Create a folder "activemq" under Site24x7 Windows Agent plugin directory : 
 
       Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\activemq_topics
@@ -64,7 +68,7 @@ The agent will automatically execute the plugin within five minutes and send per
 ```
 [active mq]
 hostname="localhost"
-port="1009"
+port="1099"
 broker_name="broker_name"
 topic_name="topic_name"
 logs_enabled="False"
