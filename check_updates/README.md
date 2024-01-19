@@ -8,14 +8,14 @@ OS Supported: Ubuntu, Centos
 
 - Create a directory "check_updates".
 
-- Download the file "check_updates.sh" and place it under the "check_updates" directory
+- Download the file "check_updates.py" and place it under the "check_updates" directory
   
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.sh
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.py
   
   
 - Execute the script manually using the below command to check for valid JSON output.
 
-		bash check_updates.sh
+		python3 check_updates.py
 
 - Move the directory "check_updates" into the Site24x7 Linux Agent plugin directory - `/opt/site24x7/monagent/plugins/check_updates`
 	

@@ -1,9 +1,4 @@
-#!/usr/bin/python
-
-
 import json
-import sys
-import argparse
 import subprocess
 
 
@@ -41,9 +36,7 @@ cmd_dictionary = {
     "deactivating_unit" : "systemctl --state deactivating | grep -i 'loaded units listed'",
     "activating_unit" : "systemctl --state activating | grep -i 'loaded units listed'",
     "monitored_unit" : "systemctl --state monitored | grep -i 'loaded units listed'",
-    "systemd_version" : "systemctl --version | grep -i 'systemd'",
-    "systemd_uptime" : "systemctl status colord | grep -Po '.*; \K(.*)(?: ago)'",
-    #"system_health" : "systemctl --version | grep -i 'systemd'",
+    "systemd_version" : "systemctl --version | grep -i 'systemd'"
 }
 
   
@@ -51,7 +44,11 @@ cmd_dictionary = {
 def get_output(command):
     try:
         proc = subprocess.Popen([command], stdout=subprocess.PIPE, shell=True)
-        output = proc.communicate()[0]
+        output,error = proc.communicate()
+        if error:
+            output=None
+            return
+        
         output = output.strip()
         output = output.decode("utf-8")
     except Exception as e:
@@ -59,17 +56,25 @@ def get_output(command):
         return output  
         
     if " loaded units listed." in output:
-        output = output.strip(" loaded units listed.")
+        output = output.split()[0]
     elif "systemd " in output:
         output = output[13:29]
         
     return output                       
                    
+def run(param=None):
+    for each in cmd_dictionary:
+        result_json[each] = get_output(cmd_dictionary[each])
+    
+    result_json['plugin_version'] = PLUGIN_VERSION
+    result_json['heartbeat_required'] = HEARTBEAT
+    result_json['units'] = METRIC_UNITS
+    
+    return result_json
             
 if __name__ == '__main__':
-    
     for each in cmd_dictionary:
-    	result_json[each] = get_output(cmd_dictionary[each])
+        result_json[each] = get_output(cmd_dictionary[each])
     
     result_json['plugin_version'] = PLUGIN_VERSION
     result_json['heartbeat_required'] = HEARTBEAT
