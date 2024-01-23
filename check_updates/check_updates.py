@@ -3,6 +3,8 @@ import json
 import os
 import subprocess
 import hashlib
+from datetime import datetime
+
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
@@ -17,25 +19,64 @@ class update_check:
         self.maindata['plugin_version'] = PLUGIN_VERSION
         self.maindata['heartbeat_required']=HEARTBEAT
         self.maindata['units']=METRICS_UNITS
-        self.log_detailsenabled="True"
-        self.logtypename="Linux_Pending_Update"
+        self.log_enabled="True"
+        self.logtypename="Linux_Pending_Updates"
         self.logfilepath="/opt/site24x7/monagent/plugins/check_updates/updates_list*.txt"
 
     def calculate_sha256_hash(self,input_string):
+
         sha256_hash = hashlib.sha256()
         sha256_hash.update(input_string.encode('utf-8'))
         return sha256_hash.hexdigest()
-
             
-    def get_command_updates_outputput(self,command):
+    def get_command_updates_output(self,command):
+
         p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-        (updates_outputput, err) = p.communicate()
+        (updates_output, err) = p.communicate()
         p_status = p.wait()
-        return updates_outputput
+        return updates_output
     
-    def metriccollector(self):
+    def log_creator(self, command):
         
+            current_datetime = datetime.now()
+            file_time=current_datetime.strftime("%Y-%m-%d-%H:%M:%S")
+            plugin_script_path=os.path.dirname(os.path.realpath(__file__))
+            updates_output =self.get_command_updates_output(command).decode()
+            output_hash=self.calculate_sha256_hash(updates_output)                
+            log_details_raw=updates_output.split("\n")
+            log_details=""
+
+            if os.path.exists("{}/config.json".format(plugin_script_path)):
+                with open("{}/config.json".format(plugin_script_path), "r") as f:
+                    config=json.load(f)
+                    prev_hash=config['hash']
+                    file_version=config['file_version']
+
+                if prev_hash!=output_hash:
+                    os.remove("{}/updates_list_{}.txt".format(plugin_script_path,file_version))
+                    file_version=file_time
+                    config={"file_version":file_version, "hash":output_hash}
+                    with open("{}/config.json".format(plugin_script_path),"w") as f:
+                        json.dump(config, f)
+                    with open("{}/updates_list_{}.txt".format(plugin_script_path,file_version), 'a') as f:
+                        for i in range(0, len(log_details_raw), 4):
+                            log_details=" ".join(log_details_raw[i:i+4])
+                            f.write(log_details)
+                            f.write("\n")
+            else:
+                with open("{}/config.json".format(plugin_script_path),"x") as f:
+                    config={"file_version":file_time, "hash":output_hash}
+                    json.dump(config, f)
+                with open("{}/updates_list_{}.txt".format(plugin_script_path, file_time), 'a') as f:
+                    for i in range(0, len(log_details_raw), 4):
+                            log_details=" ".join(log_details_raw[i:i+4])
+                            f.write(log_details)
+                            f.write("\n")
+
+
+    def metriccollector(self):
         try:
+            
             os_content=""
             distro_file="/etc/os-release"
             if not os.path.isfile(distro_file):
@@ -55,41 +96,8 @@ class update_check:
 
             if os_name=="Ubuntu":
 
-                updates_output =self.get_command_updates_outputput("""apt list --upgradable 2> /dev/null| awk -F'/' '{print $1}' | xargs apt show 2> /dev/null | grep -E "Package:|Version:|Installed-Size:|Description:\"""").decode()
-                output_hash=self.calculate_sha256_hash(updates_output)                
-                log_details_raw=updates_output.split("\n")
-                log_details=""
-
-
-                if os.path.exists("config.json"):
-                    with open("config.json", "r") as f:
-                        config=json.load(f)
-                        prev_hash=config['hash']
-                        file_version=config['file_version']
-
-                    if prev_hash!=output_hash:
-                        os.remove("updates_list_{}.txt".format(file_version))
-                        file_version+=1
-                        config={"file_version":file_version, "hash":output_hash}
-                        with open("config.json","w") as f:
-                            json.dump(config, f)
-                        with open("updates_list_{}.txt".format(file_version), 'w') as f:
-                            for i in range(0, len(log_details_raw), 4):
-                                log_details=" ".join(log_details_raw[i:i+4])
-                                with open("updates_list_{}.txt".format(file_version), 'a') as f:
-                                    f.write(log_details)
-                                    f.write("\n")
-
-                else:
-                    with open("config.json","x") as f:
-                        config={"file_version":1, "hash":output_hash}
-                        json.dump(config, f)
-                    with open("updates_list_1.txt", 'w') as f:
-                        for i in range(0, len(log_details_raw), 4):
-                                log_details=" ".join(log_details_raw[i:i+4])
-                                with open("updates_list_1.txt", 'a') as f:
-                                    f.write(log_details)
-                                    f.write("\n")
+                ubuntu_command="""apt list --upgradable 2> /dev/null| awk -F'/' '{print $1}' | xargs apt show 2> /dev/null | grep -E "Package:|Version:|Installed-Size:|Description:\""""
+                self.log_creator(ubuntu_command)
 
                 file_path='/var/lib/update-notifier/updates-available'
                 lines = [line.strip('\n') for line in open(file_path)]
@@ -105,46 +113,11 @@ class update_check:
 
             elif os_name=="CentOS Linux":
 
-                updates_output=self.get_command_updates_outputput("""yum list updates -q | awk '{print $1}' | xargs yum info | grep -E "^Name|^Version|^Size|^Description\"""").decode()
-                output_hash=self.calculate_sha256_hash(updates_output)                
-
-                log_details_raw=updates_output.split("\n")
-                log_details=""
-
-
-                if os.path.exists("config.json"):
-                    with open("config.json", "r") as f:
-                        config=json.load(f)
-                        prev_hash=config['hash']
-                        file_version=config['file_version']
-
-                    if prev_hash!=output_hash:
-                        os.remove("updates_list_{}.txt".format(file_version))
-                        file_version+=1
-                        config={"file_version":file_version, "hash":output_hash}
-                        with open("config.json","w") as f:
-                            json.dump(config, f)
-                        with open("updates_list_{}.txt".format(file_version), 'w') as f:
-                            for i in range(0, len(log_details_raw), 4):
-                                log_details=" ".join(log_details_raw[i:i+4])
-                                with open("updates_list_{}.txt".format(file_version), 'a') as f:
-                                    f.write(log_details)
-                                    f.write("\n")
-
-                else:
-                    with open("config.json","x") as f:
-                        config={"file_version":1, "hash":output_hash}
-                        json.dump(config, f)
-                    with open("updates_list_1.txt", 'w') as f:
-                        for i in range(0, len(log_details_raw), 4):
-                                log_details=" ".join(log_details_raw[i:i+4])
-                                with open("updates_list_1.txt", 'a') as f:
-                                    f.write(log_details)
-                                    f.write("\n")
-
+                centos_command="""yum list updates -q | awk '{print $1}' | xargs yum info | grep -E "^Name|^Version|^Size|^Description\""""
+                self.log_creator(centos_command)
 
                 command="yum check-update --security | grep -i 'needed for security'"
-                updates_output = self.get_command_updates_outputput(command)
+                updates_output = self.get_command_updates_output(command)
                 if updates_output:
                     updates_output=updates_output.decode()
                     updates_output = updates_output.rstrip()
@@ -158,7 +131,6 @@ class update_check:
                     for each in packages_count:
                         if each.isdigit():
                             self.maindata['packages_to_be_updated']=each
-
             else:
                 self.maindata['msg']="{} not supported".format(os_name)
                 self.maindata['status']=0
@@ -169,14 +141,13 @@ class update_check:
              self.maindata['status']=0
 
         applog={}
-        if(self.log_detailsenabled in ['True', 'true', '1']):
-                applog["log_details_enabled"]=True 
+        if(self.log_enabled in ['True', 'true', '1']):
+                applog["log_enabled"]=True
                 applog["log_type_name"]=self.logtypename
                 applog["log_file_path"]=self.logfilepath
         else:
                 applog["log_details_enabled"]=False
         self.maindata['applog'] = applog
-
         return self.maindata
 
 
