@@ -33,14 +33,13 @@ All the plugins listed are made from the perspective of **Oracle Database Tuning
 
 
 ## Setting plugin prerequisites 
-The oracle plugin prerequisites can be set using the **SetenvPrerequisites.py** file. To execute the **SetenvPrerequisites.py** script, the below command should be executed. Executing the below command will create a new user and will grant the below previliges to the user.
+The Oracle plugin prerequisites can be set using the **SetenvPrerequisites.py** file. To run the **SetenvPrerequisites.py** script, the below command should be executed. Executing the below command will install the **oracledb** python module. And also creates a new user and grants the below privileges to the user.
 
 - grant select_catalog_role to {username}
 - grant create session to {username}
 
 ```
 ./SetenvPrerequisites.py --sysusername "sysusername" --syspassword "syspassword" --username "username" --password "password" --sid "sid"  --hostname "hostname" --port "port" --tls "tls" --wallet_location "wallet_location" --oracle_home "oracle_home"
-
 ```
 - **sysusername :**
   
