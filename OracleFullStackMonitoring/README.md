@@ -4,7 +4,6 @@ ___
 
 ## The Oracle Full Stack Monitoring includes the following plugins
 
-- [Oracle Blocking Locks Monitoring](https://github.com/site24x7/plugins/tree/master/OracleFullStackMonitoring/OracleBlockingLocks)
 - [Oracle Core Monitoring](https://github.com/site24x7/plugins/tree/master/OracleFullStackMonitoring/OracleCore)
 - [Oracle PDB Monitoring](https://github.com/site24x7/plugins/tree/master/OracleFullStackMonitoring/OraclePDB)
 - [Oracle Tablespace Details Monitoring](https://github.com/site24x7/plugins/tree/master/OracleFullStackMonitoring/OracleTablespaceDetails)
@@ -33,18 +32,57 @@ All the plugins listed are made from the perspective of **Oracle Database Tuning
 	```
 
 
+## Setting plugin prerequisites 
+The Oracle plugin prerequisites can be set using the **SetenvPrerequisites.py** file. To run the **SetenvPrerequisites.py** script, the below command should be executed. Executing the below command will install the **oracledb** python module. And also creates a new user and grants the below privileges to the user.
 
-## Prerequisites for db's in a cluster
+- grant select_catalog_role to {username}
+- grant create session to {username}
 
-Suppose there are multiple oracle databases in a cluster, in order to grant the above previlieges to all the databases in the cluster the [SetenvPrerequisites.py](https://github.com/site24x7/plugins/blob/master/OracleFullStackMonitoring/SetenvPrerequisites.py) script can be used.
+```
+./SetenvPrerequisites.py --sysusername "sysusername" --syspassword "syspassword" --username "username" --password "password" --sid "sid"  --hostname "hostname" --port "port" --tls "tls" --wallet_location "wallet_location" --oracle_home "oracle_home"
+```
+- **sysusername :**
+  
+  This user should be a DBA user with user creation previleges.
 
-Steps to use the [SetenvPrerequisites.py](https://github.com/site24x7/plugins/blob/master/OracleFullStackMonitoring/SetenvPrerequisites.py) are as follows :
+- **syspassword :**
+  
+  This is the password for the sysusername
 
-- Download the [SetenvPrerequisites.py](https://github.com/site24x7/plugins/blob/master/OracleFullStackMonitoring/SetenvPrerequisites.py) in the plugin directory of the installed oracle plugin.
+- **username :**
+  
+  This username is the user to be created
 
-- Make sure the ".cfg " file of the plugin is correctly filled for all instances of the oracle plugin.
+- **password :**
+  
+  This is the password to be created for the new user in the username
 
-- Execute the **SetenvPrerequisites.py** file
-- Once Excuted the **SetenvPrerequisites.py** will ask for **sysdba username and passsword**, based on the details provided in the ".cfg" file the db will be connected and the necessary previlieges will be granted 
+- **sid :**
+  
+  sid of the oracle instance
+
+- **hostname :**
+  
+  hostname of the oracle instance
+
+- **port :**
+  
+  port of the oracle instance
+
+- **tls :**
+
+  tls option for the oracle instance (true/ false)
+
+- **wallet_location :**
+  
+  wallet_location of the oracle_instance
+
+- **oracle_home :**
+  
+  oracle home path for the oracle instance
+
+
+  
+  
 
 
