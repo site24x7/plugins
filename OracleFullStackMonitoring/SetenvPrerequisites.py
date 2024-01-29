@@ -4,6 +4,7 @@ import warnings
 import os
 warnings.filterwarnings("ignore", module="oracledb")
 import oracledb
+import subprocess
 
 
 def setenv(args):
@@ -63,8 +64,19 @@ def setenv(args):
         print(f"Permission Granted to User: {username}")
         conn.close()
 
+
     except Exception as e:
         print(str(e))
+
+
+
+def install_module():
+    module_name="oracledb"
+    try:
+        subprocess.check_call(["pip3", "install", module_name])
+        print(f"Successfully installed {module_name}")
+    except subprocess.CalledProcessError:
+        print(f"Failed to install {module_name}")
 
 
 if __name__ == "__main__":
@@ -79,6 +91,7 @@ if __name__ == "__main__":
     tls="true"
     wallet_location = "/opt/oracle/product/19c/dbhome_1/wallet"
     oracle_home="/opt/oracle/product/19c/dbhome_1/"
+
 
     import argparse
     parser=argparse.ArgumentParser()
@@ -96,4 +109,5 @@ if __name__ == "__main__":
     args=parser.parse_args()
     os.environ['ORACLE_HOME']=args.oracle_home
 
+    install_module()
     setenv(args)
