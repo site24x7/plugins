@@ -61,6 +61,7 @@ def setenv(args):
         c.execute(query1)
         c.execute(query2)
         print(f"Permission Granted to User: {username}")
+        conn.close()
 
     except Exception as e:
         print(str(e))
