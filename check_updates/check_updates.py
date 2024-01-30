@@ -20,7 +20,7 @@ class update_check:
         self.maindata['heartbeat_required']=HEARTBEAT
         self.maindata['units']=METRICS_UNITS
         self.log_enabled="True"
-        self.logtypename="Linux_Pending_Updates"
+        self.logtypename="Linux Pending Updates"
         self.logfilepath="/opt/site24x7/monagent/plugins/check_updates/updates_list*.txt"
 
     def calculate_sha256_hash(self,input_string):
@@ -142,7 +142,7 @@ class update_check:
 
         applog={}
         if(self.log_enabled in ['True', 'true', '1']):
-                applog["log_enabled"]=True
+                applog["logs_enabled"]=True
                 applog["log_type_name"]=self.logtypename
                 applog["log_file_path"]=self.logfilepath
         else:
