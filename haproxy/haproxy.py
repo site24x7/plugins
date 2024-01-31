@@ -130,9 +130,9 @@ class haproxy:
 
 if __name__=="__main__":
     
-    username="rosehosting"
-    password="m0d1fyth15"
-    url="http://localhost:8800/stats;csv"
+    username=None
+    password=None
+    url="http://localhost:80/stats;csv"
 
     import argparse
     parser=argparse.ArgumentParser()
