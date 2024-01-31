@@ -6,7 +6,7 @@ HEARTBEAT=True
 METRICS_UNITS={}
 
 backend_metrics=["rtime","rtime_max","dresp","eresp","act","bck","chkdown","lastchg","downtime","lbtot","hrsp_5xx","hrsp_4xx","hrsp_3xx","hrsp_2xx","hrsp_1xx","hrsp_other","lastsess","cookie"]
-class appname:
+class haproxy:
 
     def __init__(self,args):
         
@@ -124,7 +124,7 @@ if __name__=="__main__":
     parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
     args=parser.parse_args()
 
-    obj=appname(args)
+    obj=haproxy(args)
 
     result=obj.metriccollector()
     print(json.dumps(result,indent=True))
