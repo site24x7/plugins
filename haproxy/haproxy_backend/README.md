@@ -1,5 +1,5 @@
 
-Plugin for Haproxy Monitoring
+Plugin for Haproxy Backend Monitoring
 =============================
 
 HAProxy is free, open source software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers. Monitor the performance metrics of your Haproxy setup using this plugin. 
@@ -17,27 +17,27 @@ Learn more https://www.site24x7.com/plugins/haproxy-monitoring.html
 
 ### Plugin Installation  
 
-- Create a directory named "haproxy"
+- Create a directory named "haproxy_backend"
 
-- Download the below files and place it under the "haproxy" directory.
+- Download the below files and place it under the "haproxy_backend" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/haproxy/haproxy.py
-  		wget https://raw.githubusercontent.com/site24x7/plugins/master/haproxy/haproxy.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/haproxy/haproxy_backend/haproxy_backend.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/haproxy/haproxy_backend/haproxy_backend.cfg
 
   #### Note:
   	- The cfg file given here is different from the /etc/haproxy/haproxy.cfg. This file is for plugin configuration and used only by site24x7 agent.
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the haproxy.py script.
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the haproxy_backend.py script.
   
 - Execute the below command with appropriate arguments to check for the valid JSON output:
   
 	```
-	python haproxy.py --username "username" --password "password" --url "http://localhost:80/stats;csv"
+	python haproxy_backend.py --username "username" --password "password" --url "http://localhost:80/stats;csv"
 	```
 
-- Example configuration for haproxy.cfg. The password given here will be encrypted.
+- Example configuration for haproxy_backend.cfg. The password given here will be encrypted.
 	```
-	[haproxy]
+	[haproxy_backend]
 	username="username"
 	password="password"
 	url="http://localhost:80/stats;csv"
