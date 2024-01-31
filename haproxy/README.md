@@ -32,7 +32,7 @@ Learn more https://www.site24x7.com/plugins/haproxy-monitoring.html
 - Execute the below command with appropriate arguments to check for the valid JSON output:
   
 	```
-	python haproxy.py --username "username" --password "password" --hostname "ip-address" --port "port"
+	python haproxy.py --username "username" --password "password" --url "http://localhost:80/stats;csv"
 	```
 
 - Example configuration for haproxy.cfg. The password given here will be encrypted.
@@ -40,8 +40,7 @@ Learn more https://www.site24x7.com/plugins/haproxy-monitoring.html
 	[haproxy]
 	username="username"
 	password="password"
-	hostname="localhost"
-	port="80"
+	url="http://localhost:80/stats;csv"
 	logs_enabled="True"
 	log_type_name="haproxy"
 	log_file_path="/var/log/haproxy.log"
