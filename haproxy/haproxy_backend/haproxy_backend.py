@@ -38,12 +38,33 @@ class appname:
             
             try:
                 response = requests.get(url = self.url,  auth = (self.username,  self.password))
-                if response.status_code==401:
-                     self.maindata['msg']="Authentication failed: Invalid credentials"
+                if response.status_code== 200:
+                     pass
+                elif response.status_code == 400:
+                    self.maindata['status']=0
+                    self.maindata['msg']="HTTP Error 400: Bad Request\nURL: "+self.url
+                    return self.maindata
+                elif response.status_code==401:
+                     self.maindata['status']=0
+                     self.maindata['msg']="HTTP Error 401: Unauthorized Access, Incorrect Username or Password"
                      return self.maindata
                 elif response.status_code == 403:
-                    self.maindata['msg']='Authentication failed: Access denied'
+                    self.maindata['status']=0
+                    self.maindata['msg']="HTTP Error 403: Access Denied for User, Insufficient Privileges\nURL: " + self.url
                     return self.maindata
+                elif response.status_code == 404:
+                    self.maindata['status']=0
+                    self.maindata['msg']="HTTP Error 404: The Requested URL is Not Found\nURL: "+self.url
+                    return self.maindata
+                elif response.status_code == 500:
+                    self.maindata['status']=0
+                    self.maindata['msg']="HTTP Error 500: Internal Server Error\nAn Unexpected condition was encountered on the server, and couldn't handle the request. Try again later, and maybe it'll feel better."
+                    return self.maindata
+                else:
+                    self.maindata['status']=0
+                    self.maindata['msg']="HTTP Error {}: Oops! Something went wrong".format(response.status_code)
+                    return self.maindata
+
 
             except requests.exceptions.RequestException as e:
                  self.maindata['msg']=str(e)
@@ -87,7 +108,7 @@ if __name__=="__main__":
     
     username=None
     password=None
-    url="http://localhost/stats;csv"
+    url="http://localhost:80/stats;csv"
     svname="BACKEND"
 
     import argparse
