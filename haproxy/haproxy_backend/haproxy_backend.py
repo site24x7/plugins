@@ -76,13 +76,14 @@ class appname:
 
             back_df=ha_df[ha_df.svname==self.svname][backend_metrics]
             for index, metric in enumerate(backend_metrics):
-                 self.maindata[f"{self.svname}_"+metric]=int(back_df.iloc[0,index])
+                 metric_name=metric.replace("_"," ").title()
+                 self.maindata[f"{self.svname} "+metric_name]=int(back_df.iloc[0,index])
             
             
             units={
-                 f'{self.svname}_rtime':'ms',
-                 f'{self.svname}_rtime_max':'ms',
-                 f'{self.svname}_lastsess':'ms'
+                 f'{self.svname} Rtime':'ms',
+                 f'{self.svname} Rtime Max':'ms',
+                 f'{self.svname} Lastsess':'ms'
 
             }
             self.maindata['units']=units
