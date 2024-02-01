@@ -95,6 +95,8 @@ The MongoDB plugin supports bulk installation across multiple servers through au
 
 - **Extra Info Page Faults per sec**: The rate at which page faults involving extra information occur per second.
 
+- **Heap Usage**: Heap memory usage of the database.
+
 - **Memory Bits**: The number of memory bits.
 
 - **Memory Mapped**: Memory mapped value.
@@ -150,6 +152,8 @@ The MongoDB plugin supports bulk installation across multiple servers through au
 - **Total Connections Created**: The total number of connections created since the database/server started.
 
 - **Total no of dbs**: The total number of databases on the system.
+
+- **Total Page Faults**: The total number of page faults that need disk operations.
 
 - **Uptime**: The total uptime of the database or system.
 
