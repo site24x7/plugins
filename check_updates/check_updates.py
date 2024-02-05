@@ -99,6 +99,14 @@ class update_check:
                 ubuntu_command="""apt list --upgradable 2> /dev/null| awk -F'/' '{print $1}' | xargs apt show 2> /dev/null | grep -E "Package:|Version:|Installed-Size:|Description:\""""
                 self.log_creator(ubuntu_command)
 
+                install_count_cmd="apt list --installed 2> /dev/null | wc -l"
+                res=self.get_command_updates_output(install_count_cmd).decode('utf-8').strip()
+                if res.isdigit():
+                    self.maindata['installed_packages_count']=int(res)-1
+                else:
+                    self.maindata['installed_packages_count']=0
+
+
                 file_path='/var/lib/update-notifier/updates-available'
                 lines = [line.strip('\n') for line in open(file_path)]
                 for line in lines:
@@ -115,6 +123,13 @@ class update_check:
 
                 centos_command="""yum list updates -q | awk '{print $1}' | xargs yum info | grep -E "^Name|^Version|^Size|^Description\""""
                 self.log_creator(centos_command)
+
+                install_count_cmd=" yum list installed | wc -l"
+                res=self.get_command_updates_output(install_count_cmd).decode('utf-8').strip()
+                if res.isdigit():
+                    self.maindata['installed_packages_count']=int(res)-2
+                else:
+                    self.maindata['installed_packages_count']=0
 
                 command="yum check-update --security | grep -i 'needed for security'"
                 updates_output = self.get_command_updates_output(command)
