@@ -60,6 +60,10 @@ class haproxy:
                     self.maindata['status']=0
                     self.maindata['msg']="HTTP Error 500: Internal Server Error\nAn Unexpected condition was encountered on the server, and couldn't handle the request. Try again later, and maybe it'll feel better."
                     return self.maindata
+                elif response.status_code == 503:
+                    self.maindata['status']=0
+                    self.maindata['msg']="HTTP Error 503: Service Unavailable. Please try again later."
+                    return self.maindata
                 else:
                     self.maindata['status']=0
                     self.maindata['msg']="HTTP Error {}: Oops! Something went wrong".format(response.status_code)
@@ -72,6 +76,9 @@ class haproxy:
             
             res=response.text
             ha_df=pd.read_csv(io.StringIO(res))
+            list_ha_df=list(ha_df)
+            [list_ha_df.append(col) for col in backend_metrics if col not in list_ha_df]
+            ha_df=ha_df.reindex(list_ha_df,axis=1)
             ha_df=ha_df.fillna(-1)          
 
             back_df=ha_df[ha_df.svname==self.svname][backend_metrics]
