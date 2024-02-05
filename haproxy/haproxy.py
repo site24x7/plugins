@@ -81,6 +81,10 @@ class haproxy:
                  return self.maindata
             res=response.text
             ha_df=pd.read_csv(io.StringIO(res))
+            list_ha_df=list(ha_df)
+            [list_ha_df.append(col) for col in sys_metrics if col not in list_ha_df]
+            [list_ha_df.append(col) for col in frontend_metrics if col not in list_ha_df]
+            ha_df=ha_df.reindex(list_ha_df,axis=1)
             ha_df=ha_df.fillna(-1)
 
 
