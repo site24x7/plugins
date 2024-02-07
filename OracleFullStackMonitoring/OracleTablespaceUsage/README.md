@@ -15,8 +15,20 @@
 	grant create session to {username}
 	```
 ---
+## Setting plugin prerequisites 
+Execute a script to automate the prerequisites
 
-### Plugin Installation  
+You can automate the fulfillment of all prerequisites for the Oracle plugin using the SetenvPrerequisites.py script. Running the script in the Oracle instance installs the oracledb Python module and creates a new user, granting the privileges below to the user:
+
+- grant select_catalog_role to {username}
+- grant create session to {username}
+
+To run the [SetenvPrerequisites.py](https://github.com/site24x7/plugins/blob/master/OracleFullStackMonitoring/SetenvPrerequisites.py) script, execute the command below in the Oracle instance
+```
+./SetenvPrerequisites.py --sysusername "sysusername" --syspassword "syspassword" --username "username" --password "password" --sid "sid"  --hostname "hostname" --port "port" --tls "tls" --wallet_location "wallet_location" --oracle_home "oracle_home"
+```
+
+## Plugin Installation  
 
 - Create a directory named "OracleTablespaceUsage".
 - Install the **oracledb** python module.

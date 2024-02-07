@@ -24,6 +24,7 @@ OS Supported: Ubuntu, Centos
 
 ### Metrics Captured
 
-- packages_to_be_updated
-- security_updates
-- installed_packages_count
+- Installed Packages Count
+- Upgrades Available For Installed Packages
+- Security Updates
+- Packages to be Updated
