@@ -44,6 +44,9 @@
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
+- Execute the below command to check for valid json output
+
+		python gpu_monitoring.py
 
 - Move the folder "gpu_monitoring" under Site24x7 Windows Agent plugin directory: 
 
