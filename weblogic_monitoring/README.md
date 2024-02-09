@@ -8,7 +8,7 @@ Monitor the availability and performance of your Weblogic Server with Site24x7's
 
 ## Prerequisites
 - Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you intend to run the plugin
-
+- Python version 3 or higher.
 - Install the jmxquery module for python. 
 
   ```
@@ -59,45 +59,66 @@ Monitor the availability and performance of your Weblogic Server with Site24x7's
 
 
 ## Plugin Installation
-- Create a directory named "weblogic_monitoring" under the Site24x7 Linux Agent plugin directory:
 
-  ```
-	 Linux             ->   /opt/site24x7/monagent/plugins/weblogic_monitoring
-  ```
 
-- Download all the files in the "weblogic_monitoring" folder and place it under the "weblogic_monitoring" directory.
+- Create a directory named "weblogic_monitoring":
 
- ```
-  wget https://raw.githubusercontent.com/site24x7/plugins/master/weblogic_monitoring/weblogic_monitoring.py
-  wget https://raw.githubusercontent.com/site24x7/plugins/master/weblogic_monitoring/weblogic_monitoring.cfg
- ```
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the weblogic_monitoring.py script.
+		mkdir weblogic_monitoring
+  		cd weblogic_monitoring/
+
+- Download all the files [weblogic_monitoring.py](https://github.com/site24x7/plugins/blob/master/weblogic_monitoring/weblogic_monitoring.py), [weblogic_monitoring.cfg](https://github.com/site24x7/plugins/blob/master/weblogic_monitoring/weblogic_monitoring.cfg) folder and place it under the "weblogic_monitoring" directory.
+
+
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/weblogic_monitoring/weblogic_monitoring.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/weblogic_monitoring/weblogic_monitoring.cfg
+
+
   
 - Execute the following command in your server to install jmxquery
   
   ```
   pip install jmxquery
   ```
+- Execute the below command to check for valid json output
+ 
+  		python weblogic_monitoring.py  --hostname "127.0.0.1"  --port "9010"  --server_name="Server_Name"  --username="username"  --password="password"
+    
+  ### Configurations:
+
+   **Provide your Weblogic configurations in the weblogic_monitoring.cfg file:**
+
+  ```
+  [weblogic_1]
+  hostname="127.0.0.1"
+  port="9010"
+  server_name="Server_Name"
+  username="username"
+  password="password"
+  logs_enabled=False
+  log_type_name=None
+  log_file_path=None
+  ```
+ #### Linux:
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the weblogic_monitoring.py script.
+
+- Move the directory "weblogic_monitoring" under the Site24x7 Linux Agent plugin directory: 
+
+		mv weblogic_monitoring /opt/site24x7/monagent/plugins/
 
 
+ #### Windows:
+  
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
-## Configurations
 
-**Provide your Weblogic configurations in the weblogic_monitoring.cfg file:**
+- Move the folder "weblogic_monitoring" under Site24x7 Windows Agent plugin directory: 
 
-```
-[weblogic_1]
-hostname=<HOSTNAME>
-port=<PORT NUMBER>
-server_name=<SERVER_NAME>
-username=<WEBLOGIC PASSWORD>
-password=<WEBLOGIC PASSWORD>
-logs_enabled=False
-log_type_name=None
-log_file_path=None
-```
+		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
+	
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
 Log in to Site24x7 and go to Server > Plugin Integrations > click on the name of the plugin monitor. You will be able to view performance charts and set thresholds for the various performance metrics.
 
 ## Metrics:
