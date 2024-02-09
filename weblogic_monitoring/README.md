@@ -99,7 +99,7 @@ Monitor the availability and performance of your Weblogic Server with Site24x7's
 		log_file_path=None
 
  
-  #### Linux:
+#### Linux:
 
   - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the weblogic_monitoring.py script.
 
@@ -108,7 +108,7 @@ Monitor the availability and performance of your Weblogic Server with Site24x7's
 		mv weblogic_monitoring /opt/site24x7/monagent/plugins/
 
  
-  #### Windows:
+#### Windows:
   
   - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
