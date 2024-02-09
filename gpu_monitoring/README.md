@@ -52,9 +52,10 @@
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ### Metrics Captured
-
-- Memory Utilization
-- CPU Utilization
-- Temperature
-- Individual Core Utilization
-- Device Name
+Name		            	| Description
+---         		   	|   ---
+GPU Utilization   | The percentage of the GPU's memory that is currently being used by processes or applications.
+Temperature  | The current operating temperature of the GPU, typically measured in degrees Celsius (°C).
+Memory   | The amount of memory currently being consumed by the GPU.
+Total Memory   | The total amount of memory available on the GPU.
+GPU   | The model name of the GPU
