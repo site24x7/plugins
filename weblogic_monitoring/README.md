@@ -83,37 +83,38 @@ Monitor the availability and performance of your Weblogic Server with Site24x7's
  
   		python weblogic_monitoring.py  --hostname "127.0.0.1"  --port "9010"  --server_name="Server_Name"  --username="username"  --password="password"
     
-  ### Configurations:
+### Configurations:
 
-   **Provide your Weblogic configurations in the weblogic_monitoring.cfg file:**
+- Provide your Weblogic configurations in the weblogic_monitoring.cfg file:
 
-  ```
-  [weblogic_1]
-  hostname="127.0.0.1"
-  port="9010"
-  server_name="Server_Name"
-  username="username"
-  password="password"
-  logs_enabled=False
-  log_type_name=None
-  log_file_path=None
-  ```
- #### Linux:
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the weblogic_monitoring.py script.
+		[weblogic_1]
+		hostname="127.0.0.1"
+		port="9010"
+		server_name="Server_Name"
+		username="username"
+		password="password"
+		logs_enabled=False
+		log_type_name=None
+		log_file_path=None
 
-- Move the directory "weblogic_monitoring" under the Site24x7 Linux Agent plugin directory: 
+ 
+  #### Linux:
+
+  - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the weblogic_monitoring.py script.
+
+  - Move the directory "weblogic_monitoring" under the Site24x7 Linux Agent plugin directory: 
 
 		mv weblogic_monitoring /opt/site24x7/monagent/plugins/
 
-
- #### Windows:
+ 
+  #### Windows:
   
-- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
+  - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
 
-- Move the folder "weblogic_monitoring" under Site24x7 Windows Agent plugin directory: 
-
+  - Move the folder "weblogic_monitoring" under Site24x7 Windows Agent plugin directory: 
+ 
 		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
 	
 
