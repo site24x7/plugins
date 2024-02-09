@@ -19,6 +19,9 @@ Learn more https://www.site24x7.com/plugins/haproxy-monitoring.html
 
 - Create a directory named "haproxy"
 
+		mkdir haproxy
+  		cd haproxy/
+
 - Download the below files and place it under the "haproxy" directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/haproxy/haproxy.py
@@ -45,5 +48,9 @@ Learn more https://www.site24x7.com/plugins/haproxy-monitoring.html
 	log_type_name="haproxy"
 	log_file_path="/var/log/haproxy.log"
 	```
+
+- Move the folder "haproxy" under Site24x7 Linux Agent plugin directory : 
+
+		mv haproxy /opt/site24x7/monagent/plugins/
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
