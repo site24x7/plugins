@@ -57,6 +57,7 @@ The agent will automatically execute the plugin within five minutes and send per
 ### Metrics Captured
 Name		            	| Description
 ---         		   	|   ---
+Average Memory   | Average Percentage of memory utilization across multiple GPUs
 GPU Utilization   | The percentage of the GPU's memory that is currently being used by processes or applications.
 Temperature  | The current operating temperature of the GPU, typically measured in degrees Celsius (°C).
 Memory   | The amount of memory currently being consumed by the GPU.
