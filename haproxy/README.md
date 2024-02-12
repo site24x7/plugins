@@ -12,6 +12,9 @@ Learn more https://www.site24x7.com/plugins/haproxy-monitoring.html
 
 - Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 - Download and install Python version 3 or higher.
+- Install Pandas library using the following command,
+
+		pip install pandas
 
 ---
 
