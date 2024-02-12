@@ -7,6 +7,13 @@ Get to know how to configure the PostgreSQL plugin and the monitoring metrics fo
 
 Learn more https://www.site24x7.com/plugins/postgres-monitoring.html
 
+### Prerequisites
+
+- Python version 3 or higher.
+- Execute the following command in your server to install psycopg2: 
+
+		pip3 install psycopg2-binary
+
 ### Plugin Installation  
 
 - Create a directory named "postgres".
