@@ -4,8 +4,8 @@
                                                                                               
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
-
+- Download and install the latest version of the [Site24x7 Agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install Python version 3 or higher.
 - Install aerospike module for python
 ```
   pip3 install aerospike
@@ -17,6 +17,9 @@
 ### Plugin Installation  
 
 - Create a directory named "aerospike_stats_monitoring".
+
+		mkdir aerospike_stats_monitoring
+  		cd aerospike_stats_monitoring/
       
 - Download all the files in the "aerospike_stats_monitoring" folder and place it under the "aerospike_stats_monitoring" directory.
 
@@ -29,24 +32,24 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python3 aerospike_stats_monitoring.py --hostname=<name of the host> --port=<port> --tls_enable=<true/false> --tls_name=<tls name> --cafile=<cafile path>  --username=<username> --password=<password>  --node_id=<node id>
+		python3 aerospike_stats_monitoring.py --hostname "localhost" --port "3000" --tls_enable "true/false" --tls_name "tls name" --cafile "cafile path"  --username "username" --password "password"  --node_id "node id"
 
 #### Configurations
 
 - Provide your aerospike_stats_monitoring configurations in aerospike_stats_monitoring.cfg file.
     ```
     [Aerospike Stats Monitoring]
-    hostname=<HOSTNAME>
-    port=<PORT>
+    hostname="localhost"
+    port="3000"
     tls_enable=false
     tls_name=None
     cafile=None
-    username=<USERNAME>
-    password=<PASSWORD>
-    node_id=<NODE ID>
+    username="USERNAME"
+    password="PASSWORD"
+    node_id="NODE ID"
     logs_enabled=False
-    log_type_name=<LOG TYPE NAME>
-    log_file_path=<LOG FILE PATH>
+    log_type_name="LOG TYPE NAME"
+    log_file_path="LOG FILE PATH"
     ```	
 
 #### Linux
@@ -55,14 +58,15 @@
 
 - Place the "aerospike_stats_monitoring" under the Site24x7 Linux Agent plugin directory:
 
-        Linux    ->   /opt/site24x7/monagent/plugins/aerospike_stats_monitoring
+        mv aerospike_stats_monitoring /opt/site24x7/monagent/plugins/aerospike_stats_monitoring
 
 #### Windows
-- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
-https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
+
 -  Further move the folder "aerospike_stats_monitoring" into the  Site24x7 Windows Agent plugin directory:
 
-        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\aerospike_stats_monitoring
+        C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\aerospike_stats_monitoring
 
 
 
