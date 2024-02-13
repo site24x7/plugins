@@ -33,14 +33,14 @@
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python3 aerospike_namespace_monitoring.py --hostname "IP of the host" --port "port" --tls_enable "true/false" --tls_name "tls name" --cafile "cafile path"  --username "username" --password "password"  --node_id "node id" --namespace "namespace"
+		python3 aerospike_namespace_monitoring.py --hostname "localhost" --port "3000" --tls_enable "true/false" --tls_name "tls name" --cafile "cafile path"  --username "username" --password "password"  --node_id "node id" --namespace "namespace"
 
 #### Configurations
 
 - Provide your aerospike_namespace_monitoring configurations in aerospike_namespace_monitoring.cfg file.
     ```
     [Aerospike Namespace Monitoring]
-    hostname="localhost
+    hostname="localhost"
     port="3000"
     tls_enable=false
     tls_name=None
