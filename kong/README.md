@@ -7,7 +7,7 @@ Follow the below steps to configure the Kong plugin and the monitoring metrics f
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 
 ### Plugin installation
@@ -15,6 +15,9 @@ Follow the below steps to configure the Kong plugin and the monitoring metrics f
 ##### Linux 
 
 - Create a folder "kong".
+
+		mkdir kong
+  		cd kong/
 
 - Download all the files in "kong" folder and place it under the "kong" directory
 
@@ -27,18 +30,18 @@ Follow the below steps to configure the Kong plugin and the monitoring metrics f
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python kong.py --host_name=localhost --port=8001 --service_name=<service-name>
+		python kong.py --host_name "localhost" --port "8001" --service_name "service-name"
 		
 - Change the below configurations in "kong.cfg":
 
 		[display_name]
-		host_name=“<your_host_name>”
+		host_name=“host_ip_or_domain”
 		port=“8001”
-		service_name="<service_name>"
+		service_name="service_name"
 		
 - Move the folder "kong" under Site24x7 Linux Agent plugin directory : 
 
-		Linux            ->   /opt/site24x7/monagent/plugins/
+		mv kong /opt/site24x7/monagent/plugins/
 
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
