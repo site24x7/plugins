@@ -44,43 +44,27 @@ Follow the below steps to configure the Kong plugin and the monitoring metrics f
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ### Metrics Captured
+
+Name		            	| Description		            	| Unit
+---         		   	|   ---					| ---
+connections_waiting | metric calculates the current number of idle client connections waiting for a request. | [connection]
+connections_accepted | metric calculates the total number of accepted client connections. | [connection]
+connections_handled | metric calculates the total number of handled connections. Generally, the parameter value is the same as accepts unless some resource limits have been reached. | [connection]
+connections_active | metric calculates the acurrent number of active client connections including Waiting connections. | [connection]
+connections_reading | metric calculates the current number of connections where Kong is reading the request header.  | [connection]
+total_requests | metric calculates the total number of client requests. | [connection]
+connections_writing | metric calculates the current number of connections where nginx is writing the response back to the client. | [connection]	
+kong_bandwidth.egress | metric calculates the total bandwidth (egress->upload) in bytes consumed by the service in Kong. | [byte]
+kong_bandwidth.ingress | metric calculates the total bandwidth (ingress->download) in bytes consumed by the service in Kong. | [byte]
+kong_datastore_reachable | metric shows whether the kong server datastore is reachable or not (SAFE/CRITICAL).  | [connectivity]
+kong_http_status | metric shows the status code for customer per service/route in Kong. | [code]
+kong_latency_bucket.kong | metric calculates the latency bucket added by kong latnecy for each service/route in Kong. | [millisecond]
+kong_latency_bucket.request | metric calculates the latency bucket added by request latnecy for each service/route in Kong. | [millisecond]
+kong_latency_bucket.upstream | metric calculates the latency bucket added by upstream latnecy for each service/route in Kong. | [millisecond]
+kong_latency_count.kong | metric calculates the latency count added by kong latnecy for each service/route in Kong. | [millisecond]		
+kong_latency_count.request | metric calculates the latency count added by request latnecy for each service/route in Kong. | [millisecond]
+kong_latency_count.upstream | metric calculates the latency count added by upstream latnecy for each service/route in Kong. | [millisecond]
+kong_latency_sum.kong | metric calculates the latency sum added by kong latnecy for each service/route in Kong. | [millisecond]
+kong_latency_sum.request | metric calculates the latency sum added by request latnecy for each service/route in Kong. | [millisecond]
+kong_latency_sum.upstream | metric calculates the latency sum added by upstream latnecy for each service/route in Kong. | [millisecond]		
 ---
-	connections_waiting -> metric calculate the current number of connections where nginx is writing the response back to the client. [connection]
-
-	connections_accepted -> metric calculates the total number of accepted client connections. [connection]
-
-	connections_handled -> metric calculates the total number of handled connections. Generally, the parameter value is the same as accepts unless some resource limits have been reached. [connection]
-
-	connections_active -> metric calculate the acurrent number of active client connections including Waiting connections. [connection]
-
-	connections_reading -> metric calculate the current number of connections where Kong is reading the request header. [connection]
-
-	total_requests -> metric calculate the total number of client requests. [connection]
-
-	connections_writing -> metric calculate the current number of connections where nginx is writing the response back to the client. [connection]
-	
-	kong_bandwidth.egress -> metric calculate the total bandwidth (egress->upload) in bytes consumed by the service in Kong [byte]
-
-	kong_bandwidth.ingress -> metric calculate the total bandwidth (ingress->download) in bytes consumed by the service in Kong [byte]
-
-	kong_datastore_reachable -> metric shows whether the kong server datastore is reachable or not (SAFE/CRITICAL). [connectivity]
-
-	kong_http_status -> metric shows the status code for customer per service/route in Kong [code]
-
-	kong_latency_bucket.kong -> metric calculate the latency bucket added by kong latnecy for each service/route in Kong. [millisecond]
-
-	kong_latency_bucket.request -> metric calculate the latency bucket added by request latnecy for each service/route in Kong. [millisecond]
-
-	kong_latency_bucket.upstream -> metric calculate the latency bucket added by upstream latnecy for each service/route in Kong. [millisecond]
-
-	kong_latency_count.kong -> metric calculate the latency count added by kong latnecy for each service/route in Kong. [millisecond]		
-
-	kong_latency_count.request -> metric calculate the latency count added by request latnecy for each service/route in Kong. [millisecond]
-
-	kong_latency_count.upstream -> metric calculate the latency count added by upstream latnecy for each service/route in Kong. [millisecond]
-
-	kong_latency_sum.kong -> metric calculate the latency sum added by kong latnecy for each service/route in Kong. [millisecond]
-
-	kong_latency_sum.request -> metric calculate the latency sum added by request latnecy for each service/route in Kong. [millisecond]
-
-	kong_latency_sum.upstream -> metric calculate the latency sum added by upstream latnecy for each service/route in Kong. [millisecond]		
