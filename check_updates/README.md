@@ -7,7 +7,7 @@ OS Supported: Ubuntu, Centos
 ---
 Download the below file.
 ```
-wget 
+wget https://raw.githubusercontent.com/site24x7/plugins/suraj/check_updates/install_site24x7_check_updates.py && sed -i "1s|^.*|#! $(which python3)|" install_site24x7_check_updates.py
 ```
 
 Execute the file using the below command.
