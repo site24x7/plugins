@@ -64,11 +64,11 @@ Function GetErrorMessage
 Function Get-ScheduledJobDetails($jobName)
 {
     $ret = New-Object -TypeName PSObject
-    $atributeList = @("TaskName","Author","Scheduled Task State","Start Date","Next Run Time","Status","Last Run Time","Last Result")
+    $attributeList = @("TaskName","Author","Scheduled Task State","Start Date","Next Run Time","Status","Last Run Time","Last Result")
     $jobDetails  = schtasks /QUERY /FO LIST /V /TN $jobName
-    foreach($atribute in $atributeList)
+    foreach($attribute in $attributeList)
     {
-        $temp = ($jobDetails | Select-String -Pattern $atribute| Select-Object -Last 1).ToString()
+        $temp = ($jobDetails | Select-String -Pattern $attribute| Select-Object -Last 1).ToString()
         $key,$value = $temp.Split(':',[StringSplitOptions]"None")
         $key = ($key.trim()).Replace(' ',"_");
         $value = ($value -join ':').trim()
