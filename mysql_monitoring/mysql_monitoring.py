@@ -305,7 +305,9 @@ class MySQL(object):
                 myresult_slave=cursor.fetchall()
                 cursor.execute('SHOW MASTER STATUS')
                 myresult_master=cursor.fetchall()
-                if myresult_master:
+                if myresult_master and myresult_slave:
+                        data['mysql_node_type']='Master & slave'
+                elif myresult_master:
                         data['mysql_node_type']='Master'
                 elif myresult_slave : 
                     for i in range(len(myresult_slave[0])):
