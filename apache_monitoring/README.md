@@ -2,6 +2,12 @@
 
 The Apache HTTP Server, commonly known as Apache, is the world's most used web server software. Configure the Site24x7 Apache plugin to monitor the performance of your Apache server and stay on top of issues at all times.
 
+## Installer for Apache Plugin
+
+Please use the installation script to install Apache plugin with its prerequisites.
+
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/InstallSite24x7ApachePlugin.sh && bash InstallSite24x7ApachePlugin.sh
+
 ## Prerequisites
 
 Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
@@ -134,7 +140,9 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 6. If you have virtual hosts configured and/or need to monitor the status of multiple domains using the same plugin, refer [this link](https://www.site24x7.com/help/admin/adding-a-monitor/plugins/custom-plugins.html#multiple-config) to configure the domains.
 
 7. Move the _apache\_monitoring_ folder to the _Site24x7 server monitoring plugins directory_.
+
 For Linux: /opt/site24x7/monagent/plugins/
+
 For Windows: C:\Program Files (x86)\Site24x7\WinAgent\monitoring\plugins\
 
 The agent will automatically execute the plugin within five minutes and display performance data in Site24x7.
