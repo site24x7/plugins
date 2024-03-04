@@ -6,10 +6,7 @@ The Apache HTTP Server, commonly known as Apache, is the world's most used web s
 
 Please use the installation script to install Apache plugin with its prerequisites.
 
-
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/InstallSite24x7ApachePlugin.sh
-	bash InstallSite24x7ApachePlugin.sh
-
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/InstallSite24x7ApachePlugin.sh && bash InstallSite24x7ApachePlugin.sh
 
 ## Prerequisites
 
