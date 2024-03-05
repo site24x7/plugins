@@ -28,7 +28,7 @@ service_name="site24x7monagent.service"
 if systemctl --all --type=service | grep -Fq "$service_name"; then
     agent_service=true
 else
-    echo "Site24x7LinuxAgent not installed. This agent is manatory to install the apache plugin."
+    echo "The Site24x7LinuxAgent is required for the Apache plugin installation. Install the agent before proceeding."
     exit
 fi
 
