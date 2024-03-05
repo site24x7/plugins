@@ -2,9 +2,9 @@
 
 The Apache HTTP Server, commonly known as Apache, is the world's most used web server software. Configure the Site24x7 Apache plugin to monitor the performance of your Apache server and stay on top of issues at all times.
 
-## Installer for Apache Plugin
+## Apache plugin installer
 
-Please use the installation script to install Apache plugin with its prerequisites.
+On Linux servers, execute the command below in the terminal to run an installer that checks the prerequisites and installs the plugin.
 
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/InstallSite24x7ApachePlugin.sh && bash InstallSite24x7ApachePlugin.sh
 
