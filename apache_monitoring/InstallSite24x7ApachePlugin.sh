@@ -22,12 +22,16 @@ content="\n\t<Location /server-status>\n\t\tSetHandler server-status\n\t\tRequir
 
 service_name="site24x7monagent.service"
 
+
+service_name="site24x7monagent.service"
+
 if systemctl --all --type=service | grep -Fq "$service_name"; then
     agent_service=true
 else
     echo "Site24x7LinuxAgent not installed. This agent is manatory to install the apache plugin."
     exit
 fi
+
 
 #trap Function To reset terminal colours 
 
@@ -84,7 +88,7 @@ install (){
         download_files https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.cfg
 
     else
-        output=$(mkdir $temp_dir)
+        output=$(mkdir -p $temp_dir)
          if [ $? -ne 0 ]; then
             tput setaf 1
             echo "------------Error Occured------------"
@@ -110,7 +114,7 @@ get_plugin_data() {
     read -p "Do you want to configure an alternate port or status URL?? (y or n):" change_url
     echo
     
-    if [ $change_url = "n" -o $change_url = "N" ] ; then
+    if [ -z "$change_url" ] || [ $change_url = "n" -o $change_url = "N" ] ; then
         url="http://localhost:80$endpoint?auto"
     elif [ $change_url = "y" -o $change_url = "Y" ] ; then
         tput setaf 4
