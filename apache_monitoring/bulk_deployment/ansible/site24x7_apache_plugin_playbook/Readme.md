@@ -22,7 +22,7 @@ This playbook is an `Example` on how to enable mod_status using ansible playbook
 
 #### 2. Playbook: site24x7_apache_plugin_playbook.yml
 
-The playbook performs the following processes that are required for the Site24x7 MongoDB plugin to collect performance metrics.
+The playbook performs the following processes that are required for the Site24x7 Apache plugin to collect performance metrics.
 
 - Installs `python3` if not found.
 - Installs `pip3` if not found.

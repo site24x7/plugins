@@ -1,40 +1,6 @@
 #!/bin/bash
 
-#v-beta_testing
-
-# Install
-plugin=apache_monitoring
-agent_dir=/opt/site24x7/monagent
-temp_dir=$agent_dir/temp/plugins/$plugin
-plugin_dir=$agent_dir/plugins/
-py_file="$temp_dir/$plugin.py"
-cfg_file="$temp_dir/$plugin.cfg"
-
-
-
-# Enable
-debian_path=/etc/apache2/mods-available
-centos_path=/etc/httpd/conf.d
-status_conf_file=status.conf
-
-endpoint="/server-status"
-content="\n\t<Location /server-status>\n\t\tSetHandler server-status\n\t\tRequire local\n\t</Location>"
-
-service_name="site24x7monagent.service"
-
-
-service_name="site24x7monagent.service"
-
-if systemctl --all --type=service | grep -Fq "$service_name"; then
-    agent_service=true
-else
-    echo "The Site24x7LinuxAgent is required for the Apache plugin installation. Install the agent before proceeding."
-    exit
-fi
-
-
 #trap Function To reset terminal colours 
-
 func_exit() {
     tput sgr0 # Reset Terminal Colors
     exit 0 # Cleanly exit script
@@ -43,6 +9,72 @@ func_exit() {
 #Trap for ctr+c(SIGINT) and ctrl+z(SIGTSTP)
 
 trap func_exit SIGINT SIGTSTP
+
+# Agent and Plugin Directory
+plugin=apache_monitoring
+agent_dir=/opt/site24x7/monagent
+
+# Enable
+debian_path=/etc/apache2/mods-available
+centos_path=/etc/httpd/conf.d
+status_conf_file=status.conf
+endpoint="/server-status"
+content="\n\t<Location /server-status>\n\t\tSetHandler server-status\n\t\tRequire local\n\t</Location>"
+
+agent_check(){
+# Check if the service exists
+    if  ! [ -d $agent_dir"/bin"  ]; then
+
+      tput setaf 3
+      if [ $i -eq 0 ]; then
+        echo "The Site24x7LinuxAgent is not installed in the default $agent_dir directory."
+      fi
+      echo -e "Enter the path of the directory where the Site24x7LinuxAgent is installed: \c"
+      read -r  agent_dir
+      tput sgr0
+      
+    fi
+
+}
+
+
+for (( i=0; i<3; i++ )); do
+  agent_check
+  if [ -z $agent_dir ]; then
+    tput setaf 1
+    echo
+    echo "The Site24x7LinuxAgent is required to install the Apache plugin. Enter the correct directory path of the agent to proceed."
+    agent_dir=/opt/site24x7/monagent
+    tput sgr0
+  else
+    agent_status=$($agent_dir/bin/monagent status)
+    if ! echo "$agent_status" | grep -q "Site24x7 monitoring agent service" ; then
+        tput setaf 1
+        echo
+        echo "The Site24x7LinuxAgent is required to install the Apache plugin. Enter the correct directory path of the agent to proceed."
+        tput sgr0
+
+    else
+        break
+    fi
+  fi
+
+  if [ $i -eq 2 ]; then
+      echo "No such file or directory found. Install the Site24x7LinuxAgent and try installing the plugin again."
+      exit
+  fi
+done
+
+
+
+# Variables for the plugin installation
+temp_dir=$agent_dir/temp/plugins/$plugin
+plugin_dir=$agent_dir/plugins/
+py_file="$temp_dir/$plugin.py"
+cfg_file="$temp_dir/$plugin.cfg"
+reinstall=false
+
+
 
 download_files() {
 
@@ -118,10 +150,10 @@ get_plugin_data() {
         url="http://localhost:80$endpoint?auto"
     elif [ $change_url = "y" -o $change_url = "Y" ] ; then
         tput setaf 4
-        read -p "  Enter the required URL: " url
+        read -r -p  "  Enter the required URL: " url
     else
         tput setaf 4
-        read -p "  Enter the required URL: " url
+        read -r -p "  Enter the required URL: " url
     fi
 
     tput setaf 4
@@ -131,9 +163,9 @@ get_plugin_data() {
     echo
     echo "  Press Enter to skip if you don't have any credentials set for the endpoint."
     echo
-    read -p "  Enter the User Name: " username
-    read -sp "  Enter the Password: " password
-    echo
+    read -r -p "  Enter the User Name: " username
+    read -r -p "  Enter the Password: " password
+    echo $password
     tput sgr0
 }
 
@@ -149,7 +181,7 @@ python_path_update() {
         output=$(which python)
         if [ $? -ne 0 ]; then
             tput setaf 1
-            echo "------------Could Not Update Python Path------------"
+            echo "------------The Python path could not be updated------------"
             echo 
             tput sgr0
             echo $(python --version)
@@ -159,12 +191,12 @@ python_path_update() {
             output=$(sed -i "1s|^.*|#! $output|" $py_file)
             if [ $? -ne 0 ]; then
                 tput setaf 1
-                echo "------------Could Not Update Python Path------------"
+                echo "------------The Python path could not be updated------------"
                 echo 
                 tput sgr0
             
             else
-                echo "Python Path Updated with $(python --version 2>&1)"
+                echo "Python path updated with $(python --version 2>&1)"
             fi
         fi
 
@@ -173,11 +205,11 @@ python_path_update() {
          output=$(sed -i "1s|^.*|#! $output|" $py_file)
          if [ $? -ne 0 ]; then
             tput setaf 1
-            echo "------------Could Not Update Python Path------------"
+            echo "------------The Python path could not be updated------------"
             echo 
             tput sgr0
         else
-            echo "Python Path Updated with $(python3 --version)"
+            echo "Python path updated with $(python3 --version)"
         fi
     echo
     
@@ -205,7 +237,7 @@ check_plugin_execution() {
         echo "------------Error Occured------------"
         echo $output
         echo
-        echo "Status And Error Message:"
+        echo "Status and Error Message:"
         echo $(grep -E '"status": 0' <<< "$output" )
         echo $(grep -E '"msg": *' <<< "$output" )
         tput sgr0
@@ -213,8 +245,8 @@ check_plugin_execution() {
 
     elif ! echo "$output" | grep -qE "\"busy_workers\":|\"idle_workers\":"; then
         tput setaf 3
-        echo "The Metrics is not present in the output.Please check if the entered url has the status module endpoint."
-        echo "The url example: http://localhost:80$endpoint?auto"
+        echo "The output does not contain metrics. Check if you have provided the correct endpoint for the status URL."
+        echo "An example of a status URL: http://localhost:80$endpoint?auto"
         error_handler 1 "$output"
 
     else
@@ -236,8 +268,10 @@ add_conf() {
     #cat $cfg_file
     output=$(sed -i "/url*/c\url = \"$url\""  "$cfg_file")
     error_handler $? $output
-    output=$(sed -i "/username*/c\username = \"$username\""  $cfg_file)
+    username=$(echo "$username" | sed 's/\\/\\\\/g')
+    output=$(sed -i "/username*/c\username = \"$username\"" $cfg_file)
     error_handler $? $output
+    password=$(echo "$password" | sed 's/\\/\\\\/g')
     output=$(sed -i "/password*/c\password = \"$password\""  $cfg_file)
     error_handler $? $output
     #echo "after"
@@ -249,9 +283,10 @@ check_plugin_exists() {
     if  [[ -d "$plugin_dir/$plugin" ]]  ; then 
         echo "The Apache monitoring plugin folder already exists in the Plugins directory."
         read -p "Do you want to reinstall the plugin? (y or n):" reinstall
-        if [ $reinstall = "y" -o $reinstall = "Y" ] ; then
+        if [ -z "$reinstall" ] || [ $reinstall = "y" -o $reinstall = "Y" ] ; then
             rm -rf "$plugin_dir/$plugin"
-        elif [ $reinstall = "n" -o $reinstall = "N" ] ; then
+            reinstall=true
+        else
             echo "Process exited."
             exit
         fi
@@ -340,7 +375,7 @@ check_if_file_exists() {
             restart_apache
             return 1
         else
-            echo "Proceding to plugin installation."
+            echo "Proceeding to plugin installation."
         fi
     fi
 
@@ -389,7 +424,7 @@ enabled_or_not() {
             restart_apache
 
         else 
-            echo "Invalid Input"
+            echo "Invalid input"
             exit
         fi
 
@@ -408,8 +443,8 @@ get_endpoint(){
     
     if echo $text | grep -qE "^[^#]*\<Location\>" ; then
         endpoint=$(echo $text | grep  "^[^#]*\<Location\>" | sed -n 's/^.*<Location \([^>]*\)>.*/\1/p') 
-        echo "The endpoint of mod_status: $endpoint"
-        echo "Proceding to install the plugin."
+        echo "The endpoint of mod_status is: $endpoint"
+        echo "Proceeding to install the plugin."
         echo
         break
         
@@ -434,7 +469,7 @@ restart_apache(){
 
      echo "The configuration changes will only reflect after restarting or reloading the Apache web server."
      read -p "Do you want to restart the Apache web server? (y or n):" restart
-        if [ $restart = "y" -o $restart = "Y" ] ; then
+        if  [ -z "$restart" ] || [ $restart = "y" -o $restart = "Y" ] ; then
             echo "Restarting the Apache web server."
             if [[ -f /etc/debian_version ]] ; then
                 output=$(systemctl restart apache2)
@@ -446,12 +481,31 @@ restart_apache(){
                 echo "Completed."
             fi
             
-        elif [ $restart = "n" -o $restart = "N" ] ; then
+        else
             echo "Process exited."
             
         fi
 
 
+}
+
+restart_agent(){
+
+    if $restart ; then
+        read -p "Do you want to restart the Site24x7LinuxAgent?(y or n): " re_agent
+        if  [ -z "$re_agent" ] || [ $re_agent = "y" -o $re_agent = "Y" ] ; then
+        
+            output=$($agent_dir/bin/monagent restart)
+            error_handler $? $output
+            echo "Completed."
+
+        else
+            echo "Process exited."
+        fi
+        echo "If you have installed the agent as non-root, execute the command below with appropriate details to allow the user access to the plugin folder."
+        echo "For example, if the user is 'site24x7-agent' and the group is 'site24x7-group', the command would be:"
+        echo "chown -R site24x7-agent:site24x7-group $plugin_dir$plugin"
+    fi
 }
 
 if [[ -f /etc/debian_version ]] ; then
@@ -498,6 +552,7 @@ install_plugin() {
     echo
     echo "------------Plugin installed successfully------------"
     tput sgr0
+    restart_agent
 }
 
 
