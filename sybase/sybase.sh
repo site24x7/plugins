@@ -13,7 +13,7 @@ JAVA_HOME="/usr/bin"
 
 PLUGIN_FOLDER_NAME="sybase"
 
-PLUGIN_PATH="/opt/site24x7/monagent/plugins/"$PLUGIN_FOLDER_NAME
+PLUGIN_PATH=""
 export CLASS_PATH=$PLUGIN_PATH/json-20140107.jar:$PLUGIN_PATH/jconn4.jar
 
 $JAVA_HOME/javac -cp $CLASS_PATH -d $PLUGIN_PATH $PLUGIN_PATH"/sybase.java"
