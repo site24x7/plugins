@@ -25,6 +25,10 @@
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibmdb2/ibmdb2.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibmdb2/ibmdb2.cfg
 
+ - Install ibm_db module for python
+	```
+	  pip install ibm_db
+	```
  
 - Execute the below command with appropriate arguments to check for the valid json output:
 	```
