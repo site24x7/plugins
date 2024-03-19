@@ -19,7 +19,7 @@
 	}
 	```
 3. Save and close the /etc/nginx/nginx.conf file.
-4. Now Reload the nginx to apply the changes :
+4. Now reload the nginx to apply the changes :
 	```bash
 	sudo systemctl reload nginx
 	```
