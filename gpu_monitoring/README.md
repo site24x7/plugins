@@ -31,7 +31,7 @@
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the gpu_monitoring.py script.
 
-- Execute the below command to check for valid json output.
+- Execute the below command in terminal to check for valid json output.
 
 		python gpu_monitoring.py
   
@@ -53,7 +53,7 @@
 	pip install gpustat
 	```
  
-- Execute the below command to check for valid json output.
+- Execute the below command in command prompt to check for valid json output.
 
 		python gpu_monitoring.py
 
