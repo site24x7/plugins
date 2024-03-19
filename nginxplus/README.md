@@ -23,7 +23,7 @@
 	```bash
 	sudo systemctl reload nginx
 	```
-5. Please test the nginx status URL; it should return a response without error.
+5. Test the nginx status URL; it should return a response without error.
 
 	For example:		
 	```
