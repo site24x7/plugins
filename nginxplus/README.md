@@ -52,11 +52,11 @@
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the nginxplus.py script.
 
-- Execute the below command with appropriate arguments to check for the valid json output:
+- Execute the below command with the appropriate arguments to check for valid JSON output.
 
 		python3 nginxplus.py --nginx_status_url "http://localhost:80/api/3" --username "nginxplus username" --password "nginxplus password" 
 
-- After executing the above command and receiving valid JSON, provide the command argument as configurations in the `nginxplus.cfg` file.
+- After executing the above command and receiving valid JSON, provide the command argument as configurations in the `nginxplus.cfg` file:
 
 		[nginxplus]
 		nginx_status_url="http://localhost:80/api/3"
