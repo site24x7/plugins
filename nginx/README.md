@@ -9,20 +9,20 @@
 
 1. Open terminal and run the following command to open NGINX server configuration file.
 
-		 sudo vi /etc/nginx/nginx.conf 
+		 sudo vi /etc/nginx/nginx.conf
 
 2. Add the following code inside the server block which is present in the "/etc/nginx/nginx.conf" file.
-```
-location /nginx_status {
-    stub_status;
+	```
+	location /nginx_status {
+	    stub_status;
     	
-}
-```
+	}
+	```
 3. Save and close the /etc/nginx/nginx.conf file.
 4. Now reload the nginx to apply the changes :
-```bash
-sudo systemctl reload nginx
-```
+	```bash
+	sudo systemctl reload nginx
+	```
 
 5. Test the nginx status URL; it should return a response without error.
 
