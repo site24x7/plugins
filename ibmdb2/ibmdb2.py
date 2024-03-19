@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import json
-import ibm_db
+
 import traceback
 PLUGIN_VERSION = "1"
 
@@ -24,6 +24,24 @@ METRICS_UNITS={'no_of_bufferpools':'count',
                'lock_timeouts':'ms',
                'lock_wait_time':'ms'}
 
+data = {}
+data['plugin_version'] = PLUGIN_VERSION
+data['heartbeat_required']=HEARTBEAT
+
+try:
+    import ibm_db
+    import_ibm_db=True
+
+except ImportError as e:
+    data['status']=0
+    data['msg']='ibm_db module not installed.' + "\n Solution : Use the following command to install ibm_db\n pip install ibm_db \n(or)\n pip3 install ibm_db"
+    import_ibm_db=False
+except Exception as e:
+    data['status']=0
+    data['msg']=str(e)    
+    import_ibm_db=False
+
+
 class DB2(object):
     
     def __init__(self,args):
@@ -33,14 +51,18 @@ class DB2(object):
         self.DB2_PASSWORD=args.password
         self.DB2_SAMPLE_DB=args.sample_db
         self.connection = None
+        
 
+
+        
     def getDbConnection(self):
         try:
             url="DATABASE="+self.DB2_SAMPLE_DB+";HOSTNAME="+self.DB2_HOST+";PORT="+self.DB2_PORT+";PROTOCOL=TCPIP;UID="+self.DB2_USERNAME+";PWD="+self.DB2_PASSWORD+";"
             db = ibm_db.connect(url, "", "")  #Connect to an uncataloged database
             self.connection = db
         except Exception as e:
-            traceback.print_exc()
+            data['status']=0
+            data['msg']=str(e)
             return False
         return True
 
@@ -54,20 +76,9 @@ class DB2(object):
             pass
 
     def metricCollector(self):
-        data = {}
-        data['plugin_version'] = PLUGIN_VERSION
-        data['heartbeat_required']=HEARTBEAT
    
-        try:
-            import ibm_db
-        except Exception:
-            data['status']=0
-            data['msg']='ibm_db module not installed' + "\n Solution : Use the following command to install ibm_db\n pip install ibm_db \n(or)\n pip3 install ibm_db"
-            return data
-
+            
         if not self.getDbConnection():
-            data['status']=0
-            data['msg']='Connection Error'
             return data
         
 
@@ -147,16 +158,21 @@ if __name__ == "__main__":
 
     import argparse
     parser=argparse.ArgumentParser()
+    result = {}
     parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
     parser.add_argument('--port',help="Port",nargs='?', default= "50000")
     parser.add_argument('--username',help="username", default= "db2inst1")
     parser.add_argument('--password',help="Password", default= "db2inst1")
     parser.add_argument('--sample_db' ,help="Sample db",nargs='?', default= "Sample")
     args=parser.parse_args()
-    	
-    db2_plugins = DB2(args)
-
-    result = db2_plugins.metricCollector()
+    if import_ibm_db:
+        try:
+            db2_plugins = DB2(args)
+            result = db2_plugins.metricCollector()
+        except Exception as e:
+            result['status']=0
+            result['msg']=str(traceback.format_exc())
+    else:
+        result=data
 
     print(json.dumps(result, indent=4, sort_keys=True))
-    

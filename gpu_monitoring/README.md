@@ -20,14 +20,18 @@
 		mkdir gpu_monitoring
   		cd gpu_monitoring/
 
-- Download the file "[gpu_monitoring.py](https://github.com/site24x7/plugins/blob/master/gpu_monitoring/gpu_monitoring.py)" and place it under the "gpu_monitoring" directory
+- Download the file "[gpu_monitoring.py](https://github.com/site24x7/plugins/blob/master/gpu_monitoring/gpu_monitoring.py)" and place it under the "gpu_monitoring" directory.
   
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/gpu_monitoring/gpu_monitoring.py
 
+- Execute the following command in your server to install gpustat.
+	```
+	pip install gpustat
+	```
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the gpu_monitoring.py script.
 
-- Execute the below command to check for valid json output
+- Execute the below command in terminal to check for valid json output.
 
 		python gpu_monitoring.py
   
@@ -44,7 +48,12 @@
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
-- Execute the below command to check for valid json output
+- Execute the following command in your server to install gpustat.
+	```
+	pip install gpustat
+	```
+ 
+- Execute the below command in command prompt to check for valid json output.
 
 		python gpu_monitoring.py
 
