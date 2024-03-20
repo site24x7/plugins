@@ -175,28 +175,52 @@
 ### SGA Metrics
 
 - **SGA Database Buffers**
+  
+    Portion of the SGA used to cache data blocks read from disk
 
 - **SGA Fixed Size**
 
+    Fixed portion of the SGA that contains information such as internal data structures and the shared pool
+
 - **SGA Hit Ratio**
+
+   Measure of how often the database finds the data it needs in the SGA without having to read from disk
 
 - **SGA Log Alloc Retries**
 
+   Number of times a redo log buffer allocation request has to be retried due to contention or unavailability
+
 - **SGA Redo Buffers**
+
+    Portion of the SGA used to hold redo log entries before they are written to disk
 
 - **SGA Shared Pool Dict Cache Ratio**
 
+    Ratio represents the efficiency of caching dictionary data in the shared pool
+  
 - **SGA Shared Pool Lib Cache Hit Ratio**
+
+    The efficiency of caching library cache data in the shared pool
 
 - **SGA Shared Pool Lib Cache Reload Ratio**
 
+    Ratio of reloads of library cache entries from disk to the total number of lookups
+
 - **SGA Shared Pool Lib Cache Sharable Statement**
+
+    Number of statements in the library cache that are shareable among different sessions
 
 - **SGA Shared Pool Lib Cache Shareable User**
 
+    Number of shareable library cache entries for a specific user
+
 - **SGA Variable Size**
 
+    Size of variable portion of the SGA
+  
 - **Total Memory**
+
+   Total size of the SGA, which is the sum of the fixed and variable components
 
 ### Oracle Tablespace Metrics
 
