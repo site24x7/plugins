@@ -66,12 +66,12 @@ class gitLab:
                 if key not in self.keys_list:
                     count_response = requests.get(self.count_request_map.get(key), headers=self.private_token,timeout=3.0)
                     self.keys_list.append(key)
-                    if count_response.status_code is 200:
-                        if key is 'total_fetches':
+                    if count_response.status_code == 200:
+                        if key == 'total_fetches':
                             json_value = count_response.json()
                             fetches_data = json_value['fetches']
                             result_json[key]=int(fetches_data['total'])
-                        elif key is 'issues_statistics':
+                        elif key == 'issues_statistics':
                             json_value = count_response.json()
                             statistics_json = json_value['statistics']
                             counts_json=statistics_json['counts']
@@ -95,7 +95,7 @@ class gitLab:
             return
         try:
             project_response = requests.get(API_URL+"/projects/"+PROJECT_ID,headers=self.private_token,timeout=3.0)
-            if project_response.status_code is 200:
+            if project_response.status_code == 200:
                 response_json=project_response.json()
                 if PROJECT_ID==str(response_json['id']):
                     self.construct_urls()
