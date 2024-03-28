@@ -64,12 +64,12 @@ def move_folder(source,destination):
             print(colors.BLUE+"A MySQL plugin already exists in the agent directory."+colors.RESET)
             i=1
             while i<=3:
-                cx_inp=input("Do you want to proceed with adding another MySQL instance for monitoring in the same plugin configuration file? (Y or N) ")
+                cx_inp=input("Do you want to proceed with adding another MySQL instance for monitoring ? (Y or N) ")
                 if(cx_inp == "Y" or cx_inp=="y" or cx_inp.lower()=="yes"):
                     if not multi_config(source+"/mysql_monitoring.cfg",destination+"/mysql_monitoring.cfg"):
                         return False
                     else:
-                        print(colors.GREEN+"Configuration of the new instance added successfully in the plugin. "+colors.RESET)
+                        print(colors.GREEN+"Plugin installed successfully. "+colors.RESET)
                         break
                 elif(cx_inp == "N" or cx_inp=="n" or cx_inp.lower()=="no"):
                     shutil.rmtree(destination)
