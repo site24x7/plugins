@@ -166,12 +166,12 @@ def setuser(args):
         if not c:
             return False
         
-        alter_session="""alter session set "_ORACLE_SCRIPT"=true"""
+        #alter_session="""alter session set "_ORACLE_SCRIPT"=true"""
         create_query = f"CREATE USER {args.username} identified by {args.password}"
         query1 = f"GRANT SELECT_CATALOG_ROLE TO {args.username}"
         query2 = f"GRANT CREATE SESSION TO {args.username}"
 
-        if not execute_query(alter_session, c): return False
+        #if not execute_query(alter_session, c): return False
 
         if check_user(args.username, c):
             print()
