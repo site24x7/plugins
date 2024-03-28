@@ -2,13 +2,15 @@
 
 # Oracle Full Stack Monitoring
 
-Quick installation
+## Quick installation
+
 If you're using Linux servers, use the Oracle plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
 
 Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
 
+```bash
 wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle/installer/Site24x7OracleDBPluginInstaller.sh && bash Site24x7OracleDBPluginInstaller.sh
-
+```
 ## Standard Installation
 If you're not using Linux servers or want to install the plugin manually, follow the steps below.
 
@@ -75,6 +77,7 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
 ## Supported Metrics:
 ### System Metrics 
 
@@ -168,50 +171,6 @@ The agent will automatically execute the plugin within five minutes and send per
 
 
 - **GC CR Block Received Per Second**
-
-
-# Oracle Full Stack Monitoring
-
-
-## Prerequisites
-- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
-- Python 3.7 or higher version should be installed.
-- Install **oracledb** module for python
-	```
-	pip3 install oracledb
-	```
-
-- Roles need to be granted
-
-	```
-	grant select_catalog_role to {username}
-	```
-	```
-	grant create session to {username}
-	```
-
-## Plugin Installation  
-
-- Create a directory named "oracle".
-- Install the **oracledb** python module.
-	```
-	pip3 install oracledb
-	```
-
-	
-- Download the below files in the "oracle" folder and place it under the "oracle" directory.
-
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle/oracle.py && sed -i "1s|^.*|#! $(which python3)|" oracle.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle/oracle.cfg
-
-- Execute the below command with appropriate arguments to check for the valid json output:
-	```
-	 python3 oracle.py --hostname=<name of the host> --port=<port> --sid=<SID> --username=<USERNAME> --password=<PASSWORD> --oracle_home=<ORACLE_HOME>
-	 ```
-- After the above command with parameters gives the expected output, please configure the relevant parameters in the oracle.cfg file.
-	```
-		[ORCL]
-		hostname = "localhost"
 
     Number of GC CR block received per second
 
