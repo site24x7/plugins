@@ -69,7 +69,7 @@ def move_folder(source,destination):
                     if not multi_config(source+"/mysql_monitoring.cfg",destination+"/mysql_monitoring.cfg"):
                         return False
                     else:
-                        print(colors.GREEN+"Configuration of the new instance added successfully in the plugin. "+colors.RESET)
+                        print(colors.GREEN+"Plugin installed successfully. "+colors.RESET)
                         break
                 elif(cx_inp == "N" or cx_inp=="n" or cx_inp.lower()=="no"):
                     shutil.rmtree(destination)
