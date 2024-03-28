@@ -1,6 +1,6 @@
 
 
-# Oracle Full Stack Monitoring
+# Oracle Database Monitoring
 
 ## Quick installation
 
@@ -9,7 +9,7 @@ If you're using Linux servers, use the Oracle plugin installer that checks the p
 Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
 
 ```bash
-wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle/installer/Site24x7OracleDBPluginInstaller.sh && bash Site24x7OracleDBPluginInstaller.sh
+wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle/installer/Site24x7OraclePluginInstaller.sh && sudo bash Site24x7OraclePluginInstaller.sh
 ```
 ## Standard Installation
 If you're not using Linux servers or want to install the plugin manually, follow the steps below.
@@ -31,7 +31,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 	grant create session to {username}
 	```
 
-### Plugin Installation  
+### Installation  
 
 - Create a directory named "oracle".
 - Install the **oracledb** python module.
