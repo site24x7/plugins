@@ -2,11 +2,17 @@
 
 =================================================================
 
-## MySQL plugin installer
+## Quick installation
 
-On Linux servers, execute the command below in the terminal to run an installer that checks the prerequisites and installs the plugin.
+If you're using Linux servers, use the MySQL plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
 
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/Site24x7MySQLPluginInstaller.sh && sudo bash Site24x7MySQLPluginInstaller.sh
+Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
+
+```bash
+wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/installer/Site24x7MySQLPluginInstaller.sh && bash Site24x7MySQLPluginInstaller.sh
+```
+## Standard Installation
+If you're not using Linux servers or want to install the plugin manually, follow the steps below.
 
 
 ### Prerequisites
