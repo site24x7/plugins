@@ -263,21 +263,6 @@ def initiate(plugin_name, plugin_url, args):
     print(" ")
     print()
 
-    #Installing oracledb python module
-    print(colors.BLUE +"    An OracleDB Python module needs to be installed to connect with the Oracle Database. "+ colors.RESET)
-    oracledb_choice=input("    Do you want to continue? (y/n)")
-    if oracledb_choice=="Y" or oracledb_choice=="y":
-        cmd="""pip3 install oracledb"""
-        if not execute_command(cmd):
-            print("")
-            print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
-            return 
-        print(colors.GREEN +"    oracledb Python module installed successfully."+ colors.RESET)
-        print()
-    else:
-        print("    oracledb not installed.")
-        print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
-        return
 
     agent_path="/opt/site24x7/monagent/"
     agent_temp_path=agent_path+"temp/"
@@ -393,9 +378,9 @@ if __name__ == "__main__":
 
 
     print()
-    print(colors.GREEN +"------------------------   Installing the plugin. ----------------------------"+ colors.RESET)
+    print(colors.GREEN +"------------------------   Installing the plugin ----------------------------"+ colors.RESET)
     print()
-    print(colors.BLUE +"""    Hostname, port, and SID of the Oracle instance is required to get metrics. These details will be configured in the plugin configuration file.
+    print(colors.BLUE +"""    Hostname/IP Address, port, and SID of the Oracle instance is required to get metrics. These details will be configured in the plugin configuration file.
           """+ colors.RESET)
     hostname=input_validate("hostname", default="localhost")
     if not hostname:
