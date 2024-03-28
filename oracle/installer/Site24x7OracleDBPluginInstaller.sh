@@ -88,13 +88,10 @@ fi
 
 echo -e "${GREEN}Download completed.${RESET}"
 
-chmod 744 Site24x7OraclePluginInstallerAddOn.py
-if [[ $? -ne 0 ]]; then
-    echo -e "${GREEN}Adding execution permissions failed. Process exited.${RESET}"
-    exit 1
-fi
+
+
 echo "Executing the Oracle installer."
-./Site24x7OraclePluginInstallerAddOn.py
+python3 Site24x7OraclePluginInstallerAddOn.py
 if [[ $? -ne 0 ]]; then
     echo -e "${RED}Error occured. Execution failed. Process exited.${RESET}"
     exit 1
