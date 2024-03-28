@@ -40,7 +40,7 @@ if [ $? -ne 0 ] ; then
 fi
 echo ""
 echo "${blue}Downloading pymysql binary to establish connection with MySQL.${reset}"
-wget https://github.com/site24x7/plugins/raw/master/mysql_monitoring/pymysql/pymysql.zip && unzip pymysql.zip && rm pymysql.zip &> /dev/null
+wget https://github.com/site24x7/plugins/raw/master/mysql_monitoring/pymysql/pymysql.zip && unzip pymysql.zip &> /dev/null
 if [ $? -ne 0 ] ; then
     echo "${red}Error occured. Process exited.${reset}"
     return 0
