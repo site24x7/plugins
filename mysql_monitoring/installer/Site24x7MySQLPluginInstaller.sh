@@ -32,7 +32,7 @@ else
 fi
 
 echo "${blue}Downloading installation related files from the Site24x7 GitHub repository.${reset}"
-wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/Site24x7MySQLPluginInstallerAddOn.py
+wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/installer/Site24x7MySQLPluginInstallerAddOn.py
 
 if [ $? -ne 0 ] ; then
     echo "${red}Error occured. Process exited.${reset}"
