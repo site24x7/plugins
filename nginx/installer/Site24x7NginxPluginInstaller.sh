@@ -390,12 +390,14 @@ check_blocks(){
     error_handler $? $output
     server_block_count=$output
     if [ $server_block_count -lt 1 ] ; then
-        echo -e "No server block found in the $nginx_conf_file file. \n\n If you have the configurations in seperate files or in a separate directory, add the below content inside the $(tput smul)server blocks$(tput sgr0) to enable the status page for monitoring."
+        echo -e "No server block found in the $nginx_conf_file file. \n\nIf you have the configurations in seperate files or in a separate directory, add the below content inside the $(tput smul)server blocks$(tput sgr0) to enable the status page for monitoring."
         echo
         echo -e "$content"
         echo
         echo "Once the status page is enabled, rerun the installer to install the plugin."
+        echo
         echo "If you have already enabled the status page, procced to install the plugin and provide the URL as input."
+        echo
         read -p "Do you want to proceed with the plugin installation?(y or n):" continue
         if [ $continue = "n" -o $continue = "N" ] ; then
             echo "Process exited"
