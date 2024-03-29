@@ -1,5 +1,11 @@
 # Nginx Plugin
-                                                                                              
+
+## Nginx plugin installer
+
+On Linux servers, execute the command below in the terminal to run an installer that checks the prerequisites and installs the plugin.
+
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/installer/Site24x7NginxPluginInstaller.sh && sudo bash Site24x7NginxPluginInstaller.sh
+											      
 ## Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
