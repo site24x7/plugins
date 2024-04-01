@@ -6,8 +6,8 @@ The Apache HTTP Server, commonly known as Apache, is the world's most used web s
 If you're using Linux servers, use the Apache plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
 
 Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
-```
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/InstallSite24x7ApachePlugin.sh && sudo bash InstallSite24x7ApachePlugin.sh
+```bash
+wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/InstallSite24x7ApachePlugin.sh && sudo bash InstallSite24x7ApachePlugin.sh
 ```
 
 ## Standard installation
