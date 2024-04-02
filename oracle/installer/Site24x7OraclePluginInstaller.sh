@@ -58,11 +58,20 @@ if [[ -z "$response" ]]; then
     exit 1
 fi
 
+
+echo "Upgrading pip3 package."
+pip3 install --upgrade pip &> /dev/null
+if [[ $? -ne 0 ]]; then
+    echo -e "${RED}Error occured. pip3 upgrade failed. Process exited.${RESET}"
+fi
+
+
+
 if [[ "$response" =~ ^(yes|y)$ ]]; then
     echo "Installing oracledb."
     pip3 install oracledb &> /dev/null
     if [[ $? -ne 0 ]]; then
-        echo -e "${RED}Error occured. oracledb python module could not be installed. Process exited.${RESET}"
+        echo -e "${RED}Error occured. oracledb Python module could not be installed. Process exited.${RESET}"
         exit 1
     fi
 
@@ -80,7 +89,7 @@ fi
 
 echo ""
 echo -e "${GREEN}Downloding related installation files from our GitHub repository. ${RESET}"
-wget "https://raw.githubusercontent.com/site24x7/plugins/master/oracle/Installer/Site24x7OraclePluginInstallerAddOn.py" &> /dev/null
+wget "https://raw.githubusercontent.com/site24x7/plugins/master/oracle/installer/Site24x7OraclePluginInstallerAddOn.py" &> /dev/null
 if [[ $? -ne 0 ]]; then
     echo -e "${RED} Download failed. Process exited.${RESET}"
     exit 1
