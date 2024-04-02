@@ -29,17 +29,10 @@ fi
 
 
 if command -v python3 &>/dev/null; then
-    python_version=$(python3 -c 'import sys; print(sys.version_info[:3][1])')
-    if [ $python_version  -ge 7 ];then
-        echo $python_version
-    else
-        echo -e "${RED}Python 3.7 or above is required to monitor Oracle DB using the plugin.\nEnsure Python 3.7 or a later version is installed and then run the installer again to proceed with the plugin installation.${RESET}"
-            exit 1
-    fi
+    echo "Python is installed."    
 else
-    echo "Python 3.7 or above is required to monitor Oracle DB using the plugin. 
+    echo "Python 3.6 or above is required to monitor Oracle DB using the plugin. 
           Ensure Python 3.7 or a later version is installed and then run the installer again to proceed with the plugin installation."
-          echo ""
     exit 1
 fi
 
