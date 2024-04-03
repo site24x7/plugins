@@ -223,7 +223,7 @@ def mongod_server(args):
 
 def mongo_connect(args):
     try:
-        plugin_script_path=os.path.dirname({os.path.realpath(__file__)})
+        plugin_script_path=os.path.dirname(os.path.realpath(__file__))
         try:
             import pymongo
             pymongo_installed=True
