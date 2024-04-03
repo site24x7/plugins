@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#!/usr/bin/python3
 
 import collections
 import datetime
@@ -6,6 +6,7 @@ import traceback
 import time
 import json
 import urllib.parse
+import os
 
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
@@ -70,7 +71,6 @@ METRICS_UNITS = {
                  }
 
 
-
 class MongoDB(object):
     def __init__(self, args):
         self.args=args
@@ -101,7 +101,6 @@ class MongoDB(object):
         else:
             self.tls=False
 
-
         if(self.username!="None" and self.password!="None" and self.authdb!="None"):
             self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username,urllib.parse.quote(self.password), self.host, self.port, self.authdb)
         elif(self.username!="None" and self.password!="None"):
@@ -117,6 +116,7 @@ class MongoDB(object):
         data = {}
         data['plugin_version'] = PLUGIN_VERSION
         data['heartbeat_required']=HEARTBEAT
+        plugin_script_path=os.path.dirname(os.path.realpath(__file__))
 
         def per_sec(doc,metric):
             diff = output[doc][metric] - cache_data[doc][metric]
@@ -126,13 +126,25 @@ class MongoDB(object):
             diff = output[root][doc][metric] - cache_data[root][doc][metric]
             ps = int(diff / elapsed_time)
             return ps
+        
         try:
-            import pymongo
-            from pymongo import MongoClient
-        except ImportError:
+            try:
+                import pymongo
+                pymongo_installed=True
+
+            except ImportError:
+                pymongo_installed=False
+
+            if not pymongo_installed:
+                import zipimport
+                importer=zipimport.zipimporter(f"{plugin_script_path}/pymongo.pyz")
+                bson=importer.load_module("bson")
+                pymongo=importer.load_module("pymongo")
+        except:
             data['status']=0
-            data['msg']='pymongo module not installed\n Solution : Use the following command to install pymongo\n pip install pymongo \n(or)\n pip3 install pymongo'
+            data['msg']='pymongo module not installed'
             return data
+
         
         try:
 
@@ -140,9 +152,9 @@ class MongoDB(object):
                 mongo_uri = 'mongodb://' + self.mongod_server
 
                 if self.tls:
-                    self.connection = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000,tls=self.tls,tlscertificatekeyfile=self.tlscertificatekeyfile,tlscertificatekeyfilepassword=self.tlscertificatekeyfilepassword,tlsallowinvalidcertificates=self.tlsallowinvalidcertificates)
+                    self.connection = pymongo.MongoClient(mongo_uri, serverSelectionTimeoutMS=10000,tls=self.tls,tlscertificatekeyfile=self.tlscertificatekeyfile,tlscertificatekeyfilepassword=self.tlscertificatekeyfilepassword,tlsallowinvalidcertificates=self.tlsallowinvalidcertificates)
                 else:
-                    self.connection = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
+                    self.connection = pymongo.MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
 
 
 
@@ -156,17 +168,17 @@ class MongoDB(object):
                 stats=db.command('dbstats')
                 self.connection.close()
 
-            except pymongo.errors.ServerSelectionTimeoutError as e:
+            except pymongo.errors.ServerSelectionTimeoutError:
                 data['status']=0
-                data['msg']='No mongoDB server is available to connect.\n '+str(e)
+                data['msg']='No mongoDB server is available to connect'
                 return data
-            except pymongo.errors.ConnectionFailure as e:
+            except pymongo.errors.ConnectionFailure:
                 data['status']=0
-                data['msg']='Connection to database failed. '+str(e)
+                data['msg']='Connection to database failed'
                 return data
-            except pymongo.errors.ExecutionTimeout as e:
+            except pymongo.errors.ExecutionTimeout:
                 data['status']=0
-                data['msg']='Execution of database command failed'+str(e)
+                data['msg']='Execution of database command failed'
                 return data
 
             #Version
