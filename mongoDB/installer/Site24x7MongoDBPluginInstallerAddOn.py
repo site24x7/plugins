@@ -516,5 +516,5 @@ def initiate(plugin_name, plugin_url):
 
 if __name__ == "__main__":
     plugin_name="mongoDB"
-    plugin_url="https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB"
+    plugin_url="https://raw.githubusercontent.com/site24x7/plugins/suraj/mongoDB"
     initiate(plugin_name, plugin_url)
