@@ -40,7 +40,7 @@ fi
 
 
 if [[ -f "Site24x7MongoPluginInstallerAddOn.py" ]]; then
-    rm -rf ./Site24x7MongoPluginInstallerAddOn.py
+    rm -rf ./Site24x7MongoDBPluginInstallerAddOn.py
 fi
 
 
@@ -64,7 +64,7 @@ echo -e "${GREEN}Download completed.${RESET}"
 
 
 echo "Executing the MongoDB installer."
-python3 Site24x7MongoPluginInstallerAddOn.py
+python3 Site24x7MongoDBPluginInstallerAddOn.py
 if [[ $? -ne 0 ]]; then
     echo -e "${RED}Error occured. Execution failed. Process exited.${RESET}"
     exit 1
