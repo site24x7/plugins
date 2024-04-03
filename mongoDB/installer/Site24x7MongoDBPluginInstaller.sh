@@ -47,7 +47,7 @@ fi
 
 echo ""
 echo -e "${GREEN}Downloading related installation files from our GitHub repository. ${RESET}"
-wget "https://raw.githubusercontent.com/site24x7/plugins/master/oracle/installer/Site24x7MongoPluginInstallerAddOn.py" &> /dev/null
+wget "https://raw.githubusercontent.com/site24x7/plugins/suraj/mongoDB/installer/Site24x7MongoDBPluginInstallerAddOn.py" &> /dev/null
 if [[ $? -ne 0 ]]; then
     echo -e "${RED} Download failed. Process exited.${RESET}"
     exit 1
@@ -62,9 +62,8 @@ fi
 echo -e "${GREEN}Download completed.${RESET}"
 
 
-
 echo "Executing the MongoDB installer."
-python3 Site24x7MongoPluginInstallerAddOn.py
+python3 Site24x7MongoDBPluginInstallerAddOn.py
 if [[ $? -ne 0 ]]; then
     echo -e "${RED}Error occured. Execution failed. Process exited.${RESET}"
     exit 1
