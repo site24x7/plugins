@@ -223,7 +223,7 @@ def mongod_server(args):
 
 def mongo_connect(args):
     try:
-        plugin_script_path=os.path.dirname(f"{os.path.realpath(__file__)}/pymongo.pyz")
+        plugin_script_path=os.path.dirname({os.path.realpath(__file__)})
         try:
             import pymongo
             pymongo_installed=True
@@ -461,7 +461,7 @@ def initiate(plugin_name, plugin_url):
     print(colors.GREEN +"    Downloaded the MongoDB plugin files successfully."+ colors.RESET)
     print()
 
-    pyz_url="https://github.com/site24x7/plugins/raw/suraj/mongoDB/pymongo.pyz"
+    pyz_url="https://github.com/SurajDevAnand/pymongo/raw/main/pymongo3.13/pymongo.pyz"
     if not download_file(url=pyz_url, path=plugins_temp_path):
         print("")
         print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
