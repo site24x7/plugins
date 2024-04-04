@@ -56,8 +56,9 @@ fi
 if [[ -f "pymongo.pyz" ]]; then
     rm -rf ./pymongo.pyz
 fi
+echo ""
 
-wget "https://github.com/site24x7/plugins/raw/suraj/mongoDB/pymongo.pyz" &> /dev/null
+wget "https://github.com/site24x7/plugins/raw/suraj/mongoDB/pymongo.pyz" 
 if [[ $? -ne 0 ]]; then
     echo -e "${RED} Download failed. Process exited.${RESET}"
     exit 1
