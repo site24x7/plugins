@@ -39,7 +39,7 @@ fi
 
 
 
-if [[ -f "Site24x7MongoPluginInstallerAddOn.py" ]]; then
+if [[ -f "Site24x7MongoDBPluginInstallerAddOn.py" ]]; then
     rm -rf ./Site24x7MongoDBPluginInstallerAddOn.py
 fi
 
@@ -58,6 +58,11 @@ if [[ $? -ne 0 ]]; then
     echo -e "${RED} Download failed. Process exited.${RESET}"
     exit 1
 fi
+
+if [[ -f "pymongo.pyz" ]]; then
+    rm -rf ./pymongo.pyz
+fi
+
 
 echo -e "${GREEN}Download completed.${RESET}"
 
