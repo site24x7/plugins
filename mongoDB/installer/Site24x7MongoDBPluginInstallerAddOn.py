@@ -438,7 +438,6 @@ def initiate(plugin_name, plugin_url):
 
 
 
-
     if not check_directory(agent_temp_path):
         print("    Site24x7 Linux agent directory not found.")
         print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
@@ -461,8 +460,8 @@ def initiate(plugin_name, plugin_url):
     print(colors.GREEN +"    Downloaded the MongoDB plugin files successfully."+ colors.RESET)
     print()
 
-    pyz_url="https://github.com/SurajDevAnand/pymongo/raw/main/pymongo3.13/pymongo.pyz"
-    if not download_file(url=pyz_url, path=plugins_temp_path):
+    pyz_url="https://github.com/site24x7/plugins/raw/suraj/mongoDB/pymongo.pyz"
+    if not download_file(url=pyz_url, path=plugins_temp_path+"mongoDB/"):
         print("")
         print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
         return 
