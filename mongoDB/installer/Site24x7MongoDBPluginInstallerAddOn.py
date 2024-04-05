@@ -59,7 +59,7 @@ def move_plugin(plugin_name, plugins_temp_path, agent_plugin_path):
                 return False
         else:
             print(f"    The plugin  \"{plugin_name}\" is already present in the agent directory.")
-            move_option=input(f"    Do you want to reinstall the \"{plugin_name}\" plugin? \n    Select \"y\" to reinstall. Select \"n\" to add another Oracle instance for monitoring in the same plugin configuration file. (y/n)")
+            move_option=input(f"    Do you want to reinstall the \"{plugin_name}\" plugin? \n    Select \"y\" to reinstall. Select \"n\" to add another MongoDB instance for monitoring in the same plugin configuration file. (y/n)")
             if move_option=="n":
                 multi_option=input(f"    Do you want to proceed with adding another MongoDB instance for monitoring in the same plugin configuration file? (y/n)")
                 if multi_option=="y":
