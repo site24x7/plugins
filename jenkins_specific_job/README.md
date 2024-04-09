@@ -37,7 +37,8 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Python version 3 or higher.
 
 
 ---
@@ -68,13 +69,25 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 		username="username"
 		password="password" 
 		jobname="job_name"
-		
+
+##### Linux 
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the jenkins_specific_job.py script.
+
 - Move the directory "jenkins_specific_job" under Site24x7 Linux Agent plugin directory : 
 
 		mv jenkins_specific_job /opt/site24x7/monagent/plugins/
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
+##### Windows 
+
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
+
+
+- Move the folder "jenkins_specific_job" under Site24x7 Windows Agent plugin directory : 
+
+		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 ---
 ### Jenkins specific job monitoring
 
