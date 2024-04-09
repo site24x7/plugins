@@ -47,7 +47,7 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 		mkdir jenkins_specific_job
   		cd jenkins_specific_job/
   
-- Download all the files in "jenkins_specific_job" folder and place it under the "jenkins_specific_job" directory
+- Download all the files and place it under the "jenkins_specific_job" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_specific_job/jenkins_specific_job.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_specific_job/jenkins_specific_job.cfg
