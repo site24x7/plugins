@@ -1,21 +1,20 @@
                                          
-#### JENKINS PLUGIN
+# JENKINS PLUGIN
                                                                                                
-=================================================================
 
-## What is Jenkins?
+### What is Jenkins?
 	
  Jenkins is an open source automation server written in Java. It helps to execute a series of actions to achieve a continuous integration process. 
 
 
 
-## How it's used for Developers?
+### How it's used for Developers?
 
  Jenkins enables developers around the world to reliably build, test, package, stage and deploy their software.
 
  With Jenkins, multiple developers from different modules can integrate the code change in a single project. 
 
-## How does it accelerate the development and test process 
+### How does it accelerate the development and test process 
 
  With Jenkins, DevOps can accelerate the software development and testing process thru automation. Once the code is committed by the developer, next the code will be built and tested.
 
@@ -24,7 +23,7 @@
 
 
 
-## Importance of monitoring Jenkins specific job:
+### Importance of monitoring Jenkins specific job:
 
 To run the Jenkins effectively, DevOps team is required to monitor the significant metrics of Jenkins. The continuous monitoring Jenkins will allow DevOps team to view below features.
 
@@ -43,10 +42,13 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 
 ---
 
-### Plugin Installation  
+## Plugin Installation  
 
 - Create a directory "jenkins_specific_job".
-      
+  
+		mkdir jenkins_specific_job
+  		cd jenkins_specific_job/
+  
 - Download all the files in "jenkins_specific_job" folder and place it under the "jenkins_specific_job" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_specific_job/jenkins_specific_job.py
@@ -56,37 +58,35 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python jenkins_specific_job.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --jobname=<job_name>
+		python jenkins_specific_job.py --host "host" --port "port" --username "username" --password "password" --jobname "job_name"
 
 - Change the below configurations in "jenkins_specific_job.cfg" file
 
 		[jenkins_specific_job]
-		host=<host_name> 
-		port=<port_number> 
-		username=<username>
-		password=<password> 
-		jobname=<job_name>
+		host="host"
+		port="port"
+		username="username"
+		password="password" 
+		jobname="job_name"
 		
 - Move the directory "jenkins_specific_job" under Site24x7 Linux Agent plugin directory : 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/
+		mv jenkins_specific_job /opt/site24x7/monagent/plugins/
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
-
+---
 ### Jenkins specific job monitoring
 
-
-		METRICS                                       DESCRIPTION
-
-
-		build_count                                   Number of Builds in the job
-		job_lastbuild_queueid                         Queue Id of the last build 
-		job_lastbuild_duration                        Time taken for last build(in ms)
-		job_lastbuild_estimated_duration               Estimated time for last build(in ms)
-		job_lastbuildid                               Id of the last build
-		job_lastbuild_number                           Last build's Number in the job
-		build_failed                                  Number of builds failed
-		build_success                                 Number of successful builds
-		build_aborted                                 Number of builds aborted
+Name		            	| Description
+---         		   	|   ---
+build_count                        |           Number of Builds in the job.
+job_lastbuild_queueid              |           Queue Id of the last build .
+job_lastbuild_duration             |           Time taken for last build(in ms).
+job_lastbuild_estimated_duration   |            Estimated time for last build(in ms).
+job_lastbuildid                    |           Id of the last build.
+job_lastbuild_number               |            Last build's Number in the job.
+build_failed                       |           Number of builds failed.
+build_success                      |           Number of successful builds.
+build_aborted                      |           Number of builds aborted.
 
