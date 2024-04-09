@@ -25,7 +25,7 @@ This plugin monitors the certificates in windows certificate store
 
       powershell .\certificate_monitoring.ps1 -certPath "path to the certificate store" -certName "Certificate Name" -thumbprint "thumbprint of the certificate"
 
-#### Cfg file configuration
+#### Cfg file configurations
        [display_name]
        certPath="cerificate path"
        thumbprint="thumbprint of the certificate"
