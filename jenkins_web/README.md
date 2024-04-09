@@ -2,19 +2,19 @@
 # JENKINS PLUGIN
                                                                                                
 
-## What is Jenkins?
+### What is Jenkins?
 	
  Jenkins is an open source automation server written in Java. It helps to execute a series of actions to achieve a continuous integration process. 
 
 
 
-## How it's used for Developers?
+### How it's used for Developers?
 
  Jenkins enables developers around the world to reliably build, test, package, stage and deploy their software.
 
  With Jenkins, multiple developers from different modules can integrate the code change in a single project. 
 
-## How does it accelerate the development and test process 
+### How does it accelerate the development and test process 
 
  With Jenkins, DevOps can accelerate the software development and testing process thru automation. Once the code is committed by the developer, next the code will be built and tested.
 
@@ -23,7 +23,7 @@
 
 
 
-## Importance of monitoring Jenkins Web:
+### Importance of monitoring Jenkins Web:
 
 To run the Jenkins effectively, DevOps team is required to monitor the significant metrics of Jenkins. The continuous monitoring Jenkins will allow DevOps team to view below features.
 
@@ -44,7 +44,7 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 
 ---
 
-### Plugin Installation  
+## Plugin Installation  
 
 - Create a directory "jenkins_web".
 
@@ -76,11 +76,13 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 		mv jenkins_web /opt/site24x7/monagent/plugins/
 
 
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 -> Plugins -> Plugin Integrations.
 
 ---
 
 #### Metrics Captured
+
+
 
 Name		            	| Description
 ---         		   	|   ---
