@@ -9,7 +9,7 @@ Monitor the availability and performance of your SAP HANA database with SAP HANA
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 - Install the hdbcli module with the following command
 
@@ -26,6 +26,9 @@ Monitor the availability and performance of your SAP HANA database with SAP HANA
 
 - Create a directory named "sap_hana_database".
 		
+		mkdir sap_hana_database
+  		cd sap_hana_database/
+  
 - Download all the files in "sap_hana_database" folder and place it under the "sap_hana_database" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/sap_hana_database/sap_hana_database.py
