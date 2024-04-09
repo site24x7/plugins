@@ -78,7 +78,7 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 
 		mv jenkins_specific_job /opt/site24x7/monagent/plugins/
 
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
 
 ##### Windows 
 
@@ -88,6 +88,9 @@ The agent will automatically execute the plugin within five minutes and user can
 - Move the folder "jenkins_specific_job" under Site24x7 Windows Agent plugin directory : 
 
 		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
 ---
 ### Jenkins specific job monitoring
 
