@@ -7,7 +7,6 @@
  Jenkins is an open source automation server written in Java. It helps to execute a series of actions to achieve a continuous integration process. 
 
 
-
 ### How it's used for Developers?
 
  Jenkins enables developers around the world to reliably build, test, package, stage and deploy their software.
@@ -19,8 +18,6 @@
  With Jenkins, DevOps can accelerate the software development and testing process thru automation. Once the code is committed by the developer, next the code will be built and tested.
 
  If the test is passed, then the build will be tested for deployment. After deployment is successful, it's pushed to production.
-
-
 
 
 ### Importance of monitoring Jenkins specific job:
@@ -92,7 +89,7 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ---
-### Jenkins specific job monitoring
+### Metrics Captured
 
 Name		            	| Description
 ---         		   	|   ---
