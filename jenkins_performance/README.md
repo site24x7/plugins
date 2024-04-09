@@ -21,8 +21,8 @@ To run the Jenkins effectively, DevOps team is required to monitor the performan
 - Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 - Follow below steps to generate API key 
-- Install the "Metrics plugin" from Jenkins. (Jenkins -> Manage Jenkins -> Manage plugins ->Available)
-- (Jenkins -> Manage Jenkins -> Configure system) Generate your API key under the metrics section.
+	- Install the "Metrics plugin" from Jenkins. (Jenkins -> Manage Jenkins -> Manage plugins ->Available)
+	- (Jenkins -> Manage Jenkins -> Configure system) Generate your API key under the metrics section.
 - Python version 3 or higher.
 
 ---
@@ -34,7 +34,7 @@ To run the Jenkins effectively, DevOps team is required to monitor the performan
 		mkdir jenkins_performance
   		cd jenkins_performance/
   
-- Download all the files in "jenkins_performance" folder and place it under the "jenkins_performance" directory
+- Download all the files in and place it under the "jenkins_performance" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_performance/jenkins_performance.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_performance/jenkins_performance.cfg
