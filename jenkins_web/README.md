@@ -1,7 +1,6 @@
                                          
-#### JENKINS PLUGIN
+# JENKINS PLUGIN
                                                                                                
-====================================================================
 
 ## What is Jenkins?
 	
@@ -58,20 +57,20 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python jenkins_web.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --apikey=<apikey>
+		python jenkins_web.py --host "host" --port "port" --username "username" --password "password" --apikey "apikey"
 		
 - Change the below configurations in "jenkins_performance.cfg" file
 
 		[jenkins_web]
-		host=<host_name> 
-		port=<port_number> 
-		username=<username> 
-		password=<password> 
-		apikey=<apikey>
+		host="host"
+		port="port"
+		username="username"
+		password="password" 
+		apikey="apikey"
 			
 - Move the directory "jenkins_web" under Site24x7 Linux Agent plugin directory : 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/
+		mv jenkins_web /opt/site24x7/monagent/plugins/
 
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
