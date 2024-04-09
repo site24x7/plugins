@@ -36,12 +36,12 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 - Follow below steps to generate API key 
-- Install the "Metrics plugin" from Jenkins. (Jenkins -> Manage Jenkins -> Manage plugins ->Available)
-- (Jenkins -> Manage Jenkins -> Configure system) Generate your API key under the metrics section.
-
+	- Install the "Metrics plugin" from Jenkins. (Jenkins -> Manage Jenkins -> Manage plugins ->Available)
+	- (Jenkins -> Manage Jenkins -> Configure system) Generate your API key under the metrics section.
+- Python version 3 or higher.
 ---
 
 ## Plugin Installation  
@@ -51,7 +51,7 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 		mkdir jenkins_web
   		cd jenkins_web/
       
-- Download all the files in "jenkins_web" folder and place it under the "jenkins_web" directory
+- Download all the files and place it under the "jenkins_web" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_web/jenkins_web.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_web/jenkins_web.cfg
@@ -96,8 +96,8 @@ The agent will automatically execute the plugin within five minutes and user can
 
 
 
-Name		            	| Description
----         		   	|   ---
+Name		            	    | Description
+---         		   	    |   ---
 total_activerequests                |               The total number of requests that are currently active
 total_badrequest                    |               The total number of request with HTTP/400 status code
 total_responsecode_created          |               The total number of request with HTTP/201 status code
