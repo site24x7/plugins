@@ -27,11 +27,11 @@
 - Update the below configurations in mssql_custom_query.cfg file:
 
 		[mssql_custom_query]
-		SQLServer = <server_name> 
-		SQLDBName = <dbname>
+		SQLServer = "server_name>"
+		SQLDBName = "dbname"
 		query = "select TOP 1 * from sys.assemblies"
-		sqlusername = <sql_username>
-		sqlpassword  = <sql_password>
+		sqlusername = "sql_username"
+		sqlpassword  = "sql_password"
 		
 - This plugin will monitor only the first row of the result of the query.So, use TOP clause in the query as below to return only one row from the result.
 
