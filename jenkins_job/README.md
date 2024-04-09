@@ -48,7 +48,7 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 		mkdir jenkins_job
   		cd jenkins_job/
   
-- Download all the files in "jenkins_job" folder and place it under the "jenkins_job" directory
+- Download all the files and place it under the "jenkins_job" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_job/jenkins_job.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_job/jenkins_job.cfg
