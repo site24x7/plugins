@@ -29,28 +29,28 @@ This plugin monitors the collection of File metrics.
 
 		python file_monitoring.py --filename="YOUR FILE NAME" --hashtype="HASH TYPE OF YOUR CHOICE" --search_text="SEARCH TEXT OF YOUR CHOICE" --case_sensitive="True"
   
-#### Configurations
+  #### Configurations
 
 
-    [display_name]
-    filename = "YOUR FILE NAME"
-    hashtype = "HASH TYPE OF YOUR CHOICE (OPTIONAL)"
-    search_text = "SEARCH TEXT OF YOUR CHOICE (OPTIONAL)"
-    case_sensitive = "True (OPTIONAL - By default 'False')"
+      [display_name]
+      filename = "YOUR FILE NAME"
+      hashtype = "HASH TYPE OF YOUR CHOICE (OPTIONAL)"
+      search_text = "SEARCH TEXT OF YOUR CHOICE (OPTIONAL)"
+      case_sensitive = "True (OPTIONAL - By default 'False')"
     
-##### Linux
+  ##### Linux
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the file_monitoring.py script.
+  - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the file_monitoring.py script.
 
-- Move the directory "file_monitoring" under Site24x7 Linux Agent plugin directory :
+  - Move the directory "file_monitoring" under Site24x7 Linux Agent plugin directory :
 
 		mv file_monitoring /opt/site24x7/monagent/plugins/file_monitoring
 
-##### Windows
+  ##### Windows
 
-- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
+  - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
-- Move the directory "file_monitoring" under Site24x7 Windows Agent plugin directory :
+  - Move the directory "file_monitoring" under Site24x7 Windows Agent plugin directory :
 
 		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\file_monitoring
       
