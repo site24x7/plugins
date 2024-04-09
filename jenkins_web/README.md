@@ -47,6 +47,9 @@ To run the Jenkins effectively, DevOps team is required to monitor the significa
 ### Plugin Installation  
 
 - Create a directory "jenkins_web".
+
+		mkdir jenkins_web
+  		cd jenkins_web/
       
 - Download all the files in "jenkins_web" folder and place it under the "jenkins_web" directory
 
@@ -77,21 +80,19 @@ The agent will automatically execute the plugin within five minutes and user can
 
 ---
 
-#### Jenkins web Monitoring:
+#### Metrics Captured
 
-
-		METRICs                                            DESCRIPTION
-
-
-		total_activerequests                               The total number of requests that are currently active
-		total_badrequest                                   The total number of request with HTTP/400 status code
-		total_responsecode_created                         The total number of request with HTTP/201 status code
-		total_forbidden_responsecode                       The total number of request with HTTP/403 status code
-		noContent_responsecode                             The total number of request with HTTP/204 status code
-		notFound_responsecode                              The total number of request with HTTP/404 status code
-		unmodified_responsecode                            The total number of request with HTTP/304 status code
-		success_responsecpde                               The total number of request with HTTP/200 status code
-		non_informational_responsecode                     The total number of request with a non information status code
-		servererror_responsecode                           The total number of request with HTTP/500 status code
-		service_unavailable                                The total number of request with HTTP/503 status code
-		request_duration                                   Time taken to generate the corresponding code
+Name		            	| Description
+---         		   	|   ---
+total_activerequests                |               The total number of requests that are currently active
+total_badrequest                    |               The total number of request with HTTP/400 status code
+total_responsecode_created          |               The total number of request with HTTP/201 status code
+total_forbidden_responsecode        |               The total number of request with HTTP/403 status code
+noContent_responsecode              |               The total number of request with HTTP/204 status code
+notFound_responsecode               |               The total number of request with HTTP/404 status code
+unmodified_responsecode             |               The total number of request with HTTP/304 status code
+success_responsecpde                |               The total number of request with HTTP/200 status code
+non_informational_responsecode      |               The total number of request with a non information status code
+servererror_responsecode            |               The total number of request with HTTP/500 status code
+service_unavailable                 |               The total number of request with HTTP/503 status code
+request_duration                    |               Time taken to generate the corresponding code
