@@ -8,7 +8,7 @@
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Download and install the latest version of the [Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 ---
 
@@ -20,7 +20,10 @@
 
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/mssql_custom_query.ps1
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/mssql_custom_query.cfg
-
+- Execute the below command for valid JSON output.
+  ```
+  ./mssql_custom_query.ps1 -SQLServer "sql_server_name" -SQLDBName "sql_db_name" -query "sql_query" -sqlusername "sql_username" -sqlpassword "sql_password"
+  ```
 - Update the below configurations in mssql_custom_query.cfg file:
 
 		[mssql_custom_query]
