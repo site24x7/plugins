@@ -20,9 +20,10 @@
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/mssql_custom_query.ps1
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/mssql_custom_query.cfg
 
-- Open powershell and check the manual execution of the plugin with query using the below command,
-
-  		./mssql_custom_query.ps1 -SQLServer "sql_server_name" -SQLDBName "sql_db_name" -query "sql_query" -sqlusername "sql_username" -sqlpassword "sql_password"
+- Execute the below command for valid JSON output.
+  ```
+  ./mssql_custom_query.ps1 -SQLServer "sql_server_name" -SQLDBName "sql_db_name" -query "sql_query" -sqlusername "sql_username" -sqlpassword "sql_password"
+  ```
 
 - Update the below configurations in mssql_custom_query.cfg file:
 
