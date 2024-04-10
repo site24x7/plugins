@@ -1,8 +1,20 @@
 # Plugin for Monitoring Software Updates Count
 
 OS Supported: Ubuntu, Centos
+## Plugin Installation
 
-### Plugin installation
+### Automatic Plugin Installation
+---
+Download the below file.
+```
+wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/InstallSite24x7CheckUpdates.py && sed -i "1s|^.*|#! $(which python3)|" InstallSite24x7CheckUpdates.py
+```
+
+Execute the file using the below command.
+```
+./InstallSite24x7CheckUpdates.py
+```
+### Manual Plugin Installation
 ---
 ##### Linux 
 

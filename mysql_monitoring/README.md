@@ -2,6 +2,18 @@
 
 =================================================================
 
+## Quick installation
+
+If you're using Linux servers, use the MySQL plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
+
+Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
+
+```bash
+wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/installer/Site24x7MySQLPluginInstaller.sh && sudo bash Site24x7MySQLPluginInstaller.sh
+```
+## Standard Installation
+If you're not using Linux servers or want to install the plugin manually, follow the steps below.
+
 
 ### Prerequisites
 
@@ -270,5 +282,6 @@
 _The pymysql source can be found [here](https://github.com/PyMySQL/PyMySQL/tree/main)._
 
 _Zoho Corporation has made this into one single [zip file](https://github.com/site24x7/plugins/tree/master/mysql_monitoring/pymysql/pymysql.zip) and is licensed under the same [license](https://github.com/PyMySQL/PyMySQL/blob/main/LICENSE) which can be found [here](https://github.com/site24x7/plugins/tree/master/mysql_monitoring/pymysql/LICENSE.txt)._
+
 
 

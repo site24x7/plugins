@@ -2,13 +2,18 @@
 
 The Apache HTTP Server, commonly known as Apache, is the world's most used web server software. Configure the Site24x7 Apache plugin to monitor the performance of your Apache server and stay on top of issues at all times.
 
-## Apache plugin installer
+## Quick installation
+If you're using Linux servers, use the Apache plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
 
-On Linux servers, execute the command below in the terminal to run an installer that checks the prerequisites and installs the plugin.
+Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
+```bash
+wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/InstallSite24x7ApachePlugin.sh && sudo bash InstallSite24x7ApachePlugin.sh
+```
 
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/InstallSite24x7ApachePlugin.sh && sudo bash InstallSite24x7ApachePlugin.sh
+## Standard installation
+If you're not using Linux servers or want to install the plugin manually, follow the steps below.
 
-## Prerequisites
+### Prerequisites
 
 Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
@@ -104,7 +109,7 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 	```
 *Note : The URL will differ based on what you have entered in the Apache configuration.*
 
-## Plugin Installation  
+### Add Plugin   
 
 1. Create a folder named _apache\_monitoring_.
 2. Download the [apache\_monitoring.py](https://raw.githubusercontent.com/site24x7/plugins/master/apache\_monitoring/apache_monitoring.py) and the [apache\_monitoring.cfg](https://raw.githubusercontent.com/site24x7/plugins/master/apache\_monitoring/apache_monitoring.cfg) files from our [GitHub repository](https://github.com/site24x7/plugins), and place them in the _apache\_monitoring_ folder.  
