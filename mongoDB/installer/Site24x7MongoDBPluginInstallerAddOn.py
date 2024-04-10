@@ -50,7 +50,7 @@ def move_folder(source, destination):
 def move_plugin(plugin_name, plugins_temp_path, agent_plugin_path):
     try:
         if not check_directory(agent_plugin_path):
-            print(f"    {agent_plugin_path} Agent Plugins Directory not Present")
+            print(colors.RED +"    {agent_plugin_path} Agent Plugins Directory not present".format(agent_plugin_path=agent_plugin_path)+colors.RESET)
             return False
         plugin_dir=agent_plugin_path+plugin_name+"/"
         if not check_directory(plugin_dir):
@@ -58,10 +58,10 @@ def move_plugin(plugin_name, plugins_temp_path, agent_plugin_path):
             if not move_folder(plugins_temp_path+plugin_name, plugin_dir): 
                 return False
         else:
-            print(f"    The plugin  \"{plugin_name}\" is already present in the agent directory.")
-            move_option=input(f"    Do you want to reinstall the \"{plugin_name}\" plugin? \n    Select \"y\" to reinstall. Select \"n\" to add another MongoDB instance for monitoring in the same plugin configuration file. (y/n)")
+            print("    The plugin  \"{plugin_name}\" is already present in the agent directory.".format(plugin_name=plugin_name))
+            move_option=input("    Do you want to reinstall the \"{plugin_name}\" plugin? \n    Select \"y\" to reinstall. Select \"n\" to add another MongoDB instance for monitoring in the same plugin configuration file. (y/n)".format(plugin_name=plugin_name))
             if move_option=="n":
-                multi_option=input(f"    Do you want to proceed with adding another MongoDB instance for monitoring in the same plugin configuration file? (y/n)")
+                multi_option=input("    Do you want to proceed with adding another MongoDB instance for monitoring in the same plugin configuration file? (y/n)")
                 if multi_option=="y":
                     if not multi_config(plugins_temp_path+plugin_name+"/"+plugin_name+".cfg",plugin_dir+plugin_name+".cfg"):
                         return False
@@ -74,8 +74,6 @@ def move_plugin(plugin_name, plugins_temp_path, agent_plugin_path):
                     return False
                 if not move_folder(plugins_temp_path+plugin_name, plugin_dir): 
                     return False
-                
-
  
     except Exception as e:
         print(colors.RED +"    "+str(e)+colors.RESET)
@@ -89,7 +87,7 @@ def plugin_config_setter(plugin_name, plugins_temp_path, arguments, display_name
 
         arguments='\n'.join(arguments.replace("--","").split())
         with open(config_file_path, "w") as f:
-            f.write(f"[{display_name}]\n"+arguments)
+            f.write("[{display_name}]\n".format(display_name=display_name)+arguments)
 
 
     except Exception as e:
@@ -113,17 +111,19 @@ def plugin_validator(output):
     
     return True
 
+
 def download_file(url, path):
     filename=url.split("/")[-1]
     full_path=path+filename
     urllib.request.urlretrieve(url, full_path)
     response=urllib.request.urlopen(url)
     if response.getcode() == 200 :
-        print(colors.GREEN +f"      {filename} Downloaded"+ colors.RESET)
+        print(colors.GREEN +"      {filename} Downloaded".format(filename=filename)+ colors.RESET)
     else:
-        print(colors.RED +f"      {filename} Download Failed with response code {str(response.status_code)}"+ colors.RESET)
+        print(colors.RED +"      {filename} Download failed with response code {str(response.status_code)}".format(filename=filename)+ colors.RESET)
         return False
     return True
+
 
 def down_move(plugin_name, plugin_url, plugins_temp_path):
     temp_plugin_path=os.path.join(plugins_temp_path,plugin_name+"/")
@@ -144,8 +144,8 @@ def execute_command(cmd, need_out=False):
         
         result=subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.returncode != 0:
-            print(f"    {cmd} execution failed with return code {result.returncode}")
-            print(f"    {str(result.stderr)}")
+            print("    {cmd} execution failed with return code {returncode}".format(cmd=cmd, returncode=result.returncode))
+            print("    {stderr}".format(stderr=str(result.stderr)))
             return False
         if need_out:
             return result.stdout
@@ -159,10 +159,10 @@ def make_directory(path):
     if not check_directory(path):
         try:
             os.mkdir(path)
-            print(f"    {path} directory created.")
+            print("    {path} directory created.".format(path=path))
         
         except Exception as e:
-            print(f"    Unable to create {path} Directory  : {str(e)}")
+            print("    Unable to create {path} directory  : {err}".format(path=path, err=str(e)))
             return False
     return True
 
@@ -233,7 +233,7 @@ def mongo_connect(args):
 
         if not pymongo_installed:
             import zipimport
-            importer=zipimport.zipimporter(f"{plugin_script_path}/pymongo.pyz")
+            importer=zipimport.zipimporter("{plugin_script_path}/pymongo.pyz".format(plugin_script_path=plugin_script_path))
             bson=importer.load_module("bson")
             pymongo=importer.load_module("pymongo")
 
@@ -256,18 +256,18 @@ def input_validate(msg, default=None, custom_msg=None):
     input_check=False
     while not input_check:
         if custom_msg:
-                    option = input(f"{custom_msg}")
+                    option = input("{custom_msg}".format(custom_msg=custom_msg))
         else:
-                    option = input(f"\n    Enter the {msg} of the MongoDB instance : ")
+                    option = input("\n    Enter the {msg} of the MongoDB instance : ".format(msg=msg))
         if not option :
-            print(f"    No {msg} entered.")
+            print("    No {msg} entered.".format(msg=msg))
             if default:
-                continue_option=input(f"    Do you want to use the default value \"{default}\"? (y/n):")
+                continue_option=input("    Do you want to use the default option \"{default}\"? (y/n):".format(default=default))
                 if continue_option =="Y" or continue_option=="y":
                     option=default
                     input_check=True
                     return option
-            continue_option=input(f"    A {msg} is required to get metrics. Do you want to enter a {msg} (y/n) : ")
+            continue_option=input("    A {msg} is required to get metrics. Do you want to enter a {msg} (y/n) : ".format(msg=msg))
 
             if continue_option=="Y" or continue_option=="y":
                 input_check=False
@@ -290,7 +290,7 @@ def initiate(plugin_name, plugin_url):
     print()
     print(colors.GREEN +"------------------------   Installing the plugin ----------------------------"+ colors.RESET)
     print()
-    print(colors.BLUE +"""    Hostname/IP Address, port, database, authentication database of the mongoDB instance is required to get metrics. These details will be configured in the plugin configuration file.
+    print(colors.BLUE +"""    Hostname/IP Address, port, database, authentication database (authDB) of the MongoDB instance is required to get metrics. \n    These details will be configured in the plugin configuration file.
           """+ colors.RESET)
     
 
@@ -309,21 +309,21 @@ def initiate(plugin_name, plugin_url):
         return
 
 
-    parameter="database"
+    parameter="database name"
     dbname=input_validate(parameter, default="admin")
     if not port:
         print()
         print(colors.RED + "------------------------------ Error occured. Database is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
         return
 
-    parameter="authentication database"
+    parameter="authentication database (authDB)"
     authdb=input_validate(parameter, default="admin")
     if not port:
         print()
         print(colors.RED + "------------------------------ Error occured. AuthDB is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
         return
 
-    print(colors.BLUE +"""    A new monitoring user with \"clusterMonitor\" privileges is required to monitor MongoDB.\n    Provide the admin username and password of the MongoDB to proceed with creating a monitoring user.\n    Note: The admin username and password you provide will not be stored in any of the Site24x7 databases."""+ colors.RESET)
+    print(colors.BLUE +"""    A new monitoring user with \"clusterMonitor\" privileges is required to monitor MongoDB instance.\n    Provide the admin username and password of the MongoDB instance to proceed with creating a monitoring user.\n    Note: The admin username and password you provide will not be stored in any of the Site24x7 databases."""+ colors.RESET)
 
     admin_username=input_validate("admin username")
     if not admin_username:
@@ -352,16 +352,23 @@ def initiate(plugin_name, plugin_url):
           return
         args["tlscertificatekeyfile"]=tlscertificatekeyfile
 
-        tlscertificatekeyfilepassword=input_validate("TLS certificate key file password")
-        if not tlscertificatekeyfilepassword:
-          print(colors.RED + "------------------------------ Error occured. TLS certificate key file password is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
-          return
-        args["tlscertificatekeyfilepassword"]=tlscertificatekeyfilepassword
 
+        tls_pass_op=input("    Do you have a TLS certificate key file password? (y/n) : ")
+        if tls_pass_op.lower()=="y":
+            tlscertificatekeyfilepassword=input_validate("TLS certificate key file password", default="None")
+            if not tlscertificatekeyfilepassword:
+              print(colors.RED + "------------------------------ Error occured. TLS certificate key file password is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
+              return
+            args["tlscertificatekeyfilepassword"]=tlscertificatekeyfilepassword
+        else:
+            tlscertificatekeyfilepassword=None
+            args["tlscertificatekeyfilepassword"]=None
+
+        print("")
         custom_msgs="    Do you want to allow invalid certificates in the MongoDB instance? (y/n) :"
         tlsallowinvalidcertificates=input_validate("TLS allow invalid certificates", default="\'n\'", custom_msg=custom_msgs)
         if not tlsallowinvalidcertificates:
-          print(colors.RED + "------------------------------ Error occured. TLS invalid certificates preference is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
+          print(colors.RED + "------------------------------ Error occured. An input is required. Process exited.  ------------------------------" + colors.RESET)
           return         
         if tlsallowinvalidcertificates.lower()=="y":
             tlsallowinvalidcertificates=True
@@ -377,8 +384,6 @@ def initiate(plugin_name, plugin_url):
 
 
     args={"host":host,"port":port,"dbname":dbname,"authdb":authdb,"admin_username":admin_username,"admin_password":admin_password, "tls":tls, "tlscertificatekeyfile":tlscertificatekeyfile, "tlscertificatekeyfilepassword":tlscertificatekeyfilepassword, "tlsallowinvalidcertificates":tlsallowinvalidcertificates}
-
-
     
     connection=mongo_connect(args)
     if not connection:
@@ -386,12 +391,13 @@ def initiate(plugin_name, plugin_url):
         print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------"+ colors.RESET)
         return
 
-    print("    Connection estabilished to the MongoDB instance.")
+    print(colors.GREEN + "    Connection to the MongoDB instance established successfully."+ colors.RESET)
 
     print()
-    print(colors.BLUE + """    A user with default username "site24x7" will be created with \"clusterMonitor\" privileges.\n    Note: The created user credentials you provide will be securely encrypted in the agent and will not be stored in any of the Site24x7 databases.
+    print(colors.BLUE + """    A user with default username "site24x7" will be created with \"clusterMonitor\" privileges.\n    Note: The credentials of the created user will be securely encrypted in the agent and will not be stored in any of the Site24x7 databases.
           """+ colors.RESET)
 
+    print("")
     print("    Select \"y\" to proceed with default username \"site24x7\". Select \"n\" to create a new username. ")
     user_option=input("    Do you want to proceed with default username \"site24x7\"? (y/n)")    
     if user_option=="Y" or user_option =="y":
@@ -414,10 +420,10 @@ def initiate(plugin_name, plugin_url):
         print(str(e))
         print(colors.RED + "------------------------------ Error occured. Process exited.  ------------------------------" + colors.RESET)
         return 
-
+    print("")
     if check_user(db, args):
-        print(f"    The user {username} already exists in the MongoDB instance.")
-        password=input_validate(msg=None,custom_msg=f"    Enter the existing password for the user {username}: ")
+        print("    The user {username} already exists in the MongoDB instance.".format(username=username))
+        password=input_validate(msg=None,custom_msg="    Enter the existing password for the user {username}: ".format(username=username))
         if not password:
             print(colors.RED + "------------------------------ Error occured. The monitoring user password is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
             return
@@ -426,7 +432,7 @@ def initiate(plugin_name, plugin_url):
              return False
         args["password"]=password
     else:
-        password=input_validate(msg=None,custom_msg=f"    Enter a new password for the user {username} : ")
+        password=input_validate(msg=None,custom_msg="    Enter a new password for the user {username} : ".format(username=username))
         if not password:
             print(colors.RED + "------------------------------ Error occured. A monitoring user password is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
             return      
@@ -434,10 +440,6 @@ def initiate(plugin_name, plugin_url):
         if not create_user(args,db):
              return 
              
-
-
-
-
     if not check_directory(agent_temp_path):
         print("    Site24x7 Linux agent directory not found.")
         print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
@@ -449,6 +451,7 @@ def initiate(plugin_name, plugin_url):
             print("")
             print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
             return 
+    print("")
     print(colors.GREEN +"    Installation in progress."+ colors.RESET)
     print()
     print("    Downloading the MongoDB plugin files from Site24x7's GitHub repository.")
@@ -467,21 +470,23 @@ def initiate(plugin_name, plugin_url):
         return 
 
 
-    py_update_cmd = [ "sed", "-i", "1s|^.*|#! /usr/bin/python3|", f"{plugins_temp_path}{plugin_name}/{plugin_name}.py" ]
+    py_update_cmd = [ "sed", "-i", "1s|^.*|#! /usr/bin/python3|", "{plugins_temp_path}{plugin_name}/{plugin_name}.py".format(plugins_temp_path=plugins_temp_path,plugin_name=plugin_name ) ]
     if not execute_command(py_update_cmd):
         print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
         return 
 
 
-    cmd=f"chmod 744 {plugins_temp_path}/{plugin_name}/{plugin_name}.py"
+    cmd="chmod 744 {plugins_temp_path}/{plugin_name}/{plugin_name}.py".format(plugins_temp_path=plugins_temp_path, plugin_name=plugin_name)
     if not execute_command(cmd):
         print("")
         print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
         return 
     print("")
 
-    arguments=f"""--username={args["username"]} --password={args["password"]} --host={args["host"]} --port={args["port"]} --dbname={args["dbname"]} --authdb={args["authdb"]}"""
-    cmd=f"{plugins_temp_path}/{plugin_name}/{plugin_name}.py"+ " "+arguments
+    arguments="--username="+args["username"]+" --password="+args["password"]+" --host="+args["host"]+" --port="+args["port"]+ "--dbname="+args["dbname"] +" --authdb="+args["authdb"]
+
+
+    cmd="{plugins_temp_path}/{plugin_name}/{plugin_name}.py".format(plugins_temp_path=plugins_temp_path, plugin_name=plugin_name)+ " "+arguments
     result=execute_command(cmd, need_out=True)
     if not plugin_validator(result):
         print("")
@@ -498,6 +503,7 @@ def initiate(plugin_name, plugin_url):
     print()
 
     print("    Updating the plugin in the Site24x7 Agent directory")
+    print("")
     if not move_plugin(plugin_name, plugins_temp_path, agent_plugin_path):
         print("")
         print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
@@ -507,8 +513,6 @@ def initiate(plugin_name, plugin_url):
 
 
     print(colors.GREEN +"------------------------------  Plugin installed successfully ------------------------------"+ colors.RESET)
-
-
 
 
 
