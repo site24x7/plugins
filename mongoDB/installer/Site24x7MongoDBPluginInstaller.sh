@@ -5,11 +5,22 @@ GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 RESET='\033[0m'
+echo
+echo -e "${GREEN}This installer helps you to install the MongoDB plugin for monitoring in Site24x7.
+Follow the in-line instructions below to complete the installation successfully.${RESET}"
 
+echo
+echo "Ensure you meet the following prerequisites before proceeding. 
+Continue if you meet the prerequisites, or run the installer again once the prerequisites are met.
 
+  1. Ensure you have Site24x7 Linux monitoring agent installed in the server.
+  2. Python 3 or a higher version should be installed in the server."
+
+echo
+echo "-------------------- Checking prerequisites --------------------"
 
 echo ""
-echo "Checking if Site24x7 Linux Agent is present in the server."
+echo "Checking if the Site24x7 Linux Agent is present in the server."
 agent_dir=/opt/site24x7/monagent/
 if [ -e $agent_dir ]; then
     echo -e "${GREEN}Site24x7 Linux Agent is present.${RESET}"
@@ -33,7 +44,7 @@ if command -v python3 &>/dev/null; then
     echo "Python is installed."    
 else
     echo "Python is required to monitor MongoDB using the plugin. 
-          Ensure Python installed and then run the installer again to proceed with the plugin installation."
+          Ensure Python 3 or higher version is installed and then run the installer again to proceed with the plugin installation."
     exit 1
 fi
 
@@ -46,7 +57,7 @@ fi
 
 
 echo ""
-echo -e "${GREEN}Downloading related installation files from our GitHub repository. ${RESET}"
+echo -e "${GREEN}Downloading related installation files from the Site24x7 GitHub repository. ${RESET}"
 wget "https://raw.githubusercontent.com/site24x7/plugins/suraj/mongoDB/installer/Site24x7MongoDBPluginInstallerAddOn.py" &> /dev/null
 if [[ $? -ne 0 ]]; then
     echo -e "${RED} Download failed. Process exited.${RESET}"
@@ -70,7 +81,6 @@ echo -e "${GREEN}Download completed.${RESET}"
 
 
 
-echo "Executing the MongoDB installer."
 python3 Site24x7MongoDBPluginInstallerAddOn.py
 if [[ $? -ne 0 ]]; then
     echo -e "${RED}Error occured. Execution failed. Process exited.${RESET}"
