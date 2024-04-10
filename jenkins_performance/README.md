@@ -18,76 +18,88 @@ To run the Jenkins effectively, DevOps team is required to monitor the performan
 
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] / [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 - Follow below steps to generate API key 
-- Install the "Metrics plugin" from Jenkins. (Jenkins -> Manage Jenkins -> Manage plugins ->Available)
-- (Jenkins -> Manage Jenkins -> Configure system) Generate your API key under the metrics section.
+	- Install the "Metrics plugin" from Jenkins. (Jenkins -> Manage Jenkins -> Manage plugins ->Available)
+	- (Jenkins -> Manage Jenkins -> Configure system) Generate your API key under the metrics section.
+- Python version 3 or higher.
 
 ---
 
 ### Plugin Installation  
 
 - Create a directory "jenkins_performance".
-      
-- Download all the files in "jenkins_performance" folder and place it under the "jenkins_performance" directory
+  
+		mkdir jenkins_performance
+  		cd jenkins_performance/
+  
+- Download all the files in and place it under the "jenkins_performance" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_performance/jenkins_performance.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins_performance/jenkins_performance.cfg
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the jenkins_performance.py script.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python jenkins_performance.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> --apikey=<apikey>
+		python jenkins_performance.py --host "host" --port "port" --username "username" --password "password" --apikey "apikey"
 		
 - Change the below configurations in "jenkins_performance.cfg" file
 
 		[jenkins_performance]
-		host = <host_name>
-		port = <port_number>
-		username = <username>
-		password = <password>
-		apikey = <apikey>
-		
+		host = "host"
+		port = "port"
+		username = "username"
+		password = "password"
+		apikey = "apikey"
+
+##### Linux 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the jenkins_performance.py script.
+
 - Move the directory "jenkins_performance" under Site24x7 Linux Agent plugin directory : 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/
+		mv jenkins_performance /opt/site24x7/monagent/plugins/
+
+##### Windows 
+
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
 
+- Move the folder "jenkins_performance" under Site24x7 Windows Agent plugin directory : 
+
+		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+  
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 	
 ---
-#### Jenkins performance metrics:
+#### Metrics Captured
 
-
-		METRICS                                             DESCRIPTION
-
-
-		node_count                                          Number of node
-		health-check_count                                  The number of health checks associated
-		health-check_duration                               The rate at which the health checks are running (sec)
-		nodes_offline                                       Number of offline nodes
-		nodes_online                                        Number of online nodes
-		projects_count                                      Project count
-		projects_disabled                                   Number of disabled projects
-		projects_enabled                                    Number of enabled projects
-		queue_size                                          Number of jobs in queue
-		executor_count                                      Number of executors available for Jenkins
-		executors_free_count                                Number of executors available for Jenkins that are not currently in use
-		executors_inuse_count                               Number of executors in use
-		queues_pending                                      Number of pending jobs in the queue
-		queues_stuck                                        Number of stucked jobs in the queue
-		queues_blocked                                      Number of jobs that are blocked in the queue
-		jobs_in_queue                                       Number of buildable items in queue
-		plugins_active                                      Number of active plugins
-		plugins_failed                                      Number of plugins failed
-		plugins_inactive                                    Number of inactive plugins
-		plugins_withupdate                                  Number of plugins with update
-		builds_blocked_duration                             Time taken by the jobs in blocked state (sec)
-		build_creation_time                                 Time taken by the build to complete (sec)
-		builds_execution_duration                           Build execution time (sec)
-		builds_queuing_duration                             Build queuing time (sec)
-		builds_waiting_duration                             Time taken by the build by waiting in a queue (sec)
+Name		            	| Description
+---         		   	|   ---
+node_count                      |                    Number of node.
+health-check_count              |                    The number of health checks associated.
+health-check_duration           |                    The rate at which the health checks are running (sec).
+nodes_offline                   |                    Number of offline nodes.
+nodes_online                    |                    Number of online nodes.
+projects_count                  |                    Project count.
+projects_disabled               |                    Number of disabled projects.
+projects_enabled                |                    Number of enabled projects.
+queue_size                      |                    Number of jobs in queue.
+executor_count                  |                    Number of executors available for Jenkins.
+executors_free_count            |                    Number of executors available for Jenkins that are not currently in use.
+executors_inuse_count           |                    Number of executors in use.
+queues_pending                  |                    Number of pending jobs in the queue.
+queues_stuck                    |                    Number of stucked jobs in the queue.
+queues_blocked                  |                    Number of jobs that are blocked in the queue.
+jobs_in_queue                   |                    Number of buildable items in queue.
+plugins_active                  |                    Number of active plugins.
+plugins_failed                  |                    Number of plugins failed.
+plugins_inactive                |                    Number of inactive plugins.
+plugins_withupdate              |                    Number of plugins with update.
+builds_blocked_duration         |                    Time taken by the jobs in blocked state (sec).
+build_creation_time             |                    Time taken by the build to complete (sec).
+builds_execution_duration       |                    Build execution time (sec).
+builds_queuing_duration         |                    Build queuing time (sec).
+builds_waiting_duration         |                    Time taken by the build by waiting in a queue (sec).
 
 
