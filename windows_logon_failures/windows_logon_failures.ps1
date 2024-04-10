@@ -10,7 +10,7 @@ Function Get-Data($count)
 $outdata=@{}
   
 $startTime = (Get-Date).AddMinutes(-5)
-$Events=Get-EventLog -LogName Security -Source "Microsoft-Windows-Security-Auditing" -InstanceId 4625 -EntryType FailureAudit -After $startTime
+$Events=Get-EventLog -LogName Security -Source "Microsoft-Windows-Security-Auditing" -InstanceId 4625 -EntryType FailureAudit -After $startTime -EA silentlycontinue
 $Log=[System.Collections.ArrayList]@()
 $event_count=$Events.Count
 

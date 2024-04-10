@@ -2,7 +2,18 @@
 
 The Apache HTTP Server, commonly known as Apache, is the world's most used web server software. Configure the Site24x7 Apache plugin to monitor the performance of your Apache server and stay on top of issues at all times.
 
-## Prerequisites
+## Quick installation
+If you're using Linux servers, use the Apache plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
+
+Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
+```bash
+wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/InstallSite24x7ApachePlugin.sh && sudo bash InstallSite24x7ApachePlugin.sh
+```
+
+## Standard installation
+If you're not using Linux servers or want to install the plugin manually, follow the steps below.
+
+### Prerequisites
 
 Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
@@ -98,7 +109,7 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 	```
 *Note : The URL will differ based on what you have entered in the Apache configuration.*
 
-## Plugin Installation  
+### Add Plugin   
 
 1. Create a folder named _apache\_monitoring_.
 2. Download the [apache\_monitoring.py](https://raw.githubusercontent.com/site24x7/plugins/master/apache\_monitoring/apache_monitoring.py) and the [apache\_monitoring.cfg](https://raw.githubusercontent.com/site24x7/plugins/master/apache\_monitoring/apache_monitoring.cfg) files from our [GitHub repository](https://github.com/site24x7/plugins), and place them in the _apache\_monitoring_ folder.  
@@ -134,7 +145,9 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 6. If you have virtual hosts configured and/or need to monitor the status of multiple domains using the same plugin, refer [this link](https://www.site24x7.com/help/admin/adding-a-monitor/plugins/custom-plugins.html#multiple-config) to configure the domains.
 
 7. Move the _apache\_monitoring_ folder to the _Site24x7 server monitoring plugins directory_.
+
 For Linux: /opt/site24x7/monagent/plugins/
+
 For Windows: C:\Program Files (x86)\Site24x7\WinAgent\monitoring\plugins\
 
 The agent will automatically execute the plugin within five minutes and display performance data in Site24x7.
@@ -158,46 +171,27 @@ To view the plugin monitor and associated performance charts:
 
 
 ## Performance Metrics
-
-- **Requests per Second**
-req_per_sec records the total number of HTTP requests the web server is processing per second.
-- **Busy Workers**
-Use the metric busy_workers to get the total number of processes actively processing an HTTP request.
-- **Idle Workers**
-idle_workers is the total number of idle workers/idle processes waiting for an HTTP request.
-- **Bytes per Second**
-bytes_per_sec records the total amount of data the web server is transferring per second.
-- **Bytes per Request**
-The average number of bytes being transferred per HTTP request is obtained using the metric bytes_per_req.
-- **Processes**
-Processes denote the number of async processes.
-- **Connections Async Closing**
-Connections Async Closing shows the number of async connections that are in the closing state.
-- **Connections Async Keep Alive**
-Connections Async Keep Alive displays the number of async connections that are in the keep-alive state.
-- **Connections Async Writing**
-Connections Async Writing denotes the number of async connections that are in the writing state.
-- **CPU Load**
-Use the metric cpu_load and get the total percentage of CPU used by the web server.
-- **CPU System**
-CPU System shows the percentage of time taken by the Apache process to access the system resources.
-- **CPU User**
-CPU User displays the percentage of time taken by the Apache process to process the code.
-- **Load1**
-Load1 shows the one-minute load average.
-- **Load5**
-Load5 denotes the five-minute load average.
-- **Load15**
-Load15 displays the 15-minute load average.
-- **Total Accesses**
-The total number of accesses on the server is monitored using the metric total_accessess.
-- **Total Connections**
-Total Connections depicts the total number of connections on the Apache server.
-- **Total kbytes**
-Total kbytes records the total kilobytes served.
-- **Uptime**
-Uptime shows the total amount of time the server has been up and running.
-- **Version**
-Version denotes the Apache server version.
+Name		            	| Description
+---         		   	|   ---
+Requests per Second		|	req_per_sec records the total number of HTTP requests the web server is processing per second.
+Busy Workers		|	Use the metric busy_workers to get the total number of processes actively processing an HTTP request.
+Idle Workers		|	idle_workers is the total number of idle workers/idle processes waiting for an HTTP request.
+Bytes per Second		|	bytes_per_sec records the total amount of data the web server is transferring per second.
+Bytes per Request		|	The average number of bytes being transferred per HTTP request is obtained using the metric bytes_per_req.
+Processes		|	Processes denote the number of async processes.
+Connections Async Closing		|	Connections Async Closing shows the number of async connections that are in the closing state.
+Connections Async Keep Alive		|	Connections Async Keep Alive displays the number of async connections that are in the keep-alive state.
+Connections Async Writing		|	Connections Async Writing denotes the number of async connections that are in the writing state.
+CPU Load		|	Use the metric cpu_load and get the total percentage of CPU used by the web server.
+CPU System		|	CPU System shows the percentage of time taken by the Apache process to access the system resources.
+CPU User		|	CPU User displays the percentage of time taken by the Apache process to process the code.
+Load1		|	Load1 shows the one-minute load average.
+Load5		|	Load5 denotes the five-minute load average.
+Load15		|	Load15 displays the 15-minute load average.
+Total Accesses		|	The total number of accesses on the server is monitored using the metric total_accessess.
+Total Connections		|	Total Connections depicts the total number of connections on the Apache server.
+Total kbytes		|	Total kbytes records the total kilobytes served.
+Uptime		|	Uptime shows the total amount of time the server has been up and running.
+Version		|	Version denotes the Apache server version.
 
 

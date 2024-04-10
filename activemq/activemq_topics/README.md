@@ -9,9 +9,9 @@ Follow the below steps to configure the ActiveMQ plugin and the monitoring metri
 
 - Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
-- Plugin Uses "JPype" python library. This module is used to execute the jmx query and get data. Execute the below command to install python JPype modeule in your server. 
+- Python version must be 3.7 or above.
 
-- Python version must be 3.7 or above.  
+- Plugin Uses "JPype" python library. This module is used to execute the jmx query and get data. Execute the below command to install python JPype modeule in your server. 
 
 		pip install JPype1
 		
@@ -30,47 +30,58 @@ Restart the instance after making the above changes.
 
 ### Plugin installation
 ---
-##### Linux 
 
-- Create a folder "activemq" under Site24x7 Linux Agent plugin directory : 
+- Create a folder "activemq_topics"
 
-      Linux            ->   /opt/site24x7/monagent/plugins/activemq_topics
-
-##### Windows 
-
-- Create a folder "activemq" under Site24x7 Windows Agent plugin directory : 
-
-      Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\activemq_topics
-      
----
-
-- Download all the files in "activemq" folder and place it under the "activemq" directory
+		mkdir activemq_topics
+  		cd activemq_topics/
+  
+- Download all the files in "activemq_topics" folder and place it under the "activemq_topics" directory
 
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/activemq/activemq_topics/activemq_topics.py
 	  wget https://raw.githubusercontent.com/site24x7/plugins/master/activemq/activemq_topics/activemq_topics.cfg
 	
 - Configure the keys to be monitored, as mentioned in the configuration section below.
 
+  #### Configurations
+    
+		[active mq topic]
+		hostname="localhost"
+		port="1099"
+		broker_name="broker_name"
+		topic_name="topic_name"
+		logs_enabled="False"
+		log_type_name=None
+		log_file_path=None
+    
+
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
   ```
-  python3 activemq_topics.py --hostname <hostname> --port <port> --broker_name <broker_name> --topic_name <topic_name>
+  python activemq_topics.py --hostname "ip-address" --port "port" --broker_name "broker_name" --topic_name "topic_name"
   ```
+
+
+##### Linux 
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the activemq_topics.py script.
+
+- Create a folder "activemq_topics" under Site24x7 Linux Agent plugin directory : 
+
+      mv activemq_topics /opt/site24x7/monagent/plugins/
+
+##### Windows 
+
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
+
+- Create a folder "activemq" under Site24x7 Windows Agent plugin directory : 
+
+      C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\activemq_topics
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
-### Configurations
+
 ---
-```
-[active mq_topics]
-hostname=hostname
-port=port
-broker_name=broker_name
-topic_name=topic_name
-logs_enabled="False"
-log_type_name=None
-log_file_path==None
-```
 ### Metrics Captured
 
 - **AlwaysRetroactive** 

@@ -72,7 +72,7 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
 -  Execute the below command with appropriate arguments to check fora valid json output:
 
     ```
-     python3 cassandra_monitoring.py --hostname localhost --port 7199 --logs_enabled False
+     python3 cassandra_monitoring.py --hostname "localhost" --port "7199" --logs_enabled "False"
     ```
     
 #### Configurations
@@ -82,11 +82,11 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
   
     ```
     [cassandra_1]
-    hostname=<HOSTNAME>
-    port=<PORT NUMBER>
-    logs_enabled=False
-    log_type_name=None
-    log_file_path=None
+    hostname="localhost"
+    port="7199"
+    logs_enabled="False"
+    log_type_name="None"
+    log_file_path="None"
     ```
 #### Linux
 

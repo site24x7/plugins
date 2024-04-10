@@ -80,14 +80,18 @@ class appname:
 
 
     def mbean_attributes(self,jmxconnection, QUERY, javax, metric_arg):
+    
         result = {}
         try:
             for metric in metric_arg:
                 output = jmxconnection.getAttribute(javax.management.ObjectName(QUERY), metric)
                 result[metric_arg[metric]] = output
         except Exception as e:
-            result["status"] = 0
-            result["msg"] = str(e)
+            if "javax.management.AttributeNotFoundException: No such attribute" in str(e):
+              pass
+            else:
+              result["status"] = 0
+              result["msg"] = str(e)
         return result
 
 
@@ -111,11 +115,11 @@ class appname:
 
             jmxconnection = jmxsoc.getMBeanServerConnection()
 
-            query=f"org.apache.activemq:type=Broker,brokerName={self.hostname},destinationType=Topic,destinationName={self.topic_name}"
+            query=f"org.apache.activemq:type=Broker,brokerName={self.broker_name},destinationType=Topic,destinationName={self.topic_name}"
             result=self.mbean_attributes(jmxconnection, query, javax, metrics)
             self.maindata.update(result)
 
-        except Exception as e:
+        except Exception as e:            
             self.maindata['msg']=str(e)
             self.maindata['status']=0
             return self.maindata

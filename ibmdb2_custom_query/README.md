@@ -27,19 +27,19 @@
 - Provide your IBM DB2 configurations in ibmdb2_custom_query.cfg file.
 
 		[ibm_db_2]
-		host 		= "<hostname>"
-		port 		= "<port>"
-		username	= "<username>"
-		password 	= "<password>"
-		sample_db	= "<sample_db>"
-		query         = "<DB2 Query>
+		host 		= "ip-address"
+		port 		= "port"
+		username	= "username"
+		password 	= "password"
+		sample_db	= "sample_db"
+		query         = "DB2 Query"
   #### Note:
   - If your custom query returns multiple rows based on specific criteria, you have the flexibility to utilize aggregation functions according to your needs, enabling manipulation of the retrieved rows.
   - Reference - https://www.ibm.com/docs/en/db2-for-zos/11?topic=functions-aggregate
 		
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python3 ibmdb2_custom_query.py --host <hostname> --port <port no> --username <username> --password <password> --sample_db <db name> --query <db2 query>
+		python3 ibmdb2_custom_query.py --host "ip-address" --port "port no" --username "username" --password "password" --sample_db "db name" --query "db2 query"
 
 - Move the directory named "ibmdb2_custom_query" under the Site24x7 Linux Agent plugin directory: 
 

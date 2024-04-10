@@ -6,7 +6,7 @@ HEARTBEAT=True
 METRICS_UNITS={}
 
 backend_metrics=["rtime","rtime_max","dresp","eresp","act","bck","chkdown","lastchg","downtime","lbtot","hrsp_5xx","hrsp_4xx","hrsp_3xx","hrsp_2xx","hrsp_1xx","hrsp_other","lastsess","cookie"]
-class appname:
+class haproxy:
 
     def __init__(self,args):
         
@@ -38,12 +38,37 @@ class appname:
             
             try:
                 response = requests.get(url = self.url,  auth = (self.username,  self.password))
-                if response.status_code==401:
-                     self.maindata['msg']="Authentication failed: Invalid credentials"
+                if response.status_code== 200:
+                     pass
+                elif response.status_code == 400:
+                    self.maindata['status']=0
+                    self.maindata['msg']="HTTP Error 400: Bad Request.\nURL: "+self.url
+                    return self.maindata
+                elif response.status_code==401:
+                     self.maindata['status']=0
+                     self.maindata['msg']="HTTP Error 401: Unauthorized Access, Incorrect Username or Password"
                      return self.maindata
                 elif response.status_code == 403:
-                    self.maindata['msg']='Authentication failed: Access denied'
+                    self.maindata['status']=0
+                    self.maindata['msg']="HTTP Error 403: Access Denied for User, Insufficient Privileges.\nURL: " + self.url
                     return self.maindata
+                elif response.status_code == 404:
+                    self.maindata['status']=0
+                    self.maindata['msg']="HTTP Error 404: The Requested URL is Not Found.\nURL: "+self.url
+                    return self.maindata
+                elif response.status_code == 500:
+                    self.maindata['status']=0
+                    self.maindata['msg']="HTTP Error 500: Internal Server Error.\nAn Unexpected condition was encountered on the server, and couldn't handle the request. Try again later, and maybe it'll feel better."
+                    return self.maindata
+                elif response.status_code == 503:
+                    self.maindata['status']=0
+                    self.maindata['msg']="HTTP Error 503: Service Unavailable. Please try again later."
+                    return self.maindata
+                else:
+                    self.maindata['status']=0
+                    self.maindata['msg']="HTTP Error {}: Oops! Something went wrong".format(response.status_code)
+                    return self.maindata
+
 
             except requests.exceptions.RequestException as e:
                  self.maindata['msg']=str(e)
@@ -51,17 +76,21 @@ class appname:
             
             res=response.text
             ha_df=pd.read_csv(io.StringIO(res))
+            list_ha_df=list(ha_df)
+            [list_ha_df.append(col) for col in backend_metrics if col not in list_ha_df]
+            ha_df=ha_df.reindex(list_ha_df,axis=1)
             ha_df=ha_df.fillna(-1)          
 
             back_df=ha_df[ha_df.svname==self.svname][backend_metrics]
             for index, metric in enumerate(backend_metrics):
-                 self.maindata[f"{self.svname}_"+metric]=int(back_df.iloc[0,index])
+                 metric_name=metric.replace("_"," ").title()
+                 self.maindata[f"{self.svname} "+metric_name]=int(back_df.iloc[0,index])
             
             
             units={
-                 f'{self.svname}_rtime':'ms',
-                 f'{self.svname}_rtime_max':'ms',
-                 f'{self.svname}_lastsess':'ms'
+                 f'{self.svname} Rtime':'ms',
+                 f'{self.svname} Rtime Max':'ms',
+                 f'{self.svname} Lastsess':'ms'
 
             }
             self.maindata['units']=units
@@ -87,7 +116,7 @@ if __name__=="__main__":
     
     username=None
     password=None
-    url="http://localhost/stats;csv"
+    url="http://localhost:80/stats;csv"
     svname="BACKEND"
 
     import argparse
@@ -102,7 +131,7 @@ if __name__=="__main__":
     parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
     args=parser.parse_args()
 
-    obj=appname(args)
+    obj=haproxy(args)
 
     result=obj.metriccollector()
     print(json.dumps(result,indent=True))
