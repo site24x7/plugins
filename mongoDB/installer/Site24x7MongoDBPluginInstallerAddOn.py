@@ -483,7 +483,7 @@ def initiate(plugin_name, plugin_url):
         return 
     print("")
 
-    arguments="--username="+args["username"]+" --password="+args["password"]+" --host="+args["host"]+" --port="+args["port"]+ "--dbname="+args["dbname"] +" --authdb="+args["authdb"]
+    arguments="--username="+args["username"]+" --password="+args["password"]+" --host="+args["host"]+" --port="+args["port"]+ " --dbname="+args["dbname"] +" --authdb="+args["authdb"]
 
 
     cmd="{plugins_temp_path}/{plugin_name}/{plugin_name}.py".format(plugins_temp_path=plugins_temp_path, plugin_name=plugin_name)+ " "+arguments
