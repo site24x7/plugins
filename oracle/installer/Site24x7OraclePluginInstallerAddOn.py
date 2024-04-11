@@ -424,7 +424,7 @@ if __name__ == "__main__":
 
     print(colors.BLUE +"""    A new monitoring user with SELECT_CATALOG_ROLE and CREATE SESSION privileges is required to monitor Oracle.\n    Provide the admin username (DBA Role) and password of the Oracle to proceed with creating a monitoring user.\n    Note: The admin username and password you provide will not be stored in any of the Site24x7 databases."""+ colors.RESET)
     
-    sysusername=input_validate("admin username")
+    sysusername=input_validate("admin username (DBA Role)")
     if not sysusername:
         print()
         print(colors.RED + "------------------------------ Error occured. Admin username is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
