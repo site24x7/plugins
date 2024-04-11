@@ -463,7 +463,7 @@ def initiate(plugin_name, plugin_url):
     print(colors.GREEN +"    Downloaded the MongoDB plugin files successfully."+ colors.RESET)
     print()
 
-    pyz_url="https://github.com/site24x7/plugins/raw/suraj/mongoDB/pymongo.pyz"
+    pyz_url="https://github.com/site24x7/plugins/raw/master/mongoDB/pymongo.pyz"
     if not download_file(url=pyz_url, path=plugins_temp_path+"mongoDB/"):
         print("")
         print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
@@ -519,5 +519,5 @@ def initiate(plugin_name, plugin_url):
 
 if __name__ == "__main__":
     plugin_name="mongoDB"
-    plugin_url="https://raw.githubusercontent.com/site24x7/plugins/suraj/mongoDB"
+    plugin_url="https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB"
     initiate(plugin_name, plugin_url)
