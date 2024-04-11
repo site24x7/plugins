@@ -422,7 +422,7 @@ if __name__ == "__main__":
     print(colors.GREEN +"    Hostname, Port, SID, Oracle Home path, and TLS preference received."+ colors.RESET)
     print()
 
-    print(colors.BLUE +"""    A new monitoring user with SELECT_CATALOG_ROLE and CREATE SESSION privileges is required to monitor Oracle.\n    Provide the admin username and password of the Oracle to proceed with creating a monitoring user.\n    Note: The admin username and password you provide will not be stored in any of the Site24x7 databases."""+ colors.RESET)
+    print(colors.BLUE +"""    A new monitoring user with SELECT_CATALOG_ROLE and CREATE SESSION privileges is required to monitor Oracle.\n    Provide the admin username (DBA Role) and password of the Oracle to proceed with creating a monitoring user.\n    Note: The admin username and password you provide will not be stored in any of the Site24x7 databases."""+ colors.RESET)
     
     sysusername=input_validate("admin username")
     if not sysusername:
