@@ -29,6 +29,7 @@
 	```
 	  pip install ibm_db
 	```
+- Provide `DBADM` authority to the user given to monitor the database.
  
 - Execute the below command with appropriate arguments to check for the valid json output:
 	```
