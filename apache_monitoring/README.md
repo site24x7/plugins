@@ -22,24 +22,29 @@ Download and install the latest version of the [Site24x7 Linux agent](https://ww
 
 - Apache configuration file is located at one of the following locations, depending on your Linux distribution.
 	```
-	    /etc/apache2/httpd.conf
-	    /etc/apache2/apache2.conf
-	    /etc/httpd/httpd.conf
-	    /etc/httpd/conf/httpd.conf
+	/etc/apache2/httpd.conf
+	/etc/apache2/apache2.conf
+	/etc/httpd/httpd.conf
+	/etc/httpd/conf/httpd.conf
 	```
 
 - Open the terminal and run the following command to open the Apache configuration file "/etc/httpd/conf/httpd.conf".
 
-  	``` 	$ sudo vi /etc/httpd/conf/httpd.conf 	```
+  	```
+  	sudo vi /etc/httpd/conf/httpd.conf
+   	```
 
 - In the file "/etc/httpd/conf/httpd.conf", search for the following line
 
-	``` 	#LoadModule status_module modules/mod_status.so 	```
+	```
+ 	#LoadModule status_module modules/mod_status.so
+  	```
 
 - Uncomment the above line by removing # at its beginning.
 
-	``` 	LoadModule status_module modules/mod_status.so 		```
-
+	```
+ 	LoadModule status_module modules/mod_status.so
+ 	```
 
 
 2. Configure mod_status in Apache configuration "/etc/httpd/conf/httpd.conf" file
@@ -107,7 +112,7 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 	```
 	http://localhost:80/server-status?auto
 	```
-*Note : The URL will differ based on what you have entered in the Apache configuration.*
+**Note :** The URL will differ based on what you have entered in the Apache configuration.
 
 ### Add Plugin   
 
@@ -121,13 +126,14 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
  
 3. To check if the plugin is working, execute the command below with appropriate arguments and check for a valid JSON output with applicable metrics and their corresponding value.  
 
-```
-	python3 apache_monitoring.py --url=<apache stats url> --username=<apache username> --password=<apache password>
-```
+	```
+	python3 apache_monitoring.py --url "http://localhost:80/server-status?auto" --username "apache username" --password "apache password"
+	```
 
 4. Add the applicable configurations in the _apache\_monitoring.cfg_ file.  
-	You can also configure [Apache access logs](https://www.site24x7.com/help/log-management/apache-access.html) to view the top failed requests, the URLs that take the longest to retrieve data, and more.  
-```
+	You can also configure [Apache access logs](https://www.site24x7.com/help/log-management/apache-access.html) to view the top failed requests, the URLs that take the longest to retrieve data, and more.
+
+	```
 	[localhost]
 	url ="http://localhost:80/server-status?auto"
 	username=None
@@ -138,17 +144,17 @@ Also, this configuration will not work for Virtual Hosts. If you have configurat
 	logs_enabled ="true"
 	log_type_name ="Apache Access Logs"
 	log_file_path ="/var/log/apache2/access.log"
-```
+	```
 
-5. Follow the steps in this [article](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers) to learn how to run the Python script on a Windows server. You don't need to do this for Linux.  
+6. Follow the steps in this [article](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers) to learn how to run the Python script on a Windows server. You don't need to do this for Linux.  
 
-6. If you have virtual hosts configured and/or need to monitor the status of multiple domains using the same plugin, refer [this link](https://www.site24x7.com/help/admin/adding-a-monitor/plugins/custom-plugins.html#multiple-config) to configure the domains.
+7. If you have virtual hosts configured and/or need to monitor the status of multiple domains using the same plugin, refer [this link](https://www.site24x7.com/help/admin/adding-a-monitor/plugins/custom-plugins.html#multiple-config) to configure the domains.
 
-7. Move the _apache\_monitoring_ folder to the _Site24x7 server monitoring plugins directory_.
+8. Move the _apache\_monitoring_ folder to the _Site24x7 server monitoring plugins directory_.
 
-For Linux: /opt/site24x7/monagent/plugins/
+	- For Linux: `/opt/site24x7/monagent/plugins/`
 
-For Windows: C:\Program Files (x86)\Site24x7\WinAgent\monitoring\plugins\
+	- For Windows: `C:\Program Files (x86)\Site24x7\WinAgent\monitoring\plugins\`
 
 The agent will automatically execute the plugin within five minutes and display performance data in Site24x7.
 
@@ -171,27 +177,27 @@ To view the plugin monitor and associated performance charts:
 
 
 ## Performance Metrics
-Name		            	| Description
----         		   	|   ---
+Name		            	| 	Description
+---         		   	|   	---
 Requests per Second		|	req_per_sec records the total number of HTTP requests the web server is processing per second.
-Busy Workers		|	Use the metric busy_workers to get the total number of processes actively processing an HTTP request.
-Idle Workers		|	idle_workers is the total number of idle workers/idle processes waiting for an HTTP request.
+Busy Workers			|	Use the metric busy_workers to get the total number of processes actively processing an HTTP request.
+Idle Workers			|	idle_workers is the total number of idle workers/idle processes waiting for an HTTP request.
 Bytes per Second		|	bytes_per_sec records the total amount of data the web server is transferring per second.
 Bytes per Request		|	The average number of bytes being transferred per HTTP request is obtained using the metric bytes_per_req.
-Processes		|	Processes denote the number of async processes.
-Connections Async Closing		|	Connections Async Closing shows the number of async connections that are in the closing state.
-Connections Async Keep Alive		|	Connections Async Keep Alive displays the number of async connections that are in the keep-alive state.
-Connections Async Writing		|	Connections Async Writing denotes the number of async connections that are in the writing state.
-CPU Load		|	Use the metric cpu_load and get the total percentage of CPU used by the web server.
-CPU System		|	CPU System shows the percentage of time taken by the Apache process to access the system resources.
-CPU User		|	CPU User displays the percentage of time taken by the Apache process to process the code.
-Load1		|	Load1 shows the one-minute load average.
-Load5		|	Load5 denotes the five-minute load average.
-Load15		|	Load15 displays the 15-minute load average.
-Total Accesses		|	The total number of accesses on the server is monitored using the metric total_accessess.
+Processes			|	Processes denote the number of async processes.
+Connections Async Closing	|	Connections Async Closing shows the number of async connections that are in the closing state.
+Connections Async Keep Alive	|	Connections Async Keep Alive displays the number of async connections that are in the keep-alive state.
+Connections Async Writing	|	Connections Async Writing denotes the number of async connections that are in the writing state.
+CPU Load			|	Use the metric cpu_load and get the total percentage of CPU used by the web server.
+CPU System			|	CPU System shows the percentage of time taken by the Apache process to access the system resources.
+CPU User			|	CPU User displays the percentage of time taken by the Apache process to process the code.
+Load1				|	Load1 shows the one-minute load average.
+Load5				|	Load5 denotes the five-minute load average.
+Load15				|	Load15 displays the 15-minute load average.
+Total Accesses			|	The total number of accesses on the server is monitored using the metric total_accessess.
 Total Connections		|	Total Connections depicts the total number of connections on the Apache server.
-Total kbytes		|	Total kbytes records the total kilobytes served.
-Uptime		|	Uptime shows the total amount of time the server has been up and running.
-Version		|	Version denotes the Apache server version.
+Total kbytes			|	Total kbytes records the total kilobytes served.
+Uptime				|	Uptime shows the total amount of time the server has been up and running.
+Version				|	Version denotes the Apache server version.
 
 
