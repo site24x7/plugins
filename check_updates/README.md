@@ -4,7 +4,7 @@ OS Supported: Ubuntu, Centos
 ## Plugin Installation
 
 Quick installation
-If you're using Linux servers, use the Oracle plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
+If you're using Linux servers, use the check_updates plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
 
 Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
 ```
