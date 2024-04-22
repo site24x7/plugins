@@ -9,7 +9,6 @@ If you're using Linux servers, use the Oracle plugin installer that checks the p
 Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
 ```
 wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/installer/Site24x7CheckUpdatesPluginInstaller.sh && sudo bash Site24x7CheckUpdatesPluginInstaller.sh
-
 ```
 
 ### Manual Plugin Installation
