@@ -3,17 +3,14 @@
 OS Supported: Ubuntu, Centos
 ## Plugin Installation
 
-### Automatic Plugin Installation
----
-Download the below file.
+Quick installation
+If you're using Linux servers, use the check_updates plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
+
+Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
 ```
-wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/InstallSite24x7CheckUpdates.py && sed -i "1s|^.*|#! $(which python3)|" InstallSite24x7CheckUpdates.py
+wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/installer/Site24x7CheckUpdatesPluginInstaller.sh && sudo bash Site24x7CheckUpdatesPluginInstaller.sh
 ```
 
-Execute the file using the below command.
-```
-./InstallSite24x7CheckUpdates.py
-```
 ### Manual Plugin Installation
 ---
 ##### Linux 
