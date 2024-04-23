@@ -10,10 +10,7 @@ echo -e "${GREEN}This installer helps you to install the Software Updates plugin
 Follow the in-line instructions below to complete the installation successfully.${RESET}"
 
 echo
-echo "Ensure you meet the following prerequisites before proceeding. 
-Continue if you meet the prerequisites, or run the installer again once the prerequisites are met.
 
-  1. Ensure you have Site24x7 Linux monitoring agent installed in the server."
 
 echo ""
 echo "Checking if Site24x7 Linux Agent is present in the server."
