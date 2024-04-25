@@ -2,14 +2,25 @@
 **Note:**
 
 The MongoDB plugin supports bulk installation across multiple servers through automation using Ansible. To install the plugin using Ansible, refer to this MongoDB Ansible playbook.
-                                                                     
-## Prerequisites
+## Quick installation
+
+If you're using Linux servers, use the MongoDB plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
+
+Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
+
+```
+wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/installer/Site24x7MongoDBPluginInstaller.sh && sudo bash Site24x7MongoDBPluginInstaller.sh
+```
+
+## Standard Installation	
+
+### Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
  - Execute the following command in your server to install pymongo: 
 
 		pip install pymongo
-		
+ - Create a user with **clusterMonitor** role.
 		
  Note: Please install the compatibility version of pymongo for your existing Python version
 | Python Version | Reference link contains list of compatible pymongo versions                  |
@@ -18,7 +29,7 @@ The MongoDB plugin supports bulk installation across multiple servers through au
 | Python 2       | https://www.mongodb.com/docs/drivers/pymongo/#python-2-compatibility         |
 ---
 
-## Plugin Installation  
+### Plugin Installation  
 
 - Create a directory named "mongoDB" in your server.		
       

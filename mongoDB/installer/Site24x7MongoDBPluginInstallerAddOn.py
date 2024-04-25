@@ -6,6 +6,7 @@ import warnings
 import urllib.parse
 import urllib.request
 import shutil
+import configparser
 
 warnings.filterwarnings("ignore")
 class colors:
@@ -46,11 +47,34 @@ def move_folder(source, destination):
         print(colors.RED +"    "+str(e)+colors.RESET)
         return False
     return True
+def remove_section_from_config(config_file, section_name):
+    config = configparser.ConfigParser()
+    config.read(config_file)
+
+    if config.has_section(section_name):
+        config.remove_section(section_name)
+        with open(config_file, 'w') as configfile:
+            config.write(configfile)
+
+def check_parse(plugin_name, plugin_dir, plugin_temp_path):
+
+    file_path=plugin_dir+plugin_name+".cfg"
+    temp_file_path=plugin_temp_path+plugin_name+"/"+plugin_name+".cfg"
+    config = configparser.ConfigParser()
+    config.read(file_path)
+    sections = config.sections()
+
+    config_temp = configparser.ConfigParser()
+    config_temp.read(temp_file_path)
+    section_name = config_temp.sections()[0]
+    if section_name in sections:
+        remove_section_from_config(file_path, section_name)
+
 
 def move_plugin(plugin_name, plugins_temp_path, agent_plugin_path):
     try:
         if not check_directory(agent_plugin_path):
-            print(colors.RED +"    {agent_plugin_path} Agent Plugins Directory not present".format(agent_plugin_path=agent_plugin_path)+colors.RESET)
+            print(f"    {agent_plugin_path} Agent Plugins Directory not Present")
             return False
         plugin_dir=agent_plugin_path+plugin_name+"/"
         if not check_directory(plugin_dir):
@@ -58,27 +82,16 @@ def move_plugin(plugin_name, plugins_temp_path, agent_plugin_path):
             if not move_folder(plugins_temp_path+plugin_name, plugin_dir): 
                 return False
         else:
-            print("    The plugin  \"{plugin_name}\" is already present in the agent directory.".format(plugin_name=plugin_name))
-            move_option=input("    Do you want to reinstall the \"{plugin_name}\" plugin? \n    Select \"y\" to reinstall. Select \"n\" to add another MongoDB instance for monitoring in the same plugin configuration file. (y/n)".format(plugin_name=plugin_name))
-            if move_option=="n":
-                multi_option=input("    Do you want to proceed with adding another MongoDB instance for monitoring in the same plugin configuration file? (y/n)")
-                if multi_option=="y":
-                    if not multi_config(plugins_temp_path+plugin_name+"/"+plugin_name+".cfg",plugin_dir+plugin_name+".cfg"):
-                        return False
-                else:
-                    print("    Plugin not configured")
-                    return False
+            check_parse(plugin_name, plugin_dir, plugins_temp_path)
 
-            else:
-                if not delete_folder(plugin_dir):
-                    return False
-                if not move_folder(plugins_temp_path+plugin_name, plugin_dir): 
-                    return False
- 
+            if not multi_config(plugins_temp_path+plugin_name+"/"+plugin_name+".cfg",plugin_dir+plugin_name+".cfg"):
+                 return False
+
     except Exception as e:
         print(colors.RED +"    "+str(e)+colors.RESET)
         return False
     return True
+
 
 def plugin_config_setter(plugin_name, plugins_temp_path, arguments, display_name):
     try:
