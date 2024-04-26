@@ -41,20 +41,19 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
 
 		pip3 install psycopg2-binary
   
-- Ensure **pg_read_all_stats** permission is provided to the user. For example, create a user 'site24x7' with password 'site24x7' and provide 'pg_read_all_stats' permission to the 'site24x7' user created.
+- Ensure **`pg_read_all_stats`** permission is provided to the user. For example, create a user `site24x7` with password `site24x7` and provide `pg_read_all_stats` permission to the `site24x7` user created.
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python3 postgres.py  --host "ip-address" --port "port-no" --username "username" --password "password" --db "db-name"
+		python3 postgres.py  --host "ip-address" --port "port-no" --username "username" --password "password" 
 
 - Provide your Postgres DB configurations in postgres.cfg file.
 
     ```
-	[dbname]
-    host=localhost
-    port=5432
-    username=None
-    password=None
-    db=postgres
+	[postgres]
+    host="localhost"
+    port="5432"
+    username="None"
+    password="None"
     ```
     
   #### Linux
