@@ -178,7 +178,7 @@ class pgsql():
             self.metricCollector()
         except ImportError as e:
             self._results.setdefault('status',0)
-            self._results.setdefault('msg', 'psycopg2 not installed')
+            self._results.setdefault('msg', "psycopg2 Module Not Installed\nDependency missing:'psycopg2' Python client library\nInstall with command,\n\n pip3 install psycopg2-binary\n")
             traceback.print_exc() 
         except Exception as e:
             self._results.setdefault('status',0)
