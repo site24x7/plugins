@@ -20,10 +20,28 @@ centos_path=/etc/httpd/conf.d
 status_conf_file=status.conf
 endpoint="/server-status"
 content="\n\t<Location /server-status>\n\t\tSetHandler server-status\n\t\tRequire local\n\t</Location>"
+agent_path_change=false
+
+
+error_handler() {
+    if  [ $1 -ne 0 ]; then
+        tput setaf 1
+        echo  "------------Error Occured---------"
+        echo $2
+        tput sgr0
+        exit
+    fi
+}
+
 
 agent_check(){
 # Check if the service exists
     if  ! [ -d $agent_dir"/bin"  ]; then
+      agent_path_change=true
+      output=$(ls $agent_dir )
+      if ! echo "$output" | grep -qE ": Permission denied"; then
+            error_handler $? $output
+      fi
 
       tput setaf 3
       if [ $i -eq 0 ]; then
@@ -32,6 +50,11 @@ agent_check(){
       echo -e "Enter the path of the directory where the Site24x7LinuxAgent is installed: \c"
       read -r  agent_dir
       tput sgr0
+
+    else 
+        if [ $i -gt 0 ] ; then
+            echo "The agent Directory is $agent_dir"
+        fi
       
     fi
 
@@ -67,6 +90,7 @@ done
 
 
 
+
 # Variables for the plugin installation
 temp_dir=$agent_dir/temp/plugins/$plugin
 plugin_dir=$agent_dir/plugins/
@@ -90,6 +114,8 @@ download_files() {
         echo $error
         if echo "$error" | grep -q "200"; then
             echo $output
+        else
+            error_handler $? "$output"
         fi
         tput sgr0
         exit
@@ -98,6 +124,7 @@ download_files() {
         echo $(grep -E 'HTTP' <<< "$output" )
         echo $(grep -E 'saved' <<< "$output" )
         tput sgr0
+        
         
     fi
     echo
@@ -137,35 +164,34 @@ install (){
 }
 
 get_plugin_data() {
+    default_url="http://localhost:80$endpoint?auto"
+    default_username="None"
+    default_password="None"
     tput setaf 3
     echo
     echo "------------Connection Details------------"
+    tput sgr0
     echo 
-
-    echo "The default Apache status URL found is: http://localhost:80$endpoint?auto"
-    read -p "Do you want to configure an alternate port or status URL?? (y or n):" change_url
+    echo " 1.Provide the URL and authentication credentials (if any) below to access the Apache status URL."
+    echo " 2.Press Enter to keep the default values. If you hit Enter, the default values will be used for the connection."
     echo
+    echo " $(tput setaf 3)$(tput bold)Note$(tput sgr0): The username and password you provide will be securely encrypted in the agent and will not be stored in any of the Site24x7 databases."
+    echo
+
     
-    if [ -z "$change_url" ] || [ $change_url = "n" -o $change_url = "N" ] ; then
-        url="http://localhost:80$endpoint?auto"
-    elif [ $change_url = "y" -o $change_url = "Y" ] ; then
-        tput setaf 4
-        read -r -p  "  Enter the required URL: " url
-    else
-        tput setaf 4
-        read -r -p "  Enter the required URL: " url
-    fi
-
     tput setaf 4
-    echo
-    echo "  Provide authentication credentials below to access the Status URL."
-    echo "  Note: The username and password you provide will be securely encrypted in the agent and will not be stored in any of the Site24x7 databases."
-    echo
-    echo "  Press Enter to skip if you don't have any credentials set for the endpoint."
-    echo
-    read -r -p "  Enter the User Name: " username
-    read -r -p "  Enter the Password: " password
-    echo $password
+    read -r -p  "  Enter the required URL( default: $default_url ): " url
+    if [ -z $url ] ; then
+        url=$default_url
+    fi
+    read -r -p "  Enter the User Name( default: $default_username ): " username
+    if [ -z $username ] ; then
+        username=$default_username
+    fi
+    read -r -p "  Enter the Password( default: $default_password ): " password
+        if [ -z $password ] ; then
+        password=$default_password
+    fi
     tput sgr0
 }
 
@@ -266,13 +292,13 @@ add_conf() {
     echo
     #echo "before"
     #cat $cfg_file
-    output=$(sed -i "/url*/c\url = \"$url\""  "$cfg_file")
+    output=$(sed -i "/^url*/c\url = \"$url\""  "$cfg_file")
     error_handler $? $output
     username=$(echo "$username" | sed 's/\\/\\\\/g')
-    output=$(sed -i "/username*/c\username = \"$username\"" $cfg_file)
+    output=$(sed -i "/^username*/c\username = \"$username\"" $cfg_file)
     error_handler $? $output
     password=$(echo "$password" | sed 's/\\/\\\\/g')
-    output=$(sed -i "/password*/c\password = \"$password\""  $cfg_file)
+    output=$(sed -i "/^password*/c\password = \"$password\""  $cfg_file)
     error_handler $? $output
     #echo "after"
     #cat $cfg_file
@@ -321,15 +347,6 @@ check_if_dir_exists() {
 
 
 
-error_handler() {
-    if  [ $1 -ne 0 ]; then
-        tput setaf 1
-        echo  "------------Error Occured---------"
-        echo $2
-        tput sgr0
-        exit
-    fi
-}
 check_if_file_exists() {
 
 
@@ -448,13 +465,11 @@ get_endpoint(){
         echo
         break
         
-        
     else
         l_no=$(( $l_no-1 ))
     fi
 
     done
-
 
 }
 
@@ -491,7 +506,7 @@ restart_apache(){
 
 restart_agent(){
 
-    if $restart ; then
+    if $reinstall ; then
         read -p "Do you want to restart the Site24x7LinuxAgent?(y or n): " re_agent
         if  [ -z "$re_agent" ] || [ $re_agent = "y" -o $re_agent = "Y" ] ; then
         
@@ -502,20 +517,8 @@ restart_agent(){
         else
             echo "Process exited."
         fi
-        echo "If you have installed the agent as non-root, execute the command below with appropriate details to allow the user access to the plugin folder."
-        echo "For example, if the user is 'site24x7-agent' and the group is 'site24x7-group', the command would be:"
-        echo "chown -R site24x7-agent:site24x7-group $plugin_dir$plugin"
     fi
 }
-
-if [[ -f /etc/debian_version ]] ; then
-    status_conf_path=$debian_path
-elif [[ -f /etc/redhat-release ]] ; then
-    status_conf_path=$centos_path
-else
-    install_plugin
-    exit
-fi
 
 
 
@@ -553,8 +556,21 @@ install_plugin() {
     echo "------------Plugin installed successfully------------"
     tput sgr0
     restart_agent
+    if  $agent_path_change ; then
+        echo "If you have installed the agent as non-root, execute the command below with appropriate details to allow the user access to the plugin folder."
+        echo "For example, if the user is 'site24x7-agent' and the group is 'site24x7-group', the command would be:"
+        echo "$(tput bold)chown -R site24x7-agent:site24x7-group $plugin_dir$plugin$(tput sgr0)"
+    fi
 }
 
+if [[ -f /etc/debian_version ]] ; then
+    status_conf_path=$debian_path
+elif [[ -f /etc/redhat-release ]] ; then
+    status_conf_path=$centos_path
+else
+    install_plugin
+    exit
+fi
 
 tput setaf 3
 echo
