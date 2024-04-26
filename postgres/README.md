@@ -54,6 +54,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
     port="5432"
     username="None"
     password="None"
+    plugin_version="1"
     ```
     
   #### Linux
