@@ -20,6 +20,7 @@ nginx_conf_path=/etc/nginx
 nginx_conf=$nginx_conf_path/$nginx_conf_file
 endpoint="/nginx_status"
 content=" #Added By Site24x7 Installer For Monitoring\n\tlocation /nginx_status {\n\t\tstub_status on;\n\t\tallow 127.0.0.1;\n\t}"
+agent_path_change=false
 
 error_handler() {
     if  [ $1 -ne 0 ]; then
@@ -35,8 +36,11 @@ error_handler() {
 agent_check(){
 # Check if the service exists
     if  ! [ -d $agent_dir"/bin"  ]; then
-      output=$(ls /opt/site24x7/monagent)
-      error_handler $? $output
+      agent_path_change=true
+      output=$(ls $agent_dir )
+      if ! echo "$output" | grep -qE ": Permission denied"; then
+            error_handler $? $output
+      fi
 
       tput setaf 3
       if [ $i -eq 0 ]; then
@@ -45,6 +49,11 @@ agent_check(){
       echo -e "Enter the path of the directory where the Site24x7LinuxAgent is installed: \c"
       read -r  agent_dir
       tput sgr0
+
+    else 
+        if [ $i -gt 0 ] ; then
+            echo "The agent Directory is $agent_dir"
+        fi
       
     fi
 
@@ -156,11 +165,12 @@ get_plugin_data() {
     echo
     echo "------------Connection Details------------"
     echo 
+    tput sgr0
 
     echo " 1.Provide the URL and authentication credentials (if any) below to access the NGINX status URL (nginx_status_url)."
     echo " 2.Press Enter to keep the default values. If you hit Enter, the default values will be used for the connection."
     echo
-    echo " Note: The username and password you provide will be securely encrypted in the agent and will not be stored in any of the Site24x7 databases."
+    echo " $(tput setaf 3)$(tput bold)Note$(tput sgr0): The username and password you provide will be securely encrypted in the agent and will not be stored in any of the Site24x7 databases."
     echo
     
     tput setaf 4
@@ -395,9 +405,7 @@ check_blocks(){
         echo -e "$content"
         echo
         echo "Once the status page is enabled, rerun the installer to install the plugin."
-        echo
         echo "If you have already enabled the status page, procced to install the plugin and provide the URL as input."
-        echo
         read -p "Do you want to proceed with the plugin installation?(y or n):" continue
         if [ $continue = "n" -o $continue = "N" ] ; then
             echo "Process exited"
@@ -534,9 +542,8 @@ restart_agent(){
         else
             echo "Process exited."
         fi
-        echo "If you have installed the agent as non-root, execute the command below with appropriate details to allow the user access to the plugin folder."
-        echo "For example, if the user is 'site24x7-agent' and the group is 'site24x7-group', the command would be:"
-        echo "$(tput setaf 3)chown -R site24x7-agent:site24x7-group $plugin_dir$plugin$(tput sgr0)"
+
+
     fi
 }
 
@@ -577,6 +584,11 @@ install_plugin() {
     echo "------------Plugin installed successfully------------"
     tput sgr0
     restart_agent
+    if  $agent_path_change ; then
+        echo "If you have installed the agent as non-root, execute the command below with appropriate details to allow the user access to the plugin folder."
+        echo "For example, if the user is 'site24x7-agent' and the group is 'site24x7-group', the command would be:"
+        echo "$(tput bold)chown -R site24x7-agent:site24x7-group $plugin_dir$plugin$(tput sgr0)"
+    fi
 }
 
 if [[ -f /etc/debian_version ]] || [[ -f /etc/redhat-release ]] ; then
