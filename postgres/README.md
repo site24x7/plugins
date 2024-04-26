@@ -7,6 +7,16 @@ Get to know how to configure the PostgreSQL plugin and the monitoring metrics fo
 
 Learn more https://www.site24x7.com/plugins/postgres-monitoring.html
 
+## Quick installation
+
+If you're using Linux servers, use the postgres plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
+
+Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
+
+```
+wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installer/Site24x7PostgresPluginInstaller.sh && sudo bash Site24x7PostgresPluginInstaller.sh
+```
+
 ### Prerequisites
 
 - Python version 3 or higher.
