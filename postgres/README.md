@@ -19,6 +19,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
 
 ### Prerequisites
 
+- Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 - Python version 3 or higher.
 - Execute the following command in your server to install psycopg2: 
 
