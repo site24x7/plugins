@@ -1,13 +1,15 @@
 #!/bin/bash
 
 plugin_name="sybase_monitoring"
-plugin_url="https://raw.githubusercontent.com/Sathvika-a/plugins/master/"
+plugin_url="https://raw.githubusercontent.com/site24x7/plugins/master/"
 
 
 blue='\033[0;34m'   
 green='\033[0;32m'
 red='\033[0;31m'
 reset='\033[0m'
+
+#echo "${green}Hiiiiiii${reset}"
 
 agent_path="/opt/site24x7/monagent/" 
 agent_temp_path=$agent_path"temp/"
@@ -22,7 +24,7 @@ fi
 
 
 install_plugin(){
-    echo "------------------------------ Starting plugin installation ------------------------------"
+    echo "${green}------------------------------ Starting plugin installation ------------------------------${reset}"
     echo
         
     # Creating the Agent Plugin Temporary Directory
