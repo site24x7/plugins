@@ -7,8 +7,19 @@ Get to know how to configure the PostgreSQL plugin and the monitoring metrics fo
 
 Learn more https://www.site24x7.com/plugins/postgres-monitoring.html
 
+## Quick installation
+
+If you're using Linux servers, use the postgres plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
+
+Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
+
+```
+wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installer/Site24x7PostgresPluginInstaller.sh && sudo bash Site24x7PostgresPluginInstaller.sh
+```
+
 ### Prerequisites
 
+- Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 - Python version 3 or higher.
 - Execute the following command in your server to install psycopg2: 
 
@@ -30,20 +41,20 @@ Learn more https://www.site24x7.com/plugins/postgres-monitoring.html
 
 		pip3 install psycopg2-binary
   
-- Ensure **pg_read_all_stats** permission is provided to the user. For example, create a user 'site24x7' with password 'site24x7' and provide 'pg_read_all_stats' permission to the 'site24x7' user created.
+- Ensure **`pg_read_all_stats`** permission is provided to the user. For example, create a user `site24x7` with password `site24x7` and provide `pg_read_all_stats` permission to the `site24x7` user created.
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python3 postgres.py  --host "ip-address" --port "port-no" --username "username" --password "password" --db "db-name"
+		python3 postgres.py  --host "ip-address" --port "port-no" --username "username" --password "password" 
 
 - Provide your Postgres DB configurations in postgres.cfg file.
 
     ```
-	[dbname]
-    host=localhost
-    port=5432
-    username=None
-    password=None
-    db=postgres
+	[postgres]
+    host="localhost"
+    port="5432"
+    username="None"
+    password="None"
+    plugin_version="1"
     ```
     
   #### Linux

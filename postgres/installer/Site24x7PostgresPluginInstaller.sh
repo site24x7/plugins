@@ -11,15 +11,8 @@ func_exit() {
 trap func_exit SIGINT SIGTSTP
 
 # Agent and Plugin Directory
-plugin=apache_monitoring
+plugin=postgres
 agent_dir=/opt/site24x7/monagent
-
-# Enable
-debian_path=/etc/apache2/mods-available
-centos_path=/etc/httpd/conf.d
-status_conf_file=status.conf
-endpoint="/server-status"
-content="\n\t<Location /server-status>\n\t\tSetHandler server-status\n\t\tRequire local\n\t</Location>"
 agent_path_change=false
 
 
@@ -29,10 +22,10 @@ error_handler() {
         echo  "------------Error Occured---------"
         echo $2
         tput sgr0
+        echo "------------Process Exited------------"
         exit
     fi
 }
-
 
 agent_check(){
 # Check if the service exists
@@ -66,7 +59,7 @@ for (( i=0; i<3; i++ )); do
   if [ -z $agent_dir ]; then
     tput setaf 1
     echo
-    echo "The Site24x7LinuxAgent is required to install the Apache plugin. Enter the correct directory path of the agent to proceed."
+    echo "The Site24x7LinuxAgent is required to install the postgres plugin. Enter the correct directory path of the agent to proceed."
     agent_dir=/opt/site24x7/monagent
     tput sgr0
   else
@@ -74,7 +67,7 @@ for (( i=0; i<3; i++ )); do
     if ! echo "$agent_status" | grep -q "Site24x7 monitoring agent service" ; then
         tput setaf 1
         echo
-        echo "The Site24x7LinuxAgent is required to install the Apache plugin. Enter the correct directory path of the agent to proceed."
+        echo "The Site24x7LinuxAgent is required to install the postgres plugin. Enter the correct directory path of the agent to proceed."
         tput sgr0
 
     else
@@ -90,15 +83,36 @@ done
 
 
 
-
 # Variables for the plugin installation
 temp_dir=$agent_dir/temp/plugins/$plugin
 plugin_dir=$agent_dir/plugins/
 py_file="$temp_dir/$plugin.py"
 cfg_file="$temp_dir/$plugin.cfg"
 reinstall=false
+prerequisites(){
+    tput setaf 3
+    echo "------------Prerequisites------------"
+    echo
+    tput sgr0
+    echo "Ensure you meet the following prerequisites before proceeding."
+    echo "Press Enter to continue if you meet the prerequisites, or run the installer again once the prerequisites are met."
+    echo
 
-
+    echo "  1.Python 3 or a higher version should be installed in the server."
+    echo "  2.Create a Postgres user with $(tput bold)pg_read_all_stats$(tput sgr0) permission or ensure an existing user with the permission is present for monitoring. For example, create a user 'site24x7' with password 'site24x7' and provide 'pg_read_all_stats' permission to the 'site24x7' user created."
+    echo "  3.Add an entry in the pg_hba.conf file to allow the user to connect to the database."
+    echo
+    tput setaf 3
+    read -p "Do you want to continue with the installation? (y or n):" continue
+    tput sgr0
+    
+    if [ -z "$continue" ] || [ $continue = "y" -o $continue = "Y" ] ; then
+        echo
+    else
+        echo "Process exited."
+        exit
+    fi
+}
 
 download_files() {
 
@@ -125,12 +139,79 @@ download_files() {
         echo $(grep -E 'saved' <<< "$output" )
         tput sgr0
         
-        
     fi
     echo
 
 }
+loading_animation() {
+    installation_command=$1
+    output=$($installation_command) &
+    pid=$! # Process Id of the previous running command
 
+    spin='-\|/'
+
+    i=0
+    tput civis # cursor invisible
+    while kill -0 $pid 2>/dev/null
+    do
+        i=$(( (i+1) %4 ))
+        printf "\rInstalling $2... ${spin:$i:1}"
+        sleep .1
+    done
+    wait $pid
+    exit_status=$?
+    tput cnorm
+    echo
+    if [ $exit_status -ne 0 ]; then
+        tput setaf 1
+        echo "------------Error Occured------------"
+        echo $output
+        tput sgr0
+        exit
+    fi
+    echo "Installation completed!"
+}
+
+Install_pakages(){
+    tput setaf 3
+    echo
+    echo "------------Installing the psycopg2 module------------"
+    echo 
+    tput sgr0
+    deb_packages=("libpq-dev" "python3-dev" "gcc")
+    redhat_packages=("postgresql-libs" "postgresql-devel" "python3-devel" "gcc")
+    if [[ -f /etc/debian_version ]] ; then
+        packages=("${deb_packages[@]}")
+        command="apt install"
+    elif [[ -f /etc/redhat-release ]] ; then
+        packages=("${redhat_packages[@]}")
+        command="yum install"
+
+    fi
+    
+    echo "The psycopg2 module is required to install the plugin."
+    echo
+    echo "The psycopg2 module along with the following packages will installed."
+    echo ${packages[@]}
+    echo
+    read -p "Select 'y' to install the psycopg2 module. Select 'n' if you have the module already installed and proceed with the plugin installation. (y or n):" psycopg2
+    tput sgr0
+    
+    echo
+    if [ -z "$psycopg2" ] || [ $psycopg2 = "y" -o $psycopg2 = "Y" ] ; then
+        for i in "${packages[@]}" ;do
+            loading_animation "$command $i -y" $i
+        done
+        echo "Installing psycopg2"
+        loading_animation "pip3 install psycopg2-binary" "psycopg2"
+
+    else
+        echo "Process exited."
+            
+    fi
+
+
+}
 
 install (){
     
@@ -143,55 +224,62 @@ install (){
             rm $cfg_file
         fi
 
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.py
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.cfg
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.py
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.cfg
 
     else
         output=$(mkdir -p $temp_dir)
          if [ $? -ne 0 ]; then
             tput setaf 1
             echo "------------Error Occured------------"
-            echo $output
-            tput sgr0
-            exit
-        fi
+         fi
 
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.py
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/apache_monitoring/apache_monitoring.cfg
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.py
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.cfg
         
+    
     fi
 
 }
 
 get_plugin_data() {
-    default_url="http://localhost:80$endpoint?auto"
+    default_host="localhost"
+    default_port="5432"
     default_username="None"
     default_password="None"
     tput setaf 3
     echo
     echo "------------Connection Details------------"
-    tput sgr0
     echo 
-    echo " 1.Provide the URL and authentication credentials (if any) below to access the Apache status URL."
+    tput sgr0
+    echo " 1.Provide the host, port and authentication credentials (if any) below to access Postgres to fetch metrics. These will be used in the .cfg file."
     echo " 2.Press Enter to keep the default values. If you hit Enter, the default values will be used for the connection."
     echo
     echo " $(tput setaf 3)$(tput bold)Note$(tput sgr0): The username and password you provide will be securely encrypted in the agent and will not be stored in any of the Site24x7 databases."
     echo
-
     
     tput setaf 4
-    read -r -p  "  Enter the required URL( default: $default_url ): " url
-    if [ -z $url ] ; then
-        url=$default_url
+    read -r -p  "  Enter the Postgres host (default: $default_host): " postgres_host
+    if [ -z $postgres_host ] ; then
+        postgres_host=$default_host
     fi
-    read -r -p "  Enter the User Name( default: $default_username ): " username
+
+    read -r -p  "  Enter the Postgres port (default: $default_port): " postgres_port
+    if [ -z $postgres_port ] ; then
+        postgres_port=$default_port
+    fi
+
+    read -r -p "  Enter the username of the Postgres user with pg_read_all_stats permission enabled (default: $default_username): " username
     if [ -z $username ] ; then
         username=$default_username
     fi
-    read -r -p "  Enter the Password( default: $default_password ): " password
-        if [ -z $password ] ; then
+
+    read -r -p "  Enter the password of the above user (default: $default_password): " password
+    if [ -z $password ] ; then
         password=$default_password
     fi
+
+
     tput sgr0
 }
 
@@ -199,6 +287,7 @@ get_plugin_data() {
 python_path_update() {
     echo "Checking for python3"
     output=$(which python3)
+
     if [ $? -ne 0 ]; then
 
         echo $(python3 --version)
@@ -246,7 +335,7 @@ python_path_update() {
 
 check_plugin_execution() {
 
-    output=$($python $py_file --url "$url" --username "$username" --password "$password")
+    output=$($python $py_file --host "$postgres_host" --port "$postgres_port" --username "$username" --password "$password")
     if  [ $? -ne 0 ]; then
         tput setaf 1
         echo "------------Error Occured------------"
@@ -269,11 +358,10 @@ check_plugin_execution() {
         tput sgr0
         exit
 
-    elif ! echo "$output" | grep -qE "\"busy_workers\":|\"idle_workers\":"; then
-        tput setaf 3
-        echo "The output does not contain metrics. Check if you have provided the correct endpoint for the status URL."
-        echo "An example of a status URL: http://localhost:80$endpoint?auto"
-        error_handler 1 "$output"
+    elif ! echo "$output" | grep -qE "\"Server Version\":|\"Active Connections\":"; then
+       tput setaf 3
+       echo "The output does not contain metrics. Check if you have provided the correct details."
+       error_handler 1 "$output"
 
     else
         tput setaf 3
@@ -292,7 +380,9 @@ add_conf() {
     echo
     #echo "before"
     #cat $cfg_file
-    output=$(sed -i "/^url*/c\url = \"$url\""  "$cfg_file")
+    output=$(sed -i "/^host*/c\host = \"$postgres_host\""  "$cfg_file")
+    error_handler $? $output
+    output=$(sed -i "/^port*/c\port = \"$postgres_port\""  "$cfg_file")
     error_handler $? $output
     username=$(echo "$username" | sed 's/\\/\\\\/g')
     output=$(sed -i "/^username*/c\username = \"$username\"" $cfg_file)
@@ -307,7 +397,7 @@ add_conf() {
 
 check_plugin_exists() {
     if  [[ -d "$plugin_dir/$plugin" ]]  ; then 
-        echo "The Apache monitoring plugin folder already exists in the Plugins directory."
+        echo "The Postgres monitoring plugin folder already exists in the Plugins directory."
         read -p "Do you want to reinstall the plugin? (y or n):" reinstall
         if [ -z "$reinstall" ] || [ $reinstall = "y" -o $reinstall = "Y" ] ; then
             rm -rf "$plugin_dir/$plugin"
@@ -317,6 +407,25 @@ check_plugin_exists() {
             exit
         fi
         
+    fi
+}
+
+restart_agent(){
+
+    if $restart ; then
+        read -p "Do you want to restart the Site24x7LinuxAgent?(y or n): " re_agent
+        if  [ -z "$re_agent" ] || [ $re_agent = "y" -o $re_agent = "Y" ] ; then
+        
+            output=$($agent_dir/bin/monagent restart)
+            error_handler $? $output
+            echo "Completed."
+
+        else
+            echo "Process exited."
+        fi
+        echo "If you have installed the agent as non-root, execute the command below with appropriate details to allow the user access to the plugin folder."
+        echo "For example, if the user is 'site24x7-agent' and the group is 'site24x7-group', the command would be:"
+        echo "$(tput bold)chown -R site24x7-agent:site24x7-group $plugin_dir$plugin$(tput sgr0)"
     fi
 }
 
@@ -332,206 +441,24 @@ move_plugin() {
 
 }
 
-check_if_dir_exists() {
-
-    if [[ -d $status_conf_path ]] ; then  
-        echo "$status_conf_path directory exists."
-        echo
-        return 0
-    else
-        echo "$status_conf_path directory does not exists."
-        error_handler 1  
-        return 1 
-    fi
-}
-
-
-
-check_if_file_exists() {
-
-
-    status_conf=$status_conf_path/$status_conf_file
-    if [[ -f $status_conf ]] ; then
-        
-        echo "$status_conf_file file exists."
-        
-        echo
-        tput setaf 3
-        echo
-        echo "------------Checking if mod_status is enabled------------"
-        echo
-        tput sgr0
-        enabled_or_not
-        
-        return 0
-    else
-
-        tput setaf 3
-        echo "------------Status.conf does not exist------------" 
-        echo
-        tput sgr0
-        
-        echo "The installer will create a status.conf file in the $status_conf_path directory and add the configuration below to enable mod_status."
-        echo
-        echo "The following configuration will be added in the $status_conf_file file:"
-        echo -e $content
-        echo
-        read -p "Do you want to create the status.conf and enable mod_status??(y or n):" create_file
-
-
-        
-        if [ $create_file = "y" -o create_file = "Y" ] ; then
-            echo "Creating the $status_conf_file file."
-            output=$(touch $status_conf)
-            error_handler $? $output
-            echo
-            echo "Adding the configuration to enable mod_status."
-            output=$(echo -e $content >> $status_conf)
-            error_handler $? $output
-            echo "Completed."
-            restart_apache
-            return 1
-        else
-            echo "Proceeding to plugin installation."
-        fi
-    fi
-
-
-}
-
-enabled_or_not() {
-
-    output=$(grep -E "^[^#]*\<SetHandler server-status\>"  $status_conf )
-    exit_status=$?
-    if [ $exit_status != 1 ] ; then
-        error_handler $exit_status $output
-    fi
-
-
-    if [ -n "$output" ] ; then
-        echo "mod_status is enabled."
-        get_endpoint
-        
-    else
-        echo "mod_status is not enabled"
-        echo
-        tput setaf 3
-        echo "------------Enable mod_status------------" 
-        echo
-        tput sgr0
-
-        echo "The installer will add the configuration below to status.conf to enable mod_status in the $status_conf_path directory."
-        echo
-        echo "The following configuration  will be added in the $status_conf_file file:"
-        echo -e $content
-        echo
-        read -p "Do you want to enable mod_status??(y or n):" continue
-
-        if [ $continue = "n" -o $continue = "N" ] ; then
-            echo
-            
-        elif [ $continue = "y" -o $continue = "Y" ] ; then
-            echo "Taking a backup of the $status_conf_file file."
-            output=$(cp $status_conf $status_conf_path/$status_conf_file.bak.$(date +%Y_%m_%d_%H_%M_%S))
-            error_handler $? $output
-            echo
-            echo "Adding the configuration to enable mod_status."
-            add_content 
-            echo "Completed."
-            restart_apache
-
-        else 
-            echo "Invalid input"
-            exit
-        fi
-
-    fi
-
-}
-
-get_endpoint(){
-    line=$(grep -nE "^[^#]*\<SetHandler server-status\>" $status_conf | awk -F: '{print $1}')
-    l_no=$(( $line-1 ))
-
-
-    while [ $l_no -gt 0 ] ; do
-    
-    text=$(sed -n $l_no"p" $status_conf)
-    
-    if echo $text | grep -qE "^[^#]*\<Location\>" ; then
-        endpoint=$(echo $text | grep  "^[^#]*\<Location\>" | sed -n 's/^.*<Location \([^>]*\)>.*/\1/p') 
-        echo "The endpoint of mod_status is: $endpoint"
-        echo "Proceeding to install the plugin."
-        echo
-        break
-        
-    else
-        l_no=$(( $l_no-1 ))
-    fi
-
-    done
-
-}
-
-add_content() {
-
-    output=$(sed -i "/^<IfModule mod_status.c>/a\ $content"  $status_conf)
-    error_handler $? $output
-
-}
-
-restart_apache(){
-
-     echo "The configuration changes will only reflect after restarting or reloading the Apache web server."
-     read -p "Do you want to restart the Apache web server? (y or n):" restart
-        if  [ -z "$restart" ] || [ $restart = "y" -o $restart = "Y" ] ; then
-            echo "Restarting the Apache web server."
-            if [[ -f /etc/debian_version ]] ; then
-                output=$(systemctl restart apache2)
-                error_handler $? $output
-                echo "Completed."
-            elif [[ -f /etc/redhat-release ]] ; then
-                output=$(systemctl restart httpd)
-                error_handler $? $output
-                echo "Completed."
-            fi
-            
-        else
-            echo "Process exited."
-            
-        fi
-
-
-}
-
-restart_agent(){
-
-    if $reinstall ; then
-        read -p "Do you want to restart the Site24x7LinuxAgent?(y or n): " re_agent
-        if  [ -z "$re_agent" ] || [ $re_agent = "y" -o $re_agent = "Y" ] ; then
-        
-            output=$($agent_dir/bin/monagent restart)
-            error_handler $? $output
-            echo "Completed."
-
-        else
-            echo "Process exited."
-        fi
-    fi
-}
-
-
-
 install_plugin() {
+    echo
+    echo "The installer helps you to install the Postgres plugin for monitoring in Site24x7."
+    echo "Follow the in-line instructions below to complete the installation successfully."
+    echo
 
+    prerequisites
     check_plugin_exists
+
     tput setaf 3
     echo
-    echo "------------Downloading the plugin files------------"
+    echo "------------Downloading the plugin files from Site24x7's GitHub repository------------"
     echo    
     tput sgr0
 
     install
+    output=""
+    Install_pakages
 
     echo
     echo 
@@ -562,24 +489,4 @@ install_plugin() {
         echo "$(tput bold)chown -R site24x7-agent:site24x7-group $plugin_dir$plugin$(tput sgr0)"
     fi
 }
-
-if [[ -f /etc/debian_version ]] ; then
-    status_conf_path=$debian_path
-elif [[ -f /etc/redhat-release ]] ; then
-    status_conf_path=$centos_path
-else
-    install_plugin
-    exit
-fi
-
-tput setaf 3
-echo
-echo "------------Checking if $status_conf_file exists------------"
-tput sgr0
-
-
-echo
-check_if_dir_exists     
-check_if_file_exists
-
 install_plugin
