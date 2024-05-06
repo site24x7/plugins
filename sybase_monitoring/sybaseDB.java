@@ -37,11 +37,6 @@ public class sybaseDB {
 		 String username = args[4];
 		 String password = args[5];
 		 
-//		 String hostname = "localhost";
-//		 String port = "5000";
-//		 String username = "sa";
-//		 String password = "Sathvika@123";
-		 
 		 
 		 	 long startTime = System.currentTimeMillis();
     		 
@@ -52,11 +47,11 @@ public class sybaseDB {
 
 	         data.put("connection_time_ns", timeElapsed);
 	         Map<String, String> summary_metric = new HashMap<>();
-	         summary_metric.put("sp_configure 'number of remote connections'","max_remote_connections");
-	         summary_metric.put("sp_configure 'number of user connections'","max_user_connections");
-	         summary_metric.put("sp_configure 'total logical memory'","free_memory");
+	         summary_metric.put("sp_configure 'number of remote connections'","Max Remote Connections");
+	         summary_metric.put("sp_configure 'number of user connections'","Max User Connections");
+	         summary_metric.put("sp_configure 'total logical memory'","Free Memory");
 	         
-	         summary_metric.put("sp_configure 'number of locks'","max_locks");
+	         summary_metric.put("sp_configure 'number of locks'","Max Locks");
 	         
 	         
 	         Statement statement = connection.createStatement();
@@ -119,7 +114,7 @@ public class sybaseDB {
 	            			if(metaData.getColumnName(i).equals("Memory Used") ) {
 		            		dataValue = (String)resultSet.getObject(i);
 		            		dataValue = dataValue.replaceAll("\\s{2,}", " ");
-		            		data.put("used_memory", dataValue);
+		            		data.put("Used Memory", dataValue);
 		            		used_memory=dataValue.trim();
 	            		}
 	            	}
@@ -130,12 +125,12 @@ public class sybaseDB {
 	            			if(query.equals("sp_configure 'total logical memory'")) {
 	            				free_memory=dataValue.trim();
 	            				int total_mem=Integer.parseInt(free_memory)+Integer.parseInt(used_memory);
-	            				data.put("total_memory", total_mem);
+	            				data.put("Total Memory", total_mem);
 	            				
 	            				double result = (double) Integer.parseInt(used_memory) / total_mem;
 	            				DecimalFormat df = new DecimalFormat("#.##");
 	            		        String roundedResult = df.format(result);
-	            		        data.put("used_memory_percentage",Double.parseDouble(roundedResult.trim())*100);
+	            		        data.put("Used Memory Percentage",Double.parseDouble(roundedResult.trim())*100);
 	            			}
 	            		}
 	            		
@@ -147,33 +142,33 @@ public class sybaseDB {
 			ResultSet resultSet =executeQuery(statement,"SELECT COUNT(*) as row_count FROM syslogins",data);
             ResultSetMetaData metaData = resultSet.getMetaData();
             if(resultSet.next()) {
-            	data.put("active_user_connections",resultSet.getObject("row_count"));
+            	data.put("Active User Connections",resultSet.getObject("row_count"));
             }else {
-            	data.put("active_user_connections",0);
+            	data.put("Active User Connections",0);
             }
             
             resultSet =executeQuery(statement,"SELECT COUNT(*) as row_count FROM syslocks",data);
             metaData = resultSet.getMetaData();
             if(resultSet.next()) {
-            	data.put("active_locks",resultSet.getObject("row_count"));
+            	data.put("Active Locks",resultSet.getObject("row_count"));
             }else {
-            	data.put("active_locks",0);
+            	data.put("Active Locks",0);
             }
             
             resultSet =executeQuery(statement,"SELECT COUNT(*) as row_count FROM syslogins",data);
             metaData = resultSet.getMetaData();
             if(resultSet.next()) {
-            	data.put("number_of_login_accounts",resultSet.getObject("row_count"));
+            	data.put("Number Of Login Accounts",resultSet.getObject("row_count"));
             }else {
-            	data.put("number_of_login_accounts",0);
+            	data.put("Number Of Login Accounts",0);
             }
             
             resultSet =executeQuery(statement,"SELECT COUNT(*) as row_count FROM sysremotelogins",data);
             metaData = resultSet.getMetaData();
             if(resultSet.next()) {
-            	data.put("number_of_remote_login",resultSet.getObject("row_count"));
+            	data.put("Number Of Remote Login",resultSet.getObject("row_count"));
             }else {
-            	data.put("number_of_remote_login",0);
+            	data.put("Number Of Remote Login",0);
             }
 	             
 	         
@@ -273,7 +268,7 @@ public class sybaseDB {
            			transaction_obj.put("name",transaction.get(metaData.getColumnName(i)));
            			transaction_arr.put(transaction_obj);
 	            }
-           	 } 	
+           	} 	
            	data.put("transaction_details",transaction_arr);
 		}catch(Exception e) {
     		data.put("msg",e);

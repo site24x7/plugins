@@ -10,15 +10,10 @@ public class sybaseInstaller {
 	public static void main(String[] args) {
 		try {
 			Class.forName("com.sybase.jdbc4.jdbc.SybDriver");
-			 String hostname = args[2];
-			 String port = args[3];
-			 String username = args[4];
-			 String password = args[5];
-			 
-//			 String hostname = "localhost";
-//			 String port = "5000";
-//			 String username = "sa";
-//			 String password = "Sathvika@123";
+			 String hostname = args[0];
+			 String port = args[1];
+			 String username = args[2];
+			 String password = args[3];
 			 
 			 String url = "jdbc:sybase:Tds:"+hostname+":"+port+"/master?charset=utf8";
 	         Connection connection = DriverManager.getConnection(url, username, password);
