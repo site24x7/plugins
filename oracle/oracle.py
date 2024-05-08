@@ -10,21 +10,41 @@ METRICS_UNITS={
     "Buffer Cache Hit Ratio":"%",
     "Cursor Cache Hit Ratio":"%",
     "Library Cache Hit Ratio":"%",
+    "Soft Parse Ratio":"%",
+    "Memory Sorts Ratio":"%",
+    "Session Limit %":"%",
     "Shared Pool Free %":"%",
     "SQL Service Response Time":"sec",
     "Memory Sorts Ratio":"%",
     "Database Wait Time Ratio":"%",
-    "Total PGA Allocated":"byte",
-    "Total Freeable PGA Memory":"byte",
-    "Maximum PGA Allocated":"byte",
-    "Total PGA Inuse":"byte",
+    "Total PGA Allocated":"bytes",
+    "Total Freeable PGA Memory":"bytes",
+    "Maximum PGA Allocated":"bytes",
+    "Total PGA Inuse":"bytes",
     "SGA Fixed Size":"bytes",
     "SGA Variable Size":"bytes",
     "SGA Database Buffers":"bytes",
     "SGA Redo Buffers":"bytes",
     "SGA Shared Pool Lib Cache Sharable Statement":"bytes",
     "SGA Shared Pool Lib Cache Shareable User":"bytes",
-    "Total Memory":"bytes"
+    "Total Memory":"bytes",
+    "FRA Space Limit":"mb",
+    "FRA Space Used":"mb",
+    "FRA Space Reclaimable":"mb",
+    "Response Time":"ms",
+    "Tablespace_Details":{
+        "Tablespace_Size":"mb",
+        "Used_Percent":"%",
+        "Used_Space":"mb"
+    },
+    "Tablespace_Datafile_Details":{
+        "Data_File_Size":"mb",
+        "Max_Data_File_Size":"mb",
+        "Usable_Data_File_Size":"mb"
+    },
+    "PDB_Details":{
+        "PDB_Size":"mb"
+    }
 }
 
 
@@ -54,14 +74,44 @@ class oracle:
         except Exception as e:
             return (False, str(e))
 
-
-    def execute_query_bulk(self, query):
+    def execute_query_row_col(self, query, col_change=False):
         queried_data={}
         try:
             self.c.execute(query)
-            for row in self.c:
-                value,metric=row
-                queried_data[metric.title()]=value
+            col_names = [row[0] for row in self.c.description]
+            tot_cols=len(col_names)            
+            if col_change:
+                for row in self.c:
+                    for i in range(tot_cols):
+                        queried_data[str.title(col_names[i])]=row[i]
+                    break
+            else:
+                for row in self.c:
+                    for i in range(tot_cols):
+                        queried_data[col_names[i]]=row[i]
+                    break
+        except Exception as e:
+            queried_data["status"]=0
+            queried_data['msg']=str(e)
+        return queried_data
+
+
+
+    def execute_query_bulk(self, query, query_name):
+        queried_data={}
+        try:
+            self.c.execute(query)
+            if query_name=="pga_query":
+                for row in self.c:
+                    value,metric=row
+                    metric=str.title(metric).replace("Pga","PGA")
+                    if metric=="Maximum PGA Allocated":
+                        value=str(value/1024/1024)+" MB"
+                    queried_data[metric]=value
+            else:
+                for row in self.c:
+                    value,metric=row
+                    queried_data[metric]=value                
         except Exception as e:
             queried_data["status"]=0
             queried_data['msg']=str(e)
@@ -87,9 +137,9 @@ class oracle:
             self.c.execute(self.metric_queries[metric_query_name])
             for row in self.c:
                 name,time_waited,wait_count=row
-                queried_data[name+"_time_waited"]=time_waited/100
-                queried_data[name+"_wait_count"]=wait_count
-                wait_units[name+"_time_waited"]='sec'
+                queried_data[str.title(name)+" Time Waited"]=time_waited
+                queried_data[str.title(name)+" Wait Count"]=wait_count
+                wait_units[str.title(name)+" Time Waited"]='sec'
         except Exception as e:
             queried_data['status']=0
             queried_data['msg']=str(e)
@@ -97,7 +147,7 @@ class oracle:
         return  queried_data
 
 
-    def execute_tablespace_query(self, metric_query_name):
+    def execute_tablespace_metrics(self):
 
         db_block_size=8192
         self.c.execute("select value from v$parameter where name = 'db_block_size'")
@@ -107,7 +157,7 @@ class oracle:
 
         queried_data={}
         try:
-            self.c.execute(self.metric_queries[metric_query_name])        
+            self.c.execute(self.metric_queries["Tablespace Queries"]["Tablespace Metrics Query"])        
             tbs_list=[]
             for row in self.c:
                 tbs_dict={}
@@ -135,6 +185,56 @@ class oracle:
             queried_data['msg']=str(e)
 
         return queried_data        
+    
+    def execute_tablespace_datafile(self):
+        queried_data={}
+        try:
+            self.c.execute(self.metric_queries["Tablespace Queries"]["Tablespace Datafile Query"])     
+            tbs_list=[]   
+            for row in self.c:
+                tb_dict={}
+                tbs_name=row[0]
+                tbs_datafile=row[1].split("/")[-1]
+                name=tbs_datafile
+                tb_dict["name"]=name
+                tb_dict["Data_File_Size"]=row[2]
+                tb_dict["Data_File_Blocks"]=row[3]
+                if row[4]=="YES":
+                    tb_dict["Autoextensible"]=1
+                else:
+                    tb_dict["Autoextensible"]=0
+                tb_dict["Max_Data_File_Size"]=row[5]
+                tb_dict["Max_Data_File_Blocks"]=row[6]
+                tb_dict["Increment_By"]=row[7]
+                tb_dict["Usable_Data_File_Size"]=row[8]
+                tb_dict["Usable_Data_File_Blocks"]=row[9]
+                tbs_list.append(tb_dict)
+            queried_data["Tablespace_Datafile_Details"]=tbs_list
+           
+        except Exception as e:
+            queried_data["status"]=0
+            queried_data['msg']=str(e)
+        return queried_data             
+
+    def tablespace_complete(self):
+        queried_data={}
+        try:
+            query_output_data=self.execute_tablespace_metrics()
+            queried_data.update(query_output_data)
+            if 'status' in queried_data and queried_data['status']==0:
+                    return queried_data
+            
+            query_output_data=self.execute_tablespace_datafile()
+            queried_data.update(query_output_data)
+            if 'status' in queried_data and queried_data['status']==0:
+                    return queried_data
+
+        except Exception as e:
+            queried_data["status"]=0
+            queried_data['msg']=str(e)
+        return queried_data        
+
+      
 
     def execute_pdb(self, metric_query_name):
         queried_data={}
@@ -144,9 +244,12 @@ class oracle:
             for row in self.c:
                 pdb_dict={}
                 pdb_dict['name']=row[0]
-                pdb_dict['pdb_id']=row[1]
+                pdb_dict['PDB_ID']=row[1]
+                pdb_dict['PDB_Size']=row[-2]
+                pdb_dict['Block_Size']=row[-1]
+
                 pdb_list.append(pdb_dict)
-            queried_data['pdb_details']=pdb_list
+            queried_data['PDB_Details']=pdb_list
 
         except Exception as e:
             queried_data['status']=0
@@ -179,12 +282,21 @@ class oracle:
                 "SGA Shared Pool Lib Cache Reload Ratio":"""SELECT (sum(libcache.reloads)/sum(libcache.pins)) AS ratio FROM GV$librarycache libcache, GV$INSTANCE inst WHERE inst.inst_id=libcache.inst_id GROUP BY inst.inst_id""",
                 "SGA Shared Pool Lib Cache Sharable Statement":"""SELECT SUM(sqlarea.sharable_mem) AS sum FROM GV$sqlarea sqlarea, GV$INSTANCE inst WHERE sqlarea.executions > 5 AND inst.inst_id=sqlarea.inst_id GROUP BY inst.inst_id""",
                 "SGA Shared Pool Lib Cache Shareable User":"""SELECT SUM(250 * sqlarea.users_opening) AS sum FROM GV$sqlarea sqlarea, GV$INSTANCE inst WHERE inst.inst_id=sqlarea.inst_id GROUP BY inst.inst_id""",
-                "Total Memory":"""SELECT SUM(value) AS sum FROM GV$sesstat, GV$statname, GV$INSTANCE inst WHERE name = 'session uga memory max' AND GV$sesstat.statistic#=GV$statname.statistic# AND GV$sesstat.inst_id=inst.inst_id AND GV$statname.inst_id=inst.inst_id GROUP BY inst.inst_id"""
+                "Total Memory":"""SELECT SUM(value) AS sum FROM GV$sesstat, GV$statname, GV$INSTANCE inst WHERE name = 'session uga memory max' AND GV$sesstat.statistic#=GV$statname.statistic# AND GV$sesstat.inst_id=inst.inst_id AND GV$statname.inst_id=inst.inst_id GROUP BY inst.inst_id""",
+                "Oracle Database Version":"SELECT version FROM PRODUCT_COMPONENT_VERSION WHERE product LIKE 'Oracle Database%'",
+                "Response Time":"""SELECT ROUND (VALUE * 10, 2) "Response Time (msecs)" FROM GV$SYSMETRIC WHERE   1 = 1 AND METRIC_NAME = 'SQL Service Response Time' ORDER BY INST_ID""",
+                "Number of Session Users":"""SELECT COUNT(DISTINCT username) AS num_session_users FROM v$session WHERE username IS NOT NULL""",
+                "Database Block Size":"""select value from v$parameter where name = 'db_block_size'""",
+                "Invalid Index Count":"""SELECT COUNT(*) AS invalid_index_count FROM dba_indexes WHERE status = 'INVALID'"""
                     },
-
-            "Tablespace Query":f"""  SELECT b.TABLESPACE_NAME as "dba_tablespace", d.* , b.CONTENTS, b.LOGGING, b.STATUS FROM dba_tablespace_usage_metrics d FULL JOIN dba_tablespaces b ON d.TABLESPACE_NAME = b.TABLESPACE_NAME""",
-            "Waits Query":"""select n.name , round(m.time_waited,3) time_waited, m.wait_count from v$eventmetric m, v$event_name n where m.event_id=n.event_id and n.name in ( 'free buffer waits' , 'buffer busy waits', 'latch free', 'library cache pin', 'library cache load lock', 'log buffer space', 'library object reloads count', 'enqueue waits', 'db file parallel read', 'db file parallel write', 'control file sequential read', 'control file parallel write', 'write complete waits', 'log file sync', 'sort segment request', 'direct path read', 'direct path write')""",
-            "PDB Query":"""SELECT a.PDB_NAME, a.PDB_ID,  a.STATUS, b.OPEN_MODE, b.RESTRICTED, b.OPEN_TIME FROM DBA_PDBS a join V$PDBS b on a.PDB_NAME=b.NAME"""
+            "Tablespace Queries":{
+                "Tablespace Metrics Query":"""  SELECT b.TABLESPACE_NAME as "dba_tablespace", d.* , b.CONTENTS, b.LOGGING, b.STATUS FROM dba_tablespace_usage_metrics d FULL JOIN dba_tablespaces b ON d.TABLESPACE_NAME = b.TABLESPACE_NAME""",
+                "Tablespace Datafile Query":""" SELECT TABLESPACE_NAME, FILE_NAME, (BYTES/1024/1024) , BLOCKS, AUTOEXTENSIBLE, (MAXBYTES/1024/1024), (MAXBLOCKS/1024/1024), INCREMENT_BY, (USER_BYTES/1024/1024), USER_BLOCKS FROM DBA_DATA_FILES"""
+            },
+            "FRA Query":"""SELECT name AS "FRA File Dest", space_limit / (1024 * 1024) AS "FRA Space Limit", space_used / (1024 * 1024) AS "FRA Space Used", space_reclaimable / (1024 * 1024) AS "FRA Space Reclaimable", number_of_files AS "FRA Number of Files" FROM V$RECOVERY_FILE_DEST""",
+            "Waits Query":"""select n.name , round(m.time_waited/100,3) time_waited, m.wait_count from v$eventmetric m, v$event_name n where m.event_id=n.event_id and n.name in ( 'free buffer waits' , 'buffer busy waits', 'latch free', 'library cache pin', 'library cache load lock', 'log buffer space', 'library object reloads count', 'enqueue waits', 'db file parallel read', 'db file parallel write', 'control file sequential read', 'control file parallel write', 'write complete waits', 'log file sync', 'sort segment request', 'direct path read', 'direct path write')""",
+            "PDB Query":"""SELECT a.PDB_NAME, a.PDB_ID,  a.STATUS, b.OPEN_MODE, b.RESTRICTED, b.OPEN_TIME, b.total_size/1024/1024, b.BLOCK_SIZE FROM DBA_PDBS a join V$PDBS b on a.PDB_NAME=b.NAME""",
+            "DB Query":"""select cdb as "CDB", open_mode as "Open Mode", TO_CHAR(created, 'YYYY-MM-DD HH24:MI:SS') AS "Created Date", log_mode as "Log Mode", switchover_status as "Switchover Status", protection_mode as "Protection Mode", current_scn as "Current SCN" from v$database"""
                 }
 
         if self.tls=="True":
@@ -203,8 +315,9 @@ class oracle:
             self.maindata['msg']=connection_status[1]
             return self.maindata
 
-        for _ ,bulk_query in self.metric_queries['Bulk Queries'].items():
-            query_output_data=self.execute_query_bulk(bulk_query)
+        for query_name ,bulk_query in self.metric_queries['Bulk Queries'].items():
+            query_output_data=self.execute_query_bulk(bulk_query, query_name=query_name)
+
             self.maindata.update(query_output_data)
             if 'status' in self.maindata and self.maindata['status']==0:
                 return self.maindata
@@ -215,7 +328,7 @@ class oracle:
             if 'status' in self.maindata and self.maindata['status']==0:
                 return self.maindata
         
-        query_output_data=self.execute_tablespace_query("Tablespace Query")
+        query_output_data=self.tablespace_complete()
         self.maindata.update(query_output_data)
         if 'status' in self.maindata and self.maindata['status']==0:
                 return self.maindata
@@ -230,18 +343,101 @@ class oracle:
         if 'status' in self.maindata and self.maindata['status']==0:
                 return self.maindata 
 
+        query_output_data=self.execute_query_row_col(self.metric_queries["DB Query"])
+        self.maindata.update(query_output_data)
+        if 'status' in self.maindata and self.maindata['status']==0:
+                return self.maindata 
+
+
+        query_output_data=self.execute_query_row_col(self.metric_queries["FRA Query"])
+        self.maindata.update(query_output_data)
+        if 'status' in self.maindata and self.maindata['status']==0:
+                return self.maindata
+
         self.maindata['tabs']={
-            "Tablespace Details":{
+            "Tablespace and PDB":{
                 "order":1,
                 "tablist":[
-                    "Tablespace_Details"
+                    "Tablespace_Details",
+                    "Tablespace_Datafile_Details",
+                    "PDB_Details"
                 ]},
-            "PDB Details":{
+
+            "Buffer Cache and Memory":{
                 "order":2,
                 "tablist":[
-                    "pdb_details"
+                    "Buffer Cache Hit Ratio",
+                    "Database Block Size",
+                    "Shared Pool Free %"
+                    "Total Freeable PGA Memory",
+                    "Maximum PGA Allocated",
+                    "Total PGA Allocated",
+                    "Total PGA Inuse",
+                    "SGA Fixed Size",
+                    "SGA Variable Size",
+                    "SGA Database Buffers",
+                    "SGA Redo Buffers",
+                    "SGA Hit Ratio",
+                    "SGA Log Alloc Retries",
+                    "SGA Shared Pool Dict Cache Ratio",
+                    "SGA Shared Pool Lib Cache Hit Ratio",
+                    "SGA Shared Pool Lib Cache Reload Ratio",
+                    "SGA Shared Pool Lib Cache Sharable Statement",
+                    "SGA Shared Pool Lib Cache Shareable User"
+                ]
+            },
+            "Input/Output":{
+                "order":3,
+                "tablist":[
+                    "Physical Reads Per Sec",
+                    "Physical Writes Per Sec",
+                    "Direct Path Read Time Waited",
+                    "Direct Path Read Wait Count",
+                    "Direct Path Write Time Waited",
+                    "Direct Path Write Wait Count",
+                    "Db File Parallel Read Time Waited",
+                    "Db File Parallel Read Wait Count",
+                    "Db File Parallel Write Time Waited",
+                    "Db File Parallel Write Wait Count",
+                    "Control File Parallel Write Time Waited",
+                    "Control File Parallel Write Wait Count",
+                    "Control File Sequential Read Time Waited",
+                    "Control File Sequential Read Wait Count",
+                    "Log Buffer Space Time Waited",
+                    "Log Buffer Space Wait Count",
+                    "Log File Sync Time Waited",
+                    "Log File Sync Wait Count",
+                    "Write Complete Waits Time Waited",
+                    "Write Complete Waits Wait Count"
+                ]
+            },
+            "Parsing and Execution":{
+                "order":4,
+                "tablist":[
+                    "Cursor Cache Hit Ratio",
+                    "Hard Parse Count Per Sec",
+                    "Hard Parse Count Per Txn",
+                    "Parse Failure Count Per Sec",
+                    "Parse Failure Count Per Txn",
+                    "Soft Parse Ratio",
+                    "Total Parse Count Per Sec",
+                    "Total Parse Count Per Txn"
+                ]
+            },
+            "Locks and Contention":{
+                "order":5,
+                "tablist":[
+                    "Blocking Locks",
+                    "Library Cache Pin Time Waited",
+                    "Library Cache Pin Wait Count",
+                    "Library Cache Load Lock Time Waited",
+                    "Library Cache Load Lock Wait Count",
+                    "Latch Free Time Waited",
+                    "Latch Free Wait Count",
+                    "Enqueue Timeouts Per Sec"
                 ]
             }
+
             }
         
 
@@ -254,9 +450,9 @@ if __name__=="__main__":
     
     hostname="localhost"
     port="1521"
-    sid="ORCLCDB"
-    username="oracle_user"
-    password="oracle_password"
+    sid="ORCL"
+    username="ORACLE_USER"
+    password="ORACLE_USER"
     tls="False"
     wallet_location=None
     oracle_home="/opt/oracle/product/19c/dbhome_1/"
