@@ -495,7 +495,7 @@ The agent will automatically execute the plugin within five minutes and send per
 
     Tablespace used space in MB
 
-- **Tablepsace_Size***
+- **Tablepsace_Size**
 
     Tablespace size in MB
 
