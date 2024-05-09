@@ -486,6 +486,70 @@ The agent will automatically execute the plugin within five minutes and send per
 
     Number of times the database has had to wait for a library cache pin
 
+### Oracle Tablespace Metrics
+- **Name**
+  
+    Name of the tablespace
 
+- **Used_Space**
 
+    Tablespace used space in MB
 
+- **Tablepsace_Size***
+
+    Tablespace size in MB
+
+- **Used_Percent**
+
+    Tablespace usage in percent(%)
+
+- **TB_Status**
+
+    Availability of the tablespace
+
+### Oracle Tablespace Datafile Metrics
+- **Name**
+  
+    Name of the tablespace datafile
+
+- **Data_File_Blocks**
+
+    Number of datafile blocks
+
+- **Data_File_Size**
+
+    Size of the datafile
+
+- **Increment_By**
+
+    The size by which the datafile should grow automatically when it reaches its maximum size
+
+- **Max_Data_File_Blocks**
+
+    Maximum blocks of the datafile
+
+- **Max_Data_File_Size**
+
+    Maximum size of the datafile
+
+- **Usable_Data_File_Blocks**
+
+    Number of usable data file blocks
+
+- **Usable_Data_File_Size**
+
+    Size of usable data file
+
+### PDB Metrics
+
+- **Block_Size**
+
+   Size of the block
+
+- **PDB_ID**
+
+   ID of the PDB
+
+- **PDB_Size**
+
+   Size of the PDB
