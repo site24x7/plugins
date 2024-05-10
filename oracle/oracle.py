@@ -386,7 +386,7 @@ class oracle:
                     "SGA Shared Pool Lib Cache Shareable User"
                 ]
             },
-            "Input/Output":{
+            "I/O Operations":{
                 "order":3,
                 "tablist":[
                     "Physical Reads Per Sec",
