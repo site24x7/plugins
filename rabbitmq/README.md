@@ -2,7 +2,7 @@
 RabbitMQ is a message broker tool that routes messages between producers and consumers. It is open-source and functions based on the Advanced Message Queuing Protocol (AMQP).                                                                                              
 ## Prerequisites
 
-- Download and install the latest version of the Site24x7 Linux Server Monitoring agent on the server where you plan to run the plugin.
+- Download and install the latest version of the [Site24x7 Server Monitoring agent](https://www.site24x7.com/help/admin/adding-a-monitor/linux-server-monitoring.html#add-linux-server-monitor) on the server where you plan to run the plugin.
 - Python version 3 or higher.
 
 ## Plugin Installation  
