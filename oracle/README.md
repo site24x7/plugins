@@ -292,7 +292,7 @@ The agent will automatically execute the plugin within five minutes and send per
 
 
 
-### Input/Output
+### I/O Operations
 - **Control File Parallel Write Time Waited**
 
     Total time the Oracle database spends waiting for parallel write operations to control files
