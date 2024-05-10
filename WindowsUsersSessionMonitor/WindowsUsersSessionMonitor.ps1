@@ -11,38 +11,49 @@ Function Get-Data
     $date1 = Get-Date -Date "01/01/1970"
     [hashtable]$userName_list=[ordered]@{}
     $userCount=($userInfo.Count-1)
-    for($user=1; $user -lt $userInfo.Count; $user=$user+1)
-    {
-       $userInfo[$user] = $userInfo[$user].Substring(1,($userInfo[$user].Length-1));
-       $userarr = ($userInfo[$user] -replace '\s+', ' ') -split " "
-       if($userarr[3] -eq "Active")
-       {
-          $active=$active+1
-          $userName += $userarr[0]
-          if($userarr[4] -eq '.')
-          {
-            $dataObj.Add($userarr[0]+"_idletime",0)
-          }
-          else
-          {
-            $dataObj.Add($userarr[0]+"_idletime",$userarr[4])
-          }
-       }
-       $dataObj.Add($userarr[0]+"_status","Active")
-	   $dataObj.Add($userarr[0]+"_logon_logout(1/0)",1)
+
+
+    $query_user=$userInfo -split "\n" -replace '\s{18}\s+', "  blank  "
+    $qu_object=$query_user -split "\n" -replace '\s\s+', "," | convertfrom-csv
+
+    $qu_object | ForEach-Object {
+    $updated_user=$_.USERNAME  -replace ">", ""
+    
+    if ($_.STATE -eq "Disc"){
+        $dataObj.Add($updated_user+"_status","Disconnected" )
+        $dataObj.Add($updated_user+"_logon_logout(1/0)",0)
+    }elseif($_.STATE -eq "Active") {
+        $dataObj.Add($updated_user+"_status",$_.STATE )
+        $active+=1
+        $dataObj.Add($updated_user+"_logon_logout(1/0)",1)
+    }else{
+        $dataObj.Add($updated_user+"_status",$_.STATE )
+        $dataObj.Add($updated_user+"_logon_logout(1/0)",0)
+    
     }
+
+    $userName+=$updated_user
+    $dataObj.Add($updated_user+"_idletime", $_.'IDLE TIME')
+   
+
+        
+    $dataObj.Add($updated_user+"_last_logon_time",$_.'LOGON TIME')
+    }
+
+
 
     for($user=1; $user -lt $activeUser.Count; $user=$user+1)
     {
         $date=$activeUser[$user].LastLogon
 	    $date = $date -replace '[a-z]', ''
-        $dataObj.Add($activeUser[$user].Name+"_last_logon_time",$date)
+        
         if($userName -notcontains ($activeUser[$user].Name))
         {
           
              $dataObj.Add($activeUser[$user].Name+"_status","DisConnected")
 	         $dataObj.Add($activeUser[$user].Name+"_logon_logout(1/0)",0)
              $dataObj.Add($activeUser[$user].Name+"_idletime",0)
+             $dataObj.Add($activeUser[$user].Name+"_last_logon_time",$date)
         }
     }
     $dataObj.Add("active_user",$active)
