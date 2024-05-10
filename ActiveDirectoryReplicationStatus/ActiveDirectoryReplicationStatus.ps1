@@ -2,8 +2,8 @@
 try
 {
     $domainControlerName = (Get-ADDomainController).HostName
-    $replicationPartners = Get-ADReplicationPartnerMetadata -Target $domainControlerName -PartnerType Both | select Server,@{n="Partner";e={(Resolve-DnsName $_.PartnerAddress).NameHost}},Partition,PartnerType,LastReplicationAttempt,LastReplicationResult,LastReplicationSuccess
-    $replicationfailure = Get-ADReplicationFailure -Target $domainControlerName | select Server,@{n="Partner";e={(Resolve-DnsName $_.PartnerAddress).NameHost}},FailureCount,FailureType,FirstFailureTime,LastError
+    $replicationPartners = Get-ADReplicationPartnerMetadata -Target $domainControlerName -PartnerType Both | select Server,@{n="Partner";e={(Resolve-DnsName $_.PartnerAddress).NameHost}},Partition,PartnerType,LastReplicationAttempt,LastReplicationResult,LastReplicationSuccess # | Where-Object { $_.Partner -eq 'win-76qkdkpe00a.mylocal.com'}
+    $replicationfailure = Get-ADReplicationFailure -Target $domainControlerName | select Server,@{n="Partner";e={(Resolve-DnsName $_.PartnerAddress).NameHost}},FailureCount,FailureType,FirstFailureTime,LastError # | Where-Object { $_.Partner -eq 'win-76qkdkpe00a.mylocal.com'}
     $InboundData = $replicationPartners | Where-Object {$_.PartnerType -eq 'Inbound'}
     $OutboundData = $replicationPartners | Where-Object {$_.PartnerType -eq 'Outbound'}
     $InboundPartners = $InboundData.Partner -join ','
@@ -102,12 +102,26 @@ $ErrorServer = ""
 $Status = 1
 if($replicationfailure -ne $null)
 {
-    $FailureCount = $replicationfailure.FailureCount
-    $FailureType = $replicationfailure.FailureType
-    $FirstFailureTime = $replicationfailure.FirstFailureTime
-    $LastError = $replicationfailure.LastError
-    $ErrorPartner = $replicationfailure.Partner
-    $ErrorServer = $replicationfailure.Server
+
+    if ($replicationfailure -eq 1){
+        $FailureCount = $replicationfailure.FailureCount
+        $FailureType = $replicationfailure.FailureType
+        $FirstFailureTime = $replicationfailure.FirstFailureTime
+        $LastError = $replicationfailure.LastError
+        $ErrorPartner = $replicationfailure.Partner
+        $ErrorServer = $replicationfailure.Server
+    }
+    else{
+
+        $FailureCount = ($replicationfailure | Measure-Object -Property FailureCount -sum).sum
+        $FailureType = $replicationfailure.FailureType  -join ','
+        $FirstFailureTime = $replicationfailure.FirstFailureTime  -join ','
+        $LastError = $replicationfailure.LastError  -join ','
+        $ErrorPartner = $replicationfailure.Partner  -join ','
+        $ErrorServer = $replicationfailure.Server  -join ','
+
+    }
+    
     if($FailureCount -eq $null)
     {
         $FailureCount = 0
@@ -132,10 +146,14 @@ if($replicationfailure -ne $null)
     {
         $ErrorServer = ""
     }
-    $diff = New-TimeSpan -Start $FirstFailureTime -End (Get-Date)
+    $replicationfailure | ForEach-Object {
+    
+    $diff = New-TimeSpan -Start $_.FirstFailureTime -End (Get-Date)
     if($diff.TotalSeconds -gt -300 -and $diff.TotalSeconds -lt 300)
     {
         $Status = 0
+        $msg="The difference in First Failure Time and current time is $($diff.TotalSeconds)s"
+    }
     }
 } 
 
@@ -186,10 +204,3 @@ $data.Add("displayname", $displayname)
 
 ### Returns the monitoring data to Site24x7 servers
 return $data | ConvertTo-Json
-
-
-
-
-
-
-
