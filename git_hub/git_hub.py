@@ -97,7 +97,7 @@ class gitHub:
             else:
                 result_json['status'] = 0
                 result_json['msg'] = str(repo_response.json()['message'])
-            if self.repo_check is False:
+            if self.repo_check is False and repo_response.status_code==200:
                 result_json['status'] = 0
                 result_json['msg'] = "Given Repository name is not matched - "+REPO_NAME
         except Exception as e:
