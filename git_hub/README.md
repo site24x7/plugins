@@ -1,18 +1,16 @@
 # Plugin for monitoring GitHub
 
-## Plugin installation
-___
-### Prerequisites
-* To monitor your github account we need an username , repository name and a Personal Access Token.
+## Prerequisites
+* To monitor your github account we need an username , repository name and a Personal Access Token(classic).
 	
-	Please refer this link to create "Personal Access Token" with read access- https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
+* Please refer this [link](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to create "Personal Access Token" with read access. 
+* Select and provide repos, notifications, and project permissions in select scopes field of generating access token. Without the access the API's will throw an 404 or 403 error.
+  
+## Plugin installation
 
-### Plugin configuration
----
+* Create a directory `git_hub`.
 
-* Create a directory "git_hub".
-
-* Download the files "git_hub.py" , "git_hub.cfg" and place it under the "git_hub" directory
+* Download the files "git_hub.py" , "git_hub.cfg" and place it under the `git_hub` directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/git_hub/git_hub.py
 
@@ -25,28 +23,30 @@ ___
 	#git_hub.cfg
 		
 		[display_name]
-		user_name="user@github"
+		user_name="UserName"
 		personal_access_token="123ascejsfnkl"
 		repo_name="Sample_repo1"
 
-	display_name denotes - plugin monitor name to be displayed in site24x7 client
+	- display_name denotes - plugin monitor name to be displayed in site24x7 client.
 	
-	user_name denotes - user name of the github account
+	- user_name denotes - user name of the github account.
 	
-	personal_access_token denotes - personal access token created for the github account 
+	- personal_access_token denotes - personal access token created for the github account.
 	
-	repo_name denotes - actual repository name to be monitored
+	- repo_name denotes - actual repository name to be monitored.
 
 * If you have more than one repositories needs to be monitored create one more section and configure it as above.
 
-* Move the directory "git_hub" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/git_hub
+* Move the directory `git_hub` under Site24x7 Linux Agent plugin directory.
+
+		mv git_hub /opt/site24x7/monagent/plugins/
 
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 
-### Metrics captured
----
+## Metrics captured
+
 * notifications
 * deployments
 * milestones
