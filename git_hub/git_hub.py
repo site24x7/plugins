@@ -61,6 +61,8 @@ class gitHub:
 
     def get_metrics_counts(self):
         global result_json
+        result_json['msg']=''
+        no_metric=True
         try:
             for key in self.count_request_map.keys():
                 if key not in self.keys_list:
@@ -68,8 +70,15 @@ class gitHub:
                     count_response = requests.get(self.count_request_map.get(key), auth=(USER_NAME,PERSONAL_ACCESS_TOKEN),timeout=3.0)
                     if count_response.status_code==200:
                         result_json[key]=len(count_response.json())
+                        no_metric=False
                     else:
                         result_json[key]=int(0)
+                        if result_json['msg']=='':
+                            result_json['msg']=self.count_request_map.get(key)+": "+str(count_response.status_code)
+                        else:
+                             result_json['msg']= result_json['msg']+", "+self.count_request_map.get(key)+": "+str(count_response.status_code)
+            if no_metric:
+                result_json['status'] = 0
    
         except Exception as e:
             result_json['status'] = 0
@@ -97,7 +106,7 @@ class gitHub:
             else:
                 result_json['status'] = 0
                 result_json['msg'] = str(repo_response.json()['message'])
-            if self.repo_check is False:
+            if self.repo_check is False and repo_response.status_code==200:
                 result_json['status'] = 0
                 result_json['msg'] = "Given Repository name is not matched - "+REPO_NAME
         except Exception as e:
