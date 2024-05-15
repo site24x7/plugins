@@ -57,4 +57,71 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/installer/S
 		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
+### Metrics Captured
 
+Name		        	| 	Description
+---         			|   	---
+Active Defrag Hits		|	Number of value reallocations performed by active the defragmentation process.
+Active Defrag Key Hits  	|	Number of keys that were actively defragmented.
+Active Defrag Misses		|	Number of aborted value reallocations started by the active defragmentation process.
+Active Defrag Key Misses	|	Number of keys that were skipped by the active defragmentation process.
+Active Defrag Running		|	When activedefrag is enabled, this indicates whether defragmentation is currently active.
+AOF Last Bgrewrite Status	|	Status of the last AOF rewrite operation.
+AOF Last Rewrite Time		|	Duration of the last AOF rewrite operation in seconds.
+Blocked Clients			|	Number of clients waiting on a blocking call.
+CPU Sys				|	System CPU consumed by the Redis server, which is the sum of system CPU consumed by all threads of the server process.
+CPU Sys Children		|	System CPU consumed by the background processes.
+CPU User			|	User CPU consumed by the Redis server, which is the sum of user CPU consumed by all threads of the server process.
+CPU User Children		|	User CPU consumed by the background processes.
+CPU Sys Main Thread		|	System CPU consumed by the Redis server main thread.	
+Cluster Enabled			|	Indicate Redis cluster is enabled.
+Connected Clients		|	Number of client connections (excluding replicas).
+Connected Slaves		|	Number of connected replicas.
+Evicted Keys			|	The total number of keys evicted due to the maxmemory limit.
+Expired Keys			|	Total number of key expiration events.
+Fragmentation Ratio		|	Ratio between Memory RSS and Used Memory.
+Hit Ratio			|	Measure of the efficiency of key retrieval from the cache. It's calculated as the ratio of successful key lookups (hits) to the total number of key operations (both hits and misses).
+IO Threaded Reads Processed	|	Number of read events processed by the main and I/O threads.
+IO Threaded Writes Processed	|	Number of write events processed by the main and I/O threads.
+IO Threads Active		|	Indicating if I/O threads are active.
+Incoming Traffic		|	The network's read rate per second in KB/sec.
+Outgoing Traffic		|	The network's write rate per second in KB/sec.
+Keyspace Hits			|	Number of successful lookup of keys in the main dictionary.
+Keyspace Misses			|	Number of failed lookup of keys in the main dictionary.
+Latest Fork Usec		|	Duration of the latest fork operation in microseconds.
+Master Repl Offset		|	The server's current replication offset.
+Second Repl Offset		|	The offset up to which replication IDs are accepted.
+Max Clients			|	The maximum number of connected clients.
+Max Memory			|	The value of the maxmemory configuration directive.
+Memory Lua			|	NumbeSync Fullr of bytes used by the Lua engine for EVAL scripts
+Memory Overhead			|	The sum in bytes of all overheads that the server allocated for managing its internal data structures.
+Memory Peak			|	Peak memory consumed by Redis.
+Memory RSS			|	Number of bytes that Redis allocated as seen by the operating system (a.k.a resident set size). 
+Memory Startup			|	Initial amount of memory consumed by Redis at startup.
+Ops/Sec				|	Number of commands processed per second.
+Pubsub Channels			|	The number of active pubsub channels.
+Pubsub Patterns			|	The number of active pubsub patterns.
+RDB Bgsave in Progress		|	Indicating a RDB save is on-going.
+RDB Changes Since Last Save	|	Number of changes since the last dump.
+RDB Last Save Time		|	Epoch-based timestamp of last successful RDB save.
+Redis Mode			|	The server's mode ("standalone", "sentinel" or "cluster").
+Redis Version			|	Version of the Redis server.
+Rejected Connections		|	Number of connections rejected because of maxclients limit.
+Repl Backlog Histlen		| 	Size of the data in the replication backlog buffer.
+Role				|	Role of the server ( master or slave ).
+Sync Full			|	The number of full resyncs with replicas.
+Sync Partial Err		|	The number of denied partial resync requests.
+Sync Partial Ok			|	The number of accepted partial resync requests.
+Total Commands Processed	|	Total number of commands processed by the server.
+Total Connections Received	|	Total number of connections accepted by the server.
+Total Expires			|	The total number of keys with an expiration.
+Total Keys			|	The total number of keys.
+Total Persists			|	The total number of keys persisted (keys - expires).
+Uptime				|	Number of seconds since the Redis server start.
+Uptime in Days			|	Number of days since the Redis server start.
+Used Memory			|	Total number of bytes allocated by Redis using its allocator.
+expires				|	The number of keys with an expiration in a db.
+expires_percent			|	Percentage of total keys with an expiration in a db.
+keys				|	The total number of keys in a db.
+persist				|	The number of keys persisted in a db (db.keys - db.expires).
+persist_percent			|	Percentage of total keys that are persisted in a db.
