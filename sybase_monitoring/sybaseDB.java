@@ -137,7 +137,7 @@ public class sybaseDB {
 	            		        String roundedResult = df.format(result);
 	            		        data.put("Used Memory Percentage",Double.parseDouble(roundedResult.trim())*100);
 	            			}else {
-	            				data.put(summary_metric.get(query), dataValue+" Count");
+	            				data.put(summary_metric.get(query), dataValue+" count");
 	            			}
 	            		}
 	            		
