@@ -11,7 +11,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/installer/S
 ```
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 - Execute the following command in your server to install Redis: 
 
@@ -93,7 +93,7 @@ Master Repl Offset		|	The server's current replication offset.
 Second Repl Offset		|	The offset up to which replication IDs are accepted.
 Max Clients			|	The maximum number of connected clients.
 Max Memory			|	The value of the maxmemory configuration directive.
-Memory Lua			|	NumbeSync Fullr of bytes used by the Lua engine for EVAL scripts
+Memory Lua			|	NumbeSync Fullr of bytes used by the Lua engine for EVAL scripts.
 Memory Overhead			|	The sum in bytes of all overheads that the server allocated for managing its internal data structures.
 Memory Peak			|	Peak memory consumed by Redis.
 Memory RSS			|	Number of bytes that Redis allocated as seen by the operating system (a.k.a resident set size). 
@@ -104,7 +104,7 @@ Pubsub Patterns			|	The number of active pubsub patterns.
 RDB Bgsave in Progress		|	Indicating a RDB save is on-going.
 RDB Changes Since Last Save	|	Number of changes since the last dump.
 RDB Last Save Time		|	Epoch-based timestamp of last successful RDB save.
-Redis Mode			|	The server's mode ("standalone", "sentinel" or "cluster").
+Redis Mode			|	The server's mode ( standalone, sentinel or cluster).
 Redis Version			|	Version of the Redis server.
 Rejected Connections		|	Number of connections rejected because of maxclients limit.
 Repl Backlog Histlen		| 	Size of the data in the replication backlog buffer.
