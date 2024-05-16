@@ -36,15 +36,15 @@
 
 Supported versions: 1 and 2c
 
-- Create a directory named "idrac"
+- Create a directory named `idrac`
       
-- Download all the files in the "idrac" folder and place it under the "idrac" directory.
+- Download all the files in the `idrac` directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac.cfg
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/SNMPUtil.py
   
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the idrac.py script.
+
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 		python idrac.py --hostname='hostname' --snmp_version='2c' --snmp_community_str='public'
@@ -58,19 +58,38 @@ Supported versions: 1 and 2c
 		
 #### Linux
 
-- Move the directory named "idrac" under the Site24x7 Linux Agent plugin directory: 
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the idrac.py script.
+
+- Move the directory named `idrac` under the Site24x7 Linux Agent plugin directory: 
 
 		Linux             ->   /opt/site24x7/monagent/plugins/
 		
 ##### Windows 
 
-- Move the folder named "idrac" under Site24x7 Windows Agent plugin directory: 
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
+
+- Move the folder named `idrac` under Site24x7 Windows Agent plugin directory: 
 
 		Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 		
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
+## Supported Metrics
 
+The status for on IDRAC please refer below,
+Name	| 	Description
+---	|   	---
+1 	|	 other
+2 	|	 unknown
+3 	|	 ok
+4 	|	 nonCritical
+5 	|	 critical
+6 	|	 nonRecoverable
 
+Metric and units:
 
-
+Name		| 	Description
+---		|   	---
+rotations	|	rpm
+memory	size	|	KB
+pdisk size	|	MB
