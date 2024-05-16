@@ -178,7 +178,7 @@ install_plugin(){
     replace_string_in_file $syb_perm_temp_path 'USERNAME=""' 'USERNAME="'$username'"'
     replace_string_in_file $syb_perm_temp_path 'PASSWORD=""' 'PASSWORD="'$password'"'
     replace_string_in_file $syb_perm_temp_path 'JAVA_HOME="/usr/bin"' 'JAVA_HOME="'$java_path'"'
-    replace_string_in_file $syb_perm_temp_path 'PLUGIN_PATH="/opt/site24x7/monagent/plugins/sybase_monitoring"' 'PLUGIN_PATH="/opt/site24x7/monagent/temp/plugins/sybase_monitoring"'
+    replace_string_in_file $syb_perm_temp_path 'PLUGIN_PATH=""' 'PLUGIN_PATH="/opt/site24x7/monagent/temp/plugins/sybase_monitoring"'
 
     sh $syb_perm_temp_path
 
