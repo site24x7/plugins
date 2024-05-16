@@ -12,6 +12,7 @@ HEARTBEAT="true"
 host = "localhost"
 port = "6379"
 password = ""
+dbs = "1"
 
 
 ### Uncomment/Comment the Attribute Names to be monitored
@@ -88,6 +89,7 @@ METRICS = {
     "used_cpu_sys_children": "CPU Sys Children", 
     "used_cpu_user": "CPU User", 
     "used_cpu_user_children": "CPU User Children", 
+    "used_cpu_sys_main_thread": "CPU Sys Main Thread",
     "used_memory": "Used Memory", 
     #"used_memory_human": "used memory human", 
     "used_memory_lua": "Memory Lua", 
@@ -141,7 +143,8 @@ tabs= {
         "CPU Sys",
         "CPU Sys Children",
         "CPU User",
-        "CPU User Children"
+        "CPU User Children",
+        "CPU Sys Main Thread"
       ]
     },
 
@@ -216,7 +219,6 @@ class Redis(object):
         self.args=args
         self.host=args.host
         self.port=args.port
-        self.dbs=args.dbs
         if args.password:
             self.password=args.password
         else:
@@ -316,7 +318,6 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
     parser.add_argument('--port',help="Port",nargs='?', default= "6379")
-    parser.add_argument('--dbs',help="dbs" , default= dbs)
     parser.add_argument('--password',help="Password" , default= password)
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="true")
     parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default="Redis Logs")
