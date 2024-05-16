@@ -37,11 +37,6 @@ public class sybaseDB {
 		 String username = args[4];
 		 String password = args[5];
 		 
-//		 String hostname = "localhost";
-//		 String port = "5000";
-//		 String username = "sa";
-//		 String password = "site24x7";
-		 
 		 
 		 	 long startTime = System.currentTimeMillis();
     		 
