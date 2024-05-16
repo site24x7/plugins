@@ -1,7 +1,7 @@
 #!/bin/bash
 
 plugin_name="sybase_monitoring"
-plugin_url="https://raw.githubusercontent.com/site24x7/plugins/master/"
+plugin_url="https://raw.githubusercontent.com/Sathvika-a/plugins/master/"
 
 
 blue='\033[0;34m'   

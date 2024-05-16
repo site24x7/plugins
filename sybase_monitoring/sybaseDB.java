@@ -37,6 +37,11 @@ public class sybaseDB {
 		 String username = args[4];
 		 String password = args[5];
 		 
+//		 String hostname = "localhost";
+//		 String port = "5000";
+//		 String username = "sa";
+//		 String password = "site24x7";
+		 
 		 
 		 	 long startTime = System.currentTimeMillis();
     		 
@@ -45,7 +50,7 @@ public class sybaseDB {
 	         long endTime = System.currentTimeMillis();
 	         long timeElapsed = endTime - startTime;
 
-	         data.put("connection_time_ns", timeElapsed);
+	         data.put("Connection Time", timeElapsed);
 	         Map<String, String> summary_metric = new HashMap<>();
 	         summary_metric.put("sp_configure 'number of remote connections'","Max Remote Connections");
 	         summary_metric.put("sp_configure 'number of user connections'","Max User Connections");
@@ -64,16 +69,16 @@ public class sybaseDB {
 	         database_detail(data,statement,databse_list);
 	         
 	         JSONArray tabList1 = new JSONArray();
-	         tabList1.put("transaction_details");
-	         tabList1.put("backup_database_details");
-	         tabList1.put("database_details");
+	         tabList1.put("Transaction_Details");
+	         tabList1.put("Backup_Database_Details");
+	         tabList1.put("Database_Details");
 	         JSONObject  tabDetail1= new JSONObject();
 	         tabDetail1.put("order", 2);
 	         tabDetail1.put("tablist", tabList1);
 	         
 	         JSONArray tabList2 = new JSONArray();
-	         tabList2.put("procedure_cache_usage");
-	         tabList2.put("data_cache_usage");
+	         tabList2.put("Procedure_Cache_Usage");
+	         tabList2.put("Data_Cache_Usage");
 	         JSONObject  tabDetail2= new JSONObject();
 	         tabDetail2.put("order", 1);
 	         tabDetail2.put("tablist", tabList2);
@@ -113,24 +118,31 @@ public class sybaseDB {
 	            		if( query.equals("sp_configure 'total logical memory'")) {
 	            			if(metaData.getColumnName(i).equals("Memory Used") ) {
 		            		dataValue = (String)resultSet.getObject(i);
-		            		dataValue = dataValue.replaceAll("\\s{2,}", " ");
-		            		data.put("Used Memory", dataValue);
+		            		dataValue = dataValue.replaceAll("\\s{2,}", " ").trim();
+		            		int data_val = Integer.parseInt(dataValue);
+		            		float used_mem = data_val*0.001953125f;
+		            		data.put("Used Memory", used_mem);
 		            		used_memory=dataValue.trim();
 	            		}
 	            	}
 	            		if(metaData.getColumnName(i).equals("Run Value") ) {
 	            			dataValue = (String)resultSet.getObject(i);
 	            			dataValue = dataValue.replaceAll("\\s{2,}", " ");
-	            			data.put(summary_metric.get(query), dataValue);
 	            			if(query.equals("sp_configure 'total logical memory'")) {
 	            				free_memory=dataValue.trim();
-	            				int total_mem=Integer.parseInt(free_memory)+Integer.parseInt(used_memory);
-	            				data.put("Total Memory", total_mem);
+	            				int free_mem_int=Integer.parseInt(free_memory);
+	            				float free_mem=free_mem_int*0.001953125f;
+	            				data.put("Free Memory", free_mem);
+	            				int total_mem=free_mem_int+Integer.parseInt(used_memory);
+	            				float totam_memory = total_mem*0.001953125f;
+	            				data.put("Total Memory", totam_memory+" MB");
 	            				
 	            				double result = (double) Integer.parseInt(used_memory) / total_mem;
 	            				DecimalFormat df = new DecimalFormat("#.##");
 	            		        String roundedResult = df.format(result);
 	            		        data.put("Used Memory Percentage",Double.parseDouble(roundedResult.trim())*100);
+	            			}else {
+	            				data.put(summary_metric.get(query), " "+dataValue);
 	            			}
 	            		}
 	            		
@@ -181,10 +193,10 @@ public class sybaseDB {
 		try {
 			JSONArray procedure_cache_arr = new JSONArray();
 			Map<String, String> procedure_cache = new HashMap<>();
-			procedure_cache.put("Num_active","procedure_cache_used");
-			procedure_cache.put("Pct_act","procedure_cache_used_percentage");
-			procedure_cache.put("Max_Used","max_procedure_cache");
-			procedure_cache.put("Reuse_cnt","procedure_cache_reused");
+			procedure_cache.put("Num_active","Procedure_Cache_Used");
+			procedure_cache.put("Pct_act","Procedure_Cache_Used_Percentage");
+			procedure_cache.put("Max_Used","Max_Procedure_Cache");
+			procedure_cache.put("Reuse_cnt","Procedure_Cache_Reused");
 			
 			ResultSet resultSet =executeQuery(statement,"sp_monitorconfig 'procedure cache'",data);
             ResultSetMetaData metaData = resultSet.getMetaData();
@@ -202,7 +214,7 @@ public class sybaseDB {
 	          
            	 } 	
            	
-           	data.put("procedure_cache_usage",procedure_cache_arr);
+           	data.put("Procedure_Cache_Usage",procedure_cache_arr);
             }
 		}catch(Exception e) {
     		data.put("msg",e);
@@ -213,10 +225,10 @@ public class sybaseDB {
 		try {
 			JSONArray data_cache_arr = new JSONArray();
 			Map<String, String> data_cache = new HashMap<>();
-			data_cache.put("PhysicalReads","physical_reads");
-			data_cache.put("LogicalReads","logical_reads");
-			data_cache.put("PhysicalWrites","physical_writes");
-			data_cache.put("CacheSize","cache_size");
+			data_cache.put("PhysicalReads","Physical_Reads");
+			data_cache.put("LogicalReads","Logical_Reads");
+			data_cache.put("PhysicalWrites","Physical_Writes");
+			data_cache.put("CacheSize","Cache_Size");
 			
 			ResultSet resultSet =executeQuery(statement,"select * from monDataCache",data);
             ResultSetMetaData metaData = resultSet.getMetaData();
@@ -227,14 +239,14 @@ public class sybaseDB {
            	 for (int i = 1; i <= columnCount; i++) { 
            		if(data_cache.containsKey(metaData.getColumnName(i)) ) {
            			JSONObject data_cache_obj = new JSONObject();
-           			data_cache_obj.put("cache_value",resultSet.getObject(i));
+           			data_cache_obj.put("Cache_Value",resultSet.getObject(i));
            			data_cache_obj.put("name",data_cache.get(metaData.getColumnName(i)));
            			data_cache_arr.put(data_cache_obj);
 	            }
 	          
            	 } 	
            	
-           	data.put("data_cache_usage",data_cache_arr);
+           	data.put("Data_Cache_Usage",data_cache_arr);
             }
 		}catch(Exception e) {
     		data.put("msg",e);
@@ -260,16 +272,16 @@ public class sybaseDB {
            			
            			JSONObject transaction_obj = new JSONObject();
            			if(resultSet.next()) {
-           				transaction_obj.put("transaction_value",resultSet.getObject(i));
+           				transaction_obj.put("Transaction_Value",resultSet.getObject(i));
            			}
            			else {
-           				transaction_obj.put("transaction_value",0);
+           				transaction_obj.put("Transaction_Value",0);
            			}
            			transaction_obj.put("name",transaction.get(metaData.getColumnName(i)));
            			transaction_arr.put(transaction_obj);
 	            }
            	} 	
-           	data.put("transaction_details",transaction_arr);
+           	data.put("Transaction_Details",transaction_arr);
 		}catch(Exception e) {
     		data.put("msg",e);
     	}
@@ -279,10 +291,10 @@ public class sybaseDB {
 		try {
 			JSONArray bkp_db_arr = new JSONArray();
 			Map<String, String> backup_database = new HashMap<>();
-			backup_database.put("DBName","name");
-			backup_database.put("BackupInProgress","backup_status");
-			backup_database.put("SuspendedProcesses","suspended_processes");
-			backup_database.put("TransactionLogFull","transaction_log_full");
+			backup_database.put("DBName","Name");
+			backup_database.put("BackupInProgress","Backup_Status");
+			backup_database.put("SuspendedProcesses","Suspended_Processes");
+			backup_database.put("TransactionLogFull","Transaction_Log_Full");
 			
 			ResultSet resultSet =executeQuery(statement,"select DBName,BackupInProgress,SuspendedProcesses,TransactionLogFull from monOpenDatabases",data);
             ResultSetMetaData metaData = resultSet.getMetaData();
@@ -297,7 +309,7 @@ public class sybaseDB {
                 }   
             	bkp_db_arr.put(bkp_db_obj);
             }
-            data.put("backup_database_details",bkp_db_arr);
+            data.put("Backup_Database_Details",bkp_db_arr);
 		}catch(Exception e) {
     		data.put("msg",e);
     	}
@@ -308,7 +320,7 @@ public class sybaseDB {
 			JSONArray db_arr = new JSONArray();
 			for(int i=0;i<databse_list.size();++i) {
 				JSONObject db_obj = new JSONObject();
-				String query="select loginfo('"+databse_list.get(i)+"', 'oldest_active_transaction_pct') as log_used, loginfo('"+databse_list.get(i)+"', 'can_free_using_dump_tran') as log_size_available, loginfo('"+databse_list.get(i)+"', 'stp_span_pct') as log_used_percentage";
+				String query="select loginfo('"+databse_list.get(i)+"', 'oldest_active_transaction_pct') as Log_Used, loginfo('"+databse_list.get(i)+"', 'can_free_using_dump_tran') as Log_Size_Available, loginfo('"+databse_list.get(i)+"', 'stp_span_pct') as Log_Used_Percentage";
 				ResultSet resultSet =executeQuery(statement,query,data);
 	            ResultSetMetaData metaData = resultSet.getMetaData();
 	            int columnCount = metaData.getColumnCount();
@@ -329,7 +341,7 @@ public class sybaseDB {
 	private static void database_space_details(Statement statement,JSONArray db_arr,JSONObject data) {
 		try {
 			JSONArray db_arr1 = new JSONArray();
-			String query="select db_name(d.dbid) as db_name, ceiling(sum(case when u.segmap != 4 then u.size/1048576.*@@maxpagesize end )) as total_size,ceiling(sum(case when u.segmap != 4 then size - curunreservedpgs(u.dbid, u.lstart, u.unreservedpgs) end)/1048576.*@@maxpagesize) as used_size,ceiling(100 * (1 - 1.0 * sum(case when u.segmap != 4 then curunreservedpgs(u.dbid, u.lstart, u.unreservedpgs) end) / sum(case when u.segmap != 4 then u.size end))) as used_size_percentage from master..sysdatabases d, master..sysusages u where u.dbid = d.dbid  and d.status not in (256,4096) group by d.dbid order by db_name(d.dbid)";
+			String query="select db_name(d.dbid) as db_name, ceiling(sum(case when u.segmap != 4 then u.size/1048576.*@@maxpagesize end )) as Total_Size,ceiling(sum(case when u.segmap != 4 then size - curunreservedpgs(u.dbid, u.lstart, u.unreservedpgs) end)/1048576.*@@maxpagesize) as Used_Size,ceiling(100 * (1 - 1.0 * sum(case when u.segmap != 4 then curunreservedpgs(u.dbid, u.lstart, u.unreservedpgs) end) / sum(case when u.segmap != 4 then u.size end))) as Used_Size_Percentage from master..sysdatabases d, master..sysusages u where u.dbid = d.dbid  and d.status not in (256,4096) group by d.dbid order by db_name(d.dbid)";
 			ResultSet resultSet =executeQuery(statement,query,data);
 			ResultSetMetaData metaData = resultSet.getMetaData();
 	        int count = metaData.getColumnCount();
@@ -348,7 +360,7 @@ public class sybaseDB {
 	        		}
 	        	}
 	        }
-			data.put("database_details",db_arr1);
+			data.put("Database_Details",db_arr1);
 		}catch(Exception e) {
     		data.put("msg",e);
     	}
