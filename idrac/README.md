@@ -8,22 +8,25 @@
 
 - Execute the following command in your server to install snmpwalk: 
 
-		On Centos/RedHat machines you can install snmpwalk using Yum:
+	- On Centos/RedHat machines you can install snmpwalk using Yum:
+ 
   			yum install net–snmp–utils
 
-  		On Ubuntu install snmpwalk using apt-get:
+  	- On Ubuntu install snmpwalk using apt-get:
+  
   			sudo apt–get install snmp
   
-- After installation, export the net-snmp path in the $PATH variable.
+- After installation, export the net-snmp path in the $PATH variable. Example:
 
-    		Example:
   			export PATH=$PATH:/var/lib/net-snmp/bin
 
 - Test SNMP walk for iDrac:
   
-  		command:
+  - command:
+
   			snmpwalk -v <version> -c <community-name> <OID>
-        	Example:
+  - Example:
+  
   			snmpwalk -v 2c -c public 10.19.1.0 1.3.6.1.4.1.674.10892.5.4.600.50.1.5
 		
 #### Windows
@@ -47,14 +50,14 @@ Supported versions: 1 and 2c
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python idrac.py --hostname='hostname' --snmp_version='2c' --snmp_community_str='public'
+		python idrac.py --hostname "localhost" --snmp_version "2c" --snmp_community_str "public"
 
 - Provide your idrac configurations in idrac.cfg file.
 
 		[idrac_main]
-		hostname = 'hostname'
-		snmp_version = '2c' 
-		snmp_community_str = 'public'
+		hostname = "localhost"
+		snmp_version = "2c" 
+		snmp_community_str = "public"
 		
 #### Linux
 
@@ -62,7 +65,7 @@ Supported versions: 1 and 2c
 
 - Move the directory named `idrac` under the Site24x7 Linux Agent plugin directory: 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/
+		mv idrac /opt/site24x7/monagent/plugins/
 		
 ##### Windows 
 
@@ -70,7 +73,7 @@ Supported versions: 1 and 2c
 
 - Move the folder named `idrac` under Site24x7 Windows Agent plugin directory: 
 
-		Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 		
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
