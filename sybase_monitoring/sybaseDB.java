@@ -81,6 +81,8 @@ public class sybaseDB {
 	         tabs.put("Cache Details",tabDetail2 );
 	         tabs.put("Database Details",tabDetail1 );
 	         data.put("tabs", tabs);
+	         statement.close();
+	         connection.close();
 	         System.out.println(data);
     		 
     	 }catch(Exception e) {

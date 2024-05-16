@@ -27,9 +27,15 @@ public class sybaseInstaller {
 	         cmd.add("sp_configure 'statement statistics active', 1");
 	         
 	         for(int i=0;i<cmd.size();++i) {
-	        	 ResultSet resultSet = statement.executeQuery(cmd.get(i));
-	        	 ResultSetMetaData metaData = resultSet.getMetaData();
+	        	 try {
+	        		 ResultSet resultSet = statement.executeQuery(cmd.get(i));
+		        	 ResultSetMetaData metaData = resultSet.getMetaData();
+	        	 }catch(Exception e) {
+	         		System.out.println(e);
+	        	 }
 	         }
+	         statement.close();
+	         connection.close();
 			 
 		}catch(Exception e) {
     		System.out.println(e);
