@@ -137,7 +137,7 @@ public class sybaseDB {
 	            		        String roundedResult = df.format(result);
 	            		        data.put("Used Memory Percentage",Double.parseDouble(roundedResult.trim())*100);
 	            			}else {
-	            				data.put(summary_metric.get(query), " "+dataValue);
+	            				data.put(summary_metric.get(query), dataValue+" Count");
 	            			}
 	            		}
 	            		
@@ -286,7 +286,7 @@ public class sybaseDB {
 		try {
 			JSONArray bkp_db_arr = new JSONArray();
 			Map<String, String> backup_database = new HashMap<>();
-			backup_database.put("DBName","Name");
+			backup_database.put("DBName","name");
 			backup_database.put("BackupInProgress","Backup_Status");
 			backup_database.put("SuspendedProcesses","Suspended_Processes");
 			backup_database.put("TransactionLogFull","Transaction_Log_Full");
