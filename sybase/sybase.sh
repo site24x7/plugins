@@ -11,7 +11,7 @@ USERNAME=""
 PASSWORD=""
 JAVA_HOME="/usr/bin"
 
-PLUGIN_PATH="/opt/site24x7/monagent/plugins/sybase_monitoring"
+PLUGIN_PATH="/opt/site24x7/monagent/plugins/sybase"
 export CLASS_PATH=$PLUGIN_PATH/json-20140107.jar:$PLUGIN_PATH/jconn4.jar
 
 $JAVA_HOME/javac -cp $CLASS_PATH -d $PLUGIN_PATH $PLUGIN_PATH"/sybaseDB.java"

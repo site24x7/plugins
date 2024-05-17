@@ -8,7 +8,7 @@ set USERNAME=""
 set PASSWORD=""
 set JAVA_HOME="C:\Program Files\Java\jdk1.8.0_241\bin"
 
-set PLUGIN_FOLDER_NAME="sybase_monitoring"
+set PLUGIN_FOLDER_NAME="sybase"
 
 set PLUGIN_PATH=C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\%PLUGIN_FOLDER_NAME%
 

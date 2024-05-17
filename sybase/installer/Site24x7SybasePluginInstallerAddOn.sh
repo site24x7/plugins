@@ -8,7 +8,7 @@ USERNAME=""
 PASSWORD=""
 JAVA_HOME="/usr/bin"
 
-PLUGIN_FOLDER_NAME="sybase_monitoring"
+PLUGIN_FOLDER_NAME="sybase"
 
 PLUGIN_PATH=""
 export CLASS_PATH=$PLUGIN_PATH/json-20140107.jar:$PLUGIN_PATH/jconn4.jar

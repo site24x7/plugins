@@ -9,7 +9,7 @@ If you're using Linux servers, use the Sybase plugin installer that checks the p
 Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
 
 ```bash
-wget https://raw.githubusercontent.com/site24x7/plugins/master/sybase_monitoring/installer/Site24x7SybasePluginInstaller.sh && sudo bash Site24x7SybasePluginInstaller.sh
+wget https://raw.githubusercontent.com/site24x7/plugins/master/sybase/installer/Site24x7SybasePluginInstaller.sh && sudo bash Site24x7SybasePluginInstaller.sh
 ```
 ## Standard Installation
 If you're not using Linux servers or want to install the plugin manually, follow the steps below.
@@ -35,44 +35,44 @@ If you're not using Linux servers or want to install the plugin manually, follow
 
 ### Linux  
 
-- Create a directory named "sybase_monitoring".
+- Create a directory named "sybase".
 
-- Download the below files in the "sybase_monitoring" folder and place it under the "sybase_monitoring" directory.
+- Download the below files in the "sybase" folder and place it under the "sybase" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/sybase_monitoring/sybase_monitoring.sh
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/sybase_monitoring/sybaseDB.java
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/sybase_monitoring/json-20140107.jar
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/sybase_monitoring/jconn4.jar
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/sybase/sybase.sh
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/sybase/sybaseDB.java
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/sybase/json-20140107.jar
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/sybase/jconn4.jar
 
-- Open sybase_monitoring.sh file and set the values for HOST, USERNAME, PASSWORD, JAVA_HOME
+- Open sybase.sh file and set the values for HOST, USERNAME, PASSWORD, JAVA_HOME
 
 - Run the command- which java. Copy the output you get and paste it in the JAVA_HOME field. Make sure to paste the path to bin directory and not the path to java.
 
-- Move the "sybase_monitoring" folder to the site24x7 agent directory
+- Move the "sybase" folder to the site24x7 agent directory
 ```
-  Linux             ->   /opt/site24x7/monagent/plugins/sybase_monitoring
+  Linux             ->   /opt/site24x7/monagent/plugins/sybase
 ```
 - Once configured the agent will automatically execute the plugin in five minutes interval and send performance data to the Site24x7 data center.
 
 	```	
 ### Windows
 
-- Create a directory "sybase_monitoring" 
+- Create a directory "sybase" 
 
-- Download the files "sybase_monitoring.bat" , "sybaseDB.java", "json-20140107.jar", "jconn4.jar" and place it under the "sybase_monitoring" directory:
+- Download the files "sybase.bat" , "sybaseDB.java", "json-20140107.jar", "jconn4.jar" and place it under the "sybase" directory:
 
-		https://raw.githubusercontent.com/site24x7/plugins/master/sybase_monitoring/sybase_monitoring.bat
-		https://raw.githubusercontent.com/site24x7/plugins/master/sybase_monitoring/sybaseDB.java
-		https://raw.githubusercontent.com/site24x7/plugins/master/sybase_monitoring/json-20140107.jar
-		https://raw.githubusercontent.com/site24x7/plugins/master/sybase_monitoring/jconn4.jar
+		https://raw.githubusercontent.com/site24x7/plugins/master/sybase/sybase.bat
+		https://raw.githubusercontent.com/site24x7/plugins/master/sybase/sybaseDB.java
+		https://raw.githubusercontent.com/site24x7/plugins/master/sybase/json-20140107.jar
+		https://raw.githubusercontent.com/site24x7/plugins/master/sybase/jconn4.jar
     		
-- Open sybase_monitoring.bat file and set the values for HOST, USERNAME, PASSWORD, JAVA_HOME
+- Open sybase.bat file and set the values for HOST, USERNAME, PASSWORD, JAVA_HOME
 
 - Run the command- where java. Copy the output of, bin directory of jdk and not the path to java.
 
-- Move the "sybase_monitoring" into the Site24x7 Windows Agent plugin directory.
+- Move the "sybase" into the Site24x7 Windows Agent plugin directory.
 ```
-C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\sybase_monitoring
+C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\sybase
 ```
 - Once configured the agent will automatically execute the plugin in five minutes interval and send performance data to the Site24x7 data center.
 

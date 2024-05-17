@@ -1,6 +1,6 @@
 #!/bin/bash
 
-plugin_name="sybase_monitoring"
+plugin_name="sybase"
 plugin_url="https://raw.githubusercontent.com/site24x7/plugins/master/"
 
 
@@ -59,7 +59,7 @@ install_plugin(){
         return 0
     fi
     
-    wget -O "$temp_plugin_path/sybase_monitoring.sh" "$sh_file_url"
+    wget -O "$temp_plugin_path/sybase.sh" "$sh_file_url"
     if [ $? -eq 0 ]; then
         echo ""
     else
@@ -171,14 +171,14 @@ install_plugin(){
     read password
     echo
 
-    syb_permission="sybase_monitoring/Site24x7SybasePluginInstallerAddOn.sh"
+    syb_permission="sybase/Site24x7SybasePluginInstallerAddOn.sh"
     syb_perm_temp_path=$plugins_temp_path$syb_permission
     replace_string_in_file $syb_perm_temp_path 'HOST=""' 'HOST="'$hostname'"'
     replace_string_in_file $syb_perm_temp_path 'PORT=""' 'PORT="'$port'"'
     replace_string_in_file $syb_perm_temp_path 'USERNAME=""' 'USERNAME="'$username'"'
     replace_string_in_file $syb_perm_temp_path 'PASSWORD=""' 'PASSWORD="'$password'"'
     replace_string_in_file $syb_perm_temp_path 'JAVA_HOME="/usr/bin"' 'JAVA_HOME="'$java_path'"'
-    replace_string_in_file $syb_perm_temp_path 'PLUGIN_PATH=""' 'PLUGIN_PATH="/opt/site24x7/monagent/temp/plugins/sybase_monitoring"'
+    replace_string_in_file $syb_perm_temp_path 'PLUGIN_PATH=""' 'PLUGIN_PATH="/opt/site24x7/monagent/temp/plugins/sybase"'
 
     sh $syb_perm_temp_path
 
@@ -190,7 +190,7 @@ install_plugin(){
 
     
     echo "${blue}Adding the configurations in the .sh file.${reset}"
-    plugin_dir_name="sybase_monitoring/sybase_monitoring.sh"
+    plugin_dir_name="sybase/sybase.sh"
     cmd="chmod +x ${plugins_temp_path}${plugin_name}"
     eval "$cmd"
     sybase_temp_path=$plugins_temp_path$plugin_dir_name
@@ -200,7 +200,7 @@ install_plugin(){
     replace_string_in_file $sybase_temp_path 'USERNAME=""' 'USERNAME="'$username'"'
     replace_string_in_file $sybase_temp_path 'PASSWORD=""' 'PASSWORD="'$password'"'
     replace_string_in_file $sybase_temp_path 'JAVA_HOME="/usr/bin"' 'JAVA_HOME="'$java_path'"'
-    replace_string_in_file $sybase_temp_path 'PLUGIN_PATH="/opt/site24x7/monagent/plugins/sybase_monitoring"' 'PLUGIN_PATH="/opt/site24x7/monagent/temp/plugins/sybase_monitoring"'
+    replace_string_in_file $sybase_temp_path 'PLUGIN_PATH="/opt/site24x7/monagent/plugins/sybase"' 'PLUGIN_PATH="/opt/site24x7/monagent/temp/plugins/sybase"'
     
     
     
@@ -222,7 +222,7 @@ install_plugin(){
         return 0
     else
         echo "${green}Plugin output validated successfully.${reset}"
-        replace_string_in_file $sybase_temp_path 'PLUGIN_PATH="/opt/site24x7/monagent/temp/plugins/sybase_monitoring"' 'PLUGIN_PATH="/opt/site24x7/monagent/plugins/sybase_monitoring"'
+        replace_string_in_file $sybase_temp_path 'PLUGIN_PATH="/opt/site24x7/monagent/temp/plugins/sybase"' 'PLUGIN_PATH="/opt/site24x7/monagent/plugins/sybase"'
         
     fi
 
@@ -230,9 +230,9 @@ install_plugin(){
     echo "${blue} Installation in progress.${reset}"
 
     rm $syb_perm_temp_path
-    syb_rm="sybase_monitoring/sybaseInstaller.java"
+    syb_rm="sybase/sybaseInstaller.java"
     rm $plugins_temp_path$syb_rm
-    syb_rm_class="sybase_monitoring/sybaseInstaller.class"
+    syb_rm_class="sybase/sybaseInstaller.class"
     rm $plugins_temp_path$syb_rm_class
 
 
