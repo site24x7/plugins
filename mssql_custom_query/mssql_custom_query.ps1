@@ -1,7 +1,6 @@
 param(
     [string]$SQLServer,
     [string]$SQLDBName,
-    [string]$query,
     [string]$sqlusername,
     [string]$sqlpassword
 )
@@ -9,8 +8,10 @@ param(
 $output = @{}
 $heartbeat = "true"
 $version = 1
+$QueryFilePath="query.sql"
 
 Function Get-Data {
+
     $outdata = @{}
     
     try {
@@ -18,6 +19,9 @@ Function Get-Data {
         $connection = New-Object System.Data.SqlClient.SqlConnection
         $connection.ConnectionString = $connectionString
         $connection.Open()
+
+        # Read SQL query from file
+        $query = Get-Content $QueryFilePath -Raw
 
         $command = $connection.CreateCommand()
         $command.CommandText = $query

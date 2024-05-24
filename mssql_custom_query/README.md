@@ -19,10 +19,11 @@
 
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/mssql_custom_query.ps1
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/mssql_custom_query.cfg
-
+		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/query.sql
+- Enter your desired query to monitor in the `query.sql` file.
 - Execute the below command for valid JSON output.
   ```
-  ./mssql_custom_query.ps1 -SQLServer "sql_server_name" -SQLDBName "sql_db_name" -query "sql_query" -sqlusername "sql_username" -sqlpassword "sql_password"
+  ./mssql_custom_query.ps1 -SQLServer "sql_server_name" -SQLDBName "sql_db_name" -sqlusername "sql_username" -sqlpassword "sql_password"
   ```
 
 - Update the below configurations in mssql_custom_query.cfg file:
@@ -30,7 +31,6 @@
 		[mssql_custom_query]
 		SQLServer = "server_name>"
 		SQLDBName = "dbname"
-		query = "select TOP 1 * from sys.assemblies"
 		sqlusername = "sql_username"
 		sqlpassword  = "sql_password"
 		
