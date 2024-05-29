@@ -60,9 +60,6 @@ If you're not using Linux servers or want to install the plugin manually, follow
 		tls = "false"
 		wallet_location = "/opt/oracle/product/19c/dbhome_1/network/admin/wallets"
 		oracle_home = "/opt/oracle/product/19c/dbhome_1/"
-		logs_enabled = "false"
-		log_type_name = "None"
-		log_file_path = "None"
 	```	
 #### Linux
 - Place the "oracle" under the Site24x7 Linux Agent plugin directory:
