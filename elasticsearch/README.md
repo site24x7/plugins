@@ -13,7 +13,7 @@ If you're using Linux servers, use the Elasticsearch plugin installer that check
 Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
 
 ```bash
-wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle/installer/Site24x7ElasticSearchPluginInstaller.sh && sudo bash Site24x7ElasticSearchPluginInstaller.sh
+wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/installer/Site24x7ElasticSearchPluginInstaller.sh && sudo bash Site24x7ElasticSearchPluginInstaller.sh
 ```
 
 ## Standard Installation
