@@ -131,10 +131,10 @@ The following metrics are captured by the Kafka monitoring plugin :
 
 | Metric Name            | Description                                                                                                    |
 |------------------------|----------------------------------------------------------------------------------------------------------------|
-| In Sync Replicas Count    | Number of in-sync replicas for the partition.                                                                   |
-| Last Stable Offset Lag    | Lag between the last stable offset and the current offset for the partition.                                   |
-| Replicas Count          | Total number of replicas for the partition.                                                                     |
-| Under Replicated        | Indicates whether the partition is under-replicated.                                                            |
+| In Sync Replicas Count         | Number of in-sync replicas for the partition.                                                                   |
+| Last Stable Offset Lag         | Lag between the last stable offset and the current offset for the partition.                                   |
+| Replicas Count                 | Total number of replicas for the partition.                                                                     |
+| Under Replicated               | Indicates whether the partition is under-replicated.                                                            |
 | Under Min Isr            | Indicates whether the partition is currently under the minimum in-sync replica count.                           |
 | Current Offset         | The current offset is the offset of the next message that will be read from the partition.                     |
 | Log End Offset         | The log-end-offset is the offset of the last message that has been appended to the partition's log.            |
