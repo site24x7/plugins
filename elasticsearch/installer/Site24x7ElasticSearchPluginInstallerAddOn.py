@@ -276,9 +276,9 @@ def initiate(plugin_name, plugin_url):
         return
     
     if ssl_option.lower()=="y":
-        ssl_option="true"
+        ssl_option="YES"
     else:
-        ssl_option="false"
+        ssl_option="NO"
 
     args["ssl_option"]=ssl_option
 
@@ -309,8 +309,8 @@ def initiate(plugin_name, plugin_url):
 
     else:
         username_preference="false"
-        username=None
-        password=None
+        username="None"
+        password="None"
 
     args["username"]=username
     args["password"]=password
