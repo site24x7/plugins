@@ -47,6 +47,8 @@ class kafka:
     def cmd_lag_metric(self):
         
         out=self.execute_command(f"""bash {self.kafka_home}/bin/kafka-consumer-groups.sh --bootstrap-server {self.kafka_host}:{self.kafka_server_port}  --describe --group {self.kafka_group_name}""", True).decode()
+        if not out:
+            return {}
         cmd_metrics=out.split("\n")[2:-1]
         cols=out.split("\n")[1].split()
         for index,col in enumerate(cols):
@@ -217,7 +219,7 @@ if __name__=="__main__":
     kafka_jmx_port=9999
     kafka_server_port=9092
     kafka_topic_name="quickstart-events"
-    kafka_home="/home/user/kafka"
+    kafka_home="/home/users/kafka_home"
     kafka_group_name="console-consumer"
 
     import argparse
@@ -237,3 +239,4 @@ if __name__=="__main__":
 
     result=obj.metriccollector()
     print(json.dumps(result,indent=True))
+
