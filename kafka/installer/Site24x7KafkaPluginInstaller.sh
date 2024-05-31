@@ -77,7 +77,7 @@ fi
 
 echo ""
 echo -e "${GREEN}Downloding related installation files from our GitHub repository. ${RESET}"
-wget "https://raw.githubusercontent.com/site24x7/plugins/master/kafka/installer/Site24x7kafkaPluginInstallerAddOn.py" &> /dev/null
+wget "https://raw.githubusercontent.com/site24x7/plugins/master/kafka/installer/Site24x7KafkaPluginInstallerAddOn.py" &> /dev/null
 if [[ $? -ne 0 ]]; then
     echo -e "${RED} Download failed. Process exited.${RESET}"
     exit 1
