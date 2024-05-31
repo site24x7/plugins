@@ -37,7 +37,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python3 elasticsearch.py --host=<host name> --port=<port no> --node_name=<node name> --username=<elasticsearch username> --password=<elasticsearch password> --sslpath=<ssl file path> --ssl=<ssl option("YES/NO")>
+		python3 elasticsearch.py --host=<host name> --port=<port no> --username=<elasticsearch username> --password=<elasticsearch password> --sslpath=<ssl file path> --ssl_option=<("YES/NO")>
 
 ### Configurations
 
@@ -46,7 +46,6 @@ If you're not using Linux servers or want to install the plugin manually, follow
 	[elasticsearch]
 	host = <ELASTICSEARCH_HOST>
 	port = <ELASTICSEARCH_PORT>
-	node_name=<ELASTICSEARCH_NODE_NAME>
 	username=<ELASTICSEARCH_USERNAME>
 	password = <ELASTICSEARCH_PASSWORD>
 	sslpath= <ELASTICSEARCH_SSL_PATH>
