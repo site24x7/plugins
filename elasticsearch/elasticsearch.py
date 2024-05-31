@@ -480,4 +480,4 @@ if __name__=="__main__":
 
 
     result=obj.metriccollector()
-    print(json.dumps(result,indent=True))
+    print(json.dumps(result))
