@@ -116,10 +116,21 @@ class esk:
         self.logtypename=args.log_type_name
         self.logfilepath=args.log_file_path
 
-        if self.ssl_option.lower()=="true":
-            self.url="https://"+self.hostname+":"+str(self.port)
-        elif self.ssl_option.lower()=="false":
+        if self.username=="None":
+            self.username=None
+
+        if self.password=="None":
+            self.password=None
+
+        if self.ssl_option.lower()=="no":
+            self.ssl_option=False
             self.url="http://"+self.hostname+":"+str(self.port)
+
+        else:
+            self.url="https://"+self.hostname+":"+str(self.port)
+            self.ssl_option=True
+
+
 
         self.dictCounterValues = {}
         self.loadCounterValues()
