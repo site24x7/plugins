@@ -90,64 +90,53 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 
   
 ## Supported Metrics
-The following metrics are captured by the Kafka Broker monitoring plugin :
+The following metrics are captured by the Kafka monitoring plugin :
 
-- **Under Replicated Partitions**
 
-    The number of unreplicated partitions
-- **ISR Shrinks Per Sec**
+| Metric Name                                     | Description                                                                                           |
+|-------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| **Broker Topic Metrics**                        |                                                                                                       |
+| Bytes In Per Sec                               | Rate of bytes received by the broker per second.                                                      |
+| Bytes Out Per Sec                              | Rate of bytes sent by the broker per second.                                                          |
+| Bytes Rejected Per Sec                         | Rate of bytes rejected by the broker per second.                                                      |
+| Failed Fetch Requests Per Sec                  | Rate of fetch requests that failed per second.                                                        |
+| Failed Produce Requests Per Sec                | Rate of produce requests that failed per second.                                                      |
+| Fetch Message Conversions Per Sec              | Rate of fetch message conversions per second.                                                        |
+| Invalid Magic Number Records Per Sec           | Rate of records with invalid magic numbers per second.                                                |
+| Invalid Message Crc Records Per Sec            | Rate of records with invalid message CRC per second.                                                 |
+| Invalid Offset Or Sequence Records Per Sec     | Rate of records with invalid offsets or sequences per second.                                        |
+| Messages In Per Sec                           | Rate of messages received by the broker per second.                                                    |
+| No Key Compacted Topic Records Per Sec         | Rate of records in compacted topics with no key per second.                                            |
+| Produce Message Conversions Per Sec            | Rate of produce message conversions per second.                                                        |
+| Reassignment Bytes In Per Sec                  | Rate of bytes reassigned to the broker per second.                                                    |
+| Reassignment Bytes Out Per Sec                 | Rate of bytes reassigned from the broker per second.                                                  |
+| Replication Bytes In Per Sec                   | Rate of bytes replicated to the broker per second.                                                    |
+| Total Fetch Requests Per Sec                   | Total rate of fetch requests per second.                                                              |
+| Total Produce Requests Per Sec                 | Total rate of produce requests per second.                                                            |
+| At Min Isr Partition Count                     | Number of partitions with replicas currently at or below the minimum in-sync replicas.                |
+| Failed Isr Updates Per Sec                     | Rate of failed in-sync replica updates per second.                                                    |
+| Isr Shrinks Per Sec                            | Rate of in-sync replica shrinkage per second.                                                         |
+| Leader Count                                   | Number of leaders managed by the replication manager.                                                 |
+| Partition Count                                | Total number of partitions managed by the replication manager.                                       |
+| Partitions With Late Transactions Count        | Number of partitions with late transactions.                                                         |
+| Producer Id Count                              | Number of active producer IDs.                                                                         |
+| Reassigning Partitions                         | Number of partitions currently being reassigned.                                                      |
+| Under Min Isr Partition Count                  | Number of partitions with replicas currently under the minimum in-sync replicas.                      |
+| Under Replicated Partitions                    | Number of under-replicated partitions.                                                                |
+| Active Controller Count                        | Number of active controllers in the Kafka cluster.                                                    |
+| Offline Partitions Count                       | Number of partitions that are offline.                                                                |
+| Leader Election Rate                           | Rate of leader elections in the cluster.                                                              |
 
-    The rate at which the pool of in-sync replicas (ISRs) shrinks
+### Partition Metrics
 
-- **ISR Expands Per Sec**
-
-    The rate at which the pool of in-sync replicas (ISRs) expands
-- **Active Controller Count**
-
-    The number of active controllers in cluster
-
-- **Offline Partitions Count**
-
-    The number of offline partitions
-
-- **Leader Election Rate And Time Ms**
-
-    The leader election rate and latency
-
-- **Unclean Leader Elections Per Sec**
-
-    The number of “unclean” elections per second
-- **Total Time Ms**
-
-    The total time to serve the specified request
-
-- **Purgatory Size**
-
-    The number of requests waiting in producer purgatory
-- **Bytes In Per Sec**
-
-    The aggregate incoming byte rate
-- **Network Request Rate**
-
-    The average number of bytes sent per partition per request
-- **Network Error Rate**
-
-    The Error Rate of the network
-- **Total Broker Partitions**
-
-    The number of partitions on this broker. This should be mostly even across all brokers
-- **Young Generation GC Count**
-
-    The total count of young garbage collection processes executed by the JVM
-- **Young Generation GC Time**
-
-    The total amount of time (in milliseconds) the JVM has spent executing young garbage collection processes
-- **Old Generation GC Count**
-
-    The total count of old garbage collection processes executed by the JVM
-- **Old Generation GC Time**
-
-    The total amount of time (in milliseconds) the JVM has spent executing old garbage collection processes
-- **Log End Offset**
-
-    The log end offset is the offset of the last message written to a log.
+| Metric Name            | Description                                                                                                    |
+|------------------------|----------------------------------------------------------------------------------------------------------------|
+| In Sync Replicas Count    | Number of in-sync replicas for the partition.                                                                   |
+| Last Stable Offset Lag    | Lag between the last stable offset and the current offset for the partition.                                   |
+| Replicas Count          | Total number of replicas for the partition.                                                                     |
+| Under Replicated        | Indicates whether the partition is under-replicated.                                                            |
+| Under Min Isr            | Indicates whether the partition is currently under the minimum in-sync replica count.                           |
+| Current Offset         | The current offset is the offset of the next message that will be read from the partition.                     |
+| Log End Offset         | The log-end-offset is the offset of the last message that has been appended to the partition's log.            |
+| Lag                    | Lag represents the difference between the log-end-offset and the current offset, indicating consumption or replication lag. |
+ 
