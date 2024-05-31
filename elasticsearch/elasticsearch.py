@@ -458,7 +458,7 @@ if __name__=="__main__":
     port="9200"
     username=None
     password=None
-    ssl_option="False"
+    ssl_option="NO"
     cafile=None
     logs_enabled="True"
     log_type_name="Elasticsearch Slow Log"
