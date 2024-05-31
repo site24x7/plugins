@@ -16,7 +16,7 @@ METRICS_UNITS = { 'JVM garbage collector old generation time':'ms',
                   'Time spent on fetches':'ms',
                   "Time spent on queries":'ms',
                   "Total time on GET requests where the document was missing":'ms',
-                  "JVM heap memory committed":'KB'
+                  "JVM heap memory committed":'bytes'
 
                 }
 
