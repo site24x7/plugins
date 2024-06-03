@@ -31,7 +31,8 @@ Requires -Version 3.0
 #>
 
 param([string]$taskName)
-
+$Status = 1
+$status_msg = $null
 Function GetErrorMessage
 ([int]$errorcode)
 
@@ -104,6 +105,9 @@ $value_status=3
 
 if($status -eq "Disabled"){
 $value_status=1
+$Status=0
+$status_msg="The task is disabled"
+
 }
 
 if($status -eq "Queued"){
@@ -145,11 +149,26 @@ $mainJson.Add("version",$version)
 $mainJson.Add("displayname",$displayname)
 $mainJson.Add("heartbeat",$heartbeat)
 $mainJson.Add("data",$data)
+
 if($working_codes -contains $lastTaskResult)
 {
     
     $msg = GetErrorMessage($lastTaskResult)
-    $mainJson.Add("msg",($msg | Out-String))
+    if($Status -eq 0)
+    {
+
+       $mainJson.Add("status",0)
+
+    }
+    if($status_msg -ne $null)
+    {
+
+        $mainJson.Add("msg",$status_msg)
+
+    }
+    else{
+        $mainJson.Add("msg",($msg | Out-String))
+    }
 }
 else{
     $msg = GetErrorMessage($lastTaskResult)
@@ -158,4 +177,6 @@ else{
     $mainJson.Add("status",0)
 
 }
+
+
 $mainJson | ConvertTo-Json
