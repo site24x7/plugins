@@ -1,146 +1,245 @@
 #!/usr/bin/python3
-
 import json
-import platform
 import subprocess
+import re
 import traceback
 import os
 import argparse
 
-#if any impacting changes to this plugin kindly increment the plugin version here.
-PLUGIN_VERSION = "1"
-
-#Setting this to true will alert you when there is a communication problem while posting plugin data to server
-HEARTBEAT="true"
-
-METRIC_UNITS = {
-    "mount_point" : "path",
-    "disk_usage" : "%",
-    "cifs_version" : "version",
-    "shared_directory" : "path",
-    "server_ip_address" : "ip",
-    "domain" : "",
-    "mount_permission" : ""
+PLUGIN_VERSION=1
+HEARTBEAT=True
+METRICS_UNITS={
+    "Mounted Shares":"shares",
+    "Unmounted Shares":"shares"
 }
 
-ERROR_MSG=[]
+TABS=  {
+  "tabs": {
+    "Size Stats": {
+      "order": "1",
+      "tablist": [
+        "Size"
+      ]}}}
+# Get the current file path
+current_file_path =  os.path.dirname(os.path.abspath(__file__))
 
-MOUNT = ""
 
-result = {}
+class cifs:
 
-def get_cifs_mount_data (output, ipaddr,count,mpath):
-    data = {}
-
-    try:
-
-        output = ' '.join(output.split())
-        output = output.split(" ")
-        server = output[0].split(ipaddr)
-        data['Folder '+count+' Shared Directory'] = server[1]
-        data[mpath+' Disk Usage'] = int(output[4].replace('%', ''))
-
-    except Exception as e:
-        data['status'] = 0
-        data['msg'] = str(e)
-        #print(e)
+    def __init__(self):
         
-    return data
+        self.maindata={}
+        self.maindata['plugin_version'] = PLUGIN_VERSION
+        self.maindata['heartbeat_required']=HEARTBEAT
+        self.maindata['units']=METRICS_UNITS
+        self.mounts={}
+        self.mount_points=[]
+
+        
+    def execute_cmd(self, command):
+
+        result=subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return result
     
     
-def get_cifs_mount_info (output,count):
-    data = {}
-    try:
-        output = ' '.join(output.split())
-        output = output.split(" ")
+    def convert_to_gb(self,value, unit):
 
-        for out in output:
-            if "vers" in out or "domain" in out:
-                out = out.split(",")
-                for each in out:
+        if unit =="G":
+            return value
+        elif unit == "M":
+            return round(value / 1024,2)
+        elif unit == "T":
+            return round(value * 1024,2)
+        elif unit == "K":
+            return round(value / (1024 * 1024),2)
+        elif unit == "B":
+            return round(value / (1024 * 1024 * 1024),2)
+        else:
+            return round(value / (1024 * 1024 * 1024),2)
 
-                    if "vers" in each:
-                        each = each.split("=")    
-                        data['Cifs Version'] = str(each[1])
-
-                    if each=="rw":
-                        data['Folder '+count+' Mount Permission'] = "read/write"
-
-                    if each=="ro":
-                        data['Folder '+count+' Mount Permission'] = "read only"
-
-                    if "addr" in each:
-                        each = each.split("=")
-                        data['Folder ' +count+' Server IP Address'] = str(each[1])
-
-                    if "domain" in each:
-                        each = each.split("=")
-                        data['Folder '+count+' Domain'] = str(each[1])
-        
-    except Exception as e:
-        data['status'] = 0
-        data['msg'] = str(e)
     
-    return data
+    def rem(self, mount_data):
+        while '' in mount_data:
+            mount_data.remove('')
+        return mount_data
+    
+    def mount_status(self):
 
+        global file_exists, file_written, mounted, unmounted
+        mounted,unmounted="",""
+        file_written=False
+        file_exists=False
+        mount_status_file=os.path.join(current_file_path,"mount_points.txt")
 
-def metricCollector(MOUNT,folder):
-    data = {}
+        if os.path.isfile(mount_status_file):
+            try:
+                f = open(mount_status_file, "r")
+                mount_check=f.read().split('\n')
+                if "" in mount_check:
+                    mount_check=self.rem(mount_check)
+                file_exists=True
+            except:
+                pass
 
-    try:
+            set1 = set(mount_check)
+            set2 = set(self.mount_points)
 
-        os.chmod("/opt/site24x7/monagent/plugins/cifs/cifs_check.sh", 0o775)
-        proc = subprocess.Popen(['/opt/site24x7/monagent/plugins/cifs/cifs_check.sh ' + MOUNT], shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
-        top_output = proc.communicate()[0]
-        top_output=top_output.strip()
-        top_output=top_output.decode("utf-8")
-        data['Folder '+folder+' Mount Point'] = MOUNT
-        
-        if "@@@@@@" in top_output:
-            output = top_output.split("@@@@@@")
-            top_output = output[1]
-            output = output[0]
-
-        if '%%' in top_output:
-            data.update(get_cifs_mount_info(output,folder))
-            data.update(get_cifs_mount_data(top_output, data["Folder "+folder+' Server IP Address'],folder,MOUNT))
-            data["Folder "+folder+" Status"]= "Mounted"
             
-        elif '-1' in top_output:
-            data["Folder "+folder+" Status"]= "Unmounted"
+            mounted=set1.intersection(set2)
+            unmounted=list(set1 - set2)
 
-        elif '-2' in top_output:
-            data["Folder "+folder+" Status"]= "Server not reachable"
+            for i in mounted:
+                self.maindata[i+" State"]="Mounted"
 
-    except Exception as e:
-        data['status']=0
-        data['msg']=str(e)
+            for i in unmounted:
+                self.maindata[i+" State"]="Unmounted"
+
+            self.maindata["Mounted Shares"]=len(mounted)
+            self.maindata["Unmounted Shares"]=len(unmounted)
+            self.maindata["Shares Monitored"]=str(len(mount_check))+" Shares"
+
+            try:
+                if len(list(set2 - set1)) != 0:
+                    updated_mounts=set1.union(set2)
+                    f = open(mount_status_file, "w")
+                    f.write('\n'.join(updated_mounts))
+                    f.close()
+                    self.maindata["Shares Monitored"]=len(updated_mounts)
+                
+            except:
+                pass
+
+        else:
+            try:
+                f = open(mount_status_file, "a")
+                f.write('\n'.join(self.mount_points))
+                f.close()
+                file_written=True
+            except:
+                pass
+
+            self.maindata["Mounted Shares"]=len(self.mount_points)
+            self.maindata["Unmounted Shares"]=0
+            self.maindata["Shares Monitored"]=str(len(self.mount_points))+" Shares"
+
+
+        
+    def get_mounts(self):
+
+        try:
+            mount_cmd=["mount","-l", "-t", "cifs"]
+            result=subprocess.run(mount_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            cifs_mount_data=result.stdout.decode().split("\n")
+
+            for cifs_mount in cifs_mount_data:
+                mount_data=cifs_mount.split(" ")
+                mount_data=self.rem(mount_data)
+                if len(mount_data)!=0:
+                    info=mount_data[5][1:-1].split(',')
+                    if "rw" in info[0]:
+                        self.maindata[mount_data[2]+" Permission"]="read/write"
+                    elif "ro" in info[0]:
+                        self.maindata[mount_data[2]+" Permission"]="read only"
+                    if "vers" in info[2]:
+                        self.maindata["Cifs Version"]=info[2].split("=")[-1]
+
+                    self.mounts[mount_data[2]]=mount_data[0]
+                    self.mount_points.append(mount_data[2])
+            self.mount_status()
+            
+            return self.mounts
+        
+        except Exception as e:
+            self.maindata['status']=0
+            self.maindata['msg']=str(e)
     
-    return data
+
+    def basic_metrics(self, output, path):
+
+            subdata={}
+            data=output.split("\n")[0].split()
+
+            Total_Size, Used_Size, Avail_Size =data[1:4]
+            percent_used=data[4].strip("%")
+
+            Total_Size=self.convert_to_gb(float(Total_Size[:-1]),Total_Size[-1])
+            Used_Size=self.convert_to_gb(float(Used_Size[:-1]),Used_Size[-1])
+            Avail_Size=self.convert_to_gb(float(Avail_Size[:-1]),Avail_Size[-1])
 
 
-if __name__ == '__main__':
+            subdata['name']=path
+            subdata['disk_usage_percentage']=percent_used
+            subdata['total_size_gb']=Total_Size
+            subdata['used_size_gb']=Used_Size
+            subdata['avail_size_gb']=Avail_Size
+
+            return subdata
     
+
+    def metriccollector(self,):
+
+        try:
+        
+            cifs_cmd_1=["df","-hP"]
+            result=self.execute_cmd(cifs_cmd_1)
+
+            if result.returncode == 0 :
+                result=result.stdout.decode().split("\n")
+            else:
+                self.maindata['msg']=result.stderr.decode()
+                self.maindata['status']=0
+
+            cifs_mounts=self.get_mounts()
+            if cifs_mounts == {}:
+                self.maindata["status"]=0
+                self.maindata["msg"]="No cifs shares found."
+
+
+            
+            cifs_mount_data=[]
+
+            for key,values in cifs_mounts.items():
+                for i in result:
+                    if key in i:
+                        output_data=i
+                basic_data=self.basic_metrics(output_data,key)
+
+                if file_exists:
+                    if key in mounted:
+                        basic_data["status"]=1
+                    if key in unmounted:
+                        basic_data["status"]=0
+                elif file_written:
+                    basic_data["status"]=1
+                cifs_mount_data.append(basic_data)
+
+            self.maindata["Size"]=cifs_mount_data
+            mount_from={}
+            
+            for i,j in cifs_mounts.items():
+                mount_from[i+" Mounted From"]=j
+            
+            self.maindata.update(mount_from)
+            self.maindata.update(TABS)
+
+            if "status" in self.maindata:
+                if self.maindata['status']==0:
+                    return self.maindata
+                
+        except Exception as e:
+            self.maindata['status']=0
+            self.maindata['msg']=str(e)
+
+                    
+        return self.maindata
+            
+
+if __name__=="__main__":
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('--mount_folder', help="cifs mount point", type=str)
     parser.add_argument('--plugin_version', help="plugin version", type=str, default=PLUGIN_VERSION)
-    
     args = parser.parse_args()
     PLUGIN_VERSION=args.plugin_version
-    if args.mount_folder != None:
-        folders = args.mount_folder
-        folders=folders.split(",")
-        n=1
-        for i in folders:
-                result_collector = metricCollector(i,str(n))
-                n+=1
-                result.update(result_collector )
-    else:
-        result['status']=0
-        result['msg']="Please provide the CIFS mount points in cfg file"
-    
-    result['plugin_version'] = PLUGIN_VERSION
-    result['heartbeat_required']=HEARTBEAT
-    result['units'] = METRIC_UNITS
-    
-    print(json.dumps(result, indent=4, sort_keys=True))
+    cifs=cifs()
+    result=cifs.metriccollector()
+    print(json.dumps(result,indent=True))
