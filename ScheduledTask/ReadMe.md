@@ -16,13 +16,13 @@ Track the following metrics with the plugin:
 
 ## **Prerequisites**
 
-Download and install the latest version of the [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+Download and install the latest version of the [Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 ## **Plugin installation**
 
-1. Create a folder "ScheduledTask".
+1. Create a folder `ScheduledTask`.
 
-2. Download all the files in "ScheduledTask" folder and place it under the "ScheduledTask" directory.
+2. Download the files [ScheduledTask.ps1](https://github.com/site24x7/plugins/blob/master/ScheduledTask/ScheduledTask.ps1), [ScheduledTask.cfg](https://github.com/site24x7/plugins/blob/master/ScheduledTask/ScheduledTask.cfg) and place it under the `ScheduledTask` folder.
 
 ```
 wget https://raw.githubusercontent.com/site24x7/plugins/master/ScheduledTask/ScheduledTask.ps1
@@ -40,8 +40,8 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/ScheduledTask/Sch
 taskName="\OfficeSoftwareProtectionPlatform\SvcRestartTask"
 ```
 
-  **NOTE:**
-  To fill in the task name in the .cfg file, add the location of the task you want to monitor from the General tab of Windows Task Scheduler followed by    a slash and the task name.
+ **NOTE:**
+  To fill in the task name in the .cfg file, add the location of the task you want to monitor from the General tab of Windows Task Scheduler followed by a slash and the task name.
 
 
 4. To monitor multiple tasks, modify the .cfg file accordingly. 
@@ -56,10 +56,10 @@ taskName="\OfficeSoftwareProtectionPlatform\SvcRestartTask"
 taskName="\Microsoft\Windows\AppId\Work Room"
 ```
 
-5. Further move the folder "ScheduledTask" into the  Site24x7 Windows Agent plugin directory:
+5. Further move the folder `ScheduledTask` into the  Site24x7 Windows Agent plugin folder:
 
 ```
-    Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\ScheduledTask
+C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 ```
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.

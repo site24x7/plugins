@@ -1,62 +1,52 @@
 param([string]$queueName)
-$output = @{}
+$result=@{}
 
 $heartbeat = "true" 
 $version=1
+
+
 Function Get-Data($name)
 {
 
 try{
-  
-  $outdata=@{}
-  
-  $msgc=(Get-MsmqQueue -Name $name | select MessageCount).MessageCount
-  $msgb=(Get-MsmqQueue -Name $name | select BytesInQueue).BytesInQueue
-  $msgbjournal=(Get-MsmqQueue -Name $name | select BytesInJournal).BytesInJournal
-  $machinename=(Get-MsmqQueue -Name $name | select MachineName).MachineName
+$msmq=Get-MsmqQueue -QueueType Private -Name ("*"+$name+"*") | Select  @{Name="name";Expression={($_.QueueName -split "\\")[-1]}}, @{Name="Bytes_In_Queue"; Expression={$_.BytesInQueue}},  @{Name="Bytes_In_Journal"; Expression={$_.BytesInJournal}},  @{Name="Message_Count"; Expression={$_.MessageCount}},  @{Name="Maximum_Journal_Size_MB"; Expression={ [math]::Round($_.MaximumJournalSize/ 1MB,2)}},  @{Name="Maximum_Queue_Size_MB"; Expression={ [math]::Round($_.MaximumQueueSize/ 1MB,2)}}, Transactional
 
-  [int]$maxjournalsize=((Get-MsmqQueue -Name $name | select MaximumJournalSize).MaximumJournalSize)/ 1MB
-  [string]$maxjournalsize=$maxjournalsize
-  $maxjournalsize=$maxjournalsize+" Mb"
+$msmq | ForEach-Object{
 
-  [int]$maxqueuesize=((Get-MsmqQueue -Name $name | select MaximumQueueSize).MaximumQueueSize)/ 1MB
-  [string]$maxqueuesize=$maxqueuesize
-  $maxqueuesize=$maxqueuesize+" Mb"
+    $result.add($_.name+" Transactional",$_.Transactional)
 
-  $transactional=(Get-MsmqQueue -Name $name | select Transactional).Transactional
-
-
-  $outdata.Add("Message Count",($msgc))
-  $outdata.Add("Bytes In Queue",($msgb))
-  $outdata.Add("Bytes In Journal",($msgbjournal))
-  $outdata.Add("Machine Name",($machinename))
-  
-  $outdata.Add("Max Journal Size",($maxjournalsize))
-  $outdata.Add("Max Queue Size",($maxqueuesize))
-  
-  $outdata.Add("Transactional",($transactional))
-  $outdata.Add("Queue Name",($name))
-  
-  
-  $outdata
-  }
-  catch{
-
-  $outdata.add("status",0)
-  $outdata.add("msg", $Error[0])
-  $outdata
-
-  }
 }
 
+$msmq= $msmq | Select name, Bytes_In_Queue, Bytes_In_Journal, Message_Count, Maximum_Journal_Size_MB, Maximum_Queue_Size_MB
 
-$output.Add("heartbeat_required", $heartbeat)
-$data =Get-Data $queueName
-$output.Add("data", ($data))
-$output.Add("plugin_version", $version)
+$queues_count=$msmq.Count
+if ( $queues_count -gt 24){
+$queues_count=25
+}
+
+$msg_avg=($msmq | Measure-Object -Property Message_Count -Average).Average
+$bytes_in_queue_avg=($msmq | Measure-Object -Property Bytes_In_Queue -Average).Average
+$result.add("Message Count [average]",$msg_avg)
+$result.add("Bytes In Queue [average]",$bytes_in_queue_avg)
+$result.add("No of queues monitored",([string]$queues_count+" queues"))
+
+$result.add("queue",$msmq)
+
+}
+catch{
+
+$result.add("status",0)
+$result.add("msg", $Error[0])
+
+}
+}
+
+Get-Data $queueName
+$result.Add("heartbeat_required", $heartbeat)
+$result.Add("plugin_version", $version)
 $units=@{}
-$units.Add("Bytes In Queue","Bytes")
-$units.Add("Bytes In Journal","Bytes")
-$output.Add('units',$units)
+$units.Add("Bytes In Queue [average]","Bytes")
+$units.Add("Message Count [average]","messages")
+$result.Add('units',$units)
 
-$output | ConvertTo-Json
+$result | ConvertTo-Json -Compress
