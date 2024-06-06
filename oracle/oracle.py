@@ -68,6 +68,7 @@ class oracle:
     def connect(self, dsn):
         try:
             import oracledb
+            oracledb.init_oracle_client()
             conn = oracledb.connect(user=self.username, password=self.password, dsn=dsn)
             self.c = conn.cursor()
             return (True, "Connected")
