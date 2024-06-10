@@ -29,7 +29,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 	```bash
        python3 --host "hostname" --port "port no" --api_key "api key" --secret_key "api secret key"
 	 ```
-- After the above command with parameters gives the expected output, please configure the relevant parameters in the oracle.cfg file.
+- After the above command with parameters gives the expected output, please configure the relevant parameters in the emqx.cfg file.
 	```
     [emqx]
     host="localhost"
