@@ -476,4 +476,4 @@ if __name__=="__main__":
     obj=oracle(args)
 
     result=obj.metriccollector()
-    print(json.dumps(result,indent=True))
+    print(json.dumps(result))
