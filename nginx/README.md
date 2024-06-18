@@ -21,7 +21,6 @@ On Linux servers, execute the command below in the terminal to run an installer 
 	```
 	location /nginx_status {
 	    stub_status;
-    	
 	}
 	```
 3. Save and close the /etc/nginx/nginx.conf file.
@@ -49,12 +48,12 @@ On Linux servers, execute the command below in the terminal to run an installer 
 
 ## Plugin Installation  
 
-- Once the agent is installed on the server, create a directory named "nginx".
+- Once the agent is installed on the server, create a directory named `nginx`.
 
 		mkdir nginx
   		cd nginx/
       
-- Download all the files in the "nginx" folder and place it under the "nginx" directory.
+- Download all the files and place it under the `nginx` directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/nginx.py && sed -i "1s|^.*|#! $(which python3)|" nginx.py
   		wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/nginx.cfg
@@ -78,7 +77,7 @@ On Linux servers, execute the command below in the terminal to run an installer 
 		log_type_name = "Nginx Logs"
 		log_file_path = "/var/log/nginx/access*"
 	
-- Once the configuration done, move the "nginx" directory under the Site24x7 Linux Agent plugin directory: 
+- Once the configuration done, move the `nginx` directory under the Site24x7 Linux Agent plugin directory: 
 
 		mv nginx /opt/site24x7/monagent/plugins/
 
@@ -92,18 +91,12 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 
 ## Supported Metrics
 
-Name		            	| Description
----         		   	|   ---
-Currently active client connections	|	Current active client connections including waiting connections.
-Number of connections where nginx is reading the request header	|	The current number of connections where nginx is reading the request header.
+Name		            							| Description
+---         		   							|   ---
+Currently active client connections						|	Current active client connections including waiting connections.
+Number of connections where nginx is reading the request header			|	The current number of connections where nginx is reading the request header.
 Number of connections where nginx is writing the response back to the client	|	The current number of connections where nginx is writing the response back to the client.
-Number of idle client connections waiting for a request	|	The current number of idle client connections waiting for a request.
-Count of client requests	|	Client request count in nginx.
-Count of successful client connections	|	Successful client connection in nginx.
-Count of dropped connections	|	Dropped connections count.
-
-
-
-
-
-
+Number of idle client connections waiting for a request				|	The current number of idle client connections waiting for a request.
+Count of client requests							|	Client request count in nginx.
+Count of successful client connections						|	Successful client connection in nginx.
+Count of dropped connections							|	Dropped connections count.
