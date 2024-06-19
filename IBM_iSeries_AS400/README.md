@@ -16,8 +16,8 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
 
 - Create a directory named `IBM_iSeries_AS400`.
 
- 		mkdir gpu_monitoring
-  		cd gpu_monitoring/
+ 		mkdir IBM_iSeries_AS400
+  		cd IBM_iSeries_AS400/
 		
 - Download the files "IBM_iSeries_AS400.sh" , "As400DataCollector.java", "json-20140107.jar", "jt400.jar" and place it under the "IBM_iSeries_AS400" directory using following commands:
   	```
