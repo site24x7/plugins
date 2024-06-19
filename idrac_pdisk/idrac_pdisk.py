@@ -135,5 +135,5 @@ if __name__ == '__main__':
     
     result['plugin_version'] = args.plugin_version
     result['heartbeat_required'] = args.heartbeat_required
-    print(json.dumps(result, indent=2, sort_keys=True))
+    print(json.dumps(result))
     

@@ -9,7 +9,7 @@
 - Execute the following command in your server to install snmpwalk: 
 
 	- On Centos/RedHat machines you can install snmpwalk using Yum:
-   
+ 
   			yum install net–snmp–utils
 
   	- On Ubuntu install snmpwalk using apt-get:
@@ -23,11 +23,11 @@
 - Test SNMP walk for iDrac:
   
   - command:
-  
+
   			snmpwalk -v <version> -c <community-name> <OID>
   - Example:
   
-  			snmpwalk -v 2c -c public 10.19.1.0 1.3.6.1.4.1.674.10892.5.4.600.50.1.5
+  			snmpwalk  -v  2c  -c  public  10.19.1.0  1.3.6.1.4.1.674.10892.5.4.600.50.1.5
 		
 #### Windows
 
