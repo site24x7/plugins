@@ -173,7 +173,8 @@ get_plugin_data() {
     echo " $(tput setaf 3)$(tput bold)Note$(tput sgr0): The username and password you provide will be securely encrypted in the agent and will not be stored in any of the Site24x7 databases."
     echo
     
-    tput setaf 4
+    tput setaf 6
+    tput bold
     read -r -p  "  Enter the required nginx_status_url( default: $default_nginx_status_url ): " nginx_status_url
     if [ -z $nginx_status_url ] ; then
         nginx_status_url=$default_nginx_status_url
@@ -286,13 +287,13 @@ add_conf() {
     echo
     #echo "before"
     #cat $cfg_file
-    output=$(sed -i "/nginx_status_url*/c\nginx_status_url = \"$nginx_status_url\""  "$cfg_file")
+    output=$(sed -i "/^nginx_status_url*/c\nginx_status_url = \"$nginx_status_url\""  "$cfg_file")
     error_handler $? $output
     username=$(echo "$username" | sed 's/\\/\\\\/g')
-    output=$(sed -i "/username*/c\username = \"$username\"" $cfg_file)
+    output=$(sed -i "/^username*/c\username = \"$username\"" $cfg_file)
     error_handler $? $output
     password=$(echo "$password" | sed 's/\\/\\\\/g')
-    output=$(sed -i "/password*/c\password = \"$password\""  $cfg_file)
+    output=$(sed -i "/^password*/c\password = \"$password\""  $cfg_file)
     error_handler $? $output
     #echo "after"
     #cat $cfg_file
