@@ -215,7 +215,8 @@ get_plugin_data() {
     echo " $(tput setaf 3)$(tput bold)Note$(tput sgr0): The password you provide will be securely encrypted in the agent and will not be stored in any of the Site24x7 databases."
     echo
     
-    tput setaf 4
+    tput setaf 6
+    tput bold
     read -r -p  "  Enter the Redis host (default: $default_host): " Redis_host
     if [ -z $Redis_host ] ; then
         Redis_host=$default_host
