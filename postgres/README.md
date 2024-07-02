@@ -27,12 +27,12 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
 
 ### Plugin Installation  
 
-- Create a directory named "postgres".
+- Create a directory named `postgres`.
 
 		mkdir postgres
   		cd postgres/
   
-- Download all the files in the "postgres" folder and place it under the "postgres" directory.
+- Download all the files and place it under the `postgres` directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.cfg
@@ -41,7 +41,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
 
 		pip3 install psycopg2-binary
   
-- Ensure **`pg_read_all_stats`** permission is provided to the user. For example, create a user `site24x7` with password `site24x7` and provide `pg_read_all_stats` permission to the `site24x7` user created.
+- Ensure **pg_read_all_stats** permission is provided to the user. For example, create a user `site24x7` with password `site24x7` and provide `pg_read_all_stats` permission to the `site24x7` user created.
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 		python3 postgres.py  --host "ip-address" --port "port-no" --username "username" --password "password" 
@@ -60,7 +60,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
   #### Linux
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the postgres.py script.
-- Move the directory "postgres" under the Site24x7 Linux Agent plugin directory: 
+- Move the directory `postgres` under the Site24x7 Linux Agent plugin directory: 
 
 		mv postgres /opt/site24x7/monagent/plugins/
   #### Windows 
@@ -68,7 +68,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
 
-- Move the folder "postgres" under Site24x7 Windows Agent plugin directory: 
+- Move the folder `postgres` under Site24x7 Windows Agent plugin directory: 
 
 		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
 

@@ -179,7 +179,8 @@ get_plugin_data() {
     echo
 
     
-    tput setaf 4
+    tput setaf 6
+    tput bold
     read -r -p  "  Enter the required URL( default: $default_url ): " url
     if [ -z $url ] ; then
         url=$default_url
