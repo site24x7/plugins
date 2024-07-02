@@ -167,7 +167,7 @@ class oracle:
                 else:tbs_dict['Used_Space']=0
 
                 if row[3]:tbs_dict['Tablespace_Size']=int(row[3])*int(db_block_size)/1024/1024
-                else:tbs_dict['Tablespace Size']=0
+                else:tbs_dict['Tablespace_Size']=0
 
                 if row[4]:tbs_dict['Used_Percent']=row[4]
                 else:tbs_dict['Used_Percent']=0
