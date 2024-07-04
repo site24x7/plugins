@@ -45,30 +45,29 @@ If you're not using Linux servers or want to install the plugin manually, follow
 ---
 ### Plugin Installation 
 
-- Create a directory "mysql_monitoring".
-- Copy and execute the below command under the "mysql_monitoring" folder to download the pymysql module.
-	
-		wget https://github.com/site24x7/plugins/raw/master/mysql_monitoring/pymysql/pymysql.zip && unzip pymysql.zip && rm pymysql.zip
+- Create a directory `mysql_monitoring`.
 		
-- Download  the below files in "mysql_monitoring" folder and place it under the "mysql_monitoring" directory.
+- Download  the below files and place it under the `mysql_monitoring` directory.
 
+		wget https://github.com/site24x7/plugins/raw/master/mysql_monitoring/pymysql/pymysql.zip && unzip pymysql.zip && rm pymysql.zip
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/mysql_monitoring.py && sed -i "1s|^.*|#! $(which python3)|" mysql_monitoring.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/mysql_monitoring.cfg
+  
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python mysql_monitoring.py --host=<host_name> --port=<port_number> --username=<username> --password=<password> 
+		python mysql_monitoring.py --host "localhost" --port "3306" --username "username" --password "password" 
 
 - After above command with parameters gives expected output, please configure the relevant parameters in the mysql_monitoring.cfg file.
 
 		[MySQL]
-		host = <hostname>
-		port = <port>
-		username = <username>
-		password = <password>
-		logs_enabled=<logenabled>
-		log_type_name=<logtypename>
-		log_file_path=<logfilepath>
+		host = "localhost"
+		port = "3306"
+		username = "root"
+		password = ""
+		logs_enabled=true
+		log_type_name="Mysql General Logs"
+		log_file_path="/var/log/mysql/error.log"
 
 - Applog is supported for MySQL Monitoring. To enable applog for this plugin, configure logs_enabled=true and configure log_type_name and log_file_path as need.
 
