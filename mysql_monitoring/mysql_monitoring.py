@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/python3
 """
 Site24x7 MySql table stats Plugin
 """
@@ -296,14 +296,22 @@ class MySQL(object):
                     cursor.execute(VERSION_QUERY)
                     result = cursor.fetchone()
                     data['mysql_version'] = result[0]
+                    version=result[0].split(".")
+                    if int(version[0]) >=8:
+                         slave_query="SHOW REPLICA STATUS"
+                         master_query="SHOW BINARY LOG STATUS"
+                    else:
+                         slave_query='SHOW SLAVE STATUS'
+                         master_query='SHOW MASTER STATUS'
+                         
                 except pymysql.OperationalError as message:
                     traceback.print_exc()
                     return data
                 
-                cursor.execute('SHOW SLAVE STATUS')
+                cursor.execute(slave_query)
                 myresult_slave_key=cursor.description
                 myresult_slave=cursor.fetchall()
-                cursor.execute('SHOW MASTER STATUS')
+                cursor.execute(master_query)
                 myresult_master=cursor.fetchall()
                 if myresult_master and myresult_slave:
                         data['mysql_node_type']='Master & slave'
@@ -456,4 +464,4 @@ if __name__ == "__main__":
     args=parser.parse_args()
     mysql_plugins = MySQL(args)
     result = mysql_plugins.metricCollector()
-    print(json.dumps(result, indent=4, sort_keys=True))
+    print(json.dumps(result))
