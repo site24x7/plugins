@@ -291,12 +291,12 @@ class oracle:
                 "Invalid Index Count":"""SELECT COUNT(*) AS invalid_index_count FROM dba_indexes WHERE status = 'INVALID'"""
                     },
             "Tablespace Queries":{
-                "Tablespace Metrics Query":"""  SELECT b.TABLESPACE_NAME as "dba_tablespace", d.* , b.CONTENTS, b.LOGGING, b.STATUS FROM dba_tablespace_usage_metrics d FULL JOIN dba_tablespaces b ON d.TABLESPACE_NAME = b.TABLESPACE_NAME where ROWNUM <= 25""",
-                "Tablespace Datafile Query":""" SELECT TABLESPACE_NAME, FILE_NAME, (BYTES/1024/1024) , BLOCKS, AUTOEXTENSIBLE, (MAXBYTES/1024/1024), (MAXBLOCKS/1024/1024), INCREMENT_BY, (USER_BYTES/1024/1024), USER_BLOCKS FROM DBA_DATA_FILES where ROWNUM <= 25"""
+                "Tablespace Metrics Query":"""  SELECT b.TABLESPACE_NAME as "dba_tablespace", d.* , b.CONTENTS, b.LOGGING, b.STATUS FROM dba_tablespace_usage_metrics d FULL JOIN dba_tablespaces b ON d.TABLESPACE_NAME = b.TABLESPACE_NAME FETCH FIRST 25 ROWS ONLY""",
+                "Tablespace Datafile Query":""" SELECT TABLESPACE_NAME, FILE_NAME, (BYTES/1024/1024) , BLOCKS, AUTOEXTENSIBLE, (MAXBYTES/1024/1024), (MAXBLOCKS/1024/1024), INCREMENT_BY, (USER_BYTES/1024/1024), USER_BLOCKS FROM DBA_DATA_FILES FETCH FIRST 25 ROWS ONLY"""
             },
             "FRA Query":"""SELECT name AS "FRA File Dest", space_limit / (1024 * 1024) AS "FRA Space Limit", space_used / (1024 * 1024) AS "FRA Space Used", space_reclaimable / (1024 * 1024) AS "FRA Space Reclaimable", number_of_files AS "FRA Number of Files" FROM V$RECOVERY_FILE_DEST""",
             "Waits Query":"""select n.name , round(m.time_waited/100,3) time_waited, m.wait_count from v$eventmetric m, v$event_name n where m.event_id=n.event_id and n.name in ( 'free buffer waits' , 'buffer busy waits', 'latch free', 'library cache pin', 'library cache load lock', 'log buffer space', 'library object reloads count', 'enqueue waits', 'db file parallel read', 'db file parallel write', 'control file sequential read', 'control file parallel write', 'write complete waits', 'log file sync', 'sort segment request', 'direct path read', 'direct path write')""",
-            "PDB Query":"""SELECT a.PDB_NAME, a.PDB_ID,  a.STATUS, b.OPEN_MODE, b.RESTRICTED, b.OPEN_TIME, b.total_size/1024/1024, b.BLOCK_SIZE FROM DBA_PDBS a join V$PDBS b on a.PDB_NAME=b.NAME where ROWNUM <= 25""",
+            "PDB Query":"""SELECT a.PDB_NAME, a.PDB_ID,  a.STATUS, b.OPEN_MODE, b.RESTRICTED, b.OPEN_TIME, b.total_size/1024/1024, b.BLOCK_SIZE FROM DBA_PDBS a join V$PDBS b on a.PDB_NAME=b.NAME FETCH FIRST 25 ROWS ONLY""",
             "DB Query":"""select cdb as "CDB", open_mode as "Open Mode", TO_CHAR(created, 'YYYY-MM-DD HH24:MI:SS') AS "Created Date", log_mode as "Log Mode", switchover_status as "Switchover Status", protection_mode as "Protection Mode", current_scn as "Current SCN" from v$database"""
                 }
 
