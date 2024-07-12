@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import json
 import argparse
@@ -37,9 +37,13 @@ class Jenkins(object):
      
     def metrics_collector(self):
         try:
-            url="http://"+self.host+":"+self.port+"/metrics/"+self.apikey+"/metrics?pretty=true"
+            import ssl
+            context = ssl.create_default_context()
+            context.check_hostname = False
+            context.verify_mode = ssl.CERT_NONE
+            url="https://"+self.host+":"+self.port+"/metrics/"+self.apikey+"/metrics?pretty=true"
             auth_handler = urlconnection.HTTPBasicAuthHandler((urlconnection.HTTPPasswordMgrWithDefaultRealm()). add_password(None, url, self.username, self.password) )
-            response = (urlconnection.urlopen(url)).read().decode('UTF-8')
+            response = (urlconnection.urlopen(url,context=context)).read().decode('UTF-8')
             response=json.loads(response)
             data=response["gauges"]
             self.resultjson["jobs_count"]=data["jenkins.job.count.value"]["value"]
@@ -64,8 +68,8 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
     parser.add_argument('--port',help="Port",nargs='?', default= "8080")
-    parser.add_argument('--username',help="username")
-    parser.add_argument('--password',help="Password")
+    parser.add_argument('--username',help="user")
+    parser.add_argument('--password',help="password")
     parser.add_argument('--apikey' ,help="apikey",nargs='?', default= None)
     parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=1)
     parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=True)
