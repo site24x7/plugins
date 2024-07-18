@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#!/usr/bin/python3
 """
 Site24x7 MySql table stats Plugin
 """
@@ -299,10 +299,10 @@ class MySQL(object):
                     version=result[0].split(".")
                     if int(version[0]) >=8:
                          slave_query="SHOW REPLICA STATUS"
-                         master_query="SHOW BINARY LOG STATUS"
+                         #master_query="SHOW BINARY LOG STATUS"
                     else:
                          slave_query='SHOW SLAVE STATUS'
-                         master_query='SHOW MASTER STATUS'
+                    master_query='SHOW MASTER STATUS'
                          
                 except pymysql.OperationalError as message:
                     traceback.print_exc()
@@ -311,7 +311,15 @@ class MySQL(object):
                 cursor.execute(slave_query)
                 myresult_slave_key=cursor.description
                 myresult_slave=cursor.fetchall()
-                cursor.execute(master_query)
+                try:
+                    cursor.execute(master_query)
+                except pymysql.ProgrammingError as e:
+                    if int(version[0]) >=8:
+                        cursor.execute('SHOW BINARY LOG STATUS')
+                    else:
+                        data["msg"] = repr(e)
+                        data["status"]=0
+                         
                 myresult_master=cursor.fetchall()
                 if myresult_master and myresult_slave:
                         data['mysql_node_type']='Master & slave'
@@ -324,6 +332,7 @@ class MySQL(object):
                     data['mysql_node_type']='Slave'
                 else:
                         data['mysql_node_type']='Standalone'
+
                         
                 json_file={} 
                 #MySQL Replication

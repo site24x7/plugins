@@ -17,7 +17,11 @@ If you're not using Linux servers or want to install the plugin manually, follow
 ### Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent/Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
-- Install python with version>=3.7 
+- Install python with version>=3.7
+- Install pymysql using the following command,
+
+		pip3 install pymysql
+  
 - To create a MySQL user:
 
 		CREATE USER username@hostname IDENTIFIED BY 'password';
@@ -71,9 +75,16 @@ If you're not using Linux servers or want to install the plugin manually, follow
 
 - Applog is supported for MySQL Monitoring. To enable applog for this plugin, configure logs_enabled=true and configure log_type_name and log_file_path as need.
 
-- Place the "mysql_monitoring" folder under Site24x7 Linux Agent plugin directory : 
+#### Linux
+- Place the `mysql_monitoring` folder under Site24x7 Linux Agent plugin directory : 
 
-		Linux             ->   /opt/site24x7/monagent/plugins/mysql_monitoring
+		mv mysql_monitoring /opt/site24x7/monagent/plugins
+#### Windows
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
+
+- Move the folder `mysql_monitoring` under Site24x7 Windows Agent plugin directory: 
+
+		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
 ---
 
 ### Failover monitoring supported
