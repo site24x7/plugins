@@ -33,21 +33,26 @@ If you're not using Linux servers or want to install the plugin manually, follow
 
 ### Installation  
 
-- Create a directory named "oracle".
+- Create a directory named `oracle`.
+
+	```
+ 	mkdir oracle
+ 	cd oracle/
+ 	```
+ 
 - Install the **oracledb** python module.
 	```
 	pip3 install oracledb
 	```
-
 	
-- Download the below files in the "oracle" folder and place it under the "oracle" directory.
+- Download the below files [oracle.cfg](https://github.com/site24x7/plugins/blob/master/oracle/oracle.cfg) and [oracle.py](https://github.com/site24x7/plugins/blob/master/oracle/oracle.py) place it under the `oracle` directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle/oracle.py && sed -i "1s|^.*|#! $(which python3)|" oracle.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle/oracle.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 	```
-	 python3 oracle.py --hostname=<name of the host> --port=<port> --sid=<SID> --username=<USERNAME> --password=<PASSWORD> --oracle_home=<ORACLE_HOME>
+	 python3 oracle.py --hostname "localhost" --port "1521" --sid "SID" --username "USERNAME" --password "PASSWORD" --oracle_home "ORACLE_HOME"
 	 ```
 - After the above command with parameters gives the expected output, please configure the relevant parameters in the oracle.cfg file.
 	```
@@ -62,15 +67,15 @@ If you're not using Linux servers or want to install the plugin manually, follow
 		oracle_home = "/opt/oracle/product/19c/dbhome_1/"
 	```	
 #### Linux
-- Place the "oracle" under the Site24x7 Linux Agent plugin directory:
+- Place the `oracle` under the Site24x7 Linux Agent plugin directory:
 
-        Linux    ->   /opt/site24x7/monagent/plugins/oracle
+        mv oracle /opt/site24x7/monagent/plugins
 #### Windows
-- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
-https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
--  Further, move the folder "OracleCore" into the  Site24x7 Windows Agent plugin directory:
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
-        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\oracle
+-  Further, move the folder `oracle` into the  Site24x7 Windows Agent plugin directory:
+
+        C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\oracle
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.

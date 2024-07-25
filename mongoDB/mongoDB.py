@@ -7,7 +7,8 @@ import time
 import json
 import urllib.parse
 import os
-
+import warnings
+warnings.filterwarnings("ignore")
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
