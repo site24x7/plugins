@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 
 import json
@@ -52,8 +52,7 @@ METRIC_UNITS = {
     "server.http.kbytes_in" : "kibibytes/second",
     "server.http.kbytes_out" : "kibibytes/second",
     "server.ftp.requests" : "requests/second",
-    "server.ftp.errors" : "errors/second",
-    "server.ftp.kbytes_in" : "kibibytes/second",
+
     "server.ftp.kbytes_out" : "kibibytes/second",
     "server.other.requests" : "requests/second",
     "server.other.errors" : "errors/second",
@@ -124,7 +123,7 @@ def collect_data():
     try:
         output = get_squid_counter()
         if not output[0]:
-            if os.path.exists('/squid_metrics.json'):
+            if os.path.exists(FILE_PATH):
                 os.remove(FILE_PATH)
             result['status'] = 0
             result['msg'] = output[1]
@@ -135,6 +134,9 @@ def collect_data():
         
             else:
                 previous_data = get_output()
+                print("3333333333333",previous_data)
+                with open(FILE_PATH, 'w') as file:
+                    file.write(json.dumps(previous_data))
                 time.sleep(20)
                 
             current_data = get_output()
@@ -166,4 +168,4 @@ if __name__ == '__main__':
     result_json['heartbeat_required'] = HEARTBEAT
     result_json['units'] = METRIC_UNITS
     
-    print(json.dumps(result_json, indent=4, sort_keys=False))
+    print(json.dumps(result_json))
