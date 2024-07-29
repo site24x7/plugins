@@ -134,7 +134,6 @@ def collect_data():
         
             else:
                 previous_data = get_output()
-                print("3333333333333",previous_data)
                 with open(FILE_PATH, 'w') as file:
                     file.write(json.dumps(previous_data))
                 time.sleep(20)
