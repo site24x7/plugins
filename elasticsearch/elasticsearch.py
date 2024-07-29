@@ -248,14 +248,6 @@ class esk:
             self.maindata['msg']=str(herror)
             self.maindata['status']=0
             return False
-        except requests.exceptions.ReadTimeout as errrt: 
-            self.maindata['msg']=f"Timeout Error"
-            self.maindata['status']=0
-            return False
-        except requests.exceptions.ConnectionError as conerr: 
-            self.maindata['msg']=f"Connection Error"
-            self.maindata['status']=0
-            return False
         except Exception as e:
             self.maindata['msg']=str(e)
             self.maindata['status']=0
