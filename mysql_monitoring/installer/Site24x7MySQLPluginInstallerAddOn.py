@@ -31,7 +31,8 @@ def establish_db_connection(hostname, sys_username, sys_password, port):
     try:
         connection = pymysql.connect(host=hostname,user=sys_username,passwd=sys_password,port=int(port))
         return connection
-    except pymysql.Error as e:
+    except Exception as e:# pymysql.Error as e:
+        print("establish_db_connection"+str(e))
         return False
 
 def multi_config(read_file, write_file):
@@ -276,7 +277,11 @@ def initiate(plugin_name, plugin_url):
     print("")
     print(colors.BLUE+"Checking the admin user connection"+colors.RESET)
 
-    db=establish_db_connection(hostname,sys_username,sys_password,port)
+    try:
+        db=establish_db_connection(hostname,sys_username,sys_password,port)
+    except Exception as e:
+        print(colors.RED+str(e)+colors.RESET)
+
     #import pymysql
     #db = pymysql.connect(host=hostname,user=sys_username,passwd=sys_password,port=int(port))
     if not db:
@@ -337,6 +342,7 @@ def initiate(plugin_name, plugin_url):
         print(colors.GREEN+"User privileges granted successfully."+colors.RESET)
     except Exception as e:
         print(colors.RED+str(e)+colors.RESET)
+        return
 
     shutil.copyfile("pymysql.zip",plugins_temp_path+"mysql_monitoring/pymysql.zip")
     
