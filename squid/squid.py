@@ -140,6 +140,9 @@ def collect_data():
                 
             current_data = get_output()
             result = calculate_persecond(previous_data, current_data)
+            with open(FILE_PATH, 'w') as file:
+                    file.write(json.dumps(current_data))
+            
                 
     except Exception as e:
         result["status"] = 0
