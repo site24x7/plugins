@@ -19,8 +19,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/ins
 
 - Download the below files and place it under the "check_updates" directory
 
- 		 wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.py && sed -i "1s|^.*|#! $(which python3)|" check_updates.py
- 		 wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.cfg
+ 		mkdir -p check_updates && wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.py && sed -i "1s|^.*|#! $(which python3)|" check_updates.py && wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.cfg && mv check_updates.py check_updates.cfg check_updates
   
   
 - Execute the script manually using the below command to check for valid JSON output.
