@@ -42,7 +42,7 @@
 - Provide your IBM MQ configurations in ibmdb2.cfg file.
 	```
 	  [ibmdb2]
-	  host 	= "localhost
+	  host 	= "localhost"
 	  port 	= "50000"
 	  username	= "username"
 	  password 	= "password"
