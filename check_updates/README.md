@@ -15,17 +15,9 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/ins
 ---
 ##### Linux 
 
-- Create a directory "check_updates".
+- Just execute below command to download and install the check_update plugin
 
-- Download the below files and place it under the "check_updates" directory
-
- 		 wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.py && sed -i "1s|^.*|#! $(which python3)|" check_updates.py
- 		 wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.cfg
-  
-  
-- Execute the script manually using the below command to check for valid JSON output.
-
-		python3 check_updates.py
+ 		mkdir -p check_updates && wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.py && sed -i "1s|^.*|#! $(which python3)|" check_updates.py && wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.cfg && mv check_updates.py check_updates.cfg check_updates
 
 - Move the directory "check_updates" into the Site24x7 Linux Agent plugin directory - `/opt/site24x7/monagent/plugins/check_updates`
 	
@@ -38,3 +30,6 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/ins
 - Upgrades Available For Installed Packages
 - Security Updates
 - Packages to be Updated
+
+### Package details  
+  Site24x7 web client > check_update plugin monitor > select AppLog tab > User can choose logtype as "Linux Pending Updates" to check the details of packages which have been not updated. 
