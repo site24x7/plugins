@@ -29,14 +29,10 @@ If you're not using Linux servers or want to install the plugin manually, follow
 		mkdir elasticsearch
   		cd elasticsearch/
   
-- Download all the files [elasticsearch.cfg](https://github.com/site24x7/plugins/blob/master/elasticsearch/elasticsearch.cfg),[elasticsearch.py](https://github.com/site24x7/plugins/blob/master/elasticsearch/elasticsearch.py) and place it under the `elasticsearch` directory.
+- Download all the files [elasticsearch.cfg](https://github.com/site24x7/plugins/blob/master/elasticsearch/elasticsearch.cfg), [elasticsearch.py](https://github.com/site24x7/plugins/blob/master/elasticsearch/elasticsearch.py) and place it under the `elasticsearch` directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.cfg
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.py
-
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the elasticsearch.py script.
-		
-- Since it's a python plugin, to run in windows server please follow the steps given [here](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers), remaining configuration steps are exactly the same. 
 
 
 - Execute the below command with appropriate arguments to check for the valid json output:
@@ -57,7 +53,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 	```	
 #### Linux
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the ibmdb2.py script.
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the elasticsearch.py script.
 
 - Move the directory `elasticsearch` under the Site24x7 Linux Agent plugin directory: 
 
