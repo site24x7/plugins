@@ -15,7 +15,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/ins
 ---
 ##### Linux 
 
-- Just execute below command to Download and install the check_update plugin
+- Just execute below command to download and install the check_update plugin
 
  		mkdir -p check_updates && wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.py && sed -i "1s|^.*|#! $(which python3)|" check_updates.py && wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.cfg && mv check_updates.py check_updates.cfg check_updates
   
@@ -35,3 +35,6 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/ins
 - Upgrades Available For Installed Packages
 - Security Updates
 - Packages to be Updated
+
+### Package details  
+  Site24x7 web client > check_update plugin monitor > select AppLog tab > User can choose logtype as "Linux Pending Updates" to check the details of packages which have been not updated. 
