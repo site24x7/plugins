@@ -12,11 +12,9 @@ Follow the below steps to configure the Systemd plugin and the monitoring metric
 
 ### Plugin installation
 
-- Create a folder "systemd".
+- Just execute below command to download and install the systemd plugin
 
-- Download the file in "systemd" folder and place it under the "systemd" directory
-
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/systemd/systemd.py
+		  mkdir -p systemd && wget https://raw.githubusercontent.com/site24x7/plugins/master/systemd/systemd.py && sed -i "1s|^.*|#! $(which python3)|" systemd.py && wget https://raw.githubusercontent.com/site24x7/plugins/master/systemd/systemd.cfg && mv systemd.py systemd.cfg systemd
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the systemd.py script.
 
