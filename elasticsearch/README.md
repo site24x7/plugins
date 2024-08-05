@@ -19,11 +19,14 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/ins
 ## Standard Installation
 If you're not using Linux servers or want to install the plugin manually, follow the steps below.
 
+### Prerequisites
 
+- Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Python version 3 or higher
 
 ### Plugin Installation  
 
-- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+
 - Create a directory named `elasticsearch`.
 
 		mkdir elasticsearch
@@ -37,7 +40,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python3 elasticsearch.py --host "host" --por "port no" --username "elasticsearch username" --password "elasticsearch password" --ssl_option "YES/NO"
+		python3 elasticsearch.py --host "host" --port "port no" --username "elasticsearch username" --password "elasticsearch password" --ssl_option "YES/NO"
 
 #### Configurations
 
