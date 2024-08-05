@@ -4,7 +4,7 @@ import requests
 import json
 
 # if any impacting changes to this plugin kindly increment the plugin version here.
-PLUGIN_VERSION = "6"
+PLUGIN_VERSION = "1"
 
 # Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT = "true"
@@ -151,4 +151,4 @@ def parse_metrics(metrics_text):
 
 if __name__ == "__main__":
     result = metricCollector()
-    print(json.dumps(result, indent=4, sort_keys=True))
+    print(json.dumps(result))
