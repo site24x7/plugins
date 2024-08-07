@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#! /usr/bin/python3
 
 import collections
 import datetime
@@ -67,9 +67,108 @@ METRICS_UNITS = {
                  "Stats Indexes":'indexes',
                  "Stats Index Size":'bytes',
                  "Stats Data Size":'bytes',
-                 "Uptime":'s'
+                 "Uptime":'s',
+                 "Health": "health",
+	         "ID": "_id",
+	         "Opcounters Repl Command per sec": "commands",
+	         "Opcounters Repl Delete per sec": "operations",
+	         "Opcounters Repl Getmore per sec": "operations",
+	         "Opcounters Repl Insert per sec": "operations",
+	         "Opcounters Repl Query per sec": "queries",
+	         "Opcounters Repl Update per sec": "operations",
+	         "Oplog Log Size MB": "MB",
+	         "Oplog timeDiff": "s",
+	         "Oplog used MB": "MB",
+	         "Repl Apply Batches Total millis per sec": "fractions",
+	         "Repl Apply ops per sec": "operations",
+	         "Repl Buffer Count per sec": "operations",
+	         "Repl Buffer Max Size Bytes": "bytes",
+	         "Repl Buffer Size Bytes": "bytes",
+	         "Repl Network Bytes per sec": "bytes",
+	         "Repl Network Getmores Num per sec": "operations",
+	         "Repl Network Getmores Total millis per sec": "fractions",
+	         "Repl Network Readers Created per sec": "processes",
+	         "Repl Network ops per sec": "fractions",
+	         "Replication Lag": "s",
+	         "State": "state",
+	         "TTL Deleted Documents per sec": "documents",
+	         "TTL Passes per sec": "operations",
+	         "Voting Members Count": "members"
+
 
                  }
+                 
+METRICS_TABS = {
+            "Database":{
+                "order":1,
+                "tablist":[
+                    "Opcounters Insert per sec",
+                    "Opcounters Query per sec",
+                    "Opcounters Update per sec",
+                    "Opcounters Delete per sec",
+                    "Opcounters Getmore per sec",
+                    "Opcounters Command per sec",
+                    "Document Deleted per sec",
+                    "Document Inserted per sec",
+                    "Document Returned per sec",
+                    "Document Updated per sec",
+                    "TTL Deleted Documents per sec",
+                    "TTL Passes per sec"
+                ]},
+                "Performance":{
+                "order":2,
+                "tablist":[
+                    "Network Bytes In per sec",
+                    "Network Bytes Out per sec",
+                    "Network Num Requests per sec",
+                    "Stats Objects",
+                    "Stats Collections",
+                    "Stats Storage Size",
+                    "Stats Indexes",
+                    "Stats Index Size",
+                    "Stats Data Size",
+                    "Memory Resident",
+                    "Memory Virtual"
+                ]},
+                "Connection":{
+                "order":3,
+                "tablist":[
+                    "Connections Available",
+                    "Current Connections",
+                    "Concurrent Transactions Read Available",
+                    "Concurrent Transactions Read Out",
+                    "Concurrent Transactions Read Total Tickets",
+                    "Concurrent Transactions Write Available",
+                    "Concurrent Transactions Write Out",
+                    "Concurrent Transactions Write Total Tickets"
+                ]},
+                "Cursor":{
+                "order":4,
+                "tablist":[
+                    "Metrics cursor Timed Out",
+                    "Metrics cursor Open NoTimeout",
+                    "Metrics cursor Open Pinned",
+                    "Metrics cursor Open Total"
+                ]},
+                "Replication":{
+                "order":5,
+                "tablist":[
+                    "Repl Apply ops per sec",
+                    "Repl Buffer Count per sec",
+                    "Repl Network Bytes per sec",
+                    "Repl Network Readers Created per sec",
+                    "Repl Network ops per sec",
+                    "Repl Apply Batches Total millis per sec",
+                    "Repl Network Getmores Num per sec",
+                    "Repl Network Getmores Total millis per sec",
+                    "Opcounters Repl Insert per sec",
+                    "Opcounters Repl Query per sec",
+                    "Opcounters Repl Update per sec",
+                    "Opcounters Repl Delete per sec",
+                    "Opcounters Repl Getmore per sec",
+                    "Opcounters Repl Command per sec"
+                ]}
+}
 
 
 class MongoDB(object):
@@ -127,7 +226,53 @@ class MongoDB(object):
             diff = output[root][doc][metric] - cache_data[root][doc][metric]
             ps = int(diff / elapsed_time)
             return ps
-        
+            
+        def get_replication_info():
+
+            local_db = self.connection['local']
+
+            for collection_name in ("oplog.rs", "oplog.$main"):
+                try:
+                    ol_options = local_db[collection_name].options()
+
+                    if ol_options and 'size' in ol_options:
+                       break
+
+                except Exception as e:
+                    pass
+
+            timestamp = local_db[collection_name]
+            first_oplog_entry = timestamp.find({"ts": {"$exists": 1}}).sort("$natural", pymongo.ASCENDING).limit(1)
+            last_oplog_entry = timestamp.find({"ts": {"$exists": 1}}).sort("$natural", pymongo.DESCENDING).limit(1)
+            time_diff = last_oplog_entry[0]['ts'].as_datetime() - first_oplog_entry[0]['ts'].as_datetime()
+
+
+            replication_info = {
+            'logSizeMB': round(ol_options['size'] / 2.0**20, 2),
+            'usedMB':  round(local_db.command("collstats", collection_name)['size'] / 2.0**20, 2),
+            'timeDiff': int(time_diff.total_seconds()),
+            'tFirst': first_oplog_entry[0]['ts'].as_datetime(),
+            'tLast': last_oplog_entry[0]['ts'].as_datetime()
+            }
+
+            return replication_info
+
+        def per_sec_2(doc,metric):
+            diff = output[doc][metric] - cache_data[doc][metric]
+            ps = int(diff / elapsed_time)
+            return ps
+        def per_sec_3(root,doc,metric):
+            diff = output[root][doc][metric] - cache_data[root][doc][metric]
+            ps = int(diff / elapsed_time)
+            return ps     
+        def per_sec_4(root,doc,node,metric):
+            diff = output[root][doc][node][metric] - cache_data[root][doc][node][metric]
+            ps = int(diff / elapsed_time)
+            return ps
+        def per_sec_5(root,doc,node,node1,metric):
+            diff = output[root][doc][node][node1][metric] - cache_data[root][doc][node][node1][metric]
+            ps = int(diff / elapsed_time)
+            return ps
         try:
             try:
                 import pymongo
@@ -160,6 +305,7 @@ class MongoDB(object):
 
 
                 db = self.connection[self.dbname]
+                db_admin = self.connection[self.authdb]
                 cache_data = db.command('serverStatus', recordStats=0)
                 time.sleep(5)
                 output = db.command('serverStatus', recordStats=0)
@@ -167,6 +313,9 @@ class MongoDB(object):
                 data['Uptime']=output['uptime']
                 data['Total no of dbs']=len(self.connection.list_database_names())
                 stats=db.command('dbstats')
+                
+                replication_data = db_admin.command({'replSetGetStatus'  :1})
+                oplog=get_replication_info()
                 self.connection.close()
 
             except pymongo.errors.ServerSelectionTimeoutError:
@@ -299,12 +448,96 @@ class MongoDB(object):
 
             except KeyError as ex:
                 pass
+                
+            
+            #OpCounters Repl, Metrics 
+            try:
+                data['Opcounters Repl Insert per sec'] = per_sec_2('opcountersRepl','insert')
+                data['Opcounters Repl Query per sec'] = per_sec_2('opcountersRepl','query')
+                data['Opcounters Repl Update per sec'] = per_sec_2('opcountersRepl','update')
+                data['Opcounters Repl Delete per sec'] = per_sec_2('opcountersRepl','delete')
+                data['Opcounters Repl Getmore per sec'] = per_sec_2('opcountersRepl','getmore')
+                data['Opcounters Repl Command per sec'] = per_sec_2('opcountersRepl','command')
+                data['TTL Deleted Documents per sec']=per_sec_3('metrics','ttl','deletedDocuments')
+                data['TTL Passes per sec']=per_sec_3('metrics','ttl','passes')
+                data['Repl Apply ops per sec']=per_sec_4('metrics','repl','apply','ops')
+                data['Repl Buffer Count per sec']=per_sec_4('metrics','repl','buffer','count')
+                data['Repl Network Bytes per sec']=per_sec_4('metrics','repl','network','bytes')
+                data['Repl Network Readers Created per sec']=per_sec_4('metrics','repl','network','readersCreated')
+                data['Repl Network ops per sec']=per_sec_4('metrics','repl','network','ops')
+                data['Repl Apply Batches Total millis per sec']=per_sec_5('metrics','repl','apply','batches','totalMillis')
+                data['Repl Network Getmores Num per sec']=per_sec_5('metrics','repl','network','getmores','num')
+                data['Repl Network Getmores Total millis per sec']=per_sec_5('metrics','repl','network','getmores','totalMillis')
+                data['Repl Preload Indexes Total millis per sec']=per_sec_5('metrics','repl','preload','indexes','totalMillis')
+                data['Repl Preload Indexes Num per sec']=per_sec_5('metrics','repl','preload','indexes','num')
+                data['Repl Preload Doc Total millis per sec']=per_sec_5('metrics','repl','preload','docs','totalMillis')
+                data['Repl Preload Doc Num per sec']=per_sec_5('metrics','repl','preload','docs','num')
+                
+
+
+            except KeyError as ex:
+                pass
+
+            #Oplog
+            
+            try:
+                data['Oplog Log Size MB'] = oplog['logSizeMB']
+                data['Oplog used MB'] = oplog['usedMB']
+                data['Oplog timeDiff'] = oplog['timeDiff']
+                tfirst= str(oplog['tFirst']).split(" ")
+                data['Oplog First Entry Date'] =tfirst[0]
+                data['Oplog First Entry Time'] =tfirst[-1]
+                tlast= str(oplog['tLast']).split(" ")
+                data['Oplog Last Entry Date'] =tlast[0]
+                data['Oplog Last Entry Time'] =tlast[-1]
+
+
+            except KeyError as ex:
+                pass
+            
+            #Repl
+            try:
+                data['Repl Buffer Max Size Bytes'] = output['metrics']['repl']['buffer']['maxSizeBytes']
+                data['Repl Buffer Size Bytes'] = output['metrics']['repl']['buffer']['sizeBytes']
+
+
+            except KeyError as ex:
+                pass
+
+            #Repl Set
+            try:
+                optime=None
+                data['Voting Members Count']=replication_data["votingMembersCount"]
+                for member in replication_data["members"]:
+
+                    host_id=[self.host]
+                    if self.host=="127.0.0.1":
+                        host_id.append("localhost")
+                    elif self.host=="localhost":
+                        host_id.append("127.0.0.1")
+                    for i in host_id:
+                        if member["name"]==i+":"+str(self.port):
+                            data["Health"]=int(member["health"])
+                            #data["State"]=member["state"]
+                            data["State Str"]=member["stateStr"]
+                            data["ID"]=str(member["_id"])
+                            optime=member["optimeDate"]
+                            
+                    if member["stateStr"]=="PRIMARY":
+                        primary_optime=member["optimeDate"]
+
+                data["Replication Lag"]=(primary_optime-optime).total_seconds()
+
+            except KeyError as ex:
+                pass
+
 
 
         except Exception:
             data['msg']=traceback.format_exc()
 
         data['units']=METRICS_UNITS
+        data['tabs']=METRICS_TABS
 
         return data
 

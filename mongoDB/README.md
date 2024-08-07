@@ -169,6 +169,70 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/installer
 - **Uptime**: The total uptime of the database or system.
 
 - **version**: The version of the MongoDB database.
+- - **Health**:  Indicates the health status of the MongoDB server (1 for healthy).
+
+- **ID**: The identifier for the MongoDB server.
+
+- **Opcounters Repl Command per sec**: Operations count for replicated commands per second.
+
+- **Opcounters Repl Delete per sec**: Operations count for replicated delete commands per second.
+
+- **Opcounters Repl Getmore per sec**: Operations count for replicated getmore commands per second.
+
+- **Opcounters Repl Insert per sec**: Operations count for replicated insert commands per second.
+
+- **Opcounters Repl Query per sec**: Queries count for replicated query per second.
+
+- **Opcounters Repl Update per sec**: Operations count for replicated update commands per second.
+
+- **Oplog First Entry Date**: Date of the first entry in the Oplog.
+
+- **Oplog First Entry Time**: Time of the first entry in the Oplog.
+
+- **Oplog Last Entry Date**: Date of the last entry in the Oplog.
+
+- **Oplog Last Entry Time**: Time of the last entry in the Oplog.
+
+- **Oplog timeDiff**: Time difference between first and last entry in oplog shown in seconds
+
+- **Oplog Log Size MB**: Size of the Oplog in megabytes.
+
+- **Oplog used MB**: Amount of Oplog space used in megabytes.
+
+- **Repl Apply ops per sec**: No of Oplog Operations applied per second during replication.
+
+- **Repl Apply Batches Total millis per sec**: Fraction of Time taken to apply batches during replication.
+
+- **Repl Buffer Count per sec**: Operations count for buffer per second.
+
+- **Repl Buffer Max Size Bytes:**: Maximum size of the buffer in bytes.
+
+- **Repl Buffer Size Bytes**: Current size of the buffer in bytes.
+
+- **Repl Network Bytes per sect**: Network bytes transmitted per second during replication.
+
+- **Repl Network Getmores Num per sec**: Number of getmore operations per second during replication.
+
+- **Repl Network Getmores Total millis per sec**: Fraction of time taken for getmore operations during replication.
+
+- **Repl Network Readers Created per sec**:  Number of network readers created per second during replication.
+
+- **Repl Network ops per sec**: Operations Read count for network per second during replication.
+
+- **Replication Lag**: Lag replicating operations in seconds between the primary and secondary nodes.
+
+- **State**: Numeric representation of the server state(1 for PRIMARY, 2 for SECONDARY).
+
+- **State Str**: String representation of the server state.
+
+- **TTL Deleted Documents per sec**: Number of documents deleted due to TTL Index per second.
+
+- **TTL Passes per sec**: Number of background process removing documents from collections with a ttl index per second.
+
+- **Voting Members Count**: Count of voting members in the replica set.
+
+
+
 
 
 
