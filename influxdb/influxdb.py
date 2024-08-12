@@ -4,10 +4,16 @@ import requests
 import json
 
 # if any impacting changes to this plugin kindly increment the plugin version here.
-PLUGIN_VERSION = "1"
+PLUGIN_VERSION = "6"
 
 # Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT = "true"
+
+# Enter the host name configures for the Solr JMX
+HOST_NAME = "localhost"
+
+# Enter the port configures for the Solr JMX
+PORT = "8086"
 
 # InfluxDB Metrics Endpoint
 INFLUXDB_METRICS_URL = "http://localhost:8086/metrics"
@@ -117,7 +123,8 @@ def metricCollector():
     data['heartbeat_required'] = HEARTBEAT
 
     try:
-        response = requests.get(INFLUXDB_METRICS_URL)
+        response = requests.get("http://"+ HOST_NAME + ":" + PORT + "/metrics")
+        #response = requests.get(INFLUXDB_METRICS_URL)
         response.raise_for_status()
 
         # Parse metrics
@@ -150,5 +157,16 @@ def parse_metrics(metrics_text):
     return metrics
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host_name', help='hostname of influxdb', nargs='?', default="localhost")
+    parser.add_argument('--port',  help='port of influxdb', nargs='?', default= "8086")
+    
+    args = parser.parse_args()
+    if args.host_name:
+        HOST_NAME = args.host_name
+    if args.port:
+        PORT = args.port
+    
     result = metricCollector()
     print(json.dumps(result))
