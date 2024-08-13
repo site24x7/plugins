@@ -14,11 +14,11 @@ for storing, querying, and managing time-stamped data.
   wget https://raw.githubusercontent.com/site24x7/plugins/master/influxdb/influxdb.cfg
   ```
 
-- Execute the below command with appropriate arguments to check for the valid json output:
+- Execute the below command with appropriate arguments to check for the valid JSON output:
     
         python3 influxdb.py --host_name "hosname or ipaddress" --port "port no" 
 
-- After above command with parameters gives expected output, please configure the relevant parameters in the influxdb.cfg file.
+- After the above command with parameters gives the expected output, please configure the relevant parameters in the influxdb.cfg file.
 
       [influxdb_instance]
       host_name = "localhost"
@@ -34,7 +34,7 @@ for storing, querying, and managing time-stamped data.
         
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
 https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
--  Further move the folder "kafka" into the  Site24x7 Windows Agent plugin directory:
+-  Further, move the folder "influxdb" into the  Site24x7 Windows Agent plugin directory:
 
         Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\influxdb
 
