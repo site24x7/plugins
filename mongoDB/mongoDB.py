@@ -161,6 +161,8 @@ METRICS_TABS = {
                     "Repl Apply Batches Total millis per sec",
                     "Repl Network Getmores Num per sec",
                     "Repl Network Getmores Total millis per sec",
+		    "Repl Buffer Max Size Bytes",
+		    "Repl Buffer Size Bytes",
                     "Opcounters Repl Insert per sec",
                     "Opcounters Repl Query per sec",
                     "Opcounters Repl Update per sec",

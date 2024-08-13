@@ -52,7 +52,6 @@ METRIC_UNITS = {
     "server.http.kbytes_in" : "kibibytes/second",
     "server.http.kbytes_out" : "kibibytes/second",
     "server.ftp.requests" : "requests/second",
-
     "server.ftp.kbytes_out" : "kibibytes/second",
     "server.other.requests" : "requests/second",
     "server.other.errors" : "errors/second",
@@ -61,6 +60,29 @@ METRIC_UNITS = {
     "unlink.requests" : "requests/second",
     "page_faults" : "faults/second",
     "aborted_requests" : "requests/second"
+}
+
+METRICS_TABS={
+        "HTTP & FTP Servers":{
+                "order":1,
+                "tablist":[
+                    "server.http.requests",
+                    "server.http.errors",
+                    "server.http.kbytes_in",
+                    "server.http.kbytes_out",
+                    "server.ftp.requests",  
+                    "server.ftp.kbytes_out"
+                   ]},
+	"Client Requests":{
+                "order":2,
+                "tablist":[
+                    "client_http.requests",
+                    "client_http.hits",
+                    "client_http.errors",
+                    "client_http.kbytes_in",
+                    "client_http.kbytes_out",  
+                    "client_http.hit_kbytes_out"
+                   ]}
 }
 
 
@@ -169,5 +191,6 @@ if __name__ == '__main__':
     result_json['plugin_version'] = PLUGIN_VERSION
     result_json['heartbeat_required'] = HEARTBEAT
     result_json['units'] = METRIC_UNITS
+    result_json['tabs'] = METRICS_TABS
     
     print(json.dumps(result_json))
