@@ -4,8 +4,10 @@
 
 On Linux servers, execute the command below in the terminal to run an installer that checks the prerequisites and installs the plugin.
 
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/installer/Site24x7NginxPluginInstaller.sh && sudo bash Site24x7NginxPluginInstaller.sh
-											      
+```bash
+wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/installer/Site24x7NginxPluginInstaller.sh && sudo bash Site24x7NginxPluginInstaller.sh
+```
+	       
 ## Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
@@ -15,17 +17,22 @@ On Linux servers, execute the command below in the terminal to run an installer 
 
 1. Open terminal and run the following command to open NGINX server configuration file.
 
-		 sudo vi /etc/nginx/nginx.conf
-
-2. Add the following code inside the server block which is present in the "/etc/nginx/nginx.conf" file.
+ 	```bash
+	sudo vi /etc/nginx/nginx.conf
 	```
+  
+2. Add the following code inside the server block which is present in the "/etc/nginx/nginx.conf" file.
+
+ 	```nginxconf
 	location /nginx_status {
 	    stub_status;
 	}
 	```
+  
 3. Save and close the /etc/nginx/nginx.conf file.
 4. Now reload the nginx to apply the changes :
-	```bash
+
+ 	```bash
 	sudo systemctl reload nginx
 	```
 
@@ -50,33 +57,40 @@ On Linux servers, execute the command below in the terminal to run an installer 
 
 - Once the agent is installed on the server, create a directory named `nginx`.
 
-		mkdir nginx
-  		cd nginx/
-      
+  	```bash
+	mkdir nginx
+  	cd nginx/
+ 	```
+   
 - Download all the files and place it under the `nginx` directory.
-
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/nginx.py && sed -i "1s|^.*|#! $(which python3)|" nginx.py
-  		wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/nginx.cfg
-
+  
+ 	```bash
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/nginx.py && sed -i "1s|^.*|#! $(which python3)|" nginx.py
+  	wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/nginx.cfg
+	```
 
 
 - Execute the below command with the appropriate arguments to check for valid JSON output.
 
-		python3 nginx.py --nginx_status_url "http://localhost/nginx_status" --username "nginx username" --password "nginx password"
+ 	```bash
+	python3 nginx.py --nginx_status_url "http://localhost/nginx_status" --username "nginx username" --password "nginx password"
+ 	```
 
 - After executing the above command and receiving valid JSON, provide the command argument as configurations in the `nginx.cfg` file.
 
-		[nginx]
-		plugin_version=1
-		heartbeat=true
-		nginx_status_url="http://localhost/nginx_status"
-		username="None"
-		password="None"
-		timeout=60
-		logs_enabled = "true"
-		log_type_name = "Nginx Logs"
-		log_file_path = "/var/log/nginx/access*"
-	
+ 	```bash
+	[nginx]
+	plugin_version=1
+	heartbeat=true
+	nginx_status_url="http://localhost/nginx_status"
+	username="None"
+	password="None"
+	timeout=60
+	logs_enabled = "true"
+	log_type_name = "Nginx Logs"
+	log_file_path = "/var/log/nginx/access*"
+ 	```
+
 - Once the configuration done, move the `nginx` directory under the Site24x7 Linux Agent plugin directory: 
 
 		mv nginx /opt/site24x7/monagent/plugins/

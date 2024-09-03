@@ -29,23 +29,29 @@ If you're not using Linux servers or want to install the plugin manually, follow
 
 - Create a directory named `elasticsearch`.
 
-		mkdir elasticsearch
-  		cd elasticsearch/
-  
+	```bash
+	mkdir elasticsearch
+ 	cd elasticsearch/
+	```
+ 
 - Download all the files [elasticsearch.cfg](https://github.com/site24x7/plugins/blob/master/elasticsearch/elasticsearch.cfg), [elasticsearch.py](https://github.com/site24x7/plugins/blob/master/elasticsearch/elasticsearch.py) and place it under the `elasticsearch` directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.cfg
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.py
-
+	```bash
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.cfg
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.py
+	```
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python3 elasticsearch.py --host "host" --port "port no" --username "elasticsearch username" --password "elasticsearch password" --ssl_option "YES/NO"
-
+	```bash
+	python3 elasticsearch.py --host "host" --port "port no" --username "elasticsearch username" --password "elasticsearch password" --ssl_option "YES/NO"
+	```
+ 
 #### Configurations
 
 - Provide your elasticsearch configurations elasticsearch.cfg file.
-	```
+  
+	```bash
 	[elasticsearch]
 	host = "localhost"
 	port = "9200"
@@ -53,7 +59,8 @@ If you're not using Linux servers or want to install the plugin manually, follow
 	password = "elasticsearch_password"
 	ssl_option = "No" #Yes if you are using https
 	cafile = "None"
-	```	
+	```
+ 
 #### Linux
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the elasticsearch.py script.
