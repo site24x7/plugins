@@ -289,7 +289,13 @@ class esk:
             for key1 in datapath:
                 resultback=nodedata
                 for key2 in datapath[key1]:
-                    resultback=resultback[key2]
+                    try:
+                        resultback=resultback[key2]
+                    except KeyError:
+                        pass
+                    except Exception as e:
+                        self.maindata['msg']=str(e)
+                        self.maindata['status']=0
                 self.maindata[key1]=resultback
             return True
         
@@ -303,13 +309,19 @@ class esk:
         try:
             nodes_list=[]
             for node in nodesdata:
-                node_dict={}
-                node_dict['name']=nodesdata[node]["name"]
-                node_dict['cpu_used']=nodesdata[node]["os"]["cpu"]["percent"]
-                node_dict['time_spent_on_queries']=nodesdata[node]["indices"]["search"]["query_time_in_millis"]
-                node_dict['queries_in_progress']=nodesdata[node]["indices"]["search"]["query_current"]
-                node_dict['number_of_fetches']=nodesdata[node]["indices"]["search"]["fetch_total"]
-                node_dict['documents_indexed']=nodesdata[node]["indices"]["indexing"]["index_total"]
+                try:
+                    node_dict={}
+                    node_dict['name']=nodesdata[node]["name"]
+                    node_dict['time_spent_on_queries']=nodesdata[node]["indices"]["search"]["query_time_in_millis"]
+                    node_dict['queries_in_progress']=nodesdata[node]["indices"]["search"]["query_current"]
+                    node_dict['number_of_fetches']=nodesdata[node]["indices"]["search"]["fetch_total"]
+                    node_dict['documents_indexed']=nodesdata[node]["indices"]["indexing"]["index_total"]
+                    node_dict['cpu_used']=nodesdata[node]["os"]["cpu"]["percent"]
+                except KeyError:
+                    pass
+                except Exception as e:
+                    self.maindata['msg']=str(e)
+                    self.maindata['status']=0
 
             nodes_list.append(node_dict)
             self.maindata["node_metrics"]=nodes_list
