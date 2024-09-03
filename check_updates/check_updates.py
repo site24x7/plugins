@@ -114,14 +114,13 @@ class update_check:
 
                 file_path='/var/lib/update-notifier/updates-available'
                 lines = [line.strip('\n') for line in open(file_path)]
+                self.maindata['Security Updates'] = 0
                 for line in lines:
                     if line:
                         if ( 'packages can be updated' in line ) or ('can be installed immediately' in line ) or ('can be applied immediately' in line):
                             self.maindata['Packages to be Updated'] = line.split()[0]
                         if ('updates are security updates' in line) or ('updates are standard security updates' in line):
                             self.maindata['Security Updates'] = line.split()[0]
-                        else:
-                            self.maindata['Security Updates'] = 0
 
 
             elif os_name=="CentOS Linux":
