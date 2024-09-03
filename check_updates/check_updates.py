@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#! /usr/bin/python3
 import json
 import os
 import subprocess
@@ -119,8 +119,9 @@ class update_check:
                     if line:
                         if ( 'packages can be updated' in line ) or ('can be installed immediately' in line ) or ('can be applied immediately' in line):
                             self.maindata['Packages to be Updated'] = line.split()[0]
-                        if ('updates are security updates' in line) or ('updates are standard security updates' in line):
+                        if ('updates are security updates' in line) or ('updates are standard security updates' in line) or ("updates is a standard security update" in line):
                             self.maindata['Security Updates'] = line.split()[0]
+                            
 
 
             elif os_name=="CentOS Linux":
