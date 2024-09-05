@@ -84,7 +84,7 @@ cd Tomcat/
 - Download below files and place it under the "Tomcat" directory.
 
 ```bash
-wget https://raw.githubusercontent.com/site24x7/plugins/master/Tomcat/Tomcat.py
+wget https://raw.githubusercontent.com/site24x7/plugins/master/Tomcat/Tomcat.py && sed -i "1s|^.*|#! $(which python3)|" Tomcat.py
 wget https://raw.githubusercontent.com/site24x7/plugins/master/Tomcat/Tomcat.cfg
 ```
 
@@ -95,9 +95,6 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/Tomcat/Tomcat.cfg
 ```bash
 python Tomcat.py --host='hostname' --port='port' --username='username' --password='password'
 ```
----
-
-### Configurations
 
 - Provide your tomcat configurations in Tomcat.cfg file.
 
