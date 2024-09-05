@@ -1,6 +1,6 @@
 #!/bin/bash
 
-plugin=Tomcat
+plugin=tomcat
 agent_dir=/opt/site24x7/monagent
 temp_dir=$agent_dir/temp/plugins/$plugin
 py_file="$temp_dir/$plugin.py"
