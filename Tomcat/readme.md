@@ -125,6 +125,6 @@ mv Tomcat /opt/site24x7/monagent/plugins/
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
 ```
-Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 ```
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
