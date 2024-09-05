@@ -105,7 +105,7 @@ C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 ```
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
-# Tomcat Server Monitoring Plugin Metrics
+## Tomcat Server Monitoring Plugin Metrics
 
 | **Metric Name**                           | **Description**                                                                |
 |-------------------------------------------|--------------------------------------------------------------------------------|
@@ -134,7 +134,7 @@ The agent will automatically execute the plugin within five minutes and user can
 | Usage Metaspace                           | The amount of memory used in the JVM's metaspace.                               |
 | Used Memory                               | The total amount of memory currently in use by the JVM.                         |
 
-# Memory Metrics
+## Memory Metrics
 
 | **Metric Name**            | **Description**                                                                |
 |----------------------------|--------------------------------------------------------------------------------|
@@ -145,7 +145,7 @@ The agent will automatically execute the plugin within five minutes and user can
 | Used Memory                | The total amount of memory currently in use by the JVM.                         |
 | Percent Used Memory        | The percentage of memory used out of the total allocated memory.                |
 
-# JVM CodeHeap Usage
+## JVM CodeHeap Usage
 
 | **Metric Name**                           | **Description**                                                                |
 |-------------------------------------------|--------------------------------------------------------------------------------|
@@ -153,7 +153,7 @@ The agent will automatically execute the plugin within five minutes and user can
 | Usage CodeHeap Non Profiled Nmethods      | The amount of memory used in the JVM's CodeHeap for non-profiled nmethods.      |
 | Usage CodeHeap Profiled Nmethods          | The amount of memory used in the JVM's CodeHeap for profiled nmethods.          |
 
-# JVM Memory Pool Usage
+## JVM Memory Pool Usage
 
 | **Metric Name**                  | **Description**                                                                |
 |----------------------------------|--------------------------------------------------------------------------------|
