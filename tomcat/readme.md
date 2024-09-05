@@ -43,7 +43,7 @@ If you're using Linux servers, use the Tomcat plugin installer that checks the p
 Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
 
 ```bash
-wget https://raw.githubusercontent.com/site24x7/plugins/master/tomcat/Installer/Site24x7tomcatPluginInstaller.sh && sudo bash Site24x7TomcatPluginInstaller.sh
+wget https://raw.githubusercontent.com/site24x7/plugins/master/tomcat/installer/Site24x7TomcatPluginInstaller.sh && sudo bash Site24x7TomcatPluginInstaller.sh
 ```
 ## Standard Installation
 If you're not using Linux servers or want to install the plugin manually, follow the steps below.
