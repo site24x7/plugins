@@ -67,17 +67,17 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/tomcat/tomcat.cfg
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 ```bash
-python tomcat.py --host='hostname' --port='port' --username='username' --password='password'
+python tomcat.py --host "hostname" --port "port" --username "username" --password "password"
 ```
 
 - Provide your Tomcat configurations in tomcat.cfg file.
 
 ```bash
 [Tomcat]
-host = 'localhost'
-port = '8080'
-username = 'admin'
-password = 'admin'
+host = "localhost"
+port = "8080"
+username = "admin"
+password = "admin"
 ```
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
