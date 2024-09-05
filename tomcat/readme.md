@@ -73,11 +73,15 @@ python tomcat.py --host "hostname" --port "port" --username "username" --passwor
 - Provide your Tomcat configurations in tomcat.cfg file.
 
 ```bash
-[Tomcat]
+[tomcat]
 host = "localhost"
 port = "8080"
 username = "admin"
 password = "admin"
+plugin_version = "1"
+logs_enabled = "true"
+log_type_name = "Tomcat Access Logs"
+log_file_path = "/opt/*tomcat*/logs/*access*.txt"
 ```
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
