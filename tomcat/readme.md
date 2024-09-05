@@ -104,3 +104,61 @@ mv tomcat /opt/site24x7/monagent/plugins/
 C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 ```
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+# Tomcat Server Monitoring Plugin Metrics
+
+| **Metric Name**                           | **Description**                                                                |
+|-------------------------------------------|--------------------------------------------------------------------------------|
+| Available Memory                          | The amount of memory currently available for use by the Tomcat server.          |
+| Bytes Received                            | The total number of bytes received by the server.                               |
+| Bytes Sent                                | The total number of bytes sent by the server.                                   |
+| Error Count                               | The total number of errors encountered by the server.                           |
+| Free Memory                               | The amount of free memory available in the JVM heap.                            |
+| Max Memory                                | The maximum memory limit for the JVM running the Tomcat server.                 |
+| Name                                      | The name of the Tomcat server or instance.                                      |
+| Percent Used Memory                       | The percentage of memory used out of the total allocated memory.                |
+| Processing Time                           | The total time spent processing requests on the server.                         |
+| Request Count                             | The total number of requests processed by the server.                           |
+| Thread Allowed                            | The maximum number of threads allowed for the server to handle requests.        |
+| Thread Busy                               | The current number of busy threads processing requests.                         |
+| Thread Count                              | The current total number of threads allocated for request processing.           |
+| Tomcat Version                            | The version of the Tomcat server.                                               |
+| Total Memory                              | The total memory currently allocated to the JVM.                                |
+| Usage Code Heap Non Nmethods              | The amount of non-method code memory used in the JVM's code heap.               |
+| Usage Code Heap Non Profiled Nmethods     | The amount of memory used in the JVM's code heap for non-profiled nmethods.     |
+| Usage Code Heap Profiled Nmethods         | The amount of memory used in the JVM's code heap for profiled nmethods.         |
+| Usage Compressed Class Space              | The amount of memory used in the JVM's compressed class space.                  |
+| Usage G1 Eden Space                       | The amount of memory used in the G1 Eden space region.                          |
+| Usage G1 Old Gen                          | The amount of memory used in the G1 Old Generation region.                      |
+| Usage G1 Survivor Space                   | The amount of memory used in the G1 Survivor space region.                      |
+| Usage Metaspace                           | The amount of memory used in the JVM's metaspace.                               |
+| Used Memory                               | The total amount of memory currently in use by the JVM.                         |
+
+# Memory Metrics
+
+| **Metric Name**            | **Description**                                                                |
+|----------------------------|--------------------------------------------------------------------------------|
+| Available Memory           | The amount of memory currently available for use by the Tomcat server.          |
+| Free Memory                | The amount of free memory available in the JVM heap.                            |
+| Max Memory                 | The maximum memory limit for the JVM running the Tomcat server.                 |
+| Total Memory               | The total memory currently allocated to the JVM.                                |
+| Used Memory                | The total amount of memory currently in use by the JVM.                         |
+| Percent Used Memory        | The percentage of memory used out of the total allocated memory.                |
+
+# JVM CodeHeap Usage
+
+| **Metric Name**                           | **Description**                                                                |
+|-------------------------------------------|--------------------------------------------------------------------------------|
+| Usage CodeHeap Non Nmethods               | The amount of non-method code memory used in the JVM's CodeHeap.                |
+| Usage CodeHeap Non Profiled Nmethods      | The amount of memory used in the JVM's CodeHeap for non-profiled nmethods.      |
+| Usage CodeHeap Profiled Nmethods          | The amount of memory used in the JVM's CodeHeap for profiled nmethods.          |
+
+# JVM Memory Pool Usage
+
+| **Metric Name**                  | **Description**                                                                |
+|----------------------------------|--------------------------------------------------------------------------------|
+| Usage Compressed Class Space     | The amount of memory used in the JVM's compressed class space.                  |
+| Usage G1 Eden Space              | The amount of memory used in the G1 Eden space region.                          |
+| Usage G1 Old Gen                 | The amount of memory used in the G1 Old Generation region.                      |
+| Usage G1 Survivor Space          | The amount of memory used in the G1 Survivor space region.                      |
+| Usage Metaspace                  | The amount of memory used in the JVM's metaspace.                               |
