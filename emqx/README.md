@@ -27,7 +27,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 	```bash
-       python3 --host "hostname" --port "port no" --api_key "api key" --secret_key "api secret key"
+       python3 emqx.py --host "hostname" --port "port no" --api_key "api key" --secret_key "api secret key"
 	 ```
 - After the above command with parameters gives the expected output, please configure the relevant parameters in the emqx.cfg file.
 	```
@@ -38,9 +38,12 @@ If you're not using Linux servers or want to install the plugin manually, follow
     secret_key="secret api key"
 	```	
 #### Linux
-- Place the "emqx" under the Site24x7 Linux Agent plugin directory:
+- Move the "emqx" directory under the Site24x7 Linux Agent plugin directory: 
 
-        Linux    ->   /opt/site24x7/monagent/plugins/emqx
+	```bash
+	mv emqx /opt/site24x7/monagent/plugins/
+	```
+
 #### Windows
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
 https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
