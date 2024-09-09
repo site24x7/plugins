@@ -124,7 +124,7 @@ class update_check:
                             
 
 
-            elif os_name=="CentOS Linux":
+            elif os_name in ["AlmaLinux", "CentOS Linux"]:
 
                 centos_command="""yum list updates -q | awk '{print $1}' | xargs yum info | grep -E "^Name|^Version|^Size|^Description\""""
                 upgrades_count=self.log_creator(centos_command)
