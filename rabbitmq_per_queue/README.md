@@ -36,7 +36,7 @@ This plugin monitors the individual rabbitmq queues.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python rabbitmq_per_queue.py --hostname "localhost" --port "15672" --username "guest" --password "guest" --vhost "/" --queue_name "Test Queue" --realm "None"
+		python rabbitmq_per_queue.py --hostname "localhost" --port "15672" --username "guest" --password "guest" --vhost "/" --queue_name "Test Queue"
 	
 - Move the directory `rabbitmq_per_queue` under Site24x7 Linux Agent plugin directory.
 	```
@@ -53,7 +53,7 @@ This plugin monitors the individual rabbitmq queues.
   
 - Execute the below command with appropriate arguments in cmd to check for the valid json output:
 
-		python rabbitmq_per_queue.py --hostname "localhost" --port "15672" --username "guest" --password "guest" --vhost "/" --queue_name "Test Queue" --realm "None"
+		python rabbitmq_per_queue.py --hostname "localhost" --port "15672" --username "guest" --password "guest" --vhost "/" --queue_name "Test Queue"
   
 -  Provide your RabbitMQ queue configurations in rabbitmq_per_queue.cfg file.
 
