@@ -43,9 +43,9 @@ Supported versions: 1 and 2c
       
 - Download all the files in the "idrac_pdisk" folder and place it under the "idrac_pdisk" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_pdisk/idrac_pdisk.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_pdisk/idrac_pdisk.cfg
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_pdisk/SNMPUtil.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac_pdisk/idrac_pdisk.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac_pdisk/idrac_pdisk.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac_pdisk/SNMPUtil.py
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the idrac_pdisk.py script.
 
