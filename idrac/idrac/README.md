@@ -43,9 +43,9 @@ Supported versions: 1 and 2c
       
 - Download all the files in the `idrac` directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac.cfg
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/SNMPUtil.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac/idrac.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac/idrac.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac/SNMPUtil.py
   
 
 - Execute the below command with appropriate arguments to check for the valid json output:

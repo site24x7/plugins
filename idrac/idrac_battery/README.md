@@ -43,9 +43,9 @@ Supported versions: 1 and 2c
       
 - Download all the files in the `idrac_battery` folder directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_battery/idrac_battery.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_battery/idrac_battery.cfg
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_battery/SNMPUtil.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac_battery/idrac_battery.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac_battery/idrac_battery.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac_battery/SNMPUtil.py
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the idrac_battery.py script.
   

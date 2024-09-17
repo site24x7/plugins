@@ -43,9 +43,9 @@ Supported versions: 1 and 2c
       
 - Download all the files in the `idrac_powersource` directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_powersource/idrac_powersource.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_powersource/idrac_powersource.cfg
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_powersource/SNMPUtil.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac_powersource/idrac_powersource.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac_powersource/idrac_powersource.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac_powersource/SNMPUtil.py
 
 
 

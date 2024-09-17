@@ -43,9 +43,9 @@ Supported versions: 1 and 2c
       
 - Download all the files in the "idrac_fan" folder and place it under the "idrac_fan" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_fan/idrac_fan.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_fan/idrac_fan.cfg
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac_fan/SNMPUtil.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac_fan/idrac_fan.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac_fan/idrac_fan.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac_fan/SNMPUtil.py
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the idrac_fan.py script.
 

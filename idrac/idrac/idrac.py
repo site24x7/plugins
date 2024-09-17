@@ -4,20 +4,6 @@ import json
 import SNMPUtil
 import argparse
 
-### Monitoring iDRAC Servers - Performance
-### 
-### This plugin can be used to get the overall status of the hardwares of iDRAC Servers
-### It uses snmpwalk command to get the hadrware data from the iDRAC Servers.
-### SNMPUtil.py is used to get the snmp raw data and parsed to get the output json
-### Download and install the latest version of Site24x7 Linux Agent. The agent will execute the plugin and push the data to the Site24x7 server
-### 
-### Author: Anita, Zoho Corp
-### Language : Python
-### Tested in Ubuntu
-### Tested for snmp version 1 and 2c
-
-### iDRAC Server Configuration Details
-
 OIDREPLACE = "1.3.6.1.4.1"
 SMISTR="SNMPv2-SMI::enterprises"
 ISOSTR="iso.3.6.1.4.1" 
