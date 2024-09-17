@@ -2,111 +2,228 @@
 import json
 import subprocess
 import re
+import traceback
+import os
+import argparse
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
 METRICS_UNITS={
-    "Disk Usage":"%",
-    "Total Size":"mb",
-    "Used Size":"mb",
-    "Avail Size":"mb",
+    "Mounted Shares":"shares",
+    "Unmounted Shares":"shares"
 }
+
+TABS=  {
+  "tabs": {
+    "Size Stats": {
+      "order": "1",
+      "tablist": [
+        "Size"
+      ]}}}
+# Get the current file path
+current_file_path =  os.path.dirname(os.path.abspath(__file__))
+
 
 class nfs:
 
-    def __init__(self,args):
+    def __init__(self):
         
         self.maindata={}
         self.maindata['plugin_version'] = PLUGIN_VERSION
         self.maindata['heartbeat_required']=HEARTBEAT
         self.maindata['units']=METRICS_UNITS
-        self.mount_path=args.mount_path
+        self.mounts={}
+        self.mount_points=[]
 
         
     def execute_cmd(self, command):
+
         result=subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return result
     
-    def gb_to_mb(self, val):
-        return float(val)*1000
     
-    def basic_metrics(self, result):
+    def convert_to_gb(self,value, unit):
 
-        subdata={}
-        if result.returncode == 0 :
-            output=result.stdout.decode()
-            data=output.split("\n")[1].split()
-            ipaddress=None
-            shared_path=None
+        if unit =="G":
+            return value
+        elif unit == "M":
+            return round(value / 1024,2)
+        elif unit == "T":
+            return round(value * 1024,2)
+        elif unit == "K":
+            return round(value / (1024 * 1024),2)
+        elif unit == "B":
+            return round(value / (1024 * 1024 * 1024),2)
+        else:
+            return round(value / (1024 * 1024 * 1024),2)
+
+    
+    def rem(self, mount_data):
+        while '' in mount_data:
+            mount_data.remove('')
+        return mount_data
+    
+    def mount_status(self):
+
+        global file_exists, file_written, mounted, unmounted
+        mounted,unmounted="",""
+        file_written=False
+        file_exists=False
+        mount_status_file=os.path.join(current_file_path,"mount_points.txt")
+
+        if os.path.isfile(mount_status_file):
+            try:
+                f = open(mount_status_file, "r")
+                mount_check=f.read().split('\n')
+                if "" in mount_check:
+                    mount_check=self.rem(mount_check)
+                file_exists=True
+            except:
+                pass
+
+            set1 = set(mount_check)
+            set2 = set(self.mount_points)
+
             
-            if ":" in data[0]:
-                ipaddress, shared_path = data[0].split(":")
+            mounted=set1.intersection(set2)
+            unmounted=list(set1 - set2)
+
+            for i in mounted:
+                self.maindata[i+" State"]="Mounted"
+
+            for i in unmounted:
+                self.maindata[i+" State"]="Unmounted"
+
+            self.maindata["Mounted Shares"]=len(mounted)
+            self.maindata["Unmounted Shares"]=len(unmounted)
+            self.maindata["Shares Monitored"]=str(len(mount_check))+" Shares"
+
+            try:
+                if len(list(set2 - set1)) != 0:
+                    updated_mounts=set1.union(set2)
+                    f = open(mount_status_file, "w")
+                    f.write('\n'.join(updated_mounts))
+                    f.close()
+                    self.maindata["Shares Monitored"]=len(updated_mounts)
+                
+            except:
+                pass
+
+        else:
+            try:
+                f = open(mount_status_file, "a")
+                f.write('\n'.join(self.mount_points))
+                f.close()
+                file_written=True
+            except:
+                pass
+
+            self.maindata["Mounted Shares"]=len(self.mount_points)
+            self.maindata["Unmounted Shares"]=0
+            self.maindata["Shares Monitored"]=str(len(self.mount_points))+" Shares"
+
+
+        
+    def get_mounts(self):
+
+        try:
+            mount_cmd=["mount","-l", "-t", "nfs,nfs4,nfs2,nfs3"]
+            result=subprocess.run(mount_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            nfs_mount_data=result.stdout.decode().split("\n")
+
+
+            for nfs_mount in nfs_mount_data:
+                mount_data=nfs_mount.split(" ")
+                mount_data=self.rem(mount_data)
+                if len(mount_data)!=0:
+                    info=mount_data[5][1:-1].split(',')
+                    if "rw" in info[0]:
+                        self.maindata[mount_data[2]+" Permission"]="read/write"
+                    elif "ro" in info[0]:
+                        self.maindata[mount_data[2]+" Permission"]="read only"
+                    if "vers" in info[2]:
+                        self.maindata["NFS Version"]=info[2].split("=")[-1]+" "
+
+                    self.mounts[mount_data[2]]=mount_data[0]
+                    self.mount_points.append(mount_data[2])
+            self.mount_status()
+            
+            return self.mounts
+        
+        except Exception as e:
+            self.maindata['status']=0
+            self.maindata['msg']=str(e)
+    
+
+    def basic_metrics(self, output, path):
+
+            subdata={}
+            data=output.split("\n")[0].split()
+
             Total_Size, Used_Size, Avail_Size =data[1:4]
             percent_used=data[4].strip("%")
 
-            if Total_Size[-1]=="G":Total_Size=self.gb_to_mb(Total_Size[:-1])
-            if Used_Size[-1]=="G":Used_Size=self.gb_to_mb(Used_Size[:-1])
-            if Avail_Size[-1]=="G":Avail_Size=self.gb_to_mb(Avail_Size[:-1])
+            Total_Size=self.convert_to_gb(float(Total_Size[:-1]),Total_Size[-1])
+            Used_Size=self.convert_to_gb(float(Used_Size[:-1]),Used_Size[-1])
+            Avail_Size=self.convert_to_gb(float(Avail_Size[:-1]),Avail_Size[-1])
 
 
-            subdata['Server IP Address']=ipaddress
-            subdata['Shared Directory']=shared_path
-            subdata['Disk Usage']=percent_used
-            subdata['Total Size']=Total_Size
-            subdata['Used Size']=Used_Size
-            subdata['Avail Size']=Avail_Size
+            subdata['name']=path
+            subdata['disk_usage_percentage']=percent_used
+            subdata['total_size_gb']=Total_Size
+            subdata['used_size_gb']=Used_Size
+            subdata['avail_size_gb']=Avail_Size
 
-        else:
-            subdata['msg']=result.stderr
-            subdata['status']=0
-        return subdata
+            return subdata
     
 
-    def advance_metrics(self,result, ipaddress):
-
-        subdata={}
-        if result.returncode==0:
-
-            pattern = re.compile(rf".*{ipaddress}.*", re.MULTILINE)
-            ip_matches = pattern.findall(result.stdout.decode())            
-            for match in ip_matches:
-                pattern = re.compile(rf".*{self.mount_path}.*", re.MULTILINE)
-                ip_match = pattern.findall(match)   
-                if ip_match:
-                    break 
-
-            ip_match=ip_match[0]
-            pattern = re.compile(rf"\(.*addr={ipaddress}\)", re.MULTILINE)
-            mount_match=pattern.findall(ip_match)
-            if mount_match:
-                mount_match=mount_match[0].strip("(,)")
-            
-            mount_data=mount_match.split(",")
-            subdata['Mount Permission']=mount_data[0]
-            subdata['NFS Version']=mount_data[2].split("=")[1]
-
-        else:
-            subdata['msg']=result.stderr
-            subdata['status']=0
-        return subdata
-    
-
-    def metriccollector(self):
+    def metriccollector(self,):
 
         try:
-            self.maindata['Mount Point']=self.mount_path
-            nfs_cmd_1=["df", "-hP", self.mount_path]
+        
+            nfs_cmd_1=["df","-hP"]
             result=self.execute_cmd(nfs_cmd_1)
-            basic_data=self.basic_metrics(result)
-            self.maindata.update(basic_data)
-            if "status" in self.maindata:
-                if self.maindata['status']==0:
-                    return self.maindata
 
-            nfs_cmd_2=["mount"]
-            result=self.execute_cmd(nfs_cmd_2)
-            advance_data=self.advance_metrics(result, self.maindata['Server IP Address'])
-            self.maindata.update(advance_data)
+            if result.returncode == 0 :
+                result=result.stdout.decode().split("\n")
+            else:
+                self.maindata['msg']=result.stderr.decode()
+                self.maindata['status']=0
+
+            nfs_mounts=self.get_mounts()
+            if nfs_mounts == {}:
+                self.maindata["status"]=0
+                self.maindata["msg"]="No nfs shares found."
+
+
+
+            
+            nfs_mount_data=[]
+
+            for key,values in nfs_mounts.items():
+                for i in result:
+                    if key in i:
+                        output_data=i
+                basic_data=self.basic_metrics(output_data,key)
+
+                if file_exists:
+                    if key in mounted:
+                        basic_data["status"]=1
+                    if key in unmounted:
+                        basic_data["status"]=0
+                elif file_written:
+                    basic_data["status"]=1
+                nfs_mount_data.append(basic_data)
+
+            self.maindata["Size"]=nfs_mount_data
+            mount_from={}
+            
+            for i,j in nfs_mounts.items():
+                mount_from[i+" Mounted From"]=j
+            
+            self.maindata.update(mount_from)
+            self.maindata.update(TABS)
+
             if "status" in self.maindata:
                 if self.maindata['status']==0:
                     return self.maindata
@@ -114,18 +231,17 @@ class nfs:
         except Exception as e:
             self.maindata['status']=0
             self.maindata['msg']=str(e)
+
                     
         return self.maindata
-
+            
 
 if __name__=="__main__":
-    
-    import argparse
-    parser=argparse.ArgumentParser()
-    parser.add_argument('--mount_path', help='mount_path', nargs='?', default="/mnt/backups")
-    args=parser.parse_args()
 
-    obj=nfs(args)
-
-    result=obj.metriccollector()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--plugin_version', help="plugin version", type=str, default=PLUGIN_VERSION)
+    args = parser.parse_args()
+    PLUGIN_VERSION=args.plugin_version
+    nfs=nfs()
+    result=nfs.metriccollector()
     print(json.dumps(result,indent=True))
