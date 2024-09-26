@@ -69,7 +69,7 @@ The agent will automatically execute the plugin within five minutes and user can
 | Free Memory              | The amount of memory that is currently free and available.  |
 | Free Memory Percentage   | The percentage of total memory that is currently free.                 |
 | Total Formatted Memory   | The total amount of memory available, formatted for readability.|
-| **Used Formatted Memory**    | The amount of memory currently used, formatted for readability.|
-| **Free Formatted Memory**    | The amount of memory currently free, formatted for readability.|
+| Used Formatted Memory    | The amount of memory currently used, formatted for readability.|
+| Free Formatted Memory    | The amount of memory currently free, formatted for readability.|
 
 
