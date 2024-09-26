@@ -13,10 +13,10 @@ mkdir keycloak
 cd keycloak/
 ```
       
-- Download below files and place it under the "tomcat" directory.
+- Download below files and place it under the "keycloak" directory.
 
 ```bash
-wget https://raw.githubusercontent.com/site24x7/plugins/master/keycloak/keycloak.py && sed -i "1s|^.*|#! $(which python3)|" tomcat.py
+wget https://raw.githubusercontent.com/site24x7/plugins/master/keycloak/keycloak.py && sed -i "1s|^.*|#! $(which python3)|" keycloak.py
 wget https://raw.githubusercontent.com/site24x7/plugins/master/keycloak/keycloak.cfg
 ```
 
@@ -26,7 +26,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/keycloak/keycloak
 python3 keycloak.py --host localhost --port 8080 --username admin --password admin --client_id admin-cli
 ```
 
-- Provide your Tomcat configurations in tomcat.cfg file.
+- Provide your keycloak configurations in keycloak.cfg file.
 
 ```bash
 [Keycloak]
@@ -43,15 +43,15 @@ client_id = "admin-cli"
 
 #### Linux
 
-- Move the "tomcat" directory under the Site24x7 Linux Agent plugin directory: 
+- Move the "keycloak" directory under the Site24x7 Linux Agent plugin directory: 
 
 ```bash
-mv tomcat /opt/site24x7/monagent/plugins/
+mv keycloak /opt/site24x7/monagent/plugins/
 ```
 		
 #### Windows
 
-- Move the "tomcat" directory under the Site24x7 Windows Agent plugin directory:
+- Move the "keycloak" directory under the Site24x7 Windows Agent plugin directory:
 
 ```
 C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
