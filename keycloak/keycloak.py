@@ -65,12 +65,11 @@ class KeycloakServerInfo:
                 "Used_Memory": "GB",
                 "Free_Memory": "GB",
                 "Free_Memory_Percentage": "%",
-                "Total_Formated_Memory": "MB",
-                "Used_Formated_Memory": "MB",
-                "Free_Formated_Memory": "MB"
+                "Total_Formatted_Memory": "MB",
+                "Used_Formatted_Memory": "MB",
+                "Free_Formatted_Memory": "MB"
             }
 
-            # Prepare result with flattened system_info and memory_info keys in the tabs
             result = {
                 'plugin_version': PLUGIN_VERSION,
                 'heartbeat_required': HEARTBEAT,
@@ -79,7 +78,6 @@ class KeycloakServerInfo:
                 'units': units
             }
             
-            # Add memory_info values to the result directly
             result.update(memory_info_formatted)
 
             return result
