@@ -191,7 +191,7 @@ class pgsql():
             self._results["units"]=units
             if self._msg != "":
                 self._results["msg"]=self._msg
-            print(str(json.dumps(self._results, indent=4, sort_keys=True)))
+            print((json.dumps(self._results)))
 
     def metricCollector(self):
         dictResults = {}
