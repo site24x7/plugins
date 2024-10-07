@@ -6,7 +6,6 @@ import subprocess
 PLUGIN_VERSION=1
 HEARTBEAT=True
 
-
 class kafka:
 
     def __init__(self,args):
@@ -177,9 +176,9 @@ if __name__=="__main__":
     kafka_host="localhost"
     kafka_jmx_port=9999
     kafka_server_port=9092
-    kafka_topic_name="mani-topic-1"
+    kafka_topic_name="mani-topiffffc-1"
     kafka_home="/home/s247-lin-plugin/Documents/kafka/kafka_2.13-3.8.0"
-    kafka_group_name="mani-group-1"
+    kafka_group_name="mani-grouddddp-1"
 
     import argparse
     parser=argparse.ArgumentParser()
