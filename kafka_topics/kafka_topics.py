@@ -2,7 +2,6 @@
 import json
 import subprocess
 
-
 PLUGIN_VERSION=1
 HEARTBEAT=True
 
@@ -18,8 +17,6 @@ class kafka:
         self.kafka_jmx_port=args.kafka_jmx_port
         self.kafka_server_port=args.kafka_server_port
         self.kafka_topic_name=args.kafka_topic_name
-        self.kafka_group_name=args.kafka_group_name
-
 
         self.logsenabled=args.logs_enabled
         self.logtypename=args.log_type_name
@@ -42,43 +39,6 @@ class kafka:
         except Exception as e:
             return False
         
-
-    def cmd_lag_metric(self):
-        
-        out=self.execute_command(f"""bash {self.kafka_home}/bin/kafka-consumer-groups.sh --bootstrap-server {self.kafka_host}:{self.kafka_server_port}  --describe --group {self.kafka_group_name}""", True).decode()
-        if not out:
-            return {}
-        cmd_metrics=out.split("\n")[2:-1]
-        cols=out.split("\n")[1].split()
-        for index,col in enumerate(cols):
-            if col=="TOPIC":
-                topic_index=index
-            elif col=="CURRENT-OFFSET":
-                current_offset_index=index
-            elif col=="PARTITION":
-                partition_index=index
-            elif col=="LOG-END-OFFSET":
-                log_end_offset_index=index
-            elif col=="LAG":
-                lag_index=index
-
-        data={}
-        for cmd_metric in cmd_metrics:
-            
-            cmd_metric=cmd_metric.split()
-            if cmd_metric[topic_index]== self.kafka_topic_name:
-                partition_no=cmd_metric[partition_index]
-                current_offset=cmd_metric[current_offset_index]
-                if current_offset=="-":current_offset=0
-                log_end_offset=cmd_metric[log_end_offset_index]
-                if log_end_offset=="-":log_end_offset=0
-                consumer_lag=cmd_metric[lag_index]
-                if consumer_lag=="-":consumer_lag=0
-
-                data[f"Partition_No_{partition_no}"]={"CurrentOffset":current_offset, "LogEndOffset":log_end_offset, "ConsumerLag": consumer_lag}
-            
-        return data
-
 
     def metriccollector(self):
 
@@ -107,16 +67,7 @@ class kafka:
                       metric_result = jmxConnection.query(jmxQuery)
                       if metric_result:
                         self.maindata[metrics]=metric_result[0].value
-
-
-            try:
-                lag_data=self.cmd_lag_metric()
-            except Exception as e:
-                self.maindata["status"]=0
-                self.maindata['msg']=str(e)
-                return self.maindata
             
-
             partition_metrics=["InSyncReplicasCount","LastStableOffsetLag","ReplicasCount","UnderReplicated","UnderMinIsr"]
             partition_data=[]
 
@@ -130,12 +81,8 @@ class kafka:
                         data[metric]=value[0].value
                     else:
                         data[metric]=0
-                
-
 
                 data["name"]="Partition_No_"+str(i)
-                if data["name"] in lag_data:
-                    data.update(lag_data[data["name"]])
 
                 partition_data.append(data)
 
@@ -169,8 +116,6 @@ class kafka:
 
         return self.maindata
 
-
-
 if __name__=="__main__":
 
     kafka_host="localhost"
@@ -178,7 +123,6 @@ if __name__=="__main__":
     kafka_server_port=9092
     kafka_topic_name="mani-topic-1"
     kafka_home="/home/s247-lin-plugin/Documents/kafka/kafka_2.13-3.8.0"
-    kafka_group_name="mani-group-1"
 
     import argparse
     parser=argparse.ArgumentParser()
@@ -187,7 +131,6 @@ if __name__=="__main__":
     parser.add_argument('--kafka_server_port', help='server port to access the kafka server metrics',default=kafka_server_port)
     parser.add_argument('--kafka_topic_name', help='kafka topic name',default=kafka_topic_name)
     parser.add_argument('--kafka_home', help='kafka home path', default=kafka_home)
-    parser.add_argument('--kafka_group_name', help='kafka group name', default=kafka_group_name)
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
     parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
     parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
