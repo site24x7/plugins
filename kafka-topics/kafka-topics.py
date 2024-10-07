@@ -89,16 +89,16 @@ class kafka:
             metric_queries={
 
             "topic_metrics":{
-                f"Bytes In Per Sec ({self.kafka_topic_name})":f"kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec,topic={self.kafka_topic_name}",
-                f"Bytes Out Per Sec ({self.kafka_topic_name})":f"kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec,topic={self.kafka_topic_name}",
-                f"Messages In Per Sec ({self.kafka_topic_name})":f"kafka.server:type=BrokerTopicMetrics,name=MessagesInPerSec,topic={self.kafka_topic_name}",
+                f"Bytes In Per Sec":f"kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec,topic={self.kafka_topic_name}",
+                f"Bytes Out Per Sec":f"kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec,topic={self.kafka_topic_name}",
+                f"Messages In Per Sec":f"kafka.server:type=BrokerTopicMetrics,name=MessagesInPerSec,topic={self.kafka_topic_name}",
             },
             }
 
             jmxQuery = [jmx.JMXQuery(f"kafka.cluster:type=*,name=ReplicasCount,topic={self.kafka_topic_name},partition=*")]
             partition_count= len(jmxConnection.query(jmxQuery))
             if partition_count>25:partition_count=25
-            self.maindata[f'Partition Count ({self.kafka_topic_name})']=partition_count
+            self.maindata[f'Partition Count']=partition_count
             
 
             for metric_type in metric_queries:
@@ -161,7 +161,7 @@ class kafka:
                     applog["logs_enabled"]=False
 
             self.maindata['applog'] = applog
-            self.maindata['tags']=f"Kafka_Broker_Host:{self.kafka_host},Kafka_Topic:{self.kafka_topic_name}"
+            self.maindata['tags']=f"Kafka_Broker_Host:Kafka_Topics_Monitoring"
 
         except Exception as e:
             self.maindata['msg']=str(e)
