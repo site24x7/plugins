@@ -151,7 +151,7 @@ get_plugin_data() {
     default_host="localhost"
     default_port="9092"
     default_jmx_port="9999"
-    default_kafka_home="/home/s247-lin-plugin/Documents/kafka/kafka_2.13-3.8.0"
+    default_kafka_home="/home/users/kafka"
     default_topic_name="my_topic"
     tput setaf 3
     echo
@@ -419,17 +419,17 @@ install_plugin() {
     echo
     tput sgr0
 
-    # move_plugin
-    # tput setaf 3
-    # echo
-    # echo "------------Plugin installed successfully------------"
-    # tput sgr0
-    # restart_agent
-    # if  $agent_path_change ; then
-    #     echo "If you have installed the agent as non-root, execute the command below with appropriate details to allow the user access to the plugin folder."
-    #     echo "For example, if the user is 'site24x7-agent' and the group is 'site24x7-group', the command would be:"
-    #     echo "$(tput bold)chown -R site24x7-agent:site24x7-group $plugin_dir$plugin$(tput sgr0)"
-    # fi
+    move_plugin
+    tput setaf 3
+    echo
+    echo "------------Plugin installed successfully------------"
+    tput sgr0
+    restart_agent
+    if  $agent_path_change ; then
+        echo "If you have installed the agent as non-root, execute the command below with appropriate details to allow the user access to the plugin folder."
+        echo "For example, if the user is 'site24x7-agent' and the group is 'site24x7-group', the command would be:"
+        echo "$(tput bold)chown -R site24x7-agent:site24x7-group $plugin_dir$plugin$(tput sgr0)"
+    fi
 
 }
 
