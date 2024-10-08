@@ -28,7 +28,7 @@ cd kafka_topics/
 - Download below files and place it under the "kafka_topics" directory.
 
 ```bash
-wget https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/kafka/kafka_topics/kafka_topics.py && sed -i "1s|^.*|#! $(which python3)|" kafka.py
+wget https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/kafka/kafka_topics/kafka_topics.py && sed -i "1s|^.*|#! $(which python3)|" kafka_topics.py
 wget https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/kafka/kafka_topics/kafka_topics.cfg
 ```
 
