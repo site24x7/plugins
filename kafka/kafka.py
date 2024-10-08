@@ -170,7 +170,7 @@ class kafka:
 if __name__=="__main__":
 
     kafka_host = "localhost"
-    kafka_jmx_port = 9999
+    kafka_jmx_port = "9999"
 
     import argparse
     parser=argparse.ArgumentParser()
