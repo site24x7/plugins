@@ -12,7 +12,6 @@ class kafka:
         self.maindata={}
         self.maindata['plugin_version'] = PLUGIN_VERSION
         self.maindata['heartbeat_required']=HEARTBEAT
-        self.kafka_home=args.kafka_home
         self.kafka_host=args.kafka_host
         self.kafka_jmx_port=args.kafka_jmx_port
         
@@ -172,13 +171,11 @@ if __name__=="__main__":
 
     kafka_host="localhost"
     kafka_jmx_port=9999
-    kafka_home="/home/s247-lin-plugin/Documents/kafka/kafka_2.13-3.8.0"
 
     import argparse
     parser=argparse.ArgumentParser()
     parser.add_argument('--kafka_host', help='host name to access the kafka server metrics',default=kafka_host)
     parser.add_argument('--kafka_jmx_port', help='jmx port to access the kafka server metrics',default=kafka_jmx_port)
-    parser.add_argument('--kafka_home', help='kafka home path', default=kafka_home)
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
     parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
     parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
