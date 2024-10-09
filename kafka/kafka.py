@@ -46,7 +46,7 @@ class kafka:
             metric_queries={
 
             "broker_topic_metrics":{
-                "Bytes In Per Sec":"kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec/Count (Long)",
+                "Bytes In Per Sec":"kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec",
                 "Bytes Out Per Sec":"kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec",
                 "Bytes Rejected Per Sec":"kafka.server:type=BrokerTopicMetrics,name=BytesRejectedPerSec",
                 "Failed Fetch Requests Per Sec":"kafka.server:type=BrokerTopicMetrics,name=FailedFetchRequestsPerSec",
@@ -68,6 +68,7 @@ class kafka:
                 "At Min Isr Partition Count":"kafka.server:type=ReplicaManager,name=AtMinIsrPartitionCount",
                 "Failed Isr Updates Per Sec":"kafka.server:type=ReplicaManager,name=FailedIsrUpdatesPerSec",
                 "Isr Shrinks Per Sec":"kafka.server:type=ReplicaManager,name=IsrShrinksPerSec",
+                "Isr Expands Per Sec":"kafka.server:type=ReplicaManager,name=IsrExpandsPerSec",
                 "Leader Count":"kafka.server:type=ReplicaManager,name=LeaderCount",
                 "Partition Count":"kafka.server:type=ReplicaManager,name=PartitionCount",
                 "Partitions With Late Transactions Count":"kafka.server:type=ReplicaManager,name=PartitionsWithLateTransactionsCount",
@@ -83,15 +84,39 @@ class kafka:
                 "Leader Election Rate ":"kafka.controller:type=ControllerStats,name=LeaderElectionRateAndTimeMs/Count",
                 "Total Topics Count": "kafka.controller:type=KafkaController,name=GlobalTopicCount",
             },
+            
+            "purgatory":{
+                "Purgatory Size Produce":"kafka.server:type=DelayedOperationPurgatory,delayedOperation=Produce,name=PurgatorySize",
+                "Purgatory Size Fetch":"kafka.server:type=DelayedOperationPurgatory,delayedOperation=Fetch,name=PurgatorySize",
+                
+            },
+            "current_control_id":{
+                "Current Control ID":"kafka.server:type=MetadataLoader,name=CurrentControllerId",
+            },
+            "request_handler_average_idle_percent":{
+                "Request Handler Avg Idle Percent":"kafka.server:type=KafkaRequestHandlerPool,name=RequestHandlerAvgIdlePercent",
+            },
+            "replicas":{
+                 "Replicas In eligible To Delete Count":"kafka.controller:type=KafkaController,name=ReplicasIneligibleToDeleteCount",
+                "Replicas To Delete Count":"kafka.controller:type=KafkaController,name=ReplicasToDeleteCount",
+            },
+            "topics":{
+                "Topics Ineligible To Delete Count":"kafka.controller:type=KafkaController,name=TopicsIneligibleToDeleteCount",
+                "Topics To Delete Count":"kafka.controller:type=KafkaController,name=TopicsToDeleteCount",
+            },
+            "zookeeper":{
+                "ZooKeeper Disconnects Per Sec":"kafka.server:type=SessionExpireListener,name=ZooKeeperDisconnectsPerSec",
+                "Global Partition Count":"kafka.controller:type=KafkaController,name=GlobalPartitionCount"
+            }
             }
 
             for metric_type in metric_queries:
-                 for metrics in metric_queries[metric_type]:
-                      query=metric_queries[metric_type][metrics]
-                      jmxQuery = [jmx.JMXQuery(query)]
-                      metric_result = jmxConnection.query(jmxQuery)
-                      if metric_result:
-                        self.maindata[metrics]=metric_result[0].value
+                for metrics in metric_queries[metric_type]:
+                    query=metric_queries[metric_type][metrics]
+                    jmxQuery = [jmx.JMXQuery(query)]
+                    metric_result = jmxConnection.query(jmxQuery)
+                    if metric_result:
+                      self.maindata[metrics]=metric_result[0].value
 
             applog={}
             if(self.logsenabled in ['True', 'true', '1']):
@@ -109,60 +134,63 @@ class kafka:
             return self.maindata
         
         self.maindata['tabs'] = {
-    'General Stats': {
+    'Traffic Metrics': {
         'order': 1,
         'tablist': [
-            'Total Topics Count',
-            'Partition Count',
-            'Leader Count',
-            'Active Controller Count',
-            'Fetch Message Conversions Per Sec',
-            'Produce Message Conversions Per Sec'
-        ]
-    },
-    'Request Metrics': {
-        'order': 2,
-        'tablist': [
+            'Bytes In Per Sec',
+            'Bytes Out Per Sec',
             'Total Fetch Requests Per Sec',
             'Total Produce Requests Per Sec',
-            'Bytes Out Per Sec'
-        ]
-    },
-    'Errors & Failures': {
-        'order': 3,
-        'tablist': [
             'Failed Fetch Requests Per Sec',
-            'Failed Produce Requests Per Sec',
-            'Failed Isr Updates Per Sec',
-            'Invalid Magic Number Records Per Sec',
-            'Invalid Message Crc Records Per Sec',
-            'Invalid Offset Or Sequence Records Per Sec',
-            'No Key Compacted Topic Records Per Sec',
-            'Partitions With Late Transactions Count',
-            'Reassigning Partitions',
-            'Under Min Isr Partition Count',
-            'Under Replicated Partitions',
-            'Offline Partitions Count'
+            'Failed Produce Requests Per Sec'
         ]
     },
-    'Reassignment & Replication': {
-        'order': 4,
+    'Replication Metrics': {
+        'order': 2,
         'tablist': [
+            'Replication Bytes In Per Sec',
+            'Replication Bytes Out Per Sec',
             'Reassignment Bytes In Per Sec',
             'Reassignment Bytes Out Per Sec',
-            'Replication Bytes In Per Sec'
+            'Under Replicated Partitions',
+            'Under Min Isr Partition Count',
+            'Replicas In eligible To Delete Count',
+            'Replicas To Delete Count'
         ]
     },
     'ISR Metrics': {
-        'order': 5,
+        'order': 3,
         'tablist': [
             'At Min Isr Partition Count',
+            'Isr Expands Per Sec',
             'Isr Shrinks Per Sec',
-            'Leader Election Rate',
+            'Partitions With Late Transactions Count',
+            'Leader Count',
             'Producer Id Count'
+        ]
+    },
+    'Controller Metrics': {
+        'order': 4,
+        'tablist': [
+            'Active Controller Count',
+            'Offline Partitions Count',
+            'Global Partition Count',
+            'Leader Election Rate',
+            'Total Topics Count',
+            'Topics Ineligible To Delete Count',
+            'Topics To Delete Count'
+        ]
+    },
+    'Purgatory Metrics': {
+        'order': 5,
+        'tablist': [
+            'Purgatory Size Produce',
+            'Purgatory Size Fetch',
+            'ZooKeeper Disconnects Per Sec'
         ]
     }
 }
+        
         return self.maindata
 
 
