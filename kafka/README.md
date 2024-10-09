@@ -63,9 +63,9 @@ If you're not using Linux servers or want to install the plugin manually, follow
     
 - After above command with parameters gives expected output, please configure the relevant parameters in the kafka.cfg file.
 
-      [kafka_instance]
-      kafka_host="localhost"
-      kafka_jmx_port=9999
+      [kafka]
+      kafka_host = "localhost"
+      kafka_jmx_port = "9999"
 
 
 #### Linux
