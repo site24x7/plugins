@@ -59,17 +59,13 @@ If you're not using Linux servers or want to install the plugin manually, follow
 
 - Execute the below command with appropriate arguments to check for the valid json output:
     
-        python3 kafka.py --kafka_host "KAFKA_BROKER_HOST_IP" --kafka_jmx_port "KAFKA_BROKER_PORT_NO" --kafka_server_port "KAFKA_SERVER_PORT_NO" --kafka_home "KAFKA_HOME" --kafka_group_name "KAFKA_GROUP_NAME" --kafka_topic_name "KAFKA_TOPIC_NAME" 
+        python3 kafka.py --kafka_host "KAFKA_BROKER_HOST_IP" --kafka_jmx_port "KAFKA_BROKER_PORT_NO"
     
 - After above command with parameters gives expected output, please configure the relevant parameters in the kafka.cfg file.
 
       [kafka_instance]
       kafka_host="localhost"
       kafka_jmx_port=9999
-      kafka_server_port=9092
-      kafka_topic_name="quickstart-events"
-      kafka_home="/home/users/kafka"
-      kafka_group_name="console-consumer"
 
 
 #### Linux
@@ -88,55 +84,74 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 
         Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\kafka
 
-  
 ## Supported Metrics
-The following metrics are captured by the Kafka monitoring plugin :
+The following metrics are captured by the Kafka monitoring plugin:
+
+### Traffic Metrics
+
+| Metric Name                                      | Description                                                                                           |
+|--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| Bytes In Per Sec                                 | Rate of bytes received by the broker per second.                                                      |
+| Bytes Out Per Sec                                | Rate of bytes sent by the broker per second.                                                          |
+| Total Fetch Requests Per Sec                     | Total rate of fetch requests per second.                                                              |
+| Total Produce Requests Per Sec                   | Total rate of produce requests per second.                                                            |
+| Failed Fetch Requests Per Sec                    | Rate of fetch requests that failed per second.                                                        |
+| Failed Produce Requests Per Sec                  | Rate of produce requests that failed per second.                                                      |
+
+### Replication Metrics
+
+| Metric Name                                      | Description                                                                                           |
+|--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| Replication Bytes In Per Sec                     | Rate of bytes replicated to the broker per second.                                                    |
+| Replication Bytes Out Per Sec                    | Rate of bytes replicated from the broker per second.                                                  |
+| Reassignment Bytes In Per Sec                    | Rate of bytes reassigned to the broker per second.                                                    |
+| Reassignment Bytes Out Per Sec                   | Rate of bytes reassigned from the broker per second.                                                  |
+| Under Replicated Partitions                      | Number of under-replicated partitions.                                                                |
+| Under Min Isr Partition Count                    | Number of partitions with replicas under the minimum in-sync replicas.                                |
+| Replicas Ineligible To Delete Count              | Number of replicas not eligible for deletion.                                                         |
+| Replicas To Delete Count                         | Number of replicas pending deletion.                                                                  |
+
+### ISR (In-Sync Replica) Metrics
+
+| Metric Name                                      | Description                                                                                           |
+|--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| At Min Isr Partition Count                       | Number of partitions with replicas currently at or below the minimum in-sync replicas.                |
+| Isr Expands Per Sec                              | Rate of in-sync replica expansion per second.                                                         |
+| Isr Shrinks Per Sec                              | Rate of in-sync replica shrinkage per second.                                                         |
+| Partitions With Late Transactions Count          | Number of partitions with late transactions.                                                          |
+| Leader Count                                     | Number of leaders managed by the replication manager.                                                 |
+| Producer Id Count                                | Number of active producer IDs.                                                                        |
+
+### Controller Metrics
+
+| Metric Name                                      | Description                                                                                           |
+|--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| Active Controller Count                          | Number of active controllers in the Kafka cluster.                                                    |
+| Offline Partitions Count                         | Number of partitions that are offline.                                                                |
+| Global Partition Count                           | Total number of partitions across all brokers.                                                        |
+| Leader Election Rate                             | Rate of leader elections in the cluster.                                                              |
+| Total Topics Count                               | Total number of topics in the Kafka cluster.                                                          |
+| Topics Ineligible To Delete Count                | Number of topics not eligible for deletion.                                                           |
+| Topics To Delete Count                           | Number of topics pending deletion.                                                                    |
+
+### Purgatory Metrics
+
+| Metric Name                                      | Description                                                                                           |
+|--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| Purgatory Size Produce                           | Number of produce requests in purgatory.                                                              |
+| Purgatory Size Fetch                             | Number of fetch requests in purgatory.                                                                |
+| ZooKeeper Disconnects Per Sec                    | Rate of ZooKeeper disconnections per second.                                                          |
 
 
-| Metric Name                                     | Description                                                                                           |
-|-------------------------------------------------|-------------------------------------------------------------------------------------------------------|
-| **Broker Topic Metrics**                        |                                                                                                       |
-| Bytes In Per Sec                               | Rate of bytes received by the broker per second.                                                      |
-| Bytes Out Per Sec                              | Rate of bytes sent by the broker per second.                                                          |
-| Bytes Rejected Per Sec                         | Rate of bytes rejected by the broker per second.                                                      |
-| Failed Fetch Requests Per Sec                  | Rate of fetch requests that failed per second.                                                        |
-| Failed Produce Requests Per Sec                | Rate of produce requests that failed per second.                                                      |
-| Fetch Message Conversions Per Sec              | Rate of fetch message conversions per second.                                                        |
-| Invalid Magic Number Records Per Sec           | Rate of records with invalid magic numbers per second.                                                |
-| Invalid Message Crc Records Per Sec            | Rate of records with invalid message CRC per second.                                                 |
-| Invalid Offset Or Sequence Records Per Sec     | Rate of records with invalid offsets or sequences per second.                                        |
-| Messages In Per Sec                           | Rate of messages received by the broker per second.                                                    |
-| No Key Compacted Topic Records Per Sec         | Rate of records in compacted topics with no key per second.                                            |
-| Produce Message Conversions Per Sec            | Rate of produce message conversions per second.                                                        |
-| Reassignment Bytes In Per Sec                  | Rate of bytes reassigned to the broker per second.                                                    |
-| Reassignment Bytes Out Per Sec                 | Rate of bytes reassigned from the broker per second.                                                  |
-| Replication Bytes In Per Sec                   | Rate of bytes replicated to the broker per second.                                                    |
-| Total Fetch Requests Per Sec                   | Total rate of fetch requests per second.                                                              |
-| Total Produce Requests Per Sec                 | Total rate of produce requests per second.                                                            |
-| At Min Isr Partition Count                     | Number of partitions with replicas currently at or below the minimum in-sync replicas.                |
-| Failed Isr Updates Per Sec                     | Rate of failed in-sync replica updates per second.                                                    |
-| Isr Shrinks Per Sec                            | Rate of in-sync replica shrinkage per second.                                                         |
-| Leader Count                                   | Number of leaders managed by the replication manager.                                                 |
-| Partition Count                                | Total number of partitions managed by the replication manager.                                       |
-| Partitions With Late Transactions Count        | Number of partitions with late transactions.                                                         |
-| Producer Id Count                              | Number of active producer IDs.                                                                         |
-| Reassigning Partitions                         | Number of partitions currently being reassigned.                                                      |
-| Under Min Isr Partition Count                  | Number of partitions with replicas currently under the minimum in-sync replicas.                      |
-| Under Replicated Partitions                    | Number of under-replicated partitions.                                                                |
-| Active Controller Count                        | Number of active controllers in the Kafka cluster.                                                    |
-| Offline Partitions Count                       | Number of partitions that are offline.                                                                |
-| Leader Election Rate                           | Rate of leader elections in the cluster.                                                              |
-
-### Partition Metrics
-
-| Metric Name            | Description                                                                                                    |
-|------------------------|----------------------------------------------------------------------------------------------------------------|
-| In Sync Replicas Count         | Number of in-sync replicas for the partition.                                                                   |
-| Last Stable Offset Lag         | Lag between the last stable offset and the current offset for the partition.                                   |
-| Replicas Count                 | Total number of replicas for the partition.                                                                     |
-| Under Replicated               | Indicates whether the partition is under-replicated.                                                            |
-| Under Min Isr            | Indicates whether the partition is currently under the minimum in-sync replica count.                           |
-| Current Offset         | The current offset is the offset of the next message that will be read from the partition.                     |
-| Log End Offset         | The log-end-offset is the offset of the last message that has been appended to the partition's log.            |
-| Lag                    | Lag represents the difference between the log-end-offset and the current offset, indicating consumption or replication lag. |
- 
+| Metric Name                                      | Description                                                                                           |
+|--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| Bytes Rejected Per Sec                           | Rate of bytes rejected by the broker per second.                                                      |
+| Fetch Message Conversions Per Sec                | Rate of fetch message conversions per second.                                                         |
+| Invalid Magic Number Records Per Sec             | Rate of records with invalid magic numbers per second.                                                |
+| Invalid Message Crc Records Per Sec              | Rate of records with invalid message CRC per second.                                                  |
+| Invalid Offset Or Sequence Records Per Sec       | Rate of records with invalid offsets or sequences per second.                                         |
+| No Key Compacted Topic Records Per Sec           | Rate of records in compacted topics with no key per second.                                           |
+| Produce Message Conversions Per Sec              | Rate of produce message conversions per second.                                                       |
+| Reassigning Partitions                           | Number of partitions currently being reassigned.                                                      |
+| Current Control ID                               | Current control ID of the Kafka controller.                                                           |
+| Request Handler Avg Idle Percent                 | Average idle percentage of request handlers.                                                          |
