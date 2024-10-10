@@ -136,7 +136,10 @@ class nfs:
                 mount_data=nfs_mount.split(" ")
                 mount_data=self.rem(mount_data)
                 if len(mount_data)!=0:
-                    info=mount_data[5][1:-1].split(',')
+                    for i in mount_data:
+                        if "vers" in i:
+                            info=i[1:-1].split(',')
+                            break
                     if "rw" in info[0]:
                         self.maindata[mount_data[2]+" Permission"]="read/write"
                     elif "ro" in info[0]:
@@ -163,9 +166,18 @@ class nfs:
             Total_Size, Used_Size, Avail_Size =data[1:4]
             percent_used=data[4].strip("%")
 
-            Total_Size=self.convert_to_gb(float(Total_Size[:-1]),Total_Size[-1])
-            Used_Size=self.convert_to_gb(float(Used_Size[:-1]),Used_Size[-1])
-            Avail_Size=self.convert_to_gb(float(Avail_Size[:-1]),Avail_Size[-1])
+            if Total_Size=="0":
+                Total_Size=0.0
+            else:
+                Total_Size=self.convert_to_gb(float(Total_Size[:-1]),Total_Size[-1])
+            if Used_Size=="0":
+                Used_Size=0.0
+            else:
+                Used_Size=self.convert_to_gb(float(Used_Size[:-1]),Used_Size[-1])
+            if Avail_Size=="0":
+                Avail_Size=0.0
+            else:
+                Avail_Size=self.convert_to_gb(float(Avail_Size[:-1]),Avail_Size[-1])
 
 
             subdata['name']=path
