@@ -34,12 +34,12 @@
 
 ## Plugin Installation  
 
-- Create a directory "jenkins_web".
+- Create a directory "jenkins".
 
 		mkdir jenkins
   		cd jenkins/
       
-- Download all the files and place it under the "jenkins_web" directory
+- Download all the files and place it under the "jenkins" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins/jenkins.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/jenkins/jenkins.cfg
@@ -50,7 +50,7 @@
 
 		python jenkins.py --host "host" --port "port" --username "username" --password "password" --apikey "apikey"
 		
-- Change the below configurations in "jenkins_performance.cfg" file
+- Change the below configurations in "jenkins.cfg" file
 
 		[jenkins]
 		host="host"
@@ -61,9 +61,9 @@
 
 ##### Linux 
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the jenkins_web.py script.
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the jenkins.py script.
 
-- Move the directory "jenkins_web" under Site24x7 Linux Agent plugin directory : 
+- Move the directory "jenkins" under Site24x7 Linux Agent plugin directory : 
 
 		mv jenkins /opt/site24x7/monagent/plugins/
 
