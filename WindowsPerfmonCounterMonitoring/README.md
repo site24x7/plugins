@@ -21,7 +21,7 @@ Windows Performance Counters provide a high-level abstraction layer that provide
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/WindowsPerfmonCounterMonitoring/WindowsPerfmonCounterMonitoring.cfg
 	```
 		
-3. To monitor desired Windows perfmon counters, you need the exact names of the performance counters. To get the counter name from the Windows Performance Monitor [read](https://support.site24x7.com/portal/en/kb/articles/add-perfmon-counters-in-windows) this article.
+3. To monitor desired Windows perfmon counters, you need the exact names of the performance counters. To get the counter name from the Windows Performance Monitor [read this](https://support.site24x7.com/portal/en/kb/articles/add-perfmon-counters-in-windows) article.
 
 5. Open the "WindowsPerfmonCounterMonitoring.cfg" and in the counters config, configure your desired perfmon counters, units and displaynames. The value of each is separated by a comma. Example as follows
 
