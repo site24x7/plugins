@@ -13,9 +13,9 @@ Windows Performance Counters provide a high-level abstraction layer that provide
 
 ## **Plugin installation**
 
-1. Create a folder named "WindowsPerfmonCounterMonitoring" 
+1. Create a folder named `WindowsPerfmonCounterMonitoring`.
 
-2. Download the below files and place them under the created "WindowsPerfmonCounterMonitoring" directory.
+2. Download the below files [WindowsPerfmonCounterMonitoring.cfg](https://github.com/site24x7/plugins/blob/master/WindowsPerfmonCounterMonitoring/WindowsPerfmonCounterMonitoring.cfg) and [WindowsPerfmonCounterMonitoring.ps1](https://github.com/site24x7/plugins/blob/master/WindowsPerfmonCounterMonitoring/WindowsPerfmonCounterMonitoring.ps1), and place them under the created "WindowsPerfmonCounterMonitoring" directory.
 	```
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/WindowsPerfmonCounterMonitoring/WindowsPerfmonCounterMonitoring.ps1
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/WindowsPerfmonCounterMonitoring/WindowsPerfmonCounterMonitoring.cfg
@@ -25,21 +25,15 @@ Windows Performance Counters provide a high-level abstraction layer that provide
 
 5. Open the "WindowsPerfmonCounterMonitoring.cfg" and in the counters config, configure your desired perfmon counters, units and displaynames. The value of each is separated by a comma. Example as follows
 
-		[counter_monitoring]
-		counters="\LogicalDisk(C:)\Avg. Disk sec/Write,\Processor Information(_Total)\% Processor Time,\LogicalDisk(C:)\Avg. Disk Bytes/Write,\Processor(_Total)\% Idle Time,\Event Log\Events/sec,\PhysicalDisk(_Total)\Avg. Disk Bytes/Read,\LogicalDisk(_Total)\Current Disk Queue Length,\Thread(_Total/_Total)\Priority Current,\Process(_Total)\IO Read Operations/sec,\Database(HealthService)\Database Cache % Hit"
-		units="sec/Write,%,bytes/Write,%,/sec,bytes/read,count,count,/sec,%" 
-		displaynames="disk_write,processor_time,disk_byteswrite,Processor_idle_time,event_logs,disk_read,disk_queue_length,current_priority_thread, IO_read_operations,database_healthservice_cache_hit"
+  	```bash
+	[counter_monitoring]
+	counters="\LogicalDisk(C:)\Avg. Disk sec/Write,\Processor Information(_Total)\% Processor Time,\LogicalDisk(C:)\Avg. Disk Bytes/Write,\Processor(_Total)\% Idle Time,\Event Log\Events/sec,\PhysicalDisk(_Total)\Avg. Disk Bytes/Read,\LogicalDisk(_Total)\Current Disk Queue Length,\Thread(_Total/_Total)\Priority Current,\Process(_Total)\IO Read Operations/sec,\Database(HealthService)\Database Cache % Hit"
+	```
 		
-6. Further move the folder "WindowsPerfmonCounterMonitoring" into the Site24x7 Windows Agent plugin directory:
-    Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsPerfmonCounterMonitoring
-    
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations. 
-
-Note: 
-- Please ensure the position of metrics, counters, units, displaynames correctly. Thus it will map and showcase in the Site24x7 web client correctly.
-- For example, the number of counters, units, and displaynames should be same. Also, the first metric from counters should map to both units and displaynames.
-
+6. Further move the folder `WindowsPerfmonCounterMonitoring` into the Site24x7 Windows Agent plugin directory:
+   
+	```
+	C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+	```
  
-
-
-
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations. 
