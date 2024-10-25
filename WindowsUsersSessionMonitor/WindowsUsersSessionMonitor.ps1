@@ -64,4 +64,4 @@ $dataObj.Add("heartbeat_required", $heartbeat)
 $data =Get-Data
 $dataObj.Add("plugin_version", $version)
 
-$dataObj | ConvertTo-Json
+$dataObj | ConvertTo-Json -Compress

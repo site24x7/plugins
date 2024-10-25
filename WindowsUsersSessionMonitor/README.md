@@ -15,7 +15,7 @@ Download and install the latest version of the [Site24x7 Windows agent](https://
 
 3. Further move the folder `WindowsUsersSessionMonitor` into the Site24x7 Windows Agent plugin directory:
     ```
-    C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsPerfmonCounterMonitoring
+    C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
     ```
 The agent will automatically execute the plugin within few minutes and user can see the plugin monitor under Site24x7 -> Plugins -> Plugin Integrations.
   
