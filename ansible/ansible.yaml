@@ -34,13 +34,13 @@
     - name: Copy the plugin folder from control node to each host
       synchronize:
         src: "{{ plugin_folder_path }}"
-        dest: /opt/site24x7/monagent/temp/
+        dest: /opt/site24x7/monagent/plugins
         mode: push
       delegate_to: localhost
 
     - name: Print success message after copying
       debug:
-        msg: "Plugin folder copied successfully to /opt/site24x7/monagent/temp on host {{ inventory_hostname }}"
+        msg: "Plugin folder copied successfully to /opt/site24x7/monagent/plugins on host {{ inventory_hostname }}"
 
     - name: Indicate process completed for {{ inventory_hostname }}
       debug:
