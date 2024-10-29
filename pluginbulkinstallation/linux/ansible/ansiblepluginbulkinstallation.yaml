@@ -12,7 +12,7 @@
     - name: Display introductory message
       debug:
         msg: >
-          This installer uses Ansible to deploy a plugins from the controller node to target hosts. It is ideal for installing the same plugin across multiple servers.
+          This installer uses Ansible to deploy a plugin from the controller node to target hosts. It is ideal for installing the same plugin across multiple servers.
           Before you start, ensure you meet the following prerequisites:
           
           1. The Site24x7 Linux monitoring agent is installed and running in your target hosts.
