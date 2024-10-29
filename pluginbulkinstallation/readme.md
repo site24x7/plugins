@@ -21,7 +21,7 @@ Before executing this playbook, ensure the following prerequisites are met:
 1. **Download the Ansible Playbook**:
    Use the following command to download the Ansible playbook:
    ```bash
-   wget https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/ansible/ansible.yaml
+   wget https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/pluginbulkinstallation/pluginbulkinstallation.yaml
    ```
 
 2. **Define the Target Hosts**:
@@ -30,12 +30,12 @@ Before executing this playbook, ensure the following prerequisites are met:
 3. **Run the Ansible Playbook**:
    Execute the playbook using the following command, specifying the path to the plugin folder:
    ```bash
-   ansible-playbook ansible.yaml
+   ansible-playbook pluginbulkinstallation.yaml
    ```
 
 4. **Execute the Plugin**:
    Run the following command to execute the playbook, and specify the plugin folder path (e.g., `/root/user/custom_plugin`) where the plugin files are located:
    ```bash
-   ansible-playbook ansible.yaml -e "plugin_folder_path=/root/user/custom_plugin"
+   ansible-playbook pluginbulkinstallation.yaml -e "plugin_folder_path=/root/user/custom_plugin"
    ```
 
