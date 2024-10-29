@@ -1,0 +1,47 @@
+---
+- name: Plugin Bulk Installation
+  hosts: all
+  become: yes
+
+  vars_prompt:
+    - name: plugin_folder_path
+      prompt: "Enter the folder where plugin is present on this server (e.g., /root/user/custom_plugin)"
+      private: no
+
+  pre_tasks:
+    - name: Display introductory message
+      debug:
+        msg: >
+          This installer uses Ansible to deploy multiple plugins from the controller node to target hosts. It is ideal for installing the same plugin across multiple servers.
+
+          Before you start, ensure you meet the following prerequisites:
+          
+          1. The Site24x7 Linux monitoring agent is installed and running in your target hosts.
+          2. Ansible is configured correctly for all target hosts.
+
+          Follow the instructions below to add the plugins.
+
+  tasks:
+    - name: Indicate process started for {{ inventory_hostname }}
+      debug:
+        msg: "Process started for {{ inventory_hostname }}"
+
+    - name: Check status of Site24x7 monitoring agent service (site24x7monagent)
+      command: systemctl is-active site24x7monagent
+      register: service_status
+      ignore_errors: yes
+
+    - name: Copy the plugin folder from control node to each host
+      synchronize:
+        src: "{{ plugin_folder_path }}"
+        dest: /opt/site24x7/monagent/temp/
+        mode: push
+      delegate_to: localhost
+
+    - name: Print success message after copying
+      debug:
+        msg: "Plugin folder copied successfully to /opt/site24x7/monagent/temp on host {{ inventory_hostname }}"
+
+    - name: Indicate process completed for {{ inventory_hostname }}
+      debug:
+        msg: "Process completed for {{ inventory_hostname }}"
