@@ -44,6 +44,11 @@ METRICS_UNITS={
     },
     "PDB_Details":{
         "PDB_Size":"mb"
+    },
+    "ASM_Details":{
+        "total_gb": "GB",
+        "free_gb": "GB",
+        "pct_free": "%"
     }
 }
 
@@ -109,6 +114,13 @@ class oracle:
                     if metric=="Maximum PGA Allocated":
                         value=str(value/1024/1024)+" MB"
                     queried_data[metric]=value
+            elif query_name=="asm_query":
+                asm_list = []
+                for row in self.c:
+                    asm_name, asm_total_gb, asm_free_gb, asm_pct_free, asm_limit, asm_threshold = row
+
+                    asm_list.append({"name": asm_name, "ASM_TOTAL_GB" :asm_total_gb, "ASM_FREE_GB": asm_free_gb, "ASM_PCT_FREE": asm_pct_free ,"ASM_LIMIT": asm_limit, "ASM_THRESHOLD": asm_threshold})
+                queried_data['ASM_Details']=asm_list
             else:
                 for row in self.c:
                     value,metric=row
@@ -268,6 +280,7 @@ class oracle:
                 "system_query":"SELECT VALUE, METRIC_NAME FROM GV$SYSMETRIC WHERE METRIC_NAME IN ( 'Soft Parse Ratio', 'Total Parse Count Per Sec', 'Total Parse Count Per Txn', 'Hard Parse Count Per Sec', 'Hard Parse Count Per Txn', 'Parse Failure Count Per Sec', 'Parse Failure Count Per Txn', 'Temp Space Used', 'Session Count', 'Session Limit %', 'Database Wait Time Ratio', 'Memory Sorts Ratio', 'Disk Sort Per Sec', 'Rows Per Sort', 'Total Sorts Per User Call', 'User Rollbacks Per Sec', 'SQL Service Response Time', 'Long Table Scans Per Sec', 'Average Active Sessions', 'Logons Per Sec', 'Global Cache Blocks Los', 'Global Cache Blocks Corrupted', 'GC CR Block Received Per Second', 'Enqueue Timeouts Per Sec', 'Physical Writes Per Sec', 'Physical Reads Per Sec', 'Shared Pool Free %', 'Library Cache Hit Ratio', 'Cursor Cache Hit Ratio', 'Buffer Cache Hit Ratio' )",
                 "pga_query":"SELECT VALUE, NAME FROM gv$pgastat where NAME IN ('total PGA allocated', 'total freeable PGA memory', 'maximum PGA allocated','total PGA inuse')",
                 "sga_query":"""SELECT sga.value, CONCAT('SGA ',sga.name) AS name FROM GV$SGA sga INNER JOIN GV$INSTANCE inst ON sga.inst_id = inst.inst_id""",
+                "asm_query": "SELECT name AS asm_name, ROUND(total_mb / 1024, 2) AS asm_total_gb, ROUND(free_mb / 1024, 2) AS asm_free_gb, ROUND((free_mb / total_mb) * 100, 2) AS asm_pct_free, USABLE_FILE_MB AS asm_limit, REQUIRED_MIRROR_FREE_MB AS asm_threshold FROM v$asm_diskgroup"
                 },
     
             "Single Queries":{
@@ -387,7 +400,7 @@ class oracle:
                     "SGA Shared Pool Lib Cache Shareable User"
                 ]
             },
-            "I/O Operations":{
+            "I/O Operations and ASM":{
                 "order":3,
                 "tablist":[
                     "Physical Reads Per Sec",
@@ -409,7 +422,8 @@ class oracle:
                     "Log File Sync Time Waited",
                     "Log File Sync Wait Count",
                     "Write Complete Waits Time Waited",
-                    "Write Complete Waits Wait Count"
+                    "Write Complete Waits Wait Count",
+                    "ASM_Details"
                 ]
             },
             "Parsing and Execution":{
