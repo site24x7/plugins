@@ -24,10 +24,13 @@
 	#git_lab.cfg
 	
 		[display_name]
-		personal_access_token='<give your token>'
-		project_id='<projectid>'
+		gitlab_url='https://gitlaburl.com'
+		personal_access_token='9LdYrk1ju3avs-Xth&jkQyu'
+		project_id='1689076'
 
 	display name denotes - plugin monitor name to be displayed in site24x7 client
+
+	gitlab_url denotes - The accessible URL for GitLab.
 	
 	personal_access_token denotes - personal access token created for the github account
 	
