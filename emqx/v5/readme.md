@@ -1,11 +1,4 @@
-
-
-
 # EMQX Monitoring
-
-
-## Standard Installation
-If you're not using Linux servers or want to install the plugin manually, follow the steps below.
 
 ### Prerequisites
 - Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
@@ -14,6 +7,9 @@ If you're not using Linux servers or want to install the plugin manually, follow
 ### Installation  
 
 - Create a directory named "emqx".
+   ```
+	mkdir emqx
+	```
 - Install the **requests** python module.
 	```
 	pip3 install requests
@@ -22,8 +18,8 @@ If you're not using Linux servers or want to install the plugin manually, follow
 	
 - Download the below files in the "emqx" folder and place it under the "emqx" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/emqx/emqx.py && sed -i "1s|^.*|#! $(which python3)|" emqx.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/emqx/emqx.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/emqx/v5/emqx.py && sed -i "1s|^.*|#! $(which python3)|" emqx.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/emqx/v5/emqx.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 	```bash
