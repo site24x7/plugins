@@ -6,8 +6,8 @@ This project provides plugins for EMQX, an open-source, highly scalable, and clo
 
 To ensure compatibility, use the plugin corresponding to your version of EMQX:
 
-- **For EMQX v4**: Use the plugin available in the `v4` folder.
-- **For EMQX v5**: Use the plugin available in the `v5` folder.
+- **For EMQX v4**: Use the plugin available in the [`v4`](./v4).
+- **For EMQX v5**: Use the plugin available in the [`v5`](./v5).
 
 ## Checking Your EMQX Version
 
