@@ -22,8 +22,8 @@ If you're not using Linux servers or want to install the plugin manually, follow
 	
 - Download the below files in the "emqx" folder and place it under the "emqx" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/emqx/emqx.py && sed -i "1s|^.*|#! $(which python3)|" emqx.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/emqx/emqx.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/emqx/v4/emqx.py && sed -i "1s|^.*|#! $(which python3)|" emqx.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/emqx/v4/emqx.cfg
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 	```bash
