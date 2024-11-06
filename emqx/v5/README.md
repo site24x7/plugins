@@ -7,6 +7,9 @@
 ### Installation  
 
 - Create a directory named "emqx".
+   ```
+	mkdir emqx
+	```
 - Install the **requests** python module.
 	```
 	pip3 install requests
