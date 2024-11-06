@@ -1,11 +1,4 @@
-
-
-
 # EMQX Monitoring
-
-
-## Standard Installation
-If you're not using Linux servers or want to install the plugin manually, follow the steps below.
 
 ### Prerequisites
 - Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
