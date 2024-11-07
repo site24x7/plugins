@@ -23,17 +23,18 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/yugabyte_custom_q
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 ```bash
-python3 yugabyte_custom_query.py --host localhost --port 8080 --username yugabyte_custom_query --password yugabyte_custom_query 
+python3 yugabyte.py --host "localhost" --port "5433" --username "yugabyte" --password "yugabyte" --db 'demo'
 ```
 
 - Provide your yugabyte_custom_query configurations in yugabyte_custom_query.cfg file.
 
 ```bash
-[yugabyte_custom_query-server]
+[Demo]
 host = "localhost"
 port = "5433"
-username = "yugabyte_custom_query"
-password = "yugabyte_custom_query"
+username = "yugabyte"
+password = "yugabyte"
+db = "demo"
 ```
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
