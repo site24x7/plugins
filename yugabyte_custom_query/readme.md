@@ -18,7 +18,10 @@ cd yugabyte_custom_query/
 ```bash
 wget https://raw.githubusercontent.com/site24x7/plugins/master/yugabyte_custom_query/yugabyte_custom_query.py && sed -i "1s|^.*|#! $(which python3)|" yugabyte_custom_query.py
 wget https://raw.githubusercontent.com/site24x7/plugins/master/yugabyte_custom_query/yugabyte_custom_query.cfg
+wget https://raw.githubusercontent.com/site24x7/plugins/master/yugabyte_custom_query/query.sql
 ```
+
+- Enter your custom query in the `query.sql` file.
 
 - Execute the below command with appropriate arguments to check for the valid json output:
 
