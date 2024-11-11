@@ -1,4 +1,4 @@
-# yugabyte_custom_query Monitoring
+# Yugabyte Custom Query Monitoring
                                                                                               
 ## Prerequisites
 
@@ -81,7 +81,7 @@ After the first execution, two files will be created:
 
 3. **Map the Log File Paths** for log tracking:
 
-   - **Linux**: `/opt/site24x7/monagent/plugins/yugabyte_custom_query/query_output*.txt`
-   - **Windows**: `C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\yugabyte_custom_query\query_output*.txt`
+   - **Linux**: `/opt/site24x7/monagent/plugins/yugabyte_custom_query/query_output*`
+   - **Windows**: `C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\yugabyte_custom_query\query_output*`
 
-Once the custom application logs are set up, you will be able to continuously monitor your query outputs in Site24x7.
+Once the custom app logs are set up, you will be able to continuously monitor your query outputs in Site24x7.
