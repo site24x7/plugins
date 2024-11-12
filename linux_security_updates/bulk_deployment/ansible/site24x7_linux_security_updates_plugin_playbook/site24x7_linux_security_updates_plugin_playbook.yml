@@ -1,10 +1,10 @@
 ---
- - name: "Site24x7 check_updates Plugin Installation"
+ - name: "Site24x7 linux_security_updates Plugin Installation"
    hosts: all 
    become: yes
 
    tasks:    
-  # Site24x7 check_updates Prerequisites Check
+  # Site24x7 linux_security_updates Prerequisites Check
 
    - name: "Python3 Installation Check."
      command: "python3 --version"
@@ -60,29 +60,29 @@
 
    - name: "Site24x7 Temp Plugins Directory Creation."
      file:
-      path: "/opt/site24x7/monagent/temp/plugins/check_updates"
+      path: "/opt/site24x7/monagent/temp/plugins/linux_security_updates"
       state: directory
      when: agent_path_check.stat.exists
 
    - name: "Site24x7 Plugin Directory Check"
      stat:
-      path: "/opt/site24x7/monagent/temp/plugins/check_updates"
+      path: "/opt/site24x7/monagent/temp/plugins/linux_security_updates"
      register: plugin_path_check
 
-   - name: "Download the Site24x7 check_updates Plugin Files."
+   - name: "Download the Site24x7 linux_security_updates Plugin Files."
      get_url:
         url: "{{ item }}"
-        dest: "/opt/site24x7/monagent/temp/plugins/check_updates"
+        dest: "/opt/site24x7/monagent/temp/plugins/linux_security_updates"
         mode: 0744
-     loop: ["https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.py"]
+     loop: ["https://raw.githubusercontent.com/site24x7/plugins/master/linux_security_updates/linux_security_updates.py"]
      when: plugin_path_check.stat.exists
     
-  # Site24x7 check_updates Python File Setup
+  # Site24x7 linux_security_updates Python File Setup
 
-   - name: "Site24x7 check_updates Python File Check."
+   - name: "Site24x7 linux_security_updates Python File Check."
      stat:
-      path: "/opt/site24x7/monagent/temp/plugins/check_updates/check_updates.py"
-     register: check_updates_python_file_check
+      path: "/opt/site24x7/monagent/temp/plugins/linux_security_updates/linux_security_updates.py"
+     register: linux_security_updates_python_file_check
 
    - name: "Extracting Python3 Default Path."
      command: which python3
@@ -91,24 +91,24 @@
    - set_fact:
       actual_path: "{{ '#!'+python3_path.stdout }}"
 
-   - name: "Setting the Default Python Path for the Site24x7 check_updates Plugin"
+   - name: "Setting the Default Python Path for the Site24x7 linux_security_updates Plugin"
      lineinfile:
-       path: "/opt/site24x7/monagent/temp/plugins/check_updates/check_updates.py"
+       path: "/opt/site24x7/monagent/temp/plugins/linux_security_updates/linux_security_updates.py"
        regexp: "#!"
        line: "{{actual_path}}"
-     when: check_updates_python_file_check.stat.exists
+     when: linux_security_updates_python_file_check.stat.exists
 
-   - name: "Checking the Site24x7 check_updates Plugin Output"
-     shell: "python3 /opt/site24x7/monagent/temp/plugins/check_updates/check_updates.py"
-     register: check_updates_python_output
-     when: check_updates_python_file_check.stat.exists
+   - name: "Checking the Site24x7 linux_security_updates Plugin Output"
+     shell: "python3 /opt/site24x7/monagent/temp/plugins/linux_security_updates/linux_security_updates.py"
+     register: linux_security_updates_python_output
+     when: linux_security_updates_python_file_check.stat.exists
 
-   - name: "Site24x7 check_updates plugins with Error !"
+   - name: "Site24x7 linux_security_updates plugins with Error !"
      debug:
-      msg: "Site24x7 check_updates Plugin OUTPUT error ! \n {{ check_updates_python_output.stdout }}"
-     when: "'\"status\": 0' in check_updates_python_output.stdout and check_updates_python_file_check.stat.exists"
+      msg: "Site24x7 linux_security_updates Plugin OUTPUT error ! \n {{ linux_security_updates_python_output.stdout }}"
+     when: "'\"status\": 0' in linux_security_updates_python_output.stdout and linux_security_updates_python_file_check.stat.exists"
 
-   - name: "Moving the Site24x7 check_updates Folder to the Plugins Directory"
-     command: "mv  /opt/site24x7/monagent/temp/plugins/check_updates /opt/site24x7/monagent/plugins"
+   - name: "Moving the Site24x7 linux_security_updates Folder to the Plugins Directory"
+     command: "mv  /opt/site24x7/monagent/temp/plugins/linux_security_updates /opt/site24x7/monagent/plugins"
      ignore_errors: true
-     when: "plugin_path_check.stat.exists and '\"status\": 0' not in check_updates_python_output.stdout"
+     when: "plugin_path_check.stat.exists and '\"status\": 0' not in linux_security_updates_python_output.stdout"
