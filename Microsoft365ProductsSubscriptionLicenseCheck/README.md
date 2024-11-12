@@ -15,9 +15,10 @@ Configure the Site24x7 Microsoft365ProductsSubscriptionLicenseCheck plugin to mo
 
 ### Plugin Installation  
 
-- Create a directory named "Microsoft365ProductsSubscriptionLicenseCheck".
+- Create a folder named `Microsoft365ProductsSubscriptionLicenseCheck`.
       
-- Download all the files and place it under the "Microsoft365ProductsSubscriptionLicenseCheck" directory.
+- Download all the files [LicenseFriendlyName.txt](https://github.com/site24x7/plugins/blob/master/Microsoft365ProductsSubscriptionLicenseCheck/LicenseFriendlyName.txt), [Microsoft365ProductsSubscriptionLicenseCheck.ps1](https://github.com/site24x7/plugins/blob/master/Microsoft365ProductsSubscriptionLicenseCheck/Microsoft365ProductsSubscriptionLicenseCheck.ps1), [SubscriptionName.csv](https://github.com/site24x7/plugins/blob/master/Microsoft365ProductsSubscriptionLicenseCheck/SubscriptionName.csv)
+ and place it under the `Microsoft365ProductsSubscriptionLicenseCheck` directory.
 	        
       wget https://raw.githubusercontent.com/site24x7/plugins/master/Microsoft365ProductsSubscriptionLicenseCheck/Microsoft365ProductsSubscriptionLicenseCheck.ps1
 
@@ -32,6 +33,6 @@ Configure the Site24x7 Microsoft365ProductsSubscriptionLicenseCheck plugin to mo
  
  - Move the folder into the  Site24x7 Windows Agent plugin directory: 
 
-		Windows             ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\Microsoft365ProductsSubscriptionLicenseCheck
+		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\Microsoft365ProductsSubscriptionLicenseCheck
 		
 ---
