@@ -7,7 +7,11 @@ $heartbeat = "true"
 ### OPTIONAL - Display name to be displayed in Site24x7 client
 $displayname = "Microsoft 365 products subscription license check"  
 
+$units = @{}
+
+
 ### The Get-Data method contains Sample data. Replace you code logic to populate the monitoring data
+
 Function Get-Data()  
 {
     # $name = "Process"
@@ -38,8 +42,8 @@ Function Get-Data()
         [switch]$Purchased, 
         [Switch]$Expired, 
         [Switch]$Active,
-        [string]$UserName="yourUserName",  
-        [string]$Password="yourPassword" 
+        [string]$UserName="",  
+        [string]$Password="" 
     ) 
     try{
 
@@ -117,6 +121,7 @@ Function Get-Data()
         {
             $NamePrint=$EasyName
         } 
+        #Write-Host $NamePrint
 
         #Convert Subscribed date to friendly subscribed date
         $SubscribedDate=(New-TimeSpan -Start $SubscribedOn -End (Get-Date)).Days
@@ -220,12 +225,53 @@ Function Get-Data()
 
         $pdetails= @{}
         $num=1
+        $dict=@{}
 
+
+        $subscriptions=Import-Csv ./SubscriptionName.csv -Delimiter '|' 
+        
+
+        $Subscriptions | ForEach-Object{
+
+        if (!$dict.ContainsKey($_.StringID)){
+        
+        $dict.add( $_.StringID,$_.ProductName)
+
+        }
+        }
+
+
+        $arr= [System.Collections.Generic.List[string]]::new()
         Import-Csv ./details.csv | ForEach-Object {
-            #Write-Host "$($_.SubscriptionName) $($_.FriendlySubscriptionName) Expiry: $($_.FriendlyExpiryDate)"
+           # Write-Host "$($_.SubscriptionName) $($_.FriendlySubscriptionName) Expiry: $($_.FriendlyExpiryDate) $($pdetails.ContainsValue($_.FriendlySubscriptionName)) "
+
+              $Tempsubs=$_.SubscriptionName
+             # Write-Host $Tempsubs
+            
+              $friendlySubscriptionName=$dict[$Tempsubs]
+              #Write-Host $friendlySubscriptionName
 
 
-            $subs=$_.FriendlySubscriptionName
+
+              if($pdetails.ContainsValue($friendlySubscriptionName)){
+               
+                for ($i = 1; $true; $i++) {
+                    
+                    
+                    if(!$pdetails.ContainsValue($friendlySubscriptionName+"_$i")){
+                        
+                        $subs=$friendlySubscriptionName+"_$i"
+                       # Write-Host " $subs" $($pdetails.ContainsValue($_.SubscriptionName)) $_.FriendlySubscriptionName
+                        break
+                   
+                    }
+                 }}else{
+                        $subs=$friendlySubscriptionName
+                # Write-Host " $subs" $($pdetails.ContainsValue($_.SubscriptionName)) $_.FriendlySubscriptionName
+                 }
+
+
+           # Write-Host $subs
             $expiry=$_.FriendlyExpiryDate
             $subsType=$_.SubscriptionType
             $subsDate=$_.SubscribedDate
@@ -241,13 +287,17 @@ Function Get-Data()
             $exp="$($subs) Expires in"
             $pdetails.Add($exp,$expiry)
             $num++
+            $exp="$($subs) Expires in"
+            $units.Add($exp,"days")
         }
+       # Write-Host $pdetails
         return $pdetails
 
     }
     catch{
         $pdetails=@{}
         $pdetails.Add("message",$Error[0].Exception.Message)
+        #Write-Host $Error[0]
         return $pdetails
     }
 
@@ -255,19 +305,7 @@ Function Get-Data()
 }
 
 ### These units specified will be displayed in the Dashboard
-Function Set-Units() 
-{
-    $units = @{}
-    Import-Csv ./details.csv | ForEach-Object {
-        #Write-Host "$($_.SubscriptionName) $($_.FriendlySubscriptionName) Expiry: $($_.FriendlyExpiryDate)"
-    
-    
-        $subs=$_.FriendlySubscriptionName
-        $exp="$($subs) Expires in"
-        $units.Add($exp,"days")
-    }
-    return $units
-}
+
 
 $mainJson = @{}
 
@@ -278,10 +316,7 @@ $mainJson.Add("heartbeat_required", $heartbeat)
 $mainJson.Add("displayname", $displayname) 
 
 ### Populates the monitoring data and its units
-$mainJson.Add("units", (Set-Units)) 
+$mainJson.Add("units", $units) 
 
 ### Returns the monitoring data to Site24x7 servers
-return $mainJson | ConvertTo-Json
-
-
-
+return $mainJson | ConvertTo-Json -Compress
