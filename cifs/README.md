@@ -34,8 +34,6 @@ This plugin monitors the performance metrics of CIFS mount point status, IP addr
 
 - The plugin will automatically identify and monitor all CIFS mounts present on the server.
 
-- Increase the plugin version if you need to add mounts to monitor after plugin registration.
-
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
 	```bash
@@ -48,6 +46,14 @@ This plugin monitors the performance metrics of CIFS mount point status, IP addr
 	```
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
+#### Note:
+To add mount points after the registration of the plugin, increase the version of the plugin in cifs.cfg file, as mentioned below.
+
+```bash
+[mounts]
+plugin_version = "2"
+```
 
 
 ## Metrics Captured
