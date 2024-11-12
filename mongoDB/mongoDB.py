@@ -325,8 +325,6 @@ class MongoDB(object):
                         pass
                     else:
                         data['msg'] = str(e)
-                except Exception as e:
-                    data['msg'] = str(e)
 
             except pymongo.errors.ServerSelectionTimeoutError:
                 data['status']=0
