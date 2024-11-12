@@ -1,4 +1,4 @@
-# yugabyte_custom_query Monitoring
+# Yugabyte Custom Query Monitoring
                                                                                               
 ## Prerequisites
 
@@ -61,8 +61,27 @@ C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 ```
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
-After the first execution, the program will create two files named `log_pattern.txt` and `query_output*.txt`.
+After the first execution, two files will be created:
 
-Using these files, you can create custom application logs. To set up custom application logs, please refer to the [Site24x7 documentation](https://www.site24x7.com/help/log-management/add-log-type.html).
+- **`log_pattern.txt`** - Contains the query output log pattern.
+- **`query_output*.txt`** - Stores the query output data.
 
-Once custom applogs are set up, you will be able to continuously track your query output within the created custom applogs.
+**File Locations:**
+
+- **Linux**: `/opt/site24x7/monagent/plugins/yugabyte_custom_query`
+- **Windows**: `C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\yugabyte_custom_query`
+
+## Creating a Custom Log Type
+
+1. Use `log_pattern.txt` and `query_output*.txt` to define a custom log type:
+   - Follow [this guide](https://www.site24x7.com/help/log-management/add-log-type.html) to set up a custom log type.
+   
+2. Configure a log profile for the new log type:
+   - Refer to [this guide](https://www.site24x7.com/help/log-management/add-log-profile.html) to create a log profile.
+
+3. **Map the Log File Paths** for log tracking:
+
+   - **Linux**: `/opt/site24x7/monagent/plugins/yugabyte_custom_query/query_output*`
+   - **Windows**: `C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\yugabyte_custom_query\query_output*`
+
+Once the custom app logs are set up, you will be able to continuously monitor your query outputs in Site24x7.

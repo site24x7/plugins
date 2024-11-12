@@ -316,9 +316,15 @@ class MongoDB(object):
                 data['Total no of dbs']=len(self.connection.list_database_names())
                 stats=db.command('dbstats')
                 
-                replication_data = db_admin.command({'replSetGetStatus'  :1})
-                oplog=get_replication_info()
-                self.connection.close()
+                try:
+                    replication_data = db_admin.command({'replSetGetStatus'  :1})
+                    oplog=get_replication_info()
+                    self.connection.close()
+                except Exception as e:
+                    if 'not running with --replSet' in str(e):
+                        pass
+                    else:
+                        data['msg'] = str(e)
 
             except pymongo.errors.ServerSelectionTimeoutError:
                 data['status']=0
@@ -494,7 +500,7 @@ class MongoDB(object):
                 data['Oplog Last Entry Time'] =tlast[-1]
 
 
-            except KeyError as ex:
+            except Exception as ex:
                 pass
             
             #Repl
@@ -530,7 +536,7 @@ class MongoDB(object):
 
                 data["Replication Lag"]=(primary_optime-optime).total_seconds()
 
-            except KeyError as ex:
+            except Exception as ex:
                 pass
 
 
