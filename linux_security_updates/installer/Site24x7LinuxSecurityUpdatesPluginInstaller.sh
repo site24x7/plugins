@@ -46,44 +46,44 @@ if [[ -d $temp_plugin_path ]];then
     fi
 fi
 
-check_updates_path=$temp_plugin_path"check_updates/"
-if [[ -d $check_updates_path ]];then
-    mkdir -p $check_updates_path
+linux_security_updates_path=$temp_plugin_path"linux_security_updates/"
+if [[ -d $linux_security_updates_path ]];then
+    mkdir -p $linux_security_updates_path
     if [[ $? -ne 0 ]]; then
-        echo -e "${RED}Unable to create temporary check_updates plugins directory. Process exited.${RESET}"
+        echo -e "${RED}Unable to create temporary linux_security_updates plugins directory. Process exited.${RESET}"
         exit 1
     fi
 fi
 
-url_py="https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.py"
-url_cfg="https://raw.githubusercontent.com/site24x7/plugins/master/check_updates/check_updates.cfg"
+url_py="https://raw.githubusercontent.com/site24x7/plugins/master/linux_security_updates/linux_security_updates.py"
+url_cfg="https://raw.githubusercontent.com/site24x7/plugins/master/linux_security_updates/linux_security_updates.cfg"
 
 
 
-if [[ -e $check_updates_path"check_updates.py"  ]]; then
-    rm -rf $check_updates_path"check_updates.py"
+if [[ -e $linux_security_updates_path"linux_security_updates.py"  ]]; then
+    rm -rf $linux_security_updates_path"linux_security_updates.py"
 fi
 
-if [[ -e $check_updates_path"check_updates.cfg"  ]]; then
-    rm -rf $check_updates_path"check_updates.cfg"
+if [[ -e $linux_security_updates_path"linux_security_updates.cfg"  ]]; then
+    rm -rf $linux_security_updates_path"linux_security_updates.cfg"
 fi
 
 echo 
 echo "Downloading the plugin files."
-wget -P $check_updates_path $url_py
+wget -P $linux_security_updates_path $url_py
 if [[ $? -ne 0 ]]; then
-    echo -e "${RED}check_updates.py file not downloaded. Process exited.${RESET}"
+    echo -e "${RED}linux_security_updates.py file not downloaded. Process exited.${RESET}"
     exit 1
 fi 
 
-wget -P $check_updates_path $url_cfg
+wget -P $linux_security_updates_path $url_cfg
 if [[ $? -ne 0 ]]; then
-    echo -e "${RED}check_updates.cfg file not downloaded. Process exited.${RESET}"
+    echo -e "${RED}linux_security_updates.cfg file not downloaded. Process exited.${RESET}"
     exit 1
 fi 
 
 
-chmod 744 $check_updates_path"check_updates.py"
+chmod 744 $linux_security_updates_path"linux_security_updates.py"
 if [[ $? -ne 0 ]]; then
     echo -e "${RED} Error occured. Process exited.${RESET}"
     exit 1
@@ -91,7 +91,7 @@ fi
 
 
 echo "Executing the plugin to check for valid metrics."
-json_output=$($check_updates_path/check_updates.py)
+json_output=$($linux_security_updates_path/linux_security_updates.py)
 result=$(echo "$json_output" | grep -o '"status": 0')
 echo 
 echo $json_output
@@ -101,8 +101,8 @@ if [[ $result ]]; then
 fi
 
 
-if [[ -d $agent_plugin_path"check_updates" ]]; then
-    echo -e "${BLUE}The check_updates plugin already exist in the plugin directory and needs to be reinstalled.${RESET}"
+if [[ -d $agent_plugin_path"linux_security_updates" ]]; then
+    echo -e "${BLUE}The linux_security_updates plugin already exist in the plugin directory and needs to be reinstalled.${RESET}"
 
     read -p  "Press 'y' to reinstall." response
     response=${response,,}
@@ -119,13 +119,13 @@ if [[ -d $agent_plugin_path"check_updates" ]]; then
 
     if [[ "$response" =~ ^(yes|y)$ ]]; then
         echo "${BLUE} Reinstalling the plugin. ${RESET}"
-        rm -rf $agent_plugin_path"check_updates"
+        rm -rf $agent_plugin_path"linux_security_updates"
         if [[ $? -ne 0 ]]; then
             echo -e "${RED}Error occured. Process exited.${RESET}"
             exit 1
         fi
 
-        mv $check_updates_path $agent_plugin_path
+        mv $linux_security_updates_path $agent_plugin_path
         if [[ $? -ne 0 ]]; then
             echo -e "${RED}Error occured. Process exited.${RESET}"
             exit 1
@@ -138,7 +138,7 @@ if [[ -d $agent_plugin_path"check_updates" ]]; then
 
     else
 
-    mv $check_updates_path $agent_plugin_path
+    mv $linux_security_updates_path $agent_plugin_path
     if [[ $? -ne 0 ]]; then
         echo -e "${RED}Error occured. Process exited.${RESET}"
         exit 1
@@ -146,5 +146,5 @@ if [[ -d $agent_plugin_path"check_updates" ]]; then
 
 fi
 
-echo " ------------------------------------------------------- check_updates plugin successfully installed ----------------------------------------------- "
+echo " ------------------------------------------------------- linux_security_updates plugin successfully installed ----------------------------------------------- "
 echo " -----------------------------------------   Navigate to the Plugins tab in Site24x7 to view the plugin monitor.  --------------------------------------"
