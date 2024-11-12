@@ -11,7 +11,7 @@ HEARTBEAT=True
 METRICS_UNITS={}
 
 
-class update_check:
+class security_update_check:
 
     def __init__(self):
         
@@ -177,12 +177,12 @@ class update_check:
 
 
 def run(param=None):
-    obj=update_check()
+    obj=security_update_check()
     result=obj.metriccollector()
     return result
 
 if __name__=="__main__":
     
-    obj=update_check()
+    obj=security_update_check()
     result=obj.metriccollector()
     print(json.dumps(result,indent=True))
