@@ -1,6 +1,6 @@
 # Plugin for Monitoring Software Updates Count
 
-OS Supported: Ubuntu, Centos
+OS Supported: Ubuntu, Centos, AlmaLinux
 ## Plugin Installation
 
 Quick installation
@@ -16,7 +16,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/linux_security_up
 ---
 ##### Linux 
 
-- Just execute below command to download and install the check_update plugin.
+- Just execute below command to download and install the linux_security_updates plugin.
   
 	```bash
  	mkdir -p linux_security_updates && wget https://raw.githubusercontent.com/site24x7/plugins/master/linux_security_updates/linux_security_updates.py && sed -i "1s|^.*|#! $(which python3)|" linux_security_updates.py && wget https://raw.githubusercontent.com/site24x7/plugins/master/linux_security_updates/linux_security_updates.cfg && mv linux_security_updates.py linux_security_updates.cfg linux_security_updates
@@ -39,4 +39,4 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/linux_security_up
 - Packages to be Updated
 
 ### Package details  
-  Site24x7 web client > check_update plugin monitor > select AppLog tab > User can choose logtype as "Linux Pending Updates" to check the details of packages which have been not updated. 
+  Site24x7 web client > linux_security_updates plugin monitor > select AppLog tab > User can choose logtype as "Linux Pending Security Updates" to check the details of packages which have been not updated. 
