@@ -161,5 +161,5 @@ The agent will automatically execute the plugin within five minutes and user can
 
 
 ## Sample ScreenShot
-![Screenshot from 2024-11-19 15-26-41](https://github.com/user-attachments/assets/ebeda0c3-3638-4a94-a164-cb4185431113)
+![apache_spark](https://github.com/user-attachments/assets/d9648546-d52b-4ac1-ab42-3667ffe08d80)
 
