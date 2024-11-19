@@ -1,4 +1,6 @@
 # Apache Spark Monitoring
+
+Apache Spark is an open-source, distributed computing system designed for fast and flexible big data processing. It provides an easy-to-use interface for parallel processing across large datasets and is known for its speed, scalability, and versatility. Spark supports multiple languages such as Python, Scala, Java, and R, making it accessible to a wide range of developers.
                                                                                               
 ## Prerequisites
 
