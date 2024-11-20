@@ -1,6 +1,9 @@
-﻿$version = 1 #Mandatory - If any changes in the plugin metrics, increment the plugin version here. 
+﻿param(
+    [string]$path = "C:\Users\Administrator\Documents\DiskFolderMonitorg"
+)
 
-$path = "C:\Users\Administrator\Downloads\Disk Folder Monitoring\test " #the path which cx need to monitor 
+$version = 1 #Mandatory - If any changes in the plugin metrics, increment the plugin version here. 
+
 $timedif = 5 # time intrval 
 
 #$displayname = "" #OPTIONAL - Display name to be displayed in Site24x7 client 
