@@ -47,6 +47,19 @@ Monitor the availability and performance of your SAP HANA database with SAP HANA
 - Execute the below command with appropriate arguments to check for a valid json output:  
 
 		python sap_hana_database.py --host "host" --port "port" --username "username" --password "password"
+
+- To analyze your sap hana database logs and identify the exact root cause of the issues, you can make configuration changes by adding logs_enabled, log_type_name, and log_file_path in sap_hana_database.cfg file
+
+		[sap_hana_database]
+		host="host"
+		port="port"
+		username="username"
+		password="password"
+		logs_enabled=True
+		log_type_name="saphana_log"
+		log_file_path="/usr/sap/<SID>/HDB<Instance number>/<hostname>/trace/*.log"
+		
+ In the above, fill in the System ID, Instance number and hostname with applicable details.
  
 - Move the directory "sap_hana_database" under the Site24x7 Linux Agent plugin directory: 
 
