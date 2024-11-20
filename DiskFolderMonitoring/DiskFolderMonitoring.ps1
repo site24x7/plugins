@@ -1,5 +1,5 @@
 ﻿param(
-    [string]$path = "C:\Users\Administrator\Documents\DiskFolderMonitorg"
+    [string]$path = "C:\Users\Administrator\Documents\"
 )
 
 $version = 1 #Mandatory - If any changes in the plugin metrics, increment the plugin version here. 
