@@ -47,19 +47,6 @@ Monitor the availability and performance of your SAP HANA database with SAP HANA
 - Execute the below command with appropriate arguments to check for a valid json output:  
 
 		python sap_hana_database.py --host "host" --port "port" --username "username" --password "password"
-		
-- To analyze your sap hana database logs and identify the exact root cause of the issues, you can make configuration changes by adding logs_enabled, log_type_name, and log_file_path in sap_hana_database.cfg file
-
-		[sap_hana_database]
-		host="host"
-		port="port"
-		username="username"
-		password="password"
-		logs_enabled=True
-		log_type_name="saphana_log"
-		log_file_path="/usr/sap/<SID>/HDB<Instance number>/<hostname>/trace/*.log"
-		
- In the above, fill in the System ID, Instance number and hostname with applicable details.
  
 - Move the directory "sap_hana_database" under the Site24x7 Linux Agent plugin directory: 
 
@@ -67,39 +54,95 @@ Monitor the availability and performance of your SAP HANA database with SAP HANA
  
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 		
-### Performance Metrics
-Name		            			| 	Description
----         		   			|  	 ---
-1.Active Threads 				| 	The number of active threads.
-2.Active Transactions 				|	The number of active transactions.
-3.Backup Catalogs 				|	The total number of backup catalogs.
-4.CPU Usage 					|	CPU Used by all processes in %.
-5.DATA Disk Free Size 				|	The volume of the free size of the data disk.
-6.Disk Free Size 				|	Disk free size in GB.
-7.Free Physical Memory 				|	Specifies the free physical memory on the host in GB.
-8.Idle Connections 				|	The number of idle connections.
-9.Inactive Transactions 			|	The number of inactive connections.
-10.Index Server Memory Pool Heap Used Size 	| 	The amount of pool heap memory that is in use of the index server.
-11.Index Server Memory Pool Used Size 		|	The amount of memory in use from the memory pool of the index server.
-12.Index Server Memory Pool Shared Used Size 	|	The amount of pool shared memory that is in use of the index server.
-13.LOG Disk Free Size 				|	The volume of the free size of the log disk.
-14.Name Server Memory Pool Heap Used Size 	|	The amount of pool heap memory that is in use of the name server.
-15.Name Server Memory Pool Used Size 		|	The amount of memory in use from the memory pool of the name server.
-16.Name Server Memory Pool Shared Used Size  	|	The amount of pool shared memory that is in use of the name server.
-17.Plan Cache Hit Ratio 			|	SQL Plan Cache hit ratio.
-18.Plan Cache Size 				|	Total size of SQL Plan Cache in GB.
-19.Queuing Connections 				|	Total number of connection currently queued.
-20.Replication Errors 				|	Number of replication is in error.
-21.Replication Syncing 				|	Number of syncing replication.
-22.Running Connections 				|	Total number of statement is executing.
-23.Start Time of Services 			|	Start Time of Services in seconds.
-24.Total Active Statements 			|	Total number of active statements.
-25.Total Alerts 				|	Total number of alerts.
-26.Total CPU Idle Time 				|	Total CPU idle time in minutes.
-27.Total Caches 				|	Total number of caches.
-28.Total Column Unloads 			|	Total number of column unloads.
-29.Total Delta Merge Errors 			|	Total number of table delta merge statistics.
-30.Total Expensive Statements 			|	Total number of expensive statements..
-31.Total Network I/O Operations 		|	Total network I/O operations.
-32.Used Physical Memory 			|	Specifies the used physical memory on the host in GB.
-		
+### Supported Metrics
+
+| Name                               | Description |
+|------------------------------------|-------------|
+| **Active Threads**                 | The number of threads actively processing tasks. |
+| **Active Transactions**            | The number of currently active transactions. |
+| **Idle Connections**               | The number of idle database connections. |
+| **Inactive Transactions**          | The number of transactions currently inactive. |
+| **Queuing Connections**            | The number of connections waiting in the queue. |
+| **Running Connections**            | The number of connections actively running. |
+| **Total Alerts**                   | The total number of alerts generated. |
+| **Total CPU Idle Time**            | The idle time of the CPU in percentage. |
+| **Total Network I/O Operations**   | The total network input/output operations performed. |
+| **Total Active Statements**        | The number of active SQL statements currently running. |
+| **Start Time of Services**         | The time when services were last started. |
+
+---
+
+### Backup and Replication
+
+| Name                  | Description |
+|-----------------------|-------------|
+| **Backup Catalogs**   | The total number of backup catalogs available. |
+| **Replication Errors**| The number of replication errors encountered. |
+| **Replication Syncing**| Indicates if replication is in sync. |
+
+---
+
+### Disk
+
+| Name                               | Description |
+|------------------------------------|-------------|
+| **CATALOG_BACKUP Disk Free Size**  | Free space available for catalog backup. |
+| **DATA Disk Free Size**            | Free space available on the data disk. |
+| **DATA_BACKUP Disk Free Size**     | Free space available for data backup. |
+| **LOG Disk Free Size**             | Free space available on the log disk. |
+| **LOG_BACKUP Disk Free Size**      | Free space available for log backup. |
+| **TRACE Disk Free Size**           | Free space available on the trace disk. |
+
+---
+
+### Memory
+
+| Name                                        | Description |
+|---------------------------------------------|-------------|
+| **Free Physical Memory**                    | The amount of free physical memory available. |
+| **Index Server Memory Pool Heap Used Size** | Memory used by the index server heap pool. |
+| **Index Server Memory Pool Shared Used Size**| Shared memory used by the index server pool. |
+| **Index Server Memory Pool Used Size**      | Total memory used by the index server pool. |
+| **Name Server Memory Pool Heap Used Size**  | Memory used by the name server heap pool. |
+| **Name Server Memory Pool Shared Used Size**| Shared memory used by the name server pool. |
+| **Name Server Memory Pool Used Size**       | Total memory used by the name server pool. |
+| **Used Physical Memory**                    | The amount of physical memory currently in use. |
+
+---
+
+### Operations and Performance
+
+| Name                               | Description |
+|------------------------------------|-------------|
+| **Total Active Statements**        | The number of active SQL statements currently running. |
+| **Total Expensive Statements**     | The number of expensive SQL statements encountered. |
+| **Total Caches**                   | The total number of caches available. |
+| **Total Column Unloads**           | The number of columns unloaded from memory. |
+| **Total Delta Merge Errors**       | The number of errors during delta merges. |
+| **Total Network I/O Operations**   | The total number of network I/O operations performed. |
+| **Total Alerts**                   | The total number of alerts generated. |
+
+---
+
+### Services
+
+| Name            | Description |
+|-----------------|-------------|
+| **Daemon**      | Background service managing overall system operations. |
+| **Preprocessor**| Service handling pre-compilation and query preprocessing. |
+| **Webdispatcher**| Service managing web-based request routing. |
+| **Compileserver**| Service compiling SQL queries and managing code generation. |
+| **Nameserver**  | Service managing distributed system nodes and catalog data. |
+| **Diserver**    | Data integration service for handling ETL and related tasks. |
+
+---
+
+### Workload
+
+| Name                               | Description |
+|------------------------------------|-------------|
+| **Commit Rate (per min)**          | The rate of commits performed per minute. |
+| **Compilation Rate (per min)**     | The rate of SQL compilations performed per minute. |
+| **Execution Rate (per min)**       | The rate of query executions performed per minute. |
+| **Memory Usage Rate (GB/min)**     | The rate of memory usage growth per minute. |
+| **Transaction Rate (per min)**     | The rate of transactions processed per minute. |
