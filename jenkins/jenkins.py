@@ -63,14 +63,9 @@ class Jenkins(object):
         self.resultjson["heartbeat_required"] = self.heartbeat
         
     def process_jenkins_jobs(self, data):
-        """
-        Process the Jenkins jobs data to extract the required details,
-        handling missing or empty keys with default values.
-        """
         processed_jobs = []
 
         for job in data.get("jobs", []):
-            # Safely extract job details with defaults
             name = job.get("name", "unknown")
 
             last_build = job.get("lastBuild", {})
@@ -83,7 +78,6 @@ class Jenkins(object):
             health_report = job.get("healthReport", [])
             recent_build_health = health_report[0].get("score", 0) if health_report else 0
 
-            # Construct the processed job dictionary
             processed_job = {
                 "name": name,
                 "last_build_number": last_build_number,
@@ -98,17 +92,12 @@ class Jenkins(object):
         return processed_jobs
 
     def get_jenkins_jobs(self):
-        """
-        Fetch detailed jobs information from the Jenkins server.
-        """
         url = f"http://{self.host}:{self.port}/api/json?tree=jobs[name,lastBuild[number,result,duration,estimatedDuration],healthReport[description,score]]&pretty=true"
 
         try:
-            # Perform the API request with Basic Authentication
             response = requests.get(url, auth=HTTPBasicAuth(self.username, self.password))
-            response.raise_for_status()  # Raise an error for HTTP codes >= 400
+            response.raise_for_status()  
 
-            # Parse the JSON response
             data = response.json()
             return data
 
@@ -142,12 +131,10 @@ class Jenkins(object):
             timers = response["timers"]
             counters = response["counters"]
 
-            # Jenkins Version
             self.resultjson["jenkins_version"] = (
                 f"{gauges['jenkins.versions.core']['value']}_V"
             )
 
-            # Jobs Metrics
             self.resultjson["jobs_scheduled_rate"] = meters["jenkins.job.scheduled"][
                 "mean_rate"
             ]
@@ -170,7 +157,6 @@ class Jenkins(object):
                 "jenkins.job.waiting.duration"
             ]["mean"]
 
-            # JVM Metrics
             self.resultjson.update(
                 {
                     "blocked_thread": gauges["vm.blocked.count"]["value"],
@@ -207,7 +193,6 @@ class Jenkins(object):
                 }
             )
 
-            # Performance Metrics
             self.resultjson.update(
                 {
                     "total_executors_count": gauges["jenkins.executor.count.value"][
@@ -260,7 +245,6 @@ class Jenkins(object):
                 }
             )
 
-            # Web Metrics
             self.resultjson.update(
                 {
                     "total_activerequests": counters["http.activeRequests"]["count"],
@@ -382,20 +366,39 @@ class Jenkins(object):
             self.resultjson["msg"] = str(e)
             self.resultjson["status"] = 0
         return self.resultjson
-      
-if __name__ == '__main__':
+
+
+if __name__ == "__main__":
     import argparse
-    parser=argparse.ArgumentParser()
-    parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
-    parser.add_argument('--port',help="Port",nargs='?', default= "8080")
-    parser.add_argument('--username',help="username")
-    parser.add_argument('--password',help="Password")
-    parser.add_argument('--apikey' ,help="apikey",nargs='?', default= None)
-    parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=1)
-    parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=True)
-    args=parser.parse_args()
-	
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--host", help="Host Name", nargs="?", default="localhost")
+    parser.add_argument("--port", help="Port", nargs="?", default="8080")
+    parser.add_argument("--username", help="username", default="username")
+    parser.add_argument("--password", help="password", default="password")
+    parser.add_argument(
+        "--apikey",
+        help="apikey",
+        nargs="?",
+        default=None,
+    )
+    parser.add_argument(
+        "--plugin_version",
+        help="plugin template version",
+        type=int,
+        nargs="?",
+        default=1,
+    )
+    parser.add_argument(
+        "--heartbeat",
+        help="alert if monitor does not send data",
+        type=bool,
+        nargs="?",
+        default=True,
+    )
+    args = parser.parse_args()
+
     jenkins = Jenkins(args)
     resultjson = jenkins.metrics_collector()
-    resultjson['units'] = metric_units
+    resultjson["units"] = metric_units
     print(json.dumps(resultjson))
