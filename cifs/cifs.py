@@ -225,7 +225,6 @@ class cifs:
 
             self.maindata.update(mount_from)
             self.maindata.update(TABS)
-            self.maindata["status"] = 2
 
             if "status" in self.maindata:
                 if self.maindata["status"] == 0:
