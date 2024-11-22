@@ -29,7 +29,7 @@
 - Update the below configurations in mssql_custom_query.cfg file:
 
 		[mssql_custom_query]
-		SQLServer = "server_name>"
+		SQLServer = "server_name"
 		SQLDBName = "dbname"
 		sqlusername = "sql_username"
 		sqlpassword  = "sql_password"
