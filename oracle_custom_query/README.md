@@ -21,22 +21,21 @@
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle_custom_query/oracle_custom_query.cfg
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle_custom_query/oracle_custom_query.py
-
+  		wget https://raw.githubusercontent.com/site24x7/plugins/master/oracle_custom_query/query.sql
 
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
-		python3 oracle_custom_query.py --hostname "<hostname>" --port "<port no>" --sid "<sid>" --username "<username>" --password "<password>" --oracle_home "<oracle home>" --query "<oracle query>"
+		python3 oracle_custom_query.py --hostname "<hostname>" --port "<port no>" --sid "<sid>" --username "<username>" --password "<password>" --oracle_home "<oracle home>"
 		
 - Provide your Oracle DB configurations in oracle_custom_query.cfg file.
 
-		[query_1]
+		[oracle]
 		hostname="localhost"
 		port="1521"
 		sid="<SID>"
 		username="<USERNAME>"
 		password="<PASSWORD>"
 		oracle_home="None"
-		query="Oracle Query"
   #### Note:
   -  If your custom query returns multiple rows based on specific criteria, you have the flexibility to utilize aggregation functions according to your needs, enabling manipulation of the retrieved rows.
   -  Reference - https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Aggregate-Functions.html#GUID-62BE676B-AF18-4E63-BD14-25206FEA0848
