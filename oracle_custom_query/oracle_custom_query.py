@@ -24,7 +24,22 @@ class oracle:
         self.sid=args.sid
         self.hostname=args.hostname
         self.port=args.port
-        self.query=args.query
+        
+        self.query = self.read_query_from_file()
+        
+        
+    def read_query_from_file(self):
+        """Read the query from the query.sql file."""
+        try:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            query_file_path = os.path.join(script_dir, 'query.sql')
+
+            with open(query_file_path, 'r') as file:
+                return file.read().strip()
+        except Exception as e:
+            self.maindata['status'] = 0
+            self.maindata['msg'] = f"Failed to read query from file: {str(e)}"
+            return None
 
 
     def metriccollector(self):
@@ -76,9 +91,8 @@ if __name__=="__main__":
     sid="ORCLCDB"
     username=None
     password=None
-    query="SELECT VALUE, NAME FROM gv$pgastat where NAME IN ('total PGA allocated', 'total freeable PGA memory', 'maximum PGA allocated','total PGA inuse')"
     oracle_home='/opt/oracle/product/19c/dbhome_1'
-
+    
     import argparse
     parser=argparse.ArgumentParser()
 
@@ -88,12 +102,11 @@ if __name__=="__main__":
     parser.add_argument('--username', help='username for oracle',default=username)
     parser.add_argument('--password', help='password for oracle',default=password)
     parser.add_argument('--oracle_home',help='oracle home path',default=oracle_home)
-    parser.add_argument('--query',help='oracle queries list',default=query)
 
     args=parser.parse_args()
     os.environ['ORACLE_HOME']=args.oracle_home
     obj=oracle(args)
+    
 
     result=obj.metriccollector()
     print(json.dumps(result,indent=True))
-
