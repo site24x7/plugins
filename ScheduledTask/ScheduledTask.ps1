@@ -107,6 +107,25 @@ Function GetErrorMessage
     return $msg
 }
 
+$culture = Get-Culture
+
+$shortDatePattern = $culture.DateTimeFormat.ShortDatePattern
+$longTimePattern = $culture.DateTimeFormat.LongTimePattern
+
+function Convert-DateWithCultureFormat {
+    param (
+        [string]$dateString
+    )
+
+    try {
+        $date = [datetime]::ParseExact($dateString, $shortDatePattern, $culture)
+        return $date
+    } catch {
+        Write-Host "Error parsing the date string."
+        return $null
+    }
+}
+
 
 Function Get-ScheduledJobDetails($jobName) {
     $jobDetails = schtasks /QUERY /FO LIST /V /TN $jobName
@@ -209,7 +228,7 @@ $timediff = $timespan.Days.ToString() + " Days " + $timespan.Hours.ToString() + 
 $data["Last Run Before"] = $timediff
 
 $startDateString = $data["Start Date"]
-$startDate = [datetime]::ParseExact($startDateString, "dd-MM-yyyy", $null)
+$startDate = [datetime]::ParseExact($startDateString, $shortDatePattern, $culture)
 $ageTimespan = New-Timespan -Start $startDate -End $timenow
 $data["Task Age"] = $ageTimespan.Days
 
@@ -228,7 +247,7 @@ if ($data.ContainsKey('lastRunTime')) {
 
 $taskProcessingTimeInSeconds = 0
 
-function Manage-InfoFileAndTask {
+function ManageInfoFileAndTask {
     param (
         [Parameter(Mandatory=$true)]
         [string]$TaskName
@@ -273,10 +292,10 @@ function Manage-InfoFileAndTask {
 
     try {
         if (-not [string]::IsNullOrEmpty($previousRunTime)) {
-            $previousRunTimeDt = [datetime]::ParseExact($previousRunTime, "dd-MM-yyyy HH:mm:ss", $null)
+            $previousRunTimeDt = [datetime]::ParseExact($previousRunTime, "$shortDatePattern $longTimePattern", $culture)
         }
         if (-not [string]::IsNullOrEmpty($lastRunTime)) {
-            $lastRunTimeDt = [datetime]::ParseExact($lastRunTime, "dd-MM-yyyy HH:mm:ss", $null)
+            $lastRunTimeDt = [datetime]::ParseExact($lastRunTime, "$shortDatePattern $longTimePattern", $culture)
         }
     } catch {
         return
@@ -303,7 +322,7 @@ function Manage-InfoFileAndTask {
 }
 
 
-Manage-InfoFileAndTask -TaskName $taskName
+ManageInfoFileAndTask -TaskName $taskName
 
 $keysToRemove = @(
     "Comment",
@@ -347,7 +366,7 @@ if ($working_codes -contains $data["Error Code"]) {
     if ($Status -eq 0) {
         $mainJson["status"] = 0
     }
-    if ($status_msg -ne $null) {
+    if ( $null -ne $status_msg ) {
         $mainJson["msg"] = $status_msg
     } else {
         $mainJson["msg"] = ($msg | Out-String)
