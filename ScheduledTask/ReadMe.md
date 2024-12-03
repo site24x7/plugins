@@ -57,15 +57,15 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/ScheduledTask/Sch
 
 ```
 [Scheduled_task]
-taskName="\OfficeSoftwareProtectionPlatform\SvcRestartTask"
+taskName='\OfficeSoftwareProtectionPlatform\SvcRestartTask'
 ```
 
  **NOTE:**
   To fill in the task name in the .cfg file, add the location of the task you want to monitor from the General tab of Windows Task Scheduler followed by a slash and the task name.
 
-4. To manually verify if the plugin is functioning correctly, navigate to the `ScheduledTask` folder in terminal and run the following command:
+4. To manually verify if the plugin is functioning correctly, navigate to the `ScheduledTask` folder in terminal (Command Prompt) and run the following command:
 ```
-powershell .\ScheduledTask.ps1 -taskName "\OfficeSoftwareProtectionPlatform\SvcRestartTask"
+powershell .\ScheduledTask.ps1 -taskName '\OfficeSoftwareProtectionPlatform\SvcRestartTask'
 ```
 Replace `\OfficeSoftwareProtectionPlatform\SvcRestartTask` with your specific task name.
 
@@ -75,10 +75,10 @@ Here's an example below:
 
 ```
 [Scheduled_task1]
-taskName="\OfficeSoftwareProtectionPlatform\SvcRestartTask"
+taskName='\OfficeSoftwareProtectionPlatform\SvcRestartTask'
 
 [Scheduled_task2]
-taskName="\Microsoft\Windows\AppId\Work Room"
+taskName='\Microsoft\Windows\AppId\Work Room'
 ```
 
 6. Further move the folder `ScheduledTask` into the  Site24x7 Windows Agent plugin folder:
