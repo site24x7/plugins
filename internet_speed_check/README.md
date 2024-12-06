@@ -23,7 +23,7 @@ Plugin for Monitoring the Internet speed
 
 - Create a directory "internet_speed_check".
 
-- Download the file "internet_speed_check.py", "internet_speed_check.cfg" and place it under the "internet_speed_check" directory
+- Download the file "internet_speed_check.py" and place it under the "internet_speed_check" directory
   
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/internet_speed_check.py
   
