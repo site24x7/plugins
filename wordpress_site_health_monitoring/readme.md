@@ -51,18 +51,31 @@ WordPress is a powerful CMS that enables you to manage your website’s content 
     username="wordpress_username"
     application_password="application_password"
     ```
+2. For multiple server tracking, use the following configuration:
+
+    ```ini
+    [wordpress_site1]
+    url="https://localhost/wordpress/"
+    username="wordpress_username"
+    application_password="application_password"
+
+    [wordpress_site2]
+    url="https://localhost/wordpress/"
+    username="wordpress_username"
+    application_password="application_password"
+    ```
 
    **Notes:**
    - Ensure the WordPress username has administrator privileges or API access.
    - Use the application password generated in **Admin Login > Users > All Users > Application Passwords**. **Do not use the user's account password.**
 
-2. Copy the `wordpress_site_health_monitoring` directory to the Site24x7 Linux Agent plugin directory:
+3. Copy the `wordpress_site_health_monitoring` directory to the Site24x7 Linux Agent plugin directory:
 
     ```bash
     cp -r wordpress_site_health_monitoring /opt/site24x7/monagent/plugins/
     ```
 
-3. The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+4. The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ---
 
