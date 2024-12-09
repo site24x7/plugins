@@ -101,16 +101,16 @@ No. of Uncommitted Msgs		|	The number of uncommitted messages on the queue.
  
  
 ### **Channel Metrics**
- Name		        	| 	Description
+Name		        	| 	Description
 ---         			|   	---
-Channel Name			|	The name of the channel name.
-Channel Status			|	The current status of the client.
+Channel Name			|	The name of the channel.
+Channel Status			|	The current status of the client. Refer [here](https://github.com/site24x7/plugins/blob/master/ibm_mq_monitoring/README.md#values-for-channel-statuses).
 No. of MQI calls		|	The number of messages sent or received.
 Bytes Sent			|	The number of bytes sent.
 Bytes Received			|	The number of bytes received.
 Buffers Sent			|	The number of buffers sent.
 Buffers Received		|	The number of buffers received.
-Channel Substate		|	The current action being performed by the channel.
+Channel Substate		|	The current action being performed by the channel. Refer [here](https://github.com/site24x7/plugins/blob/TharunRajTR-patch-9/ibm_mq_monitoring/README.md#values-for-channel-sub-state).
 
 
 #### Values for Channel Statuses 
@@ -153,3 +153,11 @@ Channel Substate		|	The current action being performed by the channel.
 1700				|	Executing IBM MQ API call
 1800				|	Compressing or decompressing data
 
+### **Listeners Metrics**
+
+ Name		        	| 	Description
+---         			|   	---
+Listeners Name			|	The name of the listener.
+port				|	The port number used by the listener.
+Backlog				|	Backlog of the listener.
+State				|	The Current state of listener.
