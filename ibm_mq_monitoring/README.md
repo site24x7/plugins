@@ -7,64 +7,68 @@ Hence using our plugin, technician can monitor the performance  attributes of IB
                                                                                               
 ## Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 - Install pymqi module for python
-```
-  pip install pymqi
-```
+	```
+ 	pip install pymqi
+	```
 ---
 
 
 
 ### Plugin Installation  
 
-- Create a directory named "ibm_mq_monitoring".
-      
-- Download all the files in the "ibm_mq_monitoring" folder and place it under the "ibm_mq_monitoring" directory.
+- Create a directory named `ibm_mq_monitoring`.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq_monitoring/ibm_mq_monitoring.py
+	```bash
+ 	mkdir ibm_mq_monitoring
+ 	cd ibm_mq_monitoring/
+ 	```
+      
+- Download all the files and place it under the `ibm_mq_monitoring` directory.
+
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq_monitoring/ibm_mq_monitoring.py && sed -i "1s|^.*|#! $(which python3)|" ibm_mq_monitoring.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq_monitoring/ibm_mq_monitoring.cfg
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the ibm_mq_monitoring.py script.
 
 - Execute the below command with appropriate arguments to check for the valid json output:
+	 ```bash
+	 python3 ibm_mq_monitoring.py --queue_manager_name "QM1" --channel_name "DEV.APP.SVRCONN" --host "localhost" --port "1414" --username "app" --password "plugin"
 	 ```
-	 python3 ibm_mq_monitoring.py --queue_manager_name="QMGR" --channel_name="channel_name" --queue_name="queue_name" --host="localhost" --port="1415" --username="ibm_mq_username" --password="ibm_mq_password" --logs_enabled="False" --log_type_name="None" --log_file_path="None"
-	 ```
- - Move the folder "ibm_mq_monitoring" into the  Site24x7 Linux Agent plugin directory: 
+#### Configurations
 
-		Linux             ->   /opt/site24x7/monagent/plugins/ibm_mq_monitoring
+- Provide your IBM MQ configurations in ibm_mq_monitoring.cfg file.
+	```bash
+	[QM1]
+	queue_manager_name ="QM1"
+	channel_name="DEV.APP.SVRCONN"
+	host="localhost"
+	port="1414"
+	username="app"
+	password ="plugin"
+	```	
+#### Linux
+
+ - Move the folder `ibm_mq_monitoring` into the  Site24x7 Linux Agent plugin directory: 
+
+		mv ibm_mq_monitoring /opt/site24x7/monagent/plugins/
  
+ #### Windows
  
-Since it's a python plugin, to run in windows server please follow the steps in below link, remaining configuration steps are exactly the same. 
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
-  https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+-  Further, move the folder `ibm_mq_monitoring` into the  Site24x7 Windows Agent plugin directory:
+
+        C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 
 
+The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ---
 
-### Configurations
 
-- Provide your IBM MQ configurations in ibm_mq_monitoring.cfg file.
-```
-	[ibm_mq]
-	queue_manager_name ="QMGR"
-	channel_name="channel_name"
-	queue_name="queue_name"
-	host="localhost"
-	port="1415"
-	username="ibm_mq_username"
-	password ="ibm_mq_password"
-	logs_enabled = "False"
-	log_type_name = "None"
-	log_file_path = "None"
-```	
-		
-		
-		
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ## Supported Metrics
 The following metrics are captured in the IBM MQ monitoring plugin, which has been categorized under the following entities of IBM WebSphere MQ.
@@ -72,114 +76,80 @@ The following metrics are captured in the IBM MQ monitoring plugin, which has be
 - Queue Manager Metrics
 - Queue Metrics
 - Channel Metrics
+- Listeners Metrics
  
 ### **Queue Manager Metrics**
- 
-- #### Connection_count
-     The number of connections to the queue manager.
 
-  
-- #### Status
-     The status of the queue manager.
+Name		        	| 	Description
+---         			|   	---
+Connection_count		|	The number of connections to the queue manager.
+Status				|	The status of the queue manager.
 
  
 ### **Queue Metrics**
-
-- #### Queue Name
-     The name of the queue.
-
-
-- #### High Queue Depth
-     The maximum number of messages on the queue since the queue statistics were last reset.
-  
-
-- #### Msg Dequeue Count
-     The number of messages removed from the queue since the queue statistics were last reset.
-
- 
-
-- #### Msg Enqueue Count
-     The number of messages enqueued, i.e., the number of messages put on the queue since the queue statistics were last reset.
- 
-
-- #### Current Queue Depth
-     The current number of messages on the queue.
-  
-
-- #### Handles Open (Input Count)
-     The number of handles that are currently open for input for the queue.
-  
-
-- #### Handles Open (Output Count)
-     The number of handles that are currently open for output for the queue.
-  
-
-- #### Last Msg get Date 
-     The date of the last message successfully read from the queue.
-  
-
-- #### Last Msg get Time 
-     The time of the last message successfully read from the queue.
- 
-
-- #### Last Msg put Date 
-     The date of the last message successfully put to the queue.
-  
-
-- #### Last Msg put Time 
-     The time of the last message successfully put to the queue.
-  
-
-- #### Oldest Msg Age
-     The age of the oldest message on the queue.
-  
-
-- #### No. of Uncommitted Msgs
-     The number of uncommitted messages on the queue.
+Name		        	| 	Description
+---         			|   	---
+Queue Name			|	The name of the queue.
+High Queue Depth		|	The maximum number of messages on the queue since the queue statistics were last reset.
+Msg Dequeue Count		|	The number of messages removed from the queue since the queue statistics were last reset.
+Msg Enqueue Count		|	The number of messages enqueued, i.e., the number of messages put on the queue since the queue statistics were last reset.
+Current Queue Depth		|	The current number of messages on the queue.
+Handles Open (Input Count)	|	The number of handles that are currently open for input for the queue.
+Handles Open (Output Count)	|	The number of handles that are currently open for output for the queue.
+Oldest Msg Age			|	The age of the oldest message on the queue.
+No. of Uncommitted Msgs		|	The number of uncommitted messages on the queue.
  
  
 ### **Channel Metrics**
- 
-- #### Channel Name
-     The name of the channel name.
- 
- 
-- #### Channel Connection Name
-     The number of connections described in the summary.
- 
- 
-- #### Channel Status
-     The current status of the client.
- 
- 
-- #### No. of MQI calls
-     The number of messages sent or received.
-
- 
-- #### Bytes Sent
-     The number of bytes sent.
-
- 
-- #### Bytes Received
-     The number of bytes received.
-
- 
-- #### Buffers Sent
-     The number of buffers sent.
+ Name		        	| 	Description
+---         			|   	---
+Channel Name			|	The name of the channel name.
+Channel Status			|	The current status of the client.
+No. of MQI calls		|	The number of messages sent or received.
+Bytes Sent			|	The number of bytes sent.
+Bytes Received			|	The number of bytes received.
+Buffers Sent			|	The number of buffers sent.
+Buffers Received		|	The number of buffers received.
+Channel Substate		|	The current action being performed by the channel.
 
 
-- #### Buffers Received
-     The number of buffers received.
- 
- 
-- #### Channel Substate
-     The current action being performed by the channel.
+#### Values for Channel Statuses 
+ No		        	| 	Description
+---         			|   	---
+0				|	Channel Inactive
+1				|	Channel Binding
+2				|	Channel Starting
+3				|	Channel Running
+4				|	Channel Stopping
+5				|	Channel Retrying
+6				|	Channel Stopped
+7				|	Channel Requesting
+8				|	Channel Paused
+9				|	Channel Disconnected
+10				|	Channel Initializing
+11				|	Channel Switching
 
-
-- #### Channel Start Date
-     The date when the channel started.
- 
-
-- #### Channel Start Time
-     The time when the channel started.
+#### Values for Channel Sub State
+ No		        	| 	Description
+---         			|   	---
+0				|	Undefined State
+100				|	End of batch processing
+200				|	Network send
+300				|	Network receive
+400				|	Serialized on queue manager access
+500				|	Resynching with partner
+600				|	Heartbeating with partner
+700				|	Running security exit
+800				|	Running receive exit
+900				|	Running send exit
+1000				|	Running message exit
+1100				|	Running retry exit
+1200				|	Running channel auto-definition exit
+1250				|	Network connect
+1300				|	SSL Handshaking
+1400				|	Name server request
+1500				|	Performing MQPUT
+1600				|	Performing MQGET
+1700				|	Executing IBM MQ API call
+1800				|	Compressing or decompressing data
 
