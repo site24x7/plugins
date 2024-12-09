@@ -36,11 +36,11 @@ def metricCollector(url, username, application_password):
                 status = result.get('status')
                 
                 if test_name and status:
-                    key = test_name.replace('_', '-') + "_status"
+                    key = test_name.replace('_', '-') + "_status_text"
                     data[key] = status
                     
                     numeric_status = status_mapping.get(status, -1)  
-                    data[test_name.replace('_', '-')] = numeric_status
+                    data[test_name.replace('_', '-') + "_status"] = numeric_status
             else:
                 data['msg'] = f"Failed to fetch {full_url}, Status code: {response.status_code}"
                 data['status'] = 0
