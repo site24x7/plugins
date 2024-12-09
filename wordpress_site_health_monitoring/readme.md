@@ -36,7 +36,7 @@ WordPress is a powerful CMS that enables you to manage your website’s content 
 4. Run the following command to validate the setup and ensure the plugin outputs valid JSON:
 
     ```bash
-    python3 wordpress_site_health_monitoring.py --url="https://<Domain or Website>/" --username="<WordPress Username>" --application_password="<Application Password>"
+    python3 wordpress_site_health_monitoring.py --url="https://Domain or Website/" --username="WordPress Username" --application_password="Application Password"
     ```
 
 ---
