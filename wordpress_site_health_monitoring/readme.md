@@ -69,13 +69,24 @@ WordPress is a powerful CMS that enables you to manage your website’s content 
    - Ensure the WordPress username has administrator privileges or API access.
    - Use the application password generated in **Admin Login > Users > All Users > Application Passwords**. **Do not use the user's account password.**
 
-3. Copy the `wordpress_site_health_monitoring` directory to the Site24x7 Linux Agent plugin directory:
+3. Move the plugin under the Site24x7 agent directory
 
-    ```bash
-    cp -r wordpress_site_health_monitoring /opt/site24x7/monagent/plugins/
-    ```
+#### Linux
 
-4. The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+- Move the "wordpress_site_health_monitoring" directory under the Site24x7 Linux Agent plugin directory: 
+
+```bash
+mv wordpress_site_health_monitoring /opt/site24x7/monagent/plugins/
+```
+		
+#### Windows
+
+- Move the "wordpress_site_health_monitoring" directory under the Site24x7 Windows Agent plugin directory:
+
+```
+C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+```
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ---
 
