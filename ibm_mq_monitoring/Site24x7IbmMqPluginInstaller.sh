@@ -194,7 +194,6 @@ install (){
 
         download_files https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq_monitoring/ibm_mq_monitoring.py
         download_files https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq_monitoring/ibm_mq_monitoring.cfg
-        
     
     fi
 
@@ -206,7 +205,7 @@ get_plugin_data() {
     default_channel_name="DEV.APP.SVRCONN"
     default_host="localhost"
     default_port="1414"
-    default_username="app"
+    default_username="None"
     default_password="None"
     tput setaf 3
     echo
@@ -244,13 +243,13 @@ get_plugin_data() {
 
     read -r -p "  Enter the username (default: $default_username): " username
     if [ -z $username ] ; then
-        username="None"
+        username=$default_username
     fi
 
 
     read -r -p "  Enter the password (default: $default_password): " password
     if [ -z $password ] ; then
-        password="None"
+        password=$default_password
     fi
 
 
@@ -372,7 +371,7 @@ add_conf() {
     error_handler $? $output
     output=$(sed -i "/^port*/c\port = \"$ibm_mq_monitoring_port\""  "$cfg_file")
     error_handler $? $output
-    output=$(sed -i "/^username*/c\username = \"$default_username\""  "$cfg_file")
+    output=$(sed -i "/^username*/c\username = \"$username\""  "$cfg_file")
     error_handler $? $output
     password=$(echo "$password" | sed 's/\\/\\\\/g')
     output=$(sed -i "/^password*/c\password = \"$password\""  $cfg_file)
@@ -456,14 +455,13 @@ install_plugin() {
     get_plugin_data
 
     
+    add_conf
 
     python_path_update
 
     check_plugin_execution
 
     execution_flag=$?
-
-    echo $execution_flag "---------"
 
     if [ "$execution_flag" != "1" ]; then 
         get_plugin_data
@@ -481,7 +479,7 @@ install_plugin() {
 
 
 
-    add_conf
+    
 
     tput setaf 3
     echo
