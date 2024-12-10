@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import os
 import json
 import traceback
 
@@ -9,6 +10,7 @@ METRICS_UNITS = {
     "queues": {"oldest_msg_age": "s"},
     "channels": {"bytes_sent": "bytes", "bytes_received": "bytes"},
 }
+current_file_path = os.path.dirname(os.path.abspath(__file__))
 
 
 class IbmMq:
@@ -55,6 +57,11 @@ class IbmMq:
             return True
         else:
             return False
+
+    def rem(self, mount_data):
+        while "" in mount_data:
+            mount_data.remove("")
+        return mount_data
 
     def main(self):
 
@@ -211,14 +218,14 @@ class IbmMq:
         else:
             self.maindata.update(Listenerdata)
 
-        applog={}
-        if(self.logsenabled in ['True', 'true', '1']):
-                applog["logs_enabled"]=True
-                applog["log_type_name"]=self.logtypename
-                applog["log_file_path"]=self.logfilepath
+        applog = {}
+        if self.logsenabled in ["True", "true", "1"]:
+            applog["logs_enabled"] = True
+            applog["log_type_name"] = self.logtypename
+            applog["log_file_path"] = self.logfilepath
         else:
-                applog["logs_enabled"]=False
-        self.maindata['applog'] = applog
+            applog["logs_enabled"] = False
+        self.maindata["applog"] = applog
 
         return self.maindata
 
@@ -318,6 +325,55 @@ class IbmMq:
             # print(queue)
             return
 
+    def object_status(self, attribute_list, file, json_array, key):
+
+        attribute_status_file = os.path.join(current_file_path, (file + ".txt"))
+
+        if os.path.isfile(attribute_status_file):
+            try:
+                f = open(attribute_status_file, "r")
+                attribute_check = f.read().split("\n")
+                if "" in attribute_check:
+                    attribute_check = self.rem(attribute_check)
+            except Exception as e:
+                self.maindata["status"] = 0
+                self.maindata["msg"] = str(e)
+
+            set1 = set(attribute_check)
+            set2 = set(attribute_list)
+
+            all = set1.intersection(set2)
+            inactive = list(set1 - set2)
+
+            for i in inactive:
+                json_array.append({"name": i, key: 0})
+
+            if not (len(all) == len(set2)):
+                all = set1.union(set2)
+                try:
+                    f = open(attribute_status_file, "a")
+                    f.truncate(0)
+                    f.write("\n".join(all))
+                    f.close()
+                except Exception as e:
+                    self.maindata["status"] = 0
+                    self.maindata["msg"] = str(e)
+
+            return json_array
+
+        else:
+            try:
+                f = open(attribute_status_file, "a")
+                f.write("\n".join(attribute_list))
+                f.close()
+            except Exception as e:
+                self.maindata["status"] = 0
+                self.maindata["msg"] = str(e)
+
+            return json_array
+
+        return json_array
+
     def channelCollector(self, pcf):
 
         try:
@@ -369,6 +425,7 @@ class IbmMq:
             channel_responses = pcf.MQCMD_INQUIRE_CHANNEL_STATUS(args)  # self.attr3)
             channels = {}
             mqi_calls = {}
+            channel_list = []
 
             for channel_response in channel_responses:
                 # print(channel_response[self.Channel_Status])
@@ -403,6 +460,11 @@ class IbmMq:
                     channels[channel_name] = channels_dict
 
                     mqi_calls[channel_name] = channel_response[self.No_of_MQI_calls]
+                    channel_list.append(channel_name)
+
+            channel_list = self.object_status(
+                channel_list, "channels", channel_list, "channel_status"
+            )
 
             maindata["channels"] = list(channels.values())
 
@@ -418,16 +480,25 @@ class IbmMq:
             maindata = {}
             listeners = []
             response = pcf.MQCMD_INQUIRE_LISTENER_STATUS(self.attr4)
+            listener_list = []
+
             for listener_info in response:
+                listener_name = listener_info[self.listener_name].decode()
                 listener_dict = {
-                    "name": listener_info[self.listener_name].decode(),
+                    "name": listener_name,
                     "port": listener_info[self.listener_port],
                     "backlog": listener_info[self.listener_backlog],
                     "state": listener_info[self.listener_status],
+                    "status": 1,
                 }
+
                 listeners.append(listener_dict)
+                listener_list.append(listener_name)
+
             maindata["listeners"] = listeners
-            # print(maindata)
+            listeners = self.object_status(
+                listener_list, "listeners", listeners, "status"
+            )
             return maindata
         except Exception as e:
             self.maindata["status"] = 0
@@ -445,7 +516,7 @@ if __name__ == "__main__":
     username = "app"
     password = "plugin"
 
-    import argparse
+    import argparse, platform
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -480,4 +551,7 @@ if __name__ == "__main__":
     ibm_obj = IbmMq(args)
     ibm_mq_metric_data = ibm_obj.main()
 
-    print(json.dumps(ibm_mq_metric_data))
+    if (platform.system() == "Windows"):
+        print(json.dumps(ibm_mq_metric_data))
+    else:
+        print(json.dumps(ibm_mq_metric_data, indent=True))
