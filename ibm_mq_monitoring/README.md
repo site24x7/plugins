@@ -4,6 +4,15 @@ IBM MQ is used by businesses to build scalable architectures.It is largely queue
  
 Hence using our plugin, technician can monitor the performance  attributes of IBM MQ Objects like queue manager, channels and queues while also enabling easy alerting, health check would help  reduce risk of downtime within your IBM MQ infrastructure. 
 
+## Quick installation
+
+If you're using Linux servers, use the IBM MQ plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
+
+Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
+
+```bash
+wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq_monitoring/installer/Site24x7IbmMqPluginInstaller.sh && sudo bash Site24x7IbmMqPluginInstaller.sh
+```
                                                                                               
 ## Prerequisites
 
@@ -40,7 +49,7 @@ Hence using our plugin, technician can monitor the performance  attributes of IB
 #### Configurations
 
 - Provide your IBM MQ configurations in ibm_mq_monitoring.cfg file.
-	```bash
+	```ini
 	[QM1]
 	queue_manager_name ="QM1"
 	channel_name="DEV.APP.SVRCONN"
@@ -51,10 +60,11 @@ Hence using our plugin, technician can monitor the performance  attributes of IB
 	```	
 #### Linux
 
- - Move the folder `ibm_mq_monitoring` into the  Site24x7 Linux Agent plugin directory: 
+ - Move the folder `ibm_mq_monitoring` into the  Site24x7 Linux Agent plugin directory:
 
-		mv ibm_mq_monitoring /opt/site24x7/monagent/plugins/
- 
+	```bash
+	mv ibm_mq_monitoring /opt/site24x7/monagent/plugins/
+ 	```
  #### Windows
  
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
