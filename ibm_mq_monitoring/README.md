@@ -35,7 +35,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq_monitoring
  	cd ibm_mq_monitoring/
  	```
       
-- Download all the files and place it under the `ibm_mq_monitoring` directory.
+- Download all the files [ibm_mq_monitoring.py](https://github.com/site24x7/plugins/blob/master/ibm_mq_monitoring/ibm_mq_monitoring.py), [ibm_mq_monitoring.cfg](https://github.com/site24x7/plugins/blob/master/ibm_mq_monitoring/ibm_mq_monitoring.cfg) and place it under the `ibm_mq_monitoring` directory.
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq_monitoring/ibm_mq_monitoring.py && sed -i "1s|^.*|#! $(which python3)|" ibm_mq_monitoring.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq_monitoring/ibm_mq_monitoring.cfg
