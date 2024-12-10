@@ -247,7 +247,7 @@ get_plugin_data() {
     fi
 
 
-    read -r -p "  Enter the password (default: $default_password): " password
+    read -r -s -p "  Enter the password (default: $default_password): " password
     if [ -z $password ] ; then
         password=$default_password
     fi
@@ -475,8 +475,9 @@ install_plugin() {
         tput setaf 1
         error_handler 1 "Plugin execution failed"
     fi
-            
+    
 
+    add_conf
 
 
     
