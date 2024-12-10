@@ -335,7 +335,7 @@ check_plugin_execution() {
         
         return 0
 
-    elif ! echo "$output" | grep -qE "\"QManager\ Connection Count\":|\"QManager Status\":"; then
+    elif ! echo "$output" | grep -qE "\"QManager Connection Count\":|\"QManager Status\":"; then
        tput setaf 3
        echo "The output does not contain metrics. Check if you have provided the correct details."
        tput setaf 1
