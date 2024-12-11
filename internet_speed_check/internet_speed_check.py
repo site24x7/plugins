@@ -2,7 +2,6 @@
 import os
 import json
 import sys
-import platform
 import speedtest
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
