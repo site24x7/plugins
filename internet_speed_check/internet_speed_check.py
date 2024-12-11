@@ -1,7 +1,5 @@
 #!/usr/bin/python
-import os
 import json
-import sys
 import speedtest
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
