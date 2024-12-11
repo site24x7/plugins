@@ -13,9 +13,9 @@
 
 ## Plugin Installation 
 
-- Create a folder named "mssql_custom_query".
+- Create a folder named `mssql_custom_query`.
 		
-- Download the below files in "mssql_custom_query" folder and place it under the "mssql_custom_query" directory
+- Download the below files in `mssql_custom_query` folder.
 
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/mssql_custom_query.ps1
 		https://raw.githubusercontent.com/site24x7/plugins/master/mssql_custom_query/mssql_custom_query.cfg
@@ -29,19 +29,19 @@
 - Update the below configurations in mssql_custom_query.cfg file:
 
 		[mssql_custom_query]
-		SQLServer = "server_name>"
+		SQLServer = "server_name"
 		SQLDBName = "dbname"
 		sqlusername = "sql_username"
 		sqlpassword  = "sql_password"
 		
 - This plugin will monitor only the first row of the result of the query.So, use TOP clause in the query as below to return only one row from the result.
 
-		query = "select TOP 1 * from sys.assemblies"
+		select TOP 1 * from sys.assemblies
 
   #### Note:
   - If your custom query returns multiple rows based on specific criteria, you have the flexibility to utilize aggregation functions according to your needs, enabling manipulation of the retrieved rows.
   - Reference: https://learn.microsoft.com/en-us/sql/t-sql/functions/aggregate-functions-transact-sql?view=sql-server-ver16
-- Move the folder "mssql_custom_query" under the Site24x7 Windows Agent plugin directory:
+- Move the folder `mssql_custom_query` under the Site24x7 Windows Agent plugin directory:
 
 		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 
