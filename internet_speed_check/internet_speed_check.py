@@ -12,10 +12,15 @@ HEARTBEAT="true"
 try:
     import speedtest
 except Exception as e:
-    if sys.version_info[0] == "3":
-        returnVal=os.system('python3 -m pip install --upgrade pip speedtest-cli >/dev/null 2>&1')
+    python_command = "python" 
+    if sys.version_info[0] == 3:
+        python_command = "python3" if platform.system() != "Windows" else "python"
+
+    if platform.system() != "Windows":
+        returnVal = os.system(f'{python_command} -m pip install --upgrade pip speedtest-cli >/dev/null 2>&1')
     else:
-        returnVal=os.system('python -m pip install --upgrade pip speedtest-cli >/dev/null 2>&1')
+        returnVal = os.system(f'{python_command} -m pip install --upgrade pip speedtest-cli >NUL 2>&1')
+    
     import speedtest
 
 plugin_rs = {}
