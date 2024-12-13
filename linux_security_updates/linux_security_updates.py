@@ -21,7 +21,7 @@ class security_update_check:
         self.maindata['units']=METRICS_UNITS
         self.log_enabled="True"
         self.logtypename="Linux Pending Updates"
-        self.logfilepath="/opt/site24x7/monagent/plugins/check_updates/updates_list*.txt"
+        self.logfilepath="/opt/site24x7/monagent/plugins/linux_security_updates/updates_list*.txt"
 
     def calculate_sha256_hash(self,input_string):
 
