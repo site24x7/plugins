@@ -1,22 +1,12 @@
 #!/usr/bin/python
-import os
 import json
-import sys
+import speedtest
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
 
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT="true"
-
-try:
-    import speedtest
-except Exception as e:
-    if sys.version_info[0] == "3":
-        returnVal=os.system('python3 -m pip install --upgrade pip speedtest-cli >/dev/null 2>&1')
-    else:
-        returnVal=os.system('python -m pip install --upgrade pip speedtest-cli >/dev/null 2>&1')
-    import speedtest
 
 plugin_rs = {}
 metric_units = {'ping':'ms','download':'Mbps','upload':'Mbps'}
