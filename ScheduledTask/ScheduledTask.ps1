@@ -193,7 +193,6 @@ foreach ($key in $task.Keys) {
 }
 
 $data["author"] = $data["Author"]
-$data["Start Date"] = $data["Start Date"]
 $data["lastRunTime"] = $data["Last Run Time"]
 $data["Error Code"] = $data["Last Result"]
 
@@ -227,10 +226,14 @@ $timespan = New-Timespan -Start $data["Last Run Time"] -End $timenow
 $timediff = $timespan.Days.ToString() + " Days " + $timespan.Hours.ToString() + " Hours " + $timespan.Minutes.ToString() + " Minutes " + $timespan.Seconds.ToString() + " Seconds "
 $data["Last Run Before"] = $timediff
 
-$startDateString = $data["Start Date"]
-$startDate = [datetime]::ParseExact($startDateString, $shortDatePattern, $culture)
-$ageTimespan = New-Timespan -Start $startDate -End $timenow
-$data["Task Age"] = $ageTimespan.Days
+if ($data["Start Date"] -eq "N/A") {
+    $data["Start Date"] = "N/A"
+} else{
+    $startDateString = $data["Start Date"]
+    $startDate = [datetime]::ParseExact($startDateString, $shortDatePattern, $culture)
+    $ageTimespan = New-Timespan -Start $startDate -End $timenow
+    $data["Task Age"] = $ageTimespan.Days
+}
 
 if ($data.ContainsKey('TaskName')) {
     $data.Remove('TaskName')
