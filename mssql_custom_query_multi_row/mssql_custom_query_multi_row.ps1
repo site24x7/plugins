@@ -95,7 +95,7 @@ Function Get-Data {
         $log_output | Out-File -FilePath  ($PSScriptRoot+"\query_output"+$file_time+".txt")
         $outdata.add("Logs written","ok")
         $outdata.add("status","1")
-
+        $outdata.add("Rows Returned",$table.Rows.Count)
 
 
         return $outdata
@@ -103,7 +103,7 @@ Function Get-Data {
     catch {
         $outdata.Add("status", 0)
         $outdata.Add("msg", $Error[0].Exception.Message)
-       Write-Host $_.Exception
+        #Write-Host $_.Exception
 
 
         if ($reader) { $reader.Close() }
