@@ -349,7 +349,7 @@ foreach ($key in $keysToRemove) {
 
 # Site24x7 Plugin Metrics
 $version = "1"
-$displayname = "Monitor Task - " + $data["Task Name"]
+$displayname = $taskName + "-ScheduledTask"
 $heartbeat = "True"
 $working_codes = @(0, 267008, 267009)
 
