@@ -95,7 +95,7 @@ Function Get-Data {
         $log_output | Out-File -FilePath  ($PSScriptRoot+"\query_output"+$file_time+".txt")
         $outdata.add("Logs written","ok")
         $outdata.add("status","1")
-        $outdata.add("Rows Returned",$table.Rows.Count)
+        $outdata.add("Rows fetched",$table.Rows.Count)
 
 
         return $outdata
