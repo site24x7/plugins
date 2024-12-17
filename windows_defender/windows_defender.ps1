@@ -64,14 +64,14 @@ $AntispywareSignatureLastUpdated = if ($mpStatus.AntispywareSignatureLastUpdated
 $AMServiceEnabled = $mpStatus.AMServiceEnabled
 $AntispywareEnabled = $mpStatus.AntispywareEnabled
 $AntivirusEnabled = $mpStatus.AntivirusEnabled
-$FullScanAge = if ($mpStatus.FullScanAge -eq 4294967295){-1} else {$mpStatus.FullScanAge}
-$QuickScanAge = if ($mpStatus.QuickScanAge -eq 4294967295){-1} else {$mpStatus.QuickScanAge}
+$FullScanAge = if ($mpStatus.FullScanAge -eq 4294967295 -or $mpStatus.FullScanAge -eq 65535){-1} else {$mpStatus.FullScanAge}
+$QuickScanAge = if ($mpStatus.QuickScanAge -eq 4294967295 -or $mpStatus.QuickScanAge -eq 65535){-1} else {$mpStatus.QuickScanAge}
 $NISEnabled = $mpStatus.NISEnabled
 $IsTamperProtected = $mpStatus.IsTamperProtected
 
-$AntispywareSignatureAge  = if ($mpStatus.AntispywareSignatureAge -eq 4294967295){-1} else {$mpStatus.AntispywareSignatureAge}
-$AntivirusSignatureAge  = if ($mpStatus.AntivirusSignatureAge -eq 4294967295){-1} else {$mpStatus.AntivirusSignatureAge}
-$NISSignatureAge = if ($mpStatus.NISSignatureAge -eq 4294967295){-1} else {$mpStatus.NISSignatureAge}
+$AntispywareSignatureAge  = if ($mpStatus.AntispywareSignatureAge -eq 4294967295 -or $mpStatus.AntispywareSignatureAge -eq 65535){-1} else {$mpStatus.AntispywareSignatureAge}
+$AntivirusSignatureAge  = if ($mpStatus.AntivirusSignatureAge -eq 4294967295 -or $mpStatus.AntivirusSignatureAge -eq 65535){-1} else {$mpStatus.AntivirusSignatureAge}
+$NISSignatureAge = if ($mpStatus.NISSignatureAge -eq 4294967295 -or $mpStatus.NISSignatureAge -eq 65535){-1} else {$mpStatus.NISSignatureAge}
 
 $QuickScanSignatureVersion = if ($mpStatus.QuickScanSignatureVersion) { $mpStatus.QuickScanSignatureVersion } else { "No Value Found" }
 $AntispywareSignatureVersion = if ($mpStatus.AntispywareSignatureVersion) { $mpStatus.AntispywareSignatureVersion } else { "No Value Found" }
@@ -112,4 +112,5 @@ $mainJson = @{
     "NISSignatureVersion" = $NISSignatureVersion
 }
 
+# Convert the JSON to a formatted string
 $mainJson | ConvertTo-Json -compress
