@@ -3,7 +3,7 @@ param([string]$counters)
 
 $output = @{}
 $heartbeat = "true"
-$version = 3
+$version = 1
 $flag=0
 $msg=""
 $Status=1

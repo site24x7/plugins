@@ -22,7 +22,7 @@ This Plugin will fetch the SQL query output and write it into a log file. The pl
 
 - Provide your configurations in mssql_custom_query_multi_row.cfg file.
 
-  ```bash
+  ```ini
   [mssql]
   SQLServer = "test"
   SQLDBName = "product"
