@@ -12,7 +12,7 @@ $counters_present=$false
 Function Get-Data
 {
     try{
-    $countarr = $counters -split ","
+    $countarr = $counters -split "#"
 
     $units = @{}
 
