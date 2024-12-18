@@ -23,11 +23,11 @@ Windows Performance Counters provide a high-level abstraction layer that provide
 		
 3. To monitor desired Windows perfmon counters, you need the exact names of the performance counters. To get the counter name from the Windows Performance Monitor [read this](https://support.site24x7.com/portal/en/kb/articles/add-perfmon-counters-in-windows) article.
 
-5. Open the "WindowsPerfmonCounterMonitoring.cfg" and in the counters config, configure your desired perfmon counters, units and displaynames. The value of each is separated by a comma. Example as follows
+5. Open the "WindowsPerfmonCounterMonitoring.cfg" and in the counters config, configure your desired perfmon counters, units and displaynames. The value of each is separated by a "#". Example as follows
 
   	```bash
 	[counter_monitoring]
-	counters="\LogicalDisk(C:)\Avg. Disk sec/Write,\Processor Information(_Total)\% Processor Time,\LogicalDisk(C:)\Avg. Disk Bytes/Write,\Processor(_Total)\% Idle Time,\Event Log\Events/sec,\PhysicalDisk(_Total)\Avg. Disk Bytes/Read,\LogicalDisk(_Total)\Current Disk Queue Length,\Thread(_Total/_Total)\Priority Current,\Process(_Total)\IO Read Operations/sec,\Database(HealthService)\Database Cache % Hit"
+	counters="\LogicalDisk(C:)\Avg. Disk sec/Write#\Processor Information(_Total)\% Processor Time#\LogicalDisk(C:)\Avg. Disk Bytes/Write#\Processor(_Total)\% Idle Time#\Event Log\Events/sec#\PhysicalDisk(_Total)\Avg. Disk Bytes/Read#\LogicalDisk(_Total)\Current Disk Queue Length#\Thread(_Total/_Total)\Priority Current#\Process(_Total)\IO Read Operations/sec#\Database(HealthService)\Database Cache % Hit"
 	```
 		
 6. Further move the folder `WindowsPerfmonCounterMonitoring` into the Site24x7 Windows Agent plugin directory:
