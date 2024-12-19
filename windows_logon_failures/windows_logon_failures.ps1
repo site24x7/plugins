@@ -9,10 +9,12 @@ Function Get-Data($count)
 
 $outdata=@{}
   
-$startTime = (Get-Date).AddMinutes(-5)
+$startTime = (Get-Date).AddMinutes(-6)
 $Events=Get-EventLog -LogName Security -Source "Microsoft-Windows-Security-Auditing" -InstanceId 4625 -EntryType FailureAudit -After $startTime -EA silentlycontinue
 $Log=[System.Collections.ArrayList]@()
 $event_count=$Events.Count
+
+$msg_count=1
 
 $outdata.Add("failed_logon_count",$event_count)
 if($event_count -gt $count){
@@ -27,9 +29,10 @@ foreach($Event in $Events){
     $ClientIPFrom=$Event.ReplacementStrings[19]
 
     $msg1="`nLogin failure at $TimeStamp : User '$UserTried' from domain '$DomainNameFrom' attempted to log in from IP address $ClientIPFrom failed due to bad password." -replace '[^a-zA-Z0-9.,:/\s]' , ""
-    
-    $global:msg+=$msg1
-
+    if ($msg_count -le 5){
+        $global:msg+=$msg1
+    }
+    $msg_count+=1
 }  
 $global:status=0
 
