@@ -13,7 +13,7 @@ If you're using Linux servers, use the postgres plugin installer that checks the
 
 Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
 
-```
+```bash
 wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installer/Site24x7PostgresPluginInstaller.sh && sudo bash Site24x7PostgresPluginInstaller.sh
 ```
 
@@ -29,27 +29,36 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
 
 - Create a directory named `postgres`.
 
-		mkdir postgres
-  		cd postgres/
+	```bash
+	mkdir postgres
+	cd postgres/
+	```
   
 - Download all the files and place it under the `postgres` directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.cfg
-
+	```bash
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.py
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.cfg
+	```
+ 
 - Execute the following command in your server to install psycopg2: 
 
-		pip3 install psycopg2-binary
-  
+	```bash
+	pip3 install psycopg2-binary
+	```
+ 
 - Ensure **pg_read_all_stats** permission is provided to the user. For example, create a user `site24x7` with password `site24x7` and provide `pg_read_all_stats` permission to the `site24x7` user created.
+  
 - Execute the below command with appropriate arguments to check for the valid json output:
 
-		python3 postgres.py  --host "ip-address" --port "port-no" --username "username" --password "password" 
-
+	```bash
+	python3 postgres.py  --host "ip-address" --port "port-no" --username "username" --password "password" 
+	```
+ 
 - Provide your Postgres DB configurations in postgres.cfg file.
 
-    ```
-	[postgres]
+    ```ini
+    [postgres]
     host="localhost"
     port="5432"
     username="None"
@@ -61,15 +70,18 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the postgres.py script.
 - Move the directory `postgres` under the Site24x7 Linux Agent plugin directory: 
-
-		mv postgres /opt/site24x7/monagent/plugins/
+	```bash
+	mv postgres /opt/site24x7/monagent/plugins/
+ 	```
+ 
   #### Windows 
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
 
 - Move the folder `postgres` under Site24x7 Windows Agent plugin directory: 
-
-		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
+	```bash
+	C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
+ 	```
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
