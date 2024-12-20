@@ -52,7 +52,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 	```bash
-	python3 postgres.py  --host "ip-address" --port "port-no" --username "username" --password "password" 
+	python3 postgres.py  --host "localhost" --port "5432" --username "username" --password "password" --db "postgres"
 	```
  
 - Provide your Postgres DB configurations in postgres.cfg file.
@@ -63,6 +63,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
     port="5432"
     username="None"
     password="None"
+    db="postgres"
     plugin_version="1"
     ```
     
