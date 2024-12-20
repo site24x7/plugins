@@ -157,7 +157,7 @@ def inititializeQueries():
     db_details = "SELECT d.datname AS name, s.numbackends as active_connections, ROUND(pg_database_size(d.datname) / 1024 / 1024,2) AS size_in_mb,tup_inserted as rows_inserted, tup_updated as rows_updated, tup_deleted as rows_deleted, tup_fetched as rows_fetched , tup_returned as rows_returned, blks_read as block_reads , blks_hit as block_hits FROM pg_database d JOIN pg_stat_database s ON d.oid = s.datid;"
 
 class pgsql():
-    def __init__(self,host_name,port,username,password):
+    def __init__(self,host_name,port,username,password,db):
         self._conn = None
         self._uname = username
         self._pwd = password
@@ -165,13 +165,14 @@ class pgsql():
         self._port = port
         self._results = {}
         self._msg=""
+        self._db = db
     def main(self,plugin_version,heartbeat):
         global VERSION
         try: 
             self._results.setdefault('plugin_version' , str(plugin_version))
             self._results.setdefault('heartbeat_required' , str(heartbeat))
             import psycopg2
-            self._conn = psycopg2.connect(  user = self._uname , password = self._pwd, host = self._hostname, port = self._port )
+            self._conn = psycopg2.connect( dbname = self._db, user = self._uname , password = self._pwd, host = self._hostname, port = self._port )
             VERSION = self._conn.server_version
             
             inititializeQueries()
@@ -264,6 +265,7 @@ if __name__ == '__main__':
     parser.add_argument('--password', help='password', nargs='?', default=PASSWORD)
     parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=PLUGIN_VERSION)
     parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=HEARTBEAT)
+    parser.add_argument('--db', help='database name', nargs='?', default=DB)
     args = parser.parse_args()
         
     host_name=args.host
@@ -272,6 +274,7 @@ if __name__ == '__main__':
     password=args.password
     plugin_version=args.plugin_version
     heartbeat=args.heartbeat
+    db=args.db
         
-    psql = pgsql(host_name,port,username,password)
+    psql = pgsql(host_name,port,username,password,db)
     psql.main(plugin_version,heartbeat)
