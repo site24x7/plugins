@@ -3,17 +3,24 @@ Plugin for Monitoring the Internet speed
 
 ### PreRequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/help/admin/adding-a-monitor/linux-server-monitoring.html#add-linux-server-monitor) in the server where you plan to run the plugin. 
+- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/help/admin/adding-a-monitor/linux-server-monitoring.html#add-linux-server-monitor) in the server where you plan to run the plugin. 
 
-- Plugin Uses "speedtest" python module.
+- Plugin Uses "speedtest-cli" python module.
 	
-- How to install speedtest :
+- How to install speedtest-cli :
   
-      python2:    python -m pip install --upgrade pip speedtest-cli
-      python3:    python3 -m pip install --upgrade pip speedtest-cli
-      if pip command not present kindly install using the below section
+  python2:
+  
+  	    python -m pip install --upgrade pip speedtest-cli
+  
+  python3:
+
+  		python3 -m pip install --upgrade pip speedtest-cli
+
+if pip command not present kindly install using the below section
 
 - How to install pip :
+  
       curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
       python get-pip.py
 
@@ -64,8 +71,8 @@ Plugin Installation
 ### For Windows
 
 1. **Download the required files**:
-    - `internet_speed_check.py`
-    - `speedtest-cli.zip`
+    - [`internet_speed_check.py`](https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/internet_speed_check.py)
+    - [`speedtest-cli.zip`](https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/speedtest-cli.zip)
 
 2. **Create a directory**:
     ```
@@ -99,8 +106,8 @@ The agent will automatically execute the plugin within five minutes and user can
 ### Metrics Captured
 ---
 
-upload - Upload speed of your internet connection
-
-download - Download speed of your internet connection
-
-ping - Reaction time of your internet connection
+| Metric   | Description                                |
+|----------|--------------------------------------------|
+| upload   | Upload speed of your internet connection   |
+| download | Download speed of your internet connection |
+| ping     | Reaction time of your internet connection  |
