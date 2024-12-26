@@ -3,6 +3,7 @@
 import json
 import platform
 import subprocess
+import sys
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
@@ -28,6 +29,7 @@ def metricCollector():
                     zombies_raw = line.split(',')[-1]
                     if 'zombie' in zombies_raw:
                         data['zombies'] = zombies_raw.split()[0]
+                        data['python_version'] = sys.version.split()[0]
                         break
                 except Exception as e:
                     data['status']=0
@@ -38,6 +40,11 @@ def metricCollector():
         data['msg']='error while parsing top output'+str(e)
     
     return data
+
+
+def run(param=None):
+    obj=metricCollector()
+    return obj
 
 
 if __name__ == '__main__':
