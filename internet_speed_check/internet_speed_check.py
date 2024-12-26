@@ -4,7 +4,6 @@ import os
 import sys
 
 PLUGIN_VERSION = "1"
-
 HEARTBEAT = "true"
 
 plugin_rs = {}
@@ -13,10 +12,11 @@ plugin_rs['plugin_version'] = PLUGIN_VERSION
 plugin_rs['heartbeat_required'] = HEARTBEAT
 
 try:
-    speedtest_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "speedtest-cli")
+    # Specify the path to the .pyz file
+    speedtest_pyz_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "speedtest-cli.pyz")
+    sys.path.insert(0, speedtest_pyz_path)
 
-    sys.path.insert(0, speedtest_path)
-
+    # Import the speedtest module
     import speedtest
 
     threads = None
