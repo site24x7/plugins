@@ -7,23 +7,6 @@ Plugin for Monitoring the Internet speed
 
 - Plugin Uses "speedtest-cli" python module.
 	
-- How to install speedtest-cli :
-  
-  python2:
-  
-  	    python -m pip install --upgrade pip speedtest-cli
-  
-  python3:
-
-  		python3 -m pip install --upgrade pip speedtest-cli
-
-if pip command not present kindly install using the below section
-
-- How to install pip :
-  
-      curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-      python get-pip.py
-
 Plugin Installation
 -------------------
 
@@ -40,27 +23,22 @@ Plugin Installation
     wget https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/speedtest-cli.pyz
     ```
 
-3. **Extract speedtest-cli.zip**:
-    ```
-    mkdir -p speedtest-cli
-    ```
-
-4. **Ensure the directory structure**:
+3. **Ensure the directory structure**:
     ```
     internet_speed_check
     ├── internet_speed_check.py
     ├── speedtest-cli.pyz
     ```
 
-5. **Update Python Path**: Follow the steps in this article to update the Python path in the `internet_speed_check.py` script:
+4. **Update Python Path**: Follow the steps in this article to update the Python path in the `internet_speed_check.py` script:
     https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers
 
-6. **Verify the script**:
+5. **Verify the script**:
     ```
     python internet_speed_check.py
     ```
 
-7. **Move the directory** under the Site24x7 Linux Agent plugin directory:
+6. **Move the directory** under the Site24x7 Linux Agent plugin directory:
     ```
     mv internet_speed_check /opt/site24x7/monagent/plugins/
     ```
@@ -71,7 +49,7 @@ Plugin Installation
 
 1. **Download the required files**:
     - [`internet_speed_check.py`](https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/internet_speed_check.py)
-    - [`speedtest-cli.zip`](https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/speedtest-cli.zip)
+    - [`speedtest-cli.pyz`](https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/speedtest-cli.pyz)
 
 2. **Create a directory**:
     ```
@@ -80,23 +58,21 @@ Plugin Installation
 
 3. **Place the downloaded files** inside the `internet_speed_check` directory.
 
-4. **Extract speedtest-cli.zip**.
-
-5. **Ensure the directory structure**:
+4. **Ensure the directory structure**:
     ```
     internet_speed_check
     ├── internet_speed_check.py
     ├── speedtest-cli.pyz
     ```
 
-6. **Verify the script**:
+5. **Verify the script**:
     ```
     python internet_speed_check.py
     ```
 
-7. **Move the directory** under the Site24x7 Windows Agent plugin directory:
+6. **Move the directory** under the Site24x7 Windows Agent plugin directory:
     ```
-    C:\Program Files (x86)\Site24x7\monagent\plugins\internet_speed_check
+    C:\Program Files (x86)\Site24x7\monagent\plugins\
     ```
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
