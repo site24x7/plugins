@@ -37,20 +37,19 @@ Plugin Installation
 2. **Download the required files**:
     ```
     wget https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/internet_speed_check.py
-    wget https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/speedtest-cli.zip
+    wget https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/speedtest-cli.pyz
     ```
 
 3. **Extract speedtest-cli.zip**:
     ```
     mkdir -p speedtest-cli
-    unzip speedtest-cli.zip -d speedtest-cli
     ```
 
 4. **Ensure the directory structure**:
     ```
     internet_speed_check
     ├── internet_speed_check.py
-    ├── speedtest-cli
+    ├── speedtest-cli.pyz
     ```
 
 5. **Update Python Path**: Follow the steps in this article to update the Python path in the `internet_speed_check.py` script:
@@ -87,7 +86,7 @@ Plugin Installation
     ```
     internet_speed_check
     ├── internet_speed_check.py
-    ├── speedtest-cli
+    ├── speedtest-cli.pyz
     ```
 
 6. **Verify the script**:
