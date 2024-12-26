@@ -40,6 +40,11 @@ def metricCollector():
     return data
 
 
+def run(param=None):
+    obj=metricCollector()
+    return obj
+
+
 if __name__ == '__main__':
     
     print(json.dumps(metricCollector(), indent=4, sort_keys=True))
