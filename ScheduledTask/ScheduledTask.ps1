@@ -193,24 +193,22 @@ foreach ($key in $task.Keys) {
 }
 
 $data["author"] = $data["Author"]
-$data["lastRunTime"] = $data["Last Run Time"]
-$data["Error Code"] = $data["Last Result"]
 
-$status = $data["Status"]
-if ($status -eq "Ready") {
+$status_text = $data["Status"]
+if ($status_text -eq "Ready") {
     $value_status = 3
-} elseif ($status -eq "Disabled") {
+} elseif ($status_text -eq "Disabled") {
     $value_status = 1
     $Status = 0
     $status_msg = "The task is disabled"
-} elseif ($status -eq "Queued") {
+} elseif ($status_text -eq "Queued") {
     $value_status = 2
-} elseif ($status -eq "Running") {
+} elseif ($status_text -eq "Running") {
     $value_status = 4
 }
 
 $data["State Value"] = $value_status
-$data["State"] = $status
+$data["State"] = $data["Status"]
 
 if ($data["Last Result"] -eq "0") {
     $data["Task Fails or Crashes Unexpectedly"] = 0
@@ -244,13 +242,10 @@ if ($data.ContainsKey('HostName')) {
     $data.Remove('HostName')
 }
 
-if ($data.ContainsKey('lastRunTime')) {
-    $data.Remove('lastRunTime')
-}
-
 $taskProcessingTimeInSeconds = 0
 
 function ManageInfoFileAndTask {
+
     param (
         [Parameter(Mandatory=$true)]
         [string]$TaskName
@@ -301,7 +296,6 @@ function ManageInfoFileAndTask {
             $lastRunTimeDt = [datetime]::ParseExact($lastRunTime, "$shortDatePattern $longTimePattern", $culture)
         }
     } catch {
-        return
     }
 
     if ($previousRunTimeDt -and $lastRunTimeDt -and $lastRunTimeDt -gt $previousRunTimeDt) {
@@ -319,11 +313,7 @@ function ManageInfoFileAndTask {
         $modifiedContent = $jsonContent | ConvertTo-Json -Depth 2
         $modifiedContent | Set-Content -Path $filePath
     }
-    else {
-        Write-Output "No 'Next Run Time' found in \$data."
-    }
 }
-
 
 ManageInfoFileAndTask -TaskName $taskName
 
@@ -338,7 +328,7 @@ $keysToRemove = @(
     "Delete Task If Not Rescheduled",
     "Host Name",
     "Folder",
-    "Task Fails or Crashes Unexpectedly"
+    "Status"
 )
 
 foreach ($key in $keysToRemove) {
@@ -364,8 +354,8 @@ $mainJson["units"] = @{
     "Task Execution Time" = "seconds"
 }
 
-if ($working_codes -contains $data["Error Code"]) {
-    $msg = GetErrorMessage($data["Error Code"])
+if ($working_codes -contains $data["Last Result"]) {
+    $msg = GetErrorMessage($data["Last Result"])
     if ($Status -eq 0) {
         $mainJson["status"] = 0
     }
@@ -375,8 +365,8 @@ if ($working_codes -contains $data["Error Code"]) {
         $mainJson["msg"] = ($msg | Out-String)
     }
 } else {
-    $msg = GetErrorMessage($data["Error Code"])
-    $err_msg = "error_code: " + $data["Error Code"] + ", msg: " + $msg
+    $msg = GetErrorMessage($data["Last Result"])
+    $err_msg = "msg: " + $msg
     $mainJson["msg"] = $err_msg
     $mainJson["status"] = 0
 }
