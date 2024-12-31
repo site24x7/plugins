@@ -12,7 +12,7 @@ $counters_present=$false
 Function Get-Data
 {
     try{
-    $countarr = $counters -split "#"
+    $countarr = $counters -split "\|"
 
     $units = @{}
 
@@ -72,4 +72,4 @@ if($msg -ne $null)
 
 }
 
-$output | ConvertTo-Json
+$output | ConvertTo-Json -Compress
