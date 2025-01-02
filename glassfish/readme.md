@@ -75,6 +75,59 @@ The agent will automatically execute the plugin within five minutes and send per
 
 ## Supported Metrics
 
-Name		            	| Description
----         		   	  |   ---
+Name		            		| 	Description
+---         		   		|   	---
+Used Non Heap Size  			| 	Amount of used non-heap memory in bytes
+MaxHeap Size  				| 	Maximum amount of heap memory in bytes that can be used for memory management
+Init HeapSize  				| 	Amount of heap memory in bytes that the JVM initially requests from OS for memory management
+Init Non Heap Size  			| 	Amount of non-heap memory in bytes that the JVM initially requests from OS for memory management
+Used Heap Size  			| 	Amount of used heap memory in bytes
+Committed Non Heap Size  		| 	Amount of non-heap memory in bytes that is committed for the JVM to use
+Object Pending Finalization Count  	| 	Approximate number of objects for which finalization is pending
+Max Non Heap Size  			| 	Maximum amount of non-heap memory in bytes that can be used for memory management
+Committed Heap Size  			| 	Amount of heap memory in bytes that is committed for the JVM to use
+Dead Locked Threads  			| 	No of threads in deadlock waiting to acquire object monitors or ownable synchronizers
+Total Started Thread Count  		| 	No of threads created and also started since the Java virtual machine started
+Daemon Thread Count  			| 	No of live daemon threads
+Monitor Dead Locked Threads  		| 	number of threads in deadlock waiting to acquire object monitors
+Current Thread User Time  		| 	CPU time for a thread executed in user mode
+Peak Thread Count  			| 	The peak live thread count since the Java virtual machine started or peak was reset
+Thread Count  				| 	Number of live threads including both daemon and non-daemon threads
+Current Thread CPU Time  		| 	Total CPU time for the current thread in nanoseconds
+Error Count  				| 	Cumulative value of the error count with error count representing the number of cases where the response code was greater than or equal to 400
+Avg Processing Time 			| 	Average request processing time
+Request Count  				| 	Cumulative number of requests processed so far
+Max Time  				| 	Longest response time for a request; not a cumulative value but the largest response time from among the response times
+Active Servlets Loaded  		| 	Number of Servlets loaded
+Servlet Processing Times  		| 	Cumulative Servlet processing times
+Total Servlets Loaded  			| 	Total number of Servlets loaded
+Bytes Received  			| 	Total number of bytes received
+Bytes Transmitted  			| 	Total number of bytes transmitted
+Responses with status code of 200  	| 	Number of responses with a status code of 200
+Responses with status code of 401  	| 	Number of responses with a status code of 401
+Responses with status code of 404  	| 	Number of responses with a status code of 404
+Responses with status code of 503  	|	Number of responses with a status code of 503
+2xx					|	Number of responses with a status code in the 2xx range
+3xx					|	Number of responses with a status code in the 3xx range
+4xx					|	Number of responses with a status code in the 4xx range
+5xx					|	Number of responses with a status code in the 5xx range
+other					|	Number of responses with a status code outside the 2xx, 3xx, 4xx, and 5xx range
+Transactions Committed  		| 	Number of committed transactions
+Transactions Rolled Back  		| 	Number of rolled back transactions
+Total Sessions  			| 	Total number of sessions
+Active Sessions  			| 	Number of active sessions
+Expired Sessions  			| 	Total number of expired sessions
+Rejected Sessions  			| 	Total number of rejected sessions
+Garbage Collection Count  		| 	Number of garbage collections that have occurred
+Garbage Collection Time  		| 	Approximate accumulated collection elapsed time in milliseconds
+Classes Loaded  			|	Number of classes that are currently loaded in the JVM
+Total Classes Loaded  			| 	Total number of classes that have been loaded since the JVM has started execution
+Classes Unloaded  			| 	Total number of classes that have been unloaded since the JVM has started execution
+Uptime  				| 	Amount of time the server has been running in seconds
+
+Sample Screenshots:
+
+![image](https://github.com/user-attachments/assets/06f6058d-f7fa-45b6-a222-7ecf9596b74b)
+![image](https://github.com/user-attachments/assets/5fd8b78c-9117-4619-a7db-4111e2c12201)
+![image](https://github.com/user-attachments/assets/e87619fd-dcfd-4028-953e-d4765edd3a0a)
 
