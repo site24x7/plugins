@@ -73,3 +73,7 @@ Temperature  		| 	The current operating temperature of the GPU, typically measur
 Memory   		| 	The amount of memory currently being consumed by the GPU.
 Total Memory   		| 	The total amount of memory available on the GPU.
 GPU   			| 	The model name of the GPU.
+Power Draw		|	The actual current power consumption of the GPU in watts.
+Power Limit		|	The maximum allowed power consumption set for the GPU, typically in watts.
+Driver Version		|	The version number of the installed NVIDIA graphics driver software.
+CUDA Version		|	The version number of the CUDA toolkit installed on the system, which enables GPU-accelerated computing.
