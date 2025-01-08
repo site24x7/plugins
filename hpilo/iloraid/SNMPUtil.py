@@ -15,7 +15,6 @@ elif PYTHON_MAJOR_VERSION == 2:
 ### It uses net-snmp packages to execut the snmp commands to get the data from the network devices
 ### snmpget, snmpwalk commands are supported
 ### 
-### Author: Anita, Zoho Corp
 ### Language : Python
 ### Tested in Ubuntu
 ### Tested for snmp version 2c

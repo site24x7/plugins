@@ -17,7 +17,6 @@ elif PYTHON_MAJOR_VERSION == 2:
 ### 3. Create a folder in name of the plugin under agent plugins directory (/opt/site24x7/monagent/plugins/)
 ### 4. Place the plugin inside the folder 
 
-### Author: Tarun, Zoho Corp
 ### Language : Python
 ### Tested in Ubuntu
 

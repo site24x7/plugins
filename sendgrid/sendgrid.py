@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-### Author: Vinoth Manoharan, Zoho Corp
 ### Language : Python
 ### Tested in Ubuntu
 

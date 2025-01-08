@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-### Author: Vinoth Manoharan, Zoho Corp
 ### Language : Python
 ### Tested in Ubuntu
 

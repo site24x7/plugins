@@ -5,8 +5,6 @@ import json
 
 '''
 Created on 21-Jun-2021
-
-@author: anita-1372
 '''
 
 PYTHON_MAJOR_VERSION = sys.version_info[0]

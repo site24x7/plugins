@@ -18,7 +18,6 @@ metrics monitored are
 12.time_since_last_accessed               ->      hours before the file was accessed
 13.time_since_last_modified               ->      hours before the file was modified
   
-  @author: anita-1372
   
   '''
 import json

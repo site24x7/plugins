@@ -10,7 +10,6 @@ import urllib2
 ### Download and install the latest version of Site24x7 Linux Agent. The agent will execute the plugin and push the data to the Site24x7 server
 
 
-### Author: Anita, Zoho Corp
 ### Language : Python
 ### Tested in Ubuntu
 

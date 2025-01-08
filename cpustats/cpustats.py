@@ -6,7 +6,6 @@
  ### cpustats.py unlike normal server cpu monitoring metrics, gives data of all the CPU metrics returned in top command output like (user cpu time, system cpu time, user nice cpu time, idle cpu time, io wait cpu time, hardware irq, software irq and steal time)
  ### Download and install the latest version of Site24x7 Linux Agent. The agent will execute the plugin and push the data to the Site24x7 server
  
- ### Author: Narmadha, Zoho Corp
  ### Language : Python
  ### Tested in Ubuntu, Centos, Rhel
 
