@@ -118,8 +118,8 @@ Total Sessions  			| 	Total number of sessions
 Active Sessions  			| 	Number of active sessions
 Expired Sessions  			| 	Total number of expired sessions
 Rejected Sessions  			| 	Total number of rejected sessions
-Garbage Collection Count  		| 	Number of garbage collections that have occurred
-Garbage Collection Time  		| 	Approximate accumulated collection elapsed time in milliseconds
+GC Count  				| 	Number of garbage collections that have occurred
+GC Time  				| 	Approximate accumulated collection elapsed time in milliseconds
 Classes Loaded  			|	Number of classes that are currently loaded in the JVM
 Total Classes Loaded  			| 	Total number of classes that have been loaded since the JVM has started execution
 Classes Unloaded  			| 	Total number of classes that have been unloaded since the JVM has started execution
@@ -127,7 +127,8 @@ Uptime  				| 	Amount of time the server has been running in seconds
 
 Sample Screenshots:
 
-![image](https://github.com/user-attachments/assets/06f6058d-f7fa-45b6-a222-7ecf9596b74b)
-![image](https://github.com/user-attachments/assets/5fd8b78c-9117-4619-a7db-4111e2c12201)
-![image](https://github.com/user-attachments/assets/e87619fd-dcfd-4028-953e-d4765edd3a0a)
+![image](https://github.com/user-attachments/assets/d10b8819-acea-4523-9fa1-996e4e04e5df)
+![image](https://github.com/user-attachments/assets/0d39be76-5724-416c-a90a-2f0cdd5ba7e7)
+![image](https://github.com/user-attachments/assets/576f025c-3381-4005-bda2-c51f21026582)
+
 
