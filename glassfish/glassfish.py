@@ -79,8 +79,8 @@ metric_keys = {
         "rejectedsessionstotal": "Rejected Sessions",  # Total number of rejected sessions
     },
     "garbage": {
-        "collectioncount-count": "Garbage Collection Count",  # Number of garbage collections that have occurred
-        "collectiontime-count": "Garbage Collection Time",  # Approximate accumulated collection elapsed time in milliseconds
+        "collectioncount-count": "GC Count",  # Number of garbage collections that have occurred
+        "collectiontime-count": "GC Time",  # Approximate accumulated collection elapsed time in milliseconds
     },
     "classloading": {
         "loadedclass-count": "Classes Loaded",  # Number of classes that are currently loaded in the JVM
@@ -93,14 +93,17 @@ metric_keys = {
 }
 
 tabs = {
-    "Request Status": {
+        "Sessions and Transactions": {
         "order": 1,
         "tablist": [
-            "Responses with status code of 200",
-            "Responses with status code of 401",
-            "Responses with status code of 404",
-            "Responses with status code of 503",
-            "Request_Status_Code_Class",
+            "Transactions Committed",
+            "Transactions Rolled Back",
+            "Total Sessions",
+            "Active Sessions",
+            "Expired Sessions",
+            "Rejected Sessions",
+            "Total Parse Count Per Sec",
+            "Total Parse Count Per Txn",
         ],
     },
     "Memory": {
@@ -130,24 +133,21 @@ tabs = {
             "Current Thread CPU Time",
         ],
     },
-    "Sessions and Transactions": {
+    "Request Status": {
         "order": 4,
         "tablist": [
-            "Transactions Committed",
-            "Transactions Rolled Back",
-            "Total Sessions",
-            "Active Sessions",
-            "Expired Sessions",
-            "Rejected Sessions",
-            "Total Parse Count Per Sec",
-            "Total Parse Count Per Txn",
+            "Responses with status code of 200",
+            "Responses with status code of 401",
+            "Responses with status code of 404",
+            "Responses with status code of 503",
+            "Request_Status_Code_Class",
         ],
     },
-    "Class Loading and Garbage Collection": {
+    "Class Loading and GC Metrics": {
         "order": 5,
         "tablist": [
-            "Garbage Collection Count",
-            "Garbage Collection Time",
+            "GC Count",
+            "GC Time",
             "Classes Loaded",
             "Total Classes Loaded",
             "Classes Unloaded",
