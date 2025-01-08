@@ -2,8 +2,6 @@
 
 '''
 Created on 02-Dec-2020
-
-@author: anita-1372
 '''
 import argparse
 import libvirt

@@ -11,7 +11,6 @@ import urllib2
 ### 4. Place the plugin inside the folder 
 
 ### Language : Python
-### Author: Vijayalakshmi Sampath, Zoho Corp
 ### Tested in Ubuntu
 
 

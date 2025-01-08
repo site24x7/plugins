@@ -9,7 +9,6 @@ import urllib2
 ### It uses the inbuilt Glassfish monitoring options to get the monitoring data.
 ### Download and install the latest version of Site24x7 Linux Agent. The agent will execute the plugin and push the data to the Site24x7 server
 
-### Author: Anita, Zoho Corp
 ### Language : Python
 ### Tested in Ubuntu
  

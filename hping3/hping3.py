@@ -2,8 +2,6 @@
 '''
 Created on 25-Sep-2020
 Site24x7 Plugin for monitoring hping3 commands
-
-@author: anita-1372
 '''
 
 import subprocess

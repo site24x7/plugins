@@ -20,7 +20,6 @@ Reason :  Error code description
 
 .NOTES
 Name: ScheduledTask.ps1
-Author: Hisham Thorakkal , Zoho Corp
 DateCreated: 2016-10-05
 Site: http://www.site24x7.com
 

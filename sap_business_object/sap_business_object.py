@@ -4,7 +4,6 @@ import json
 import argparse
 import time
 
-# Default parameters
 DEFAULT_PARAMS = {
     "plugin_version": 1,
     "heartbeat_required": True
@@ -213,7 +212,6 @@ def fetch_publications(host, port, logon_token):
                 root = ET.fromstring(response.text)
                 namespaces = {'atom': 'http://www.w3.org/2005/Atom', 'bip': 'http://www.sap.com/rws/bip'}
                 
-                # Collect publication data
                 for entry in root.findall('.//atom:entry', namespaces):
                     publication = {}
                     attrs = entry.find('.//atom:content/bip:attrs', namespaces)
@@ -229,13 +227,11 @@ def fetch_publications(host, port, logon_token):
                                 publication["publication_folder_id"] = int(value)
                     publications.append(publication)
                 
-                # Check for next page
                 next_link = root.find('.//atom:link[@rel="next"]', namespaces)
                 url = next_link.get('href') if next_link is not None else None
             else:
                 raise Exception(f"Failed to fetch publications: {response.status_code}")
         
-        # Process results
         result = {
             "publications": publications,
             "TotalNoOfPublications": len(publications)
@@ -259,13 +255,13 @@ def check_bi_launchpad_availability(host, port):
     try:
         start_time = time.time()
         response = requests.get(launchpad_url, timeout=10)
-        response_time = (time.time() - start_time) * 1000  # Convert to milliseconds
+        response_time = (time.time() - start_time) * 1000  
         if response.status_code == 200:
             return {"BILaunchpadAvailability": "Available", "BILaunchpadResponseTimeMS": round(response_time)}
         else:
-            return {"BILaunchpadAvailability": "Unavailable", "BILaunchpadAvailability": 0}
+            return {"BILaunchpadAvailability": "Unavailable", "BILaunchpadResponseTimeMS": 0}
     except requests.exceptions.RequestException:
-        return {"BILaunchpadAvailability": "Unavailable", "BILaunchpadAvailability": 0}
+        return {"BILaunchpadAvailability": "Unavailable", "BILaunchpadResponseTimeMS": 0}
 
 def main():
     parser = argparse.ArgumentParser()

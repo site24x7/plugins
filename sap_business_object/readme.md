@@ -59,20 +59,34 @@ The agent will automatically execute the plugin within five minutes and user can
 
 ## SAP Business Object Server Monitoring Plugin Metrics
 
-| **Metrics**                          | **Description**                                                                                   |
-|--------------------------------------|---------------------------------------------------------------------------------------------------|
-| `TotalNoOfServers`                   | Total number of servers being monitored.                                                         |
-| `TotalNoOfRunningServers`            | Total number of servers currently running.                                                       |
-| `TotalNoOfStoppedServers`            | Total number of servers currently stopped.                                                       |
-| `TotalNoOfEnabledServers`            | Total number of servers that are enabled.                                                        |
-| `TotalNoOfDisabledServers`           | Total number of servers that are disabled.                                                       |
-| `TotalNoOfUsers`                     | Total number of users in the system.                                                             |
-| `TotalNoOfFolders`                   | Total number of folders in the system.                                                           |
-| `users`                              | List of users with their respective `name`, `ownerid`, and `parentid`.                           |
-| `folders`                            | List of folders with their respective `name`, `folder_id`, and `owner_id`.                       |
-| `servers`                            | List of servers with their respective `name`, `status`, `server_process_id`, `enabled`, and IDs. |
+| **Metric**                          | **Description**                                                                                   |
+|-------------------------------------|---------------------------------------------------------------------------------------------------|
+| `BILaunchpadAvailability`           | Status of the BI Launchpad (e.g., "Available").                                                  |
+| `BILaunchpadResponseTimeMS`         | Response time of the BI Launchpad in milliseconds.                                               |
+| `TotalNoOfServers`                  | Total number of servers being monitored.                                                         |
+| `TotalNoOfRunningServers`           | Total number of servers currently running.                                                       |
+| `TotalNoOfStoppedServers`           | Total number of servers currently stopped.                                                       |
+| `TotalNoOfEnabledServers`           | Total number of servers that are enabled.                                                        |
+| `TotalNoOfDisabledServers`          | Total number of servers that are disabled.                                                       |
+| `connections`                       | List of connections with their respective `name`, `connection_id`, and `connection_folder_id`.   |
+| `TotalNoOfConnections`              | Total number of connections.                                                                     |
+| `TotalJobsWarning`                  | Total number of jobs in a warning state.                                                         |
+| `TotalFailedJobs`                   | Total number of failed jobs.                                                                     |
+| `TotalJobs`                         | Total number of jobs.                                                                            |
+| `TotalJobsRunning`                  | Total number of jobs currently running.                                                          |
+| `TotalJobsExpired`                  | Total number of expired jobs.                                                                    |
+| `TotalJobsPending`                  | Total number of pending jobs.                                                                    |
+| `TotalJobsSuccess`                  | Total number of successfully completed jobs.                                                     |
+| `publications`                      | List of publications with their respective `name`, `publication_id`, and `publication_folder_id`.|
+| `TotalNoOfPublications`             | Total number of publications.                                                                    |
+| `TotalNoOfUsers`                    | Total number of users in the system.                                                             |
+| `TotalNoOfFolders`                  | Total number of folders in the system.                                                           |
+| `users`                             | List of users with their respective `name`, `ownerid`, and `parentid`.                           |
+| `folders`                           | List of folders with their respective `name`, `folder_id`, and `owner_id`.                       |
+| `servers`                           | List of servers with their respective `name`, `status`, `server_process_id`, `enabled`, and IDs. |
+
 
 
 ## Sample ScreenShot
 
-![image](https://github.com/user-attachments/assets/c03a8281-f9ee-4c9b-8b87-2255b6690b4a)
+![Image](https://github.com/user-attachments/assets/f28f0f37-1e76-45eb-9b75-d4afee3a6c9e)

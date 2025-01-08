@@ -3,7 +3,6 @@
 import json
 import subprocess
 
-### Author: Bhuvaneshwari S, Zoho Corp
 ### Language : Python
 ### Tested in Ubuntu
 
