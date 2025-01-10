@@ -109,7 +109,6 @@ Function GetErrorMessage
 $culture = Get-Culture
 
 $shortDatePattern = $culture.DateTimeFormat.ShortDatePattern
-$longTimePattern = $culture.DateTimeFormat.LongTimePattern
 
 function Convert-DateWithCultureFormat {
     param (
@@ -241,81 +240,6 @@ if ($data.ContainsKey('HostName')) {
     $data.Remove('HostName')
 }
 
-$taskProcessingTimeInSeconds = 0
-
-function ManageInfoFileAndTask {
-
-    param (
-        [Parameter(Mandatory=$true)]
-        [string]$TaskName
-    )
-
-    $filePath = ".\info.txt"
-
-    if (-not (Test-Path $filePath) -or (Get-Content -Path $filePath -Raw).Trim() -eq "") {
-        $defaultContent = @{}
-        $defaultContent | ConvertTo-Json -Depth 2 | Set-Content -Path $filePath
-    }
-
-    $content = Get-Content -Path $filePath -Raw
-    $jsonContent = $null
-
-    try {
-        $jsonContent = $content | ConvertFrom-Json
-    }
-    catch {
-        $jsonContent = @{}
-    }
-
-    
-    if (-not ($jsonContent -is [hashtable])) {
-           
-        $hashtable = @{}
-        $jsonContent.PSObject.Properties | ForEach-Object {
-            $hashtable[$_.Name] = $_.Value
-        }
-
-        $jsonContent = $hashtable
-    }
-
-     $global:taskProcessingTimeInSeconds = 0
-
-    if ($jsonContent.ContainsKey($TaskName) -and $data.ContainsKey("Last Run Time")) {
-    $previousRunTime = $jsonContent[$TaskName]
-    $lastRunTime = $data["Last Run Time"]
-
-    $previousRunTimeDt = $null
-    $lastRunTimeDt = $null
-
-    try {
-        if (-not [string]::IsNullOrEmpty($previousRunTime)) {
-            $previousRunTimeDt = [datetime]::ParseExact($previousRunTime, "$shortDatePattern $longTimePattern", $culture)
-        }
-        if (-not [string]::IsNullOrEmpty($lastRunTime)) {
-            $lastRunTimeDt = [datetime]::ParseExact($lastRunTime, "$shortDatePattern $longTimePattern", $culture)
-        }
-    } catch {
-    }
-
-    if ($previousRunTimeDt -and $lastRunTimeDt -and $lastRunTimeDt -gt $previousRunTimeDt) {
-        $timeDifference = $lastRunTimeDt - $previousRunTimeDt
-        $global:taskProcessingTimeInSeconds = $timeDifference.TotalSeconds
-    } 
-    }
-
-    $data["Task Execution Time"] = $global:taskProcessingTimeInSeconds
-
-    if ($data.ContainsKey("Next Run Time")) {
-        $nextRunTime = $data["Next Run Time"]
-
-        $jsonContent[$TaskName] = $nextRunTime
-        $modifiedContent = $jsonContent | ConvertTo-Json -Depth 2
-        $modifiedContent | Set-Content -Path $filePath
-    }
-}
-
-ManageInfoFileAndTask -TaskName $taskName
-
 $keysToRemove = @(
     "Comment",
     "Days",
@@ -350,7 +274,6 @@ $mainJson["data"] = $data
 
 $mainJson["units"] = @{
     "Task Age" = "days"
-    "Task Execution Time" = "seconds"
 }
 
 if ($working_codes -contains $data["Last Result"]) {
