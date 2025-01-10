@@ -12,7 +12,6 @@ Track the following metrics with the plugin:
 | Number Of Missed Runs     | The count of scheduled task runs that were missed.                          |
 | State Value              | The current state of the task.                                               |
 | Task Age                 | The amount of time since the task was created.                               |
-| Task Execution Time       | The total time taken by the task to execute.                                |
 | Author                   | The user or entity that created the task.                                    |
 | End Date                 | The date when the task is set to stop running.                               |
 | Idle Time                | The amount of time the task stays idle before running.                       |
