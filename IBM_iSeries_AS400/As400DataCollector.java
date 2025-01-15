@@ -2,15 +2,15 @@ import com.ibm.as400.access.*;
 import java.util.*;
 import org.json.JSONObject;    
 
-
 public class As400DataCollector {
+	@SuppressWarnings({"deprecation"})
 	public static void main(String args[])
 	{
-	               JSONObject data = new JSONObject();
-	               String PLUGIN_VERSION = args[0];
-                       String HEARTBEAT_REQUIRED = args[1];
-	               data.put("plugin_version",PLUGIN_VERSION);
-                       data.put("heartbeat_required", HEARTBEAT_REQUIRED);
+	        JSONObject data = new JSONObject();
+	        String PLUGIN_VERSION = args[0];
+            String HEARTBEAT_REQUIRED = args[1];
+	        data.put("plugin_version",PLUGIN_VERSION);
+            data.put("heartbeat_required", HEARTBEAT_REQUIRED);
 			String hostname = args[2];
 			String username = args[3];
 			String password = args[4];
@@ -112,15 +112,11 @@ public class As400DataCollector {
 			}
 			catch(Exception e)
 			{
-				System.out.println("Error while connecting AS400");
-				e.printStackTrace();
+				//System.out.println("Error while connecting AS400");
+				data.put("msg",e.toString());
+				data.put("status",0);
+				System.out.println(data);
 			}
 	}
 
 }
-
-
-
-
-
-
