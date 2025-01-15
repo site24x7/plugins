@@ -4,13 +4,14 @@ import org.json.JSONObject;
 
 public class As400DataCollector {
 	@SuppressWarnings({"deprecation"})
+	
 	public static void main(String args[])
 	{
-	        JSONObject data = new JSONObject();
-	        String PLUGIN_VERSION = args[0];
-            String HEARTBEAT_REQUIRED = args[1];
-	        data.put("plugin_version",PLUGIN_VERSION);
-            data.put("heartbeat_required", HEARTBEAT_REQUIRED);
+	        	JSONObject data = new JSONObject();
+	        	String PLUGIN_VERSION = args[0];
+            		String HEARTBEAT_REQUIRED = args[1];
+	        	data.put("plugin_version",PLUGIN_VERSION);
+            		data.put("heartbeat_required", HEARTBEAT_REQUIRED);
 			String hostname = args[2];
 			String username = args[3];
 			String password = args[4];
