@@ -38,15 +38,21 @@ class ols:
         try:
 
             with open(f"{self.metric_path}.rtreport","r") as f:
-                data=f.read()
+                file_data=f.read()
 
-            match=re.findall(rf"\[{self.virtual_host}\].*",data)
+            match=re.findall(rf"\[{self.virtual_host}\].*",file_data)
 
             for metric in metrics:
-                data=re.findall(f"{metric}: \d",match[0])[0]
-                data=re.findall('\d?\d?\d?\d',data)[0]
+                data=re.findall(rf"{metric}: [0-9]+",match[0])[0]
+                data=re.findall(r'\d?\d?\d?\d',data)[0]
                 self.maindata[metrics[metric]]=data
 
+            match=re.findall(rf"VERSION.*",file_data)[0]
+            self.maindata["Version"]=match.split(":")[-1]
+
+            match=re.findall(rf"UPTIME.*",file_data)[0]
+            self.maindata["Uptime"]=match.replace("UPTIME:","")
+            
         except Exception as e: 
             self.maindata['msg']=str(e)
             self.maindata['status']=0
@@ -62,9 +68,7 @@ class ols:
                 applog["logs_enabled"]=False
         self.maindata['applog'] = applog
 
-
         return self.maindata
-
 
 
 
