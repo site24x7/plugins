@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 import json
 import os
+import os.path
 import subprocess
 import hashlib
 from datetime import datetime
@@ -94,6 +95,7 @@ class security_update_check:
                     os_name = os_name.strip('"')
                     break  
 
+
             if os_name=="Ubuntu":
 
                 ubuntu_command="""apt list --upgradable 2> /dev/null| awk -F'/' '{print $1}' | xargs apt show 2> /dev/null | grep -E "Package:|Version:|Installed-Size:|Description:\""""
@@ -102,6 +104,22 @@ class security_update_check:
                     self.maindata['Upgrades Available For Installed Packages']=upgrades_count
                 else:
                     self.maindata['Upgrades Available For Installed Packages']=0
+
+                reboot_required_packages_list="/var/run/reboot-required.pkgs"
+                if os.path.isfile("/var/run/reboot-required"):
+                    self.maindata['Reboot Required for packages']="True"
+                    if os.path.isfile(reboot_required_packages_list):
+                        try:
+                            f = open(reboot_required_packages_list, "r")
+                            reboot_required_packages = f.read().split("\n")
+                            self.maindata['Reboot Required Packages Count']=len(reboot_required_packages)
+                        except Exception as e:
+                            self.maindata['msg']=str(e)
+                            self.maindata['status']=0
+                else:
+                    self.maindata['Reboot Required for packages']="False"
+                    self.maindata['Reboot Required Packages Count']=0
+
 
 
                 install_count_cmd="apt list --installed 2> /dev/null | wc -l"
@@ -124,7 +142,7 @@ class security_update_check:
                             
 
 
-            elif os_name in ["AlmaLinux", "CentOS Linux"]:
+            elif os_name in ["AlmaLinux", "CentOS Linux","Red Hat Enterprise Linux"]:
 
                 centos_command="""yum list updates -q | awk '{print $1}' | xargs yum info | grep -E "^Name|^Version|^Size|^Description\""""
                 upgrades_count=self.log_creator(centos_command)
@@ -155,6 +173,22 @@ class security_update_check:
                     for each in packages_count:
                         if each.isdigit():
                             self.maindata['Packages to be Updated']=each
+
+
+                reboot_required=self.get_command_updates_output("needs-restarting -r").decode()
+
+                reboot_required_packages=0
+
+                if "Reboot is required to fully utilize these updates." in reboot_required:
+                    self.maindata['Reboot Required for packages']="True"
+                    if "Core libraries or services have been updated since boot-up:" in reboot_required:
+                        for lines in reboot_required.split("\n"):
+                            if lines.startswith("  * "):
+                                reboot_required_packages+=1
+                    self.maindata['Reboot Required Packages Count']=reboot_required_packages
+                else:
+                    self.maindata['Reboot Required for packages']="False"
+                    self.maindata['Reboot Required Packages Count']=0
                             
             else:
                 self.maindata['msg']="{} not supported".format(os_name)
