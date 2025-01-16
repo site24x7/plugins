@@ -5,7 +5,8 @@
 
 - Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 - Python version 3 or higher.
-- 
+
+
 ## Plugin Installation  
 
 - Create a directory named `litespeed_monitoring`.
