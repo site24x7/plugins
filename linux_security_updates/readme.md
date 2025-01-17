@@ -1,6 +1,6 @@
 # Plugin for Monitoring Software Updates Count
 
-OS Supported: Ubuntu, Centos, AlmaLinux
+OS Supported: Ubuntu, Centos, AlmaLinux, Red Hat Enterprise Linux
 ## Plugin Installation
 
 Quick installation
@@ -37,6 +37,8 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/linux_security_up
 - Upgrades Available For Installed Packages
 - Security Updates
 - Packages to be Updated
+- Reboot Required for packages
+- Reboot Required Packages Count
 
 ### Package details  
   Site24x7 web client > linux_security_updates plugin monitor > select AppLog tab > User can choose logtype as "Linux Pending Security Updates" to check the details of packages which have been not updated. 
