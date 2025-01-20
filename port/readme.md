@@ -61,9 +61,9 @@ The agent will automatically execute the plugin within five minutes and user can
 
 | **Metric Name**           | **Description**                                                                 |
 |---------------------------|---------------------------------------------------------------------------------|
-| **Connection Latency**    | The time taken to establish a connection to the port (in milliseconds).         |
+| **Connection Latency**    | The time taken to establish a connection to the port.         |
 | **Cpu Usage**             | The percentage of CPU usage by the processes listening on the port.             |
-| **Memory Usage**          | The amount of memory used by the processes listening on the port (in MB).       |
+| **Memory Usage**          | The amount of memory used by the processes listening on the port.       |
 | **Active Connections**    | The number of active connections to the port.                                   |
 | **Connection Rate**       | The rate of successful connections per second.                                  |
 | **Port Status Text**      | Indicates whether the port is open or closed.                                   |
