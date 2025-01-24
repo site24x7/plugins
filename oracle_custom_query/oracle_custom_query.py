@@ -28,11 +28,35 @@ class oracle:
         self.query = self.read_query_from_file()
         
         
+    def is_file_empty(self,file_path):
+        try:
+            # Check if the file exists
+            if not os.path.exists(file_path):
+                return False  # File does not exist
+            
+            # Get file size
+            file_size = os.stat(file_path).st_size
+            
+            # Check if file size is 0 bytes
+            return file_size == 0
+        
+        
+        except Exception as e:
+            self.maindata['status'] = 0
+            self.maindata['msg'] = str(e)
+            return False 
+    
     def read_query_from_file(self):
         """Read the query from the query.sql file."""
         try:
             script_dir = os.path.dirname(os.path.abspath(__file__))
             query_file_path = os.path.join(script_dir, 'query.sql')
+            
+            if self.is_file_empty(query_file_path):
+                self.maindata['status'] = 0
+                self.maindata['msg'] = "The query.sql file is empty. Please enter a query."
+                return None
+            
 
             with open(query_file_path, 'r') as file:
                 return file.read().strip()
@@ -40,7 +64,6 @@ class oracle:
             self.maindata['status'] = 0
             self.maindata['msg'] = f"Failed to read query from file: {str(e)}"
             return None
-
 
     def metriccollector(self):
         
@@ -53,7 +76,10 @@ class oracle:
 
         try:
             start_time=time.time()
-
+            
+            if self.query is None:
+                return self.maindata
+                
             try:
                 conn = oracledb.connect(user=self.username, password=self.password, dsn=f"{self.hostname}:{self.port}/{self.sid}")
                 c = conn.cursor()
