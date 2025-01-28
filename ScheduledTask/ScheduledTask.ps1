@@ -32,13 +32,13 @@ $Status = 1
 $status_msg = $null
 
 Function GetErrorMessage
-([int]$ErrorCode)
+([long]$ErrorCode)
 {
     $msg = ""
     switch($ErrorCode)
     {
         0 { $msg="The operation completed successfully";break}
-        1 { $msg="Incorrect function called or unknown function called. (did you use the correct start in folder and/or environment path for the bat/exe?)";break}
+        1 { $msg="Incorrect function called or unknown function called.";break}
         2 { $msg="File not found.";break}
         10 { $msg="The environment is incorrect.";break}
         267008 { $msg="Task is ready to run at its next scheduled time.";break}
@@ -49,7 +49,7 @@ Function GetErrorMessage
         267014 { $msg="Task is terminated.";break}
         2147750671 { $msg="Credentials became corrupted (*)";break}
         2147750687 { $msg="An instance of this task is already running.";break}
-        2147942402 { $msg="Basically something like file not available (2147942402)";break}
+        2147942402 { $msg="File not available";break}
         2147942667 { $msg="Action 'start in' directory can not be found.";break}
         2147943645 { $msg="The service is not available (is 'Run only when a user is logged on' checked?)";break}
         3221225786 { $msg="The application terminated as a result of a CTRL+C.";break}
@@ -101,7 +101,10 @@ Function GetErrorMessage
         -1073741514 { $msg="The application terminated as a result of a CTRL+C."; break}
         -1073741502 { $msg="The application failed to initialize properly."; break}
         
-        default {"Something else happened"; break}
+        default { 
+            return "An error $ErrorCode occurred. Check the scheduled task to troubleshoot.";
+            break
+        }
     }
     return $msg
 }
@@ -288,7 +291,7 @@ if ($working_codes -contains $data["Last Result"]) {
     }
 } else {
     $msg = GetErrorMessage($data["Last Result"])
-    $err_msg = "msg: " + $msg
+    $err_msg =$msg
     $mainJson["msg"] = $err_msg
     $mainJson["status"] = 0
 }
