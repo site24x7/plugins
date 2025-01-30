@@ -4,7 +4,17 @@
 
 - Download and install the latest version of the [Site24x7 Linux agent/Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
-### Plugin Installation  
+## Quick installation
+
+If you're using Linux servers, use the Apache Flink plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
+
+Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
+
+```bash
+wget https://raw.githubusercontent.com/site24x7/plugins/master/apache_flink/installer/Site24x7ApacheFlinkPluginInstaller.sh && sudo bash Site24x7ApacheFlinkPluginInstaller.sh
+```
+
+## Standard Plugin Installation
 
 - Create a directory named `apache_flink`.
   
