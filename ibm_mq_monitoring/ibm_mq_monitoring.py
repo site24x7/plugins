@@ -70,6 +70,14 @@ class IbmMq:
             return self.maindata
 
         return self.metriccollector(pcf)
+    
+    def info_dir(self):
+        
+        info_dir=os.path.join(current_file_path,"info")
+        
+        if not os.path.isdir(info_dir):
+            os.makedirs(info_dir)
+        return
 
     def mqConnector(self):
 
@@ -272,7 +280,7 @@ class IbmMq:
                 queue_name = response[self.q_name_query].decode("utf-8").strip()
                 queue_check = queue_name.split(".")
 
-                if not queue_check[0] in ignore_queues_starting_with:
+                if not queue_check[0] in ignore_queues_starting_with and response[20]==1:
                     # print(response)
                     queue = {}
 
@@ -326,8 +334,10 @@ class IbmMq:
             return
 
     def object_status(self, attribute_list, file, json_array, key):
+        
+        self.info_dir()
 
-        attribute_status_file = os.path.join(current_file_path, (file + ".txt"))
+        attribute_status_file = os.path.join(current_file_path,"info", (file + "-"+self.queue_manager+".txt"))
 
         if os.path.isfile(attribute_status_file):
             try:
