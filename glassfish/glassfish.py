@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import json
 import requests
+import platform
 import traceback
 import warnings
 
@@ -193,6 +194,7 @@ class glassfish:
         try:
             # line = json.loads(output)
             KEYS = metric_keys[metrics]
+            verify_keys = KEYS.keys()
             # print(KEYS)
 
             if line["exit_code"] == "SUCCESS":
@@ -200,18 +202,19 @@ class glassfish:
                 elements = elements["entity"]
                 # print(elements)
 
+
                 if elements:
 
                     for key, value in elements.items():
                         # print(key, value["count"])
 
-                        if key in KEYS.keys() and "count" in value:
+                        if key in verify_keys and "count" in value:
                             # print(key, value["count"])
                             if key in ["currentthreadcputime", "currentthreadusertime"]:
                                 data[KEYS[key]] = value["count"] / 1e+6
                             else:
                                 data[KEYS[key]] = value["count"]
-                        elif key in KEYS.keys() and "current" in value:
+                        elif key in verify_keys and "current" in value:
                             data[KEYS[key]] = value["current"]
 
                 else:
@@ -312,9 +315,11 @@ class glassfish:
                 elements = request_codes["extraProperties"]
                 elements = elements["entity"]
                 requests_dict = {}
+                
 
                 if elements:
                     metrics = metric_keys["Request_Status_Code_Class"]
+                    verify_keys=metrics.keys()
 
                     for key, value in elements.items():
                         requests_dict = {}
@@ -327,7 +332,7 @@ class glassfish:
                             requests_dict["count"] = value["count"]
                             requests_list.append(requests_dict)
 
-                        elif key in metrics.keys():
+                        elif key in verify_keys:
 
                             self.maindata[metrics[key]] = value["count"]
 
@@ -404,4 +409,7 @@ if __name__ == "__main__":
 
     obj = glassfish(args)
     result = obj.metriccollector()
-    print(json.dumps(result))
+    if (platform.system() == "Windows"):
+        print(json.dumps(result))
+    else:
+        print(json.dumps(result, indent=True))
