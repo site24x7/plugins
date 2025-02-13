@@ -6,6 +6,15 @@ GlassFish is an open source application server project sponsored by Oracle corpo
 Get to know how to configure the Oracle GlassFish plugins and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of GlassFish servers.
 
 Learn more: https://www.site24x7.com/plugins/glassfish-plugin-monitoring.html
+
+## GlassFish plugin installer
+
+On Linux servers, execute the command below in the terminal to run an installer that checks the prerequisites and installs the plugin.
+
+```bash
+wget https://raw.githubusercontent.com/site24x7/plugins/master/glassfish/installer/Site24x7GlassFishPluginInstaller.sh && sudo bash Site24x7GlassFishPluginInstaller.sh
+```
+
 ## Prerequisites
 
 - Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
@@ -37,7 +46,7 @@ Learn more: https://www.site24x7.com/plugins/glassfish-plugin-monitoring.html
 #### Configurations
 
 - Provide your IBM MQ configurations in glassfish.cfg file.
-	```ini
+  ```ini
   [localhost]
   host="localhost"
   port="4848"
@@ -45,7 +54,7 @@ Learn more: https://www.site24x7.com/plugins/glassfish-plugin-monitoring.html
   insecure="false"
   username="None"
   password="None"
-	```
+  ```
  - Where,
    - host: The IP address or domain name of the server you're trying to connect to.
    - port: Admin port of the glassfish server.
