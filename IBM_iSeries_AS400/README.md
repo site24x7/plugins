@@ -21,7 +21,8 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
 		
 - Download the files "IBM_iSeries_AS400.sh" , "As400DataCollector.java", "json-20140107.jar", "jt400.jar" and place it under the "IBM_iSeries_AS400" directory using following commands:
   	```
-  	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/IBM_iSeries_AS400.sh
+  	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/IBM_iSeries_AS400.py
+  	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/IBM_iSeries_AS400.cfg
   	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/As400DataCollector.java
   	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/json-20140107.jar
   	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/jt400.jar
@@ -41,7 +42,7 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
 
 - Create a directory `IBM_iSeries_AS400`. 
 
-- Download the files [IBM_iSeries_AS400.bat](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/IBM_iSeries_AS400.bat) , [As400DataCollector.java](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/As400DataCollector.java), [json-20140107.jar](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/json-20140107.jar), [jt400.jar](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/jt400.jar) and place it under the `IBM_iSeries_AS400` directory.
+- Download the files [IBM_iSeries_AS400.cfg](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/IBM_iSeries_AS400.cfg) , [IBM_iSeries_AS400.ps1](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/IBM_iSeries_AS400.ps1), [As400DataCollector.java](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/As400DataCollector.java), [json-20140107.jar](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/json-20140107.jar), [jt400.jar](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/jt400.jar) and place it under the `IBM_iSeries_AS400` directory.
 
 - Open IBM_iSeries_AS400.bat file and set the values for HOST, USERNAME, PASSWORD, JAVA_HOME.
 
