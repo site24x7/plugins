@@ -11,7 +11,7 @@ function Get-SecurityEventLogs {
         $events = Get-WinEvent -FilterHashtable @{
             LogName = $logName
             ID = $eventID
-            StartTime = (Get-Date).AddMinutes(-1000)
+            StartTime = (Get-Date).AddMinutes(-6)
         } -ErrorAction SilentlyContinue
 
         $eventMessages = @()
@@ -19,7 +19,6 @@ function Get-SecurityEventLogs {
         $events | ForEach-Object {
             $message = $_.Message
 
-            # Handle special case for account lockouts
             if ($isAccountLockout) {
                 $startIndex = $message.IndexOf('Account That Was Locked Out:')
                 if ($startIndex -gt -1) {
@@ -88,7 +87,7 @@ function Get-FailedSecurityUpdates {
             LogName = "System"
             ProviderName = "Microsoft-Windows-WindowsUpdateClient"
             ID = 20
-            StartTime = (Get-Date).AddDays(-1)
+            StartTime = (Get-Date).AddMinutes(-6)
         } -ErrorAction SilentlyContinue | Measure-Object
         return $failedUpdates.Count
     } catch {
