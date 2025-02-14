@@ -1,71 +1,62 @@
-function Get-FailedLoginAttempts {
+function Get-SecurityEventLogs {
     param (
-        [string]$logFilePath
+        [string]$logFilePath,
+        [string]$logName,
+        [int]$eventID,
+        [string]$messageRegex,
+        [string]$customMessage,
+        [bool]$isAccountLockout = $false  
     )
     try {
-        $failedLogins = Get-WinEvent -FilterHashtable @{
-            LogName='Security'
-            ID=4625
-            StartTime=(Get-Date).AddMinutes(-10)
-        } -ErrorAction SilentlyContinue 
-
-        $failedLogins | ForEach-Object {
-            if ($_.Message -match "Failure Reason:\s+(.*?)\r?\n") {
-                $logEntry = @{
-                    LogName = "FailedLoginAttempts"
-                    ID = 4625
-                    Message = $matches[1]
-                }
-                $logEntry | ConvertTo-Json -Compress | Out-File -FilePath $logFilePath -Append -Encoding UTF8
-            }
-        }
-        
-        return $failedLogins.Count
-    } catch {
-        return 0
-    }
-}
-
-function Get-AccountLockouts {
-    param (
-        [string]$logFilePath
-    )
-    try {
-        $lockouts = Get-WinEvent -FilterHashtable @{
-            LogName='Security'
-            ID=4740
-            StartTime=(Get-Date).AddMinutes(-10)
+        $events = Get-WinEvent -FilterHashtable @{
+            LogName = $logName
+            ID = $eventID
+            StartTime = (Get-Date).AddMinutes(-1000)
         } -ErrorAction SilentlyContinue
 
-        $lockoutMessages = @() 
+        $eventMessages = @()
 
-        $lockouts | ForEach-Object {
+        $events | ForEach-Object {
             $message = $_.Message
-            $startIndex = $message.IndexOf('Account That Was Locked Out:')
-            if ($startIndex -gt -1) {
-                $subMessage = $message.Substring($startIndex)
-                if ($subMessage -match "Account Name:\s+([^\r\n]+)") {
-                    $accountName = $matches[1].Trim()
-                    
+
+            # Handle special case for account lockouts
+            if ($isAccountLockout) {
+                $startIndex = $message.IndexOf('Account That Was Locked Out:')
+                if ($startIndex -gt -1) {
+                    $subMessage = $message.Substring($startIndex)
+                    if ($subMessage -match "Account Name:\s+([^\r\n]+)") {
+                        $accountName = $matches[1].Trim()
+                        
+                        $logEntry = @{
+                            LogName = "AccountLockout"
+                            ID = $eventID
+                            Message = "Account name $accountName. A user account was locked out."
+                        }
+
+                        $logEntry | ConvertTo-Json -Compress | Out-File -FilePath $logFilePath -Append -Encoding UTF8
+                        $eventMessages += $logEntry
+                    }
+                }
+            }
+            else {
+                if ($message -match $messageRegex) {
                     $logEntry = @{
-                        LogName = "AccountLockout"
-                        ID = 4740
-                        Message = "Account name $accountName. A user account was locked out."
+                        LogName = $customMessage
+                        ID = $eventID
+                        Message = "$customMessage : $($matches[1])"
                     }
 
                     $logEntry | ConvertTo-Json -Compress | Out-File -FilePath $logFilePath -Append -Encoding UTF8
-
-                    $lockoutMessages += $logEntry
+                    $eventMessages += $logEntry
                 }
             }
         }
 
-        return $lockoutMessages.Count
+        return $eventMessages.Count
     } catch {
         return -1
     }
 }
-
 
 function Get-AntivirusStatus {
     try {
@@ -75,63 +66,6 @@ function Get-AntivirusStatus {
         } else {
             return 0
         }
-    } catch {
-        return -1
-    }
-}
-
-
-function Get-MalwareDetections {
-    param (
-        [string]$logFilePath
-    )
-    try {
-        $malwareEvents = Get-WinEvent -FilterHashtable @{
-            LogName = "Microsoft-Windows-Windows Defender/Operational"
-            ID = 1116
-            StartTime = (Get-Date).AddMinutes(-10)
-        } -ErrorAction SilentlyContinue
-
-        $malwareEvents | ForEach-Object {
-            if ($_.Message -match "Path:\s+(.+?)\r?\n") {
-                $logEntry = @{
-                    LogName = "MalwareDetection"
-                    ID = 1116
-                    Message = "Malware detected at path: $($matches[1])"
-                }
-                $logEntry | ConvertTo-Json -Compress | Out-File -FilePath $logFilePath -Append -Encoding UTF8
-            }
-        }
-
-        return $malwareEvents.Count
-    } catch {
-        return -1
-    }
-}
-
-function Get-SecurityThreatsActions {
-    param (
-        [string]$logFilePath
-    )
-    try {
-        $threatEvents = Get-WinEvent -FilterHashtable @{
-            LogName = "Microsoft-Windows-Windows Defender/Operational"
-            ID = 1117
-            StartTime = (Get-Date).AddMinutes(-10)
-        } -ErrorAction SilentlyContinue
-
-        $threatEvents | ForEach-Object {
-            if ($_.Message -match "Path:\s+(.+?)\r?\n") {
-                $logEntry = @{
-                    LogName = "SecurityThreatsActions"
-                    ID = 1117
-                    Message = "Security threat action taken for $($matches[1])"
-                }
-                $logEntry | ConvertTo-Json -Compress | Out-File -FilePath $logFilePath -Append -Encoding UTF8
-            }
-        }
-
-        return $threatEvents.Count
     } catch {
         return -1
     }
@@ -176,13 +110,13 @@ if (!(Test-Path $logFilePath)) {
 }
 
 $metrics = @{
-    "plugin_version"=1
-    "heartbeat_required"="true"
-    "failed_login_attempts" = Get-FailedLoginAttempts -logFilePath $logFilePath
-    "account_lockouts" = Get-AccountLockouts -logFilePath $logFilePath
+    "plugin_version" = 1
+    "heartbeat_required" = "true"
+    "failed_login_attempts" = Get-SecurityEventLogs -logFilePath $logFilePath -logName 'Security' -eventID 4625 -messageRegex "Failure Reason:\s+(.*?)\r?\n" -customMessage "FailedLoginAttempts"
+    "account_lockouts" = Get-SecurityEventLogs -logFilePath $logFilePath -logName 'Security' -eventID 4740 -messageRegex "Account Name:\s+([^\r\n]+)" -customMessage "AccountLockout" -isAccountLockout $true
     "antivirus_status" = Get-AntivirusStatus
-    "malware_detections" = Get-MalwareDetections -logFilePath $logFilePath
-    "security_threats_actions" = Get-SecurityThreatsActions -logFilePath $logFilePath
+    "malware_detections" = Get-SecurityEventLogs -logFilePath $logFilePath -logName "Microsoft-Windows-Windows Defender/Operational" -eventID 1116 -messageRegex "Path:\s+(.+?)\r?\n" -customMessage "MalwareDetection"
+    "security_threats_actions" = Get-SecurityEventLogs -logFilePath $logFilePath -logName "Microsoft-Windows-Windows Defender/Operational" -eventID 1117 -messageRegex "Path:\s+(.+?)\r?\n" -customMessage "SecurityThreatsActions"
     "security_updates_pending" = Get-SecurityUpdatesPending
     "failed_security_updates" = Get-FailedSecurityUpdates
     "applog" = @{
