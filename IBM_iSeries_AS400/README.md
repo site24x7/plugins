@@ -31,7 +31,7 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
 
 	```ini
  	[IBM_iSeries_AS400]
-	host="10.10.10.10"
+	host="localhost"
 	username="user" 
 	password="test"
 	java_path="/usr/bin"
