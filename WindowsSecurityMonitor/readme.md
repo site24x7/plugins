@@ -1,0 +1,33 @@
+# Plugin for monitoring windows security
+
+This plugin monitors key Windows security activities such as failed login attempts, antivirus status, malware detections, account lockouts, and more. It helps in tracking and ensuring the health of your system's security posture.
+
+## **Prerequisites**
+
+Download and install the latest version of the [Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+
+## **Plugin installation**
+
+1. Create a folder named `WindowsSecurityMonitor`.
+
+2. Download the file [WindowsSecurityMonitor.ps1](https://github.com/site24x7/plugins/blob/master/WindowsSecurityMonitor/WindowsSecurityMonitor.ps1) and place them under the `WindowsSecurityMonitor` directory.
+
+3. Further move the folder `WindowsSecurityMonitor` into the Site24x7 Windows Agent plugin directory:
+    ```
+    C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+    ```
+The agent will automatically execute the plugin within few minutes and user can see the plugin monitor under Site24x7 -> Plugins -> Plugin Integrations.
+  
+## Supported Metrics
+
+Track the following metrics with the plugin:
+
+| Name                      | Description |
+|---------------------------|-------------|
+| `failed_login_attempts`   | The number of failed login attempts in the last 10 minutes. |
+| `account_lockouts`        | The number of user account lockouts in the last 10 minutes. |
+| `antivirus_status`        | Displays `1` if antivirus and real-time protection are enabled, otherwise `0`. |
+| `malware_detections`      | The number of malware detections recorded in the last 10 minutes. |
+| `security_threats_actions`| The number of security threats actions taken in the last 10 minutes. |
+| `security_updates_pending`| The number of pending security updates. |
+| `failed_security_updates` | The number of failed security updates in the last 24 hours. |
