@@ -186,7 +186,7 @@ $metrics = @{
     "security_updates_pending" = Get-SecurityUpdatesPending
     "failed_security_updates" = Get-FailedSecurityUpdates
     "applog" = @{
-        "log_file_path" = "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\WindowsSecurityMonitor\logs*.txt"
+        "log_file_path" = "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\windows_security\logs*.txt"
         "log_type_name" = "WinSecurityLog"
         "logs_enabled" = $true
     }
