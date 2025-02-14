@@ -1,4 +1,4 @@
-# Plugin for monitoring windows security
+# Plugin for monitoring Windows security
 
 This plugin monitors key Windows security activities such as failed login attempts, antivirus status, malware detections, account lockouts, and more. It helps in tracking and ensuring the health of your system's security posture.
 
@@ -8,11 +8,11 @@ Download and install the latest version of the [Site24x7 Windows agent](https://
 
 ## **Plugin installation**
 
-1. Create a folder named `WindowsSecurityMonitor`.
+1. Create a folder named `windows_security`.
 
-2. Download the file [WindowsSecurityMonitor.ps1](https://github.com/site24x7/plugins/blob/master/WindowsSecurityMonitor/WindowsSecurityMonitor.ps1) and place them under the `WindowsSecurityMonitor` directory.
+2. Download the file [windows_security.ps1](https://github.com/site24x7/plugins/blob/master/windows_security/windows_security.ps1) and place them under the `windows_security` directory.
 
-3. Further move the folder `WindowsSecurityMonitor` into the Site24x7 Windows Agent plugin directory:
+3. Further move the folder `windows_security` into the Site24x7 Windows Agent plugin directory:
     ```
     C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
     ```
