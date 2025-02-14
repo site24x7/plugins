@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#!/usr/bin/python3
 import json
 import os
 import os.path
@@ -12,7 +12,7 @@ HEARTBEAT=True
 METRICS_UNITS={}
 
 
-class security_update_check:
+class security_update_check:            
 
     def __init__(self):
         
@@ -37,14 +37,30 @@ class security_update_check:
         p_status = p.wait()
         return updates_output
     
-    def log_creator(self, command):
+    def log_creator(self, command, reboot_required_packages):
             current_datetime = datetime.now()
             file_time=current_datetime.strftime("%Y-%m-%d-%H:%M:%S")
             plugin_script_path=os.path.dirname(os.path.realpath(__file__))
             updates_output =self.get_command_updates_output(command).decode()
+            og_updates_output=updates_output.split("\n")
+            log_count=len(og_updates_output)//4
+
+            if reboot_required_packages:
+                for pkg in reboot_required_packages:
+                    if self.os_name == "Ubuntu":
+                        updates_output+="\nPackage: {}".format(pkg)
+                        updates_output+="\nVersion: Installed"
+                        updates_output+="\nInstalled-Size: - - "
+                        updates_output+="\nDescription: Installed but Reboot is required for this package."
+                    else:
+                        updates_output+="\nName        : {}".format(pkg)
+                        updates_output+="\nVersion         : Installed"
+                        updates_output+="\nSize        : - -"
+                        updates_output+="\nDescription        : Installed but Reboot is required for this package."
+
             output_hash=self.calculate_sha256_hash(updates_output)                
             log_details_raw=updates_output.split("\n")
-            log_count=len(log_details_raw)//4
+            log_details_raw.remove('')
             log_details=""
 
             if os.path.exists("{}/config.json".format(plugin_script_path)):
@@ -91,27 +107,20 @@ class security_update_check:
 
             for line in os_content.splitlines():
                 if line.startswith('NAME='):
-                    _, os_name = line.split('=', 1)
-                    os_name = os_name.strip('"')
+                    _, self.os_name = line.split('=', 1)
+                    self.os_name = self.os_name.strip('"')
                     break  
 
 
-            if os_name=="Ubuntu":
-
-                ubuntu_command="""apt list --upgradable 2> /dev/null| awk -F'/' '{print $1}' | xargs apt show 2> /dev/null | grep -E "Package:|Version:|Installed-Size:|Description:\""""
-                upgrades_count=self.log_creator(ubuntu_command)
-                if upgrades_count:
-                    self.maindata['Upgrades Available For Installed Packages']=upgrades_count
-                else:
-                    self.maindata['Upgrades Available For Installed Packages']=0
+            if self.os_name=="Ubuntu":
 
                 reboot_required_packages_list="/var/run/reboot-required.pkgs"
                 if os.path.isfile("/var/run/reboot-required"):
                     self.maindata['Reboot Required for packages']="True"
                     if os.path.isfile(reboot_required_packages_list):
                         try:
-                            f = open(reboot_required_packages_list, "r")
-                            reboot_required_packages = f.read().split("\n")
+                            with open(reboot_required_packages_list, "r") as f:
+                                reboot_required_packages = [pkg for pkg in f.read().split("\n") if pkg]
                             self.maindata['Reboot Required Packages Count']=len(reboot_required_packages)
                         except Exception as e:
                             self.maindata['msg']=str(e)
@@ -119,7 +128,14 @@ class security_update_check:
                 else:
                     self.maindata['Reboot Required for packages']="False"
                     self.maindata['Reboot Required Packages Count']=0
+                    reboot_required_packages=None
 
+                ubuntu_command="""apt list --upgradable 2> /dev/null| awk -F'/' '{print $1}' | xargs apt show 2> /dev/null | grep -E "Package:|Version:|Installed-Size:|Description:\""""
+                upgrades_count=self.log_creator(ubuntu_command, reboot_required_packages)
+                if upgrades_count:
+                    self.maindata['Upgrades Available For Installed Packages']=upgrades_count
+                else:
+                    self.maindata['Upgrades Available For Installed Packages']=0
 
 
                 install_count_cmd="apt list --installed 2> /dev/null | wc -l"
@@ -131,7 +147,8 @@ class security_update_check:
 
 
                 file_path='/var/lib/update-notifier/updates-available'
-                lines = [line.strip('\n') for line in open(file_path)]
+                with open(file_path, 'r') as f:
+                    lines = [line.strip('\n') for line in f]
                 self.maindata['Security Updates'] = 0
                 for line in lines:
                     if line:
@@ -142,10 +159,34 @@ class security_update_check:
                             
 
 
-            elif os_name in ["AlmaLinux", "CentOS Linux","Red Hat Enterprise Linux"]:
+            elif self.os_name in ["AlmaLinux", "CentOS Linux","Red Hat Enterprise Linux"]:
 
-                centos_command="""yum list updates -q | awk '{print $1}' | xargs yum info | grep -E "^Name|^Version|^Size|^Description\""""
-                upgrades_count=self.log_creator(centos_command)
+
+                reboot_required=self.get_command_updates_output("needs-restarting -r").decode()
+
+                reboot_required_packages=[]
+
+                if "Reboot is required to fully utilize these updates." in reboot_required:
+                    self.maindata['Reboot Required for packages']="True"
+                    if "Core libraries or services have been updated since boot-up:" in reboot_required:
+                        for lines in reboot_required.split("\n"):
+                            if lines.startswith("  * "):
+                                reboot_required_packages.append(lines.replace("  * ",""))
+                                #print(lines)
+                    self.maindata['Reboot Required Packages Count']=len(reboot_required_packages)
+                else:
+                    self.maindata['Reboot Required for packages']="False"
+                    self.maindata['Reboot Required Packages Count']=0
+
+                updates_check=self.get_command_updates_output("yum list updates")
+                updates_check=updates_check.decode()
+                if "Available Upgrades" in updates_check:
+
+                    centos_command="""yum list updates -q | awk '{print $1}' | xargs yum info | grep -E "^Name|^Version|^Size|^Description\""""
+                else:
+                    upgrades_count=0
+                    centos_command=""
+                upgrades_count=self.log_creator(centos_command,reboot_required_packages)
                 if upgrades_count:
                     self.maindata['Upgrades Available For Installed Packages']=upgrades_count
                 else:
@@ -173,25 +214,9 @@ class security_update_check:
                     for each in packages_count:
                         if each.isdigit():
                             self.maindata['Packages to be Updated']=each
-
-
-                reboot_required=self.get_command_updates_output("needs-restarting -r").decode()
-
-                reboot_required_packages=0
-
-                if "Reboot is required to fully utilize these updates." in reboot_required:
-                    self.maindata['Reboot Required for packages']="True"
-                    if "Core libraries or services have been updated since boot-up:" in reboot_required:
-                        for lines in reboot_required.split("\n"):
-                            if lines.startswith("  * "):
-                                reboot_required_packages+=1
-                    self.maindata['Reboot Required Packages Count']=reboot_required_packages
-                else:
-                    self.maindata['Reboot Required for packages']="False"
-                    self.maindata['Reboot Required Packages Count']=0
                             
             else:
-                self.maindata['msg']="{} not supported".format(os_name)
+                self.maindata['msg']="{} not supported".format(self.os_name)
                 self.maindata['status']=0
 
 
@@ -215,8 +240,7 @@ def run(param=None):
     result=obj.metriccollector()
     return result
 
-if __name__=="__main__":
-    
-    obj=security_update_check()
-    result=obj.metriccollector()
-    print(json.dumps(result,indent=True))
+if __name__ == "__main__":
+    obj = security_update_check()
+    result = obj.metriccollector()
+    print(json.dumps(result, indent=True))

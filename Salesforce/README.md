@@ -20,10 +20,15 @@ Learn more https://www.site24x7.com/help/log-management/salesforce-logs.html
 
 - Create a directory named "Salesforce"
 
+ 		mkdir Salesforce
+  		cd Salesforce/
+
 - Download the below files and place it under the "Salesforce" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/Salesforce/Salesforce.py
-
+	```
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/Salesforce/Salesforce.cfg
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/Salesforce/Salesforce.py
+	```
 
 - Edit the Salesforce.cfg file with appropriate arguments and Execute the plugin manually to check for the valid JSON output
 
@@ -33,11 +38,11 @@ Learn more https://www.site24x7.com/help/log-management/salesforce-logs.html
 
 - Place the "Salesforce" under the Site24x7 Linux Agent plugin directory:
 
-        Linux    ->   /opt/site24x7/monagent/plugins/Salesforce
+        mv Salesforce /opt/site24x7/monagent/plugins/
 
 #### Windows
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
 https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
 -  Further move the folder "Salesforce" into the  Site24x7 Windows Agent plugin directory:
 
-        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\Salesforce
+        C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\

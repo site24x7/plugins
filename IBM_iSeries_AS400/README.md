@@ -19,20 +19,35 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
  		mkdir IBM_iSeries_AS400
   		cd IBM_iSeries_AS400/
 		
-- Download the files "IBM_iSeries_AS400.sh" , "As400DataCollector.java", "json-20140107.jar", "jt400.jar" and place it under the "IBM_iSeries_AS400" directory using following commands:
+- Download the files "IBM_iSeries_AS400.cfg" , "IBM_iSeries_AS400.py" , "As400DataCollector.java", "json-20140107.jar", "jt400.jar" and place it under the "IBM_iSeries_AS400" directory using following commands:
   	```
-  	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/IBM_iSeries_AS400.sh
+  	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/IBM_iSeries_AS400.py
+  	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/IBM_iSeries_AS400.cfg
   	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/As400DataCollector.java
   	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/json-20140107.jar
   	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/jt400.jar
    	```
-- Open IBM_iSeries_AS400.sh file and set the values for HOST, USERNAME, PASSWORD, JAVA_HOME.
+- Open IBM_iSeries_AS400.cfg file and set the values for host, username, password, java_path.
+
+	```ini
+ 	[IBM_iSeries_AS400]
+	host="localhost"
+	username="user" 
+	password="test"
+	java_path="/usr/bin"
+ 	```
 
 - Run the command- which java. Copy the output you get and paste it in the JAVA_HOME field. Make sure to paste the path to bin directory and not the path to java.
 
+- Run the below command with apprpriate values to check the manual execution of the plugin.
+
+	```bash
+ 	python3 IBM_iSeries_AS400.py --host "localhost" --username "user" --password "test" --java_path "/usr/bin"
+	```
+
 - Move the `IBM_iSeries_AS400` folder to the site24x7 agent directory.
 	```
-	  mv IBM_iSeries_AS400 /opt/site24x7/monagent/plugins/IBM_iSeries_AS400
+	mv IBM_iSeries_AS400 /opt/site24x7/monagent/plugins/IBM_iSeries_AS400
 	```
 - Once configured the agent will automatically execute the plugin in five minutes interval and send performance data to the Site24x7 data center.
 
@@ -41,12 +56,25 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
 
 - Create a directory `IBM_iSeries_AS400`. 
 
-- Download the files [IBM_iSeries_AS400.bat](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/IBM_iSeries_AS400.bat) , [As400DataCollector.java](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/As400DataCollector.java), [json-20140107.jar](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/json-20140107.jar), [jt400.jar](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/jt400.jar) and place it under the `IBM_iSeries_AS400` directory.
+- Download the files [IBM_iSeries_AS400.cfg](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/IBM_iSeries_AS400.cfg) , [IBM_iSeries_AS400.ps1](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/IBM_iSeries_AS400.ps1), [As400DataCollector.java](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/As400DataCollector.java), [json-20140107.jar](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/json-20140107.jar), [jt400.jar](https://github.com/site24x7/plugins/blob/master/IBM_iSeries_AS400/jt400.jar) and place it under the `IBM_iSeries_AS400` directory.
 
-- Open IBM_iSeries_AS400.bat file and set the values for HOST, USERNAME, PASSWORD, JAVA_HOME.
+- Open IBM_iSeries_AS400.cfg file and set the values for host, username, password, java_path.
 
+	```ini
+ 	[IBM_iSeries_AS400]
+	host="localhost"
+	username="user" 
+	password="test"
+	java_path="C:\Program Files\Java\jdk1.8.0_241\bin"
+ 	```
+ 
 - Run the command- where java. Copy the output of, bin directory of jdk and not the path to java.
 
+- Run the below command with apprpriate values to check the manual execution of the plugin.
+	```bash
+ 	python IBM_iSeries_AS400.py --host "localhost" --username "user" --password "test" --java_path "C:\Program Files\Java\jdk1.8.0_241\bin"
+ 	```
+ 
 - Move the `IBM_iSeries_AS400` into the Site24x7 Windows Agent plugin directory.
 	```
 	 C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\IBM_iSeries_AS400
