@@ -19,7 +19,7 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
  		mkdir IBM_iSeries_AS400
   		cd IBM_iSeries_AS400/
 		
-- Download the files "IBM_iSeries_AS400.sh" , "As400DataCollector.java", "json-20140107.jar", "jt400.jar" and place it under the "IBM_iSeries_AS400" directory using following commands:
+- Download the files "IBM_iSeries_AS400.cfg" , "IBM_iSeries_AS400.py" , "As400DataCollector.java", "json-20140107.jar", "jt400.jar" and place it under the "IBM_iSeries_AS400" directory using following commands:
   	```
   	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/IBM_iSeries_AS400.py
   	 wget https://raw.githubusercontent.com/site24x7/plugins/master/IBM_iSeries_AS400/IBM_iSeries_AS400.cfg
