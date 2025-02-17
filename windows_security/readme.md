@@ -22,12 +22,15 @@ The agent will automatically execute the plugin within few minutes and user can 
 
 Track the following metrics with the plugin:
 
-| Name                      | Description |
-|---------------------------|-------------|
-| `failed_login_attempts`   | The number of failed login attempts in the last 6 minutes. |
-| `account_lockouts`        | The number of user account lockouts in the last 6 minutes. |
-| `antivirus_status`        | Displays `1` if antivirus and real-time protection are enabled, otherwise `0`. |
-| `malware_detections`      | The number of malware detections recorded in the last 6 minutes. |
-| `security_threats_actions`| The number of security threats actions taken in the last 6 minutes. |
-| `security_updates_pending`| The number of pending security updates. |
-| `failed_security_updates` | The number of failed security updates in the last 6 minutes. |
+| Name                         | Description                                                                                      |
+|------------------------------|--------------------------------------------------------------------------------------------------|
+| `failed_login_attempts`       | The number of failed login attempts in the last 6 minutes.                                        |
+| `account_lockouts`            | The number of user account lockouts in the last 6 minutes.                                       |
+| `antivirus_status`            | Displays `1` if antivirus and real-time protection are enabled, otherwise `0`.                    |
+| `malware_detections`          | The number of malware detections recorded in the last 6 minutes.                                 |
+| `security_threats_actions`    | The number of security threats actions taken in the last 6 minutes.                              |
+| `security_updates_pending`    | The number of pending security updates.                                                          |
+| `failed_security_updates`     | The number of failed security updates in the last 6 minutes.                                     |
+| `malware_remediation_failed`  | The number of failed attempts to remediate malware in the last 6 minutes.        |
+| `threat_detected_quarantined` | The number of threats detected and successfully quarantined in the last 6 minutes.|
+| `malware_action_failed`       | The number of failed malware actions in the last 6 minutes.                      |
