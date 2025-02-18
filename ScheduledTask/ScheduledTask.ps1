@@ -28,6 +28,21 @@ Requires -Version 3.0
 
 param([string]$taskName)
 
+$version = "1"
+$displayname = $taskName + "-ScheduledTask"
+$heartbeat = "True"
+
+if (-not $taskName) {
+    $mainJson = @{
+        "version" = $version
+        "heartbeat" = $heartbeat
+        "status" = 0
+        "msg" = "Task name is not provided"
+    }
+    $mainJson | ConvertTo-Json
+    exit 1
+}
+
 $Status = 1
 $status_msg = $null
 
@@ -122,13 +137,22 @@ function Convert-DateWithCultureFormat {
         $date = [datetime]::ParseExact($dateString, $shortDatePattern, $culture)
         return $date
     } catch {
-        Write-Host "Error parsing the date string."
         return $null
     }
 }
 
 
 Function Get-ScheduledJobDetails($jobName) {
+
+    try {
+        $jobDetails = schtasks /QUERY /FO LIST /V /TN $jobName 2>&1
+        if ($jobDetails -match "ERROR: The system cannot find the file specified.") {
+            return $null
+        }
+    } catch {
+        return $null
+    }
+
     $jobDetails = schtasks /QUERY /FO LIST /V /TN $jobName
     $details = @{}
     $repeatAttributes = ""
@@ -187,6 +211,18 @@ Function Get-ScheduledJobDetails($jobName) {
 $data = @{}
 
 $task = Get-ScheduledJobDetails $taskName
+
+if ($null -eq $task) {
+    $mainJson = @{
+        "version" = $version
+        "heartbeat" = $heartbeat
+        "status" = 0
+        "msg" = "Task name `"$taskName`" is missing or invalid."
+    }
+    $mainJson | ConvertTo-Json
+    exit 1
+}
+
 foreach ($key in $task.Keys) {
     if (-not $data.ContainsKey($key)) {
         $data[$key] = $task[$key]
@@ -263,10 +299,6 @@ foreach ($key in $keysToRemove) {
     }
 }
 
-# Site24x7 Plugin Metrics
-$version = "1"
-$displayname = $taskName + "-ScheduledTask"
-$heartbeat = "True"
 $working_codes = @(0, 267008, 267009)
 
 $mainJson = @{}
