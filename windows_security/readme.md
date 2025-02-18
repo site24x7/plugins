@@ -29,8 +29,8 @@ Track the following metrics with the plugin:
 | `antivirus_status`            | Displays `1` if antivirus and real-time protection are enabled, otherwise `0`.                    |
 | `malware_detections`          | The number of malware detections recorded in the last 6 minutes.                                 |
 | `security_threats_actions`    | The number of security threats actions taken in the last 6 minutes.                              |
-| `security_updates_pending`    | The number of pending security updates.                                                          |
-| `failed_security_updates`     | The number of failed security updates in the last 6 minutes.                                     |
+| `software_updates_pending`    | The number of pending software updates.                                                          |
+| `failed_software_updates`     | The number of failed software updates in the last 6 minutes.                                     |
 | `malware_remediation_failed`  | The number of failed attempts to remediate malware in the last 6 minutes.        |
 | `threat_detected_quarantined` | The number of threats detected and successfully quarantined in the last 6 minutes.|
 | `malware_action_failed`       | The number of failed malware actions in the last 6 minutes.                      |
