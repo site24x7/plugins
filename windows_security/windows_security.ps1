@@ -46,7 +46,7 @@ function Get-AntivirusStatus {
     }
 }
 
-function Get-SecurityUpdatesPending {
+function Get-WindowsUpdatesPending {
     try {
         $UpdateSession = New-Object -ComObject Microsoft.Update.Session
         $UpdateSearcher = $UpdateSession.CreateUpdateSearcher()
@@ -78,8 +78,8 @@ $metrics = @{
     "antivirus_status"         = Get-AntivirusStatus
     "malware_detections"       = Get-SecurityEventLogs -logFilePath $logFilePath -logName "Microsoft-Windows-Windows Defender/Operational" -eventID 1116 -customMessage "MalwareDetection"
     "security_threats_actions" = Get-SecurityEventLogs -logFilePath $logFilePath -logName "Microsoft-Windows-Windows Defender/Operational" -eventID 1117 -customMessage "SecurityThreatsActions"
-    "security_updates_pending" = Get-SecurityUpdatesPending
-    "failed_security_updates"  = Get-SecurityEventLogs -logFilePath $logFilePath -logName "System" -eventID 20 -customMessage "FailedSecurityUpdate"
+    "software_updates_pending" = Get-WindowsUpdatesPending
+    "failed_windows_updates"  = Get-SecurityEventLogs -logFilePath $logFilePath -logName "System" -eventID 20 -customMessage "FailedWindowsUpdate"
     "malware_action_failed"    = Get-SecurityEventLogs -logFilePath $logFilePath -logName "Microsoft-Windows-Windows Defender/Operational" -eventID 1118 -customMessage "MalwareActionFailed"
     "threat_detected_quarantined" = Get-SecurityEventLogs -logFilePath $logFilePath -logName "Microsoft-Windows-Windows Defender/Operational" -eventID 1006 -customMessage "ThreatDetectedQuarantined"
     "malware_remediation_failed"  = Get-SecurityEventLogs -logFilePath $logFilePath -logName "Microsoft-Windows-Windows Defender/Operational" -eventID 1010 -customMessage "MalwareRemediationFailed"
