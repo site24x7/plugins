@@ -101,6 +101,7 @@ dict_psqlQueries = OrderedDict({})
 
 def inititializeQueries():
     global dict_psqlQueries
+    global conn_details,db_details
     major_version = int(VERSION % 1000000 / 10000)
     middle_version = int(VERSION % 10000 / 100)
     minor_version = int(VERSION % 100)
@@ -139,21 +140,23 @@ def inititializeQueries():
                         'bg_stats' : str_bgStats,
                         'locks_count' : str_lockStat,
                         'max_conn' : str_MaxConn,
-                        'io_stats' : str_iostats,
+                        'io_stats' : str_iostats, 
                         'idx_stats' :str_idxStats,
                         'version' : str_version,
                         'uptime' : str_uptime,
                         'no of databases' : str_databaseCount,
-                        'session' : str_Sessions,
                         'heap_and_cache' : str_heap
                         }
     if waiting:
         dict_psqlQueries['active_waiting_queries']= str_usageWaitingStat
 
-    # table queries
+    # table and session queries
+    if major_version >= 14:
+        dict_psqlQueries['session']=str_Sessions
+        conn_details="SELECT datname as name,xact_commit as commits, xact_rollback as rollbacks, conflicts, sessions, sessions_abandoned, sessions_fatal, sessions_killed, session_time, active_time as sessions_active_time, idle_in_transaction_time as session_idle_in_transaction_time FROM pg_stat_database;"
+    else:
+        conn_details="SELECT datname as name,xact_commit as commits, xact_rollback as rollbacks, conflicts FROM pg_stat_database;"
 
-    global conn_details,db_details
-    conn_details="SELECT datname as name,xact_commit as commits, xact_rollback as rollbacks, conflicts, sessions, sessions_abandoned, sessions_fatal, sessions_killed, session_time, active_time as sessions_active_time, idle_in_transaction_time as session_idle_in_transaction_time FROM pg_stat_database;"
     db_details = "SELECT d.datname AS name, s.numbackends as active_connections, ROUND(pg_database_size(d.datname) / 1024 / 1024,2) AS size_in_mb,tup_inserted as rows_inserted, tup_updated as rows_updated, tup_deleted as rows_deleted, tup_fetched as rows_fetched , tup_returned as rows_returned, blks_read as block_reads , blks_hit as block_hits FROM pg_database d JOIN pg_stat_database s ON d.oid = s.datid;"
 
 class pgsql():
@@ -273,8 +276,8 @@ if __name__ == '__main__':
     username=args.username
     password=args.password
     plugin_version=args.plugin_version
-    heartbeat=args.heartbeat
     db=args.db
+    heartbeat=args.heartbeat
         
     psql = pgsql(host_name,port,username,password,db)
     psql.main(plugin_version,heartbeat)
