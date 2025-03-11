@@ -35,7 +35,7 @@ function Get-SecurityEventLogs {
 
 function Get-AntivirusStatus {
     try {
-        $avStatus = Get-MpComputerStatus
+        $avStatus = Get-MpComputerStatus -ErrorAction Stop
         if ($avStatus.AntivirusEnabled -and $avStatus.RealTimeProtectionEnabled) {
             return 1
         } else {
@@ -48,7 +48,7 @@ function Get-AntivirusStatus {
 
 function Get-WindowsUpdatesPending {
     try {
-        $UpdateSession = New-Object -ComObject Microsoft.Update.Session
+        $UpdateSession = New-Object -ComObject Microsoft.Update.Session -ErrorAction Stop
         $UpdateSearcher = $UpdateSession.CreateUpdateSearcher()
         $SearchResult = $UpdateSearcher.Search("IsInstalled=0 and Type='Software' and IsHidden=0")
         return $SearchResult.Updates.Count
