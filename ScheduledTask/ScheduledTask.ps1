@@ -29,7 +29,11 @@ Requires -Version 3.0
 param([string]$taskName)
 
 $version = "1"
-$displayname = $taskName + "-ScheduledTask"
+
+$taskNameParts = $taskName -split '\\'
+$actualTaskName  = $taskNameParts[-1]
+
+$displayname = $actualTaskName  + "-ScheduledTask"
 $heartbeat = "True"
 
 if (-not $taskName) {
