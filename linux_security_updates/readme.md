@@ -1,6 +1,6 @@
 # Plugin for Monitoring Software Updates Count
 
-OS Supported: Ubuntu, Centos, AlmaLinux, Red Hat Enterprise Linux
+Supported Distros: Debian, Fedora
 ## Plugin Installation
 
 Quick installation
