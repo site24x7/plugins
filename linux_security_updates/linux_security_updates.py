@@ -32,8 +32,10 @@ class security_update_check:
            
     def get_command_updates_output(self,command):
 
-        p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        global err
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True,stderr=subprocess.PIPE)
         (updates_output, err) = p.communicate()
+        
         p_status = p.wait()
         return updates_output
     
@@ -106,13 +108,13 @@ class security_update_check:
                 os_content=f.read()
 
             for line in os_content.splitlines():
-                if line.startswith('NAME='):
+                if line.startswith('ID_LIKE='):
                     _, self.os_name = line.split('=', 1)
                     self.os_name = self.os_name.strip('"')
                     break  
 
 
-            if self.os_name=="Ubuntu":
+            if self.os_name == "debian":
 
                 reboot_required_packages_list="/var/run/reboot-required.pkgs"
                 if os.path.isfile("/var/run/reboot-required"):
@@ -159,7 +161,7 @@ class security_update_check:
                             
 
 
-            elif self.os_name in ["AlmaLinux", "CentOS Linux","Red Hat Enterprise Linux"]:
+            elif self.os_name == "fedora":
 
 
                 reboot_required=self.get_command_updates_output("needs-restarting -r").decode()
@@ -201,6 +203,10 @@ class security_update_check:
 
                 command="yum check-update --security | grep -i 'needed for security'"
                 updates_output = self.get_command_updates_output(command)
+                sec_err=err.decode()
+                if "No packages needed for security" in sec_err or "No security updates needed" in sec_err:
+                        self.maindata['Security Updates'] = 0
+
                 if updates_output:
                     updates_output=updates_output.decode()
                     updates_output = updates_output.rstrip()
