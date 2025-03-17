@@ -10,7 +10,7 @@ Download and install the latest version of the [Site24x7 Windows agent](https://
 
 1. Create a folder named `windows_security`.
 
-2. Download the file [windows_security.ps1](https://github.com/site24x7/plugins/blob/master/windows_security/windows_security.ps1) and place them under the `windows_security` directory.
+2. Download the file [windows_security.bat](https://github.com/site24x7/plugins/blob/master/windows_security/windows_security.bat) , [security_events.ps1](https://github.com/site24x7/plugins/blob/master/windows_security/security_events.ps1) and place them under the `windows_security` directory.
 
 3. Further move the folder `windows_security` into the Site24x7 Windows Agent plugin directory:
     ```
@@ -29,7 +29,6 @@ Track the following metrics with the plugin:
 | `Antivirus Status`            | Displays `1` if antivirus and real-time protection are enabled, otherwise `0`.                    |
 | `Malware Detections`          | The number of malware detections recorded in the last 6 minutes.                                 |
 | `Security Threats Actions`    | The number of security threats actions taken in the last 6 minutes.                              |
-| `Software Updates Pending`    | The number of pending software updates.                                                          |
 | `Failed Software Updates`     | The number of failed software updates in the last 6 minutes.                                     |
 | `Malware Remediation Failed`  | The number of failed attempts to remediate malware in the last 6 minutes.        |
 | `Threat Detected Quarantined` | The number of threats detected and successfully quarantined in the last 6 minutes.|
