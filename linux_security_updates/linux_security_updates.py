@@ -32,7 +32,6 @@ class security_update_check:
            
     def get_command_updates_output(self,command):
 
-        global err
         p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True,stderr=subprocess.PIPE)
         (updates_output, err) = p.communicate()
         
@@ -49,7 +48,7 @@ class security_update_check:
 
             if reboot_required_packages:
                 for pkg in reboot_required_packages:
-                    if self.os_name == "Ubuntu":
+                    if "debian" in self.os_name or "suse" in self.os_name:
                         updates_output+="\nPackage: {}".format(pkg)
                         updates_output+="\nVersion: Installed"
                         updates_output+="\nInstalled-Size: - - "
@@ -98,6 +97,7 @@ class security_update_check:
         try:
             
             os_content=""
+            self.os_name=""
             distro_file="/etc/os-release"
             if not os.path.isfile(distro_file):
                 self.maindata['msg']=distro_file+", Does not exist"
@@ -107,16 +107,27 @@ class security_update_check:
             with open(distro_file, 'r') as f:
                 os_content=f.read()
 
-            for line in os_content.splitlines():
+            fileContent = os_content.splitlines()
+            if fileContent == []:
+                self.maindata['msg']="{} is empty".format(distro_file)
+                self.maindata['status']=0
+                return self.maindata
+
+            for line in fileContent:
                 if line.startswith('ID_LIKE='):
                     _, self.os_name = line.split('=', 1)
                     self.os_name = self.os_name.strip('"')
                     break  
+                
+            if not self.os_name:
+                self.maindata['msg'] = "Distro information not found in {}".format(distro_file)
+                self.maindata['status'] = 0
+                return self.maindata
 
-
-            if self.os_name == "debian":
+            if "debian" in self.os_name:
 
                 reboot_required_packages_list="/var/run/reboot-required.pkgs"
+                reboot_required_packages=None
                 if os.path.isfile("/var/run/reboot-required"):
                     self.maindata['Reboot Required for packages']="True"
                     if os.path.isfile(reboot_required_packages_list):
@@ -130,7 +141,6 @@ class security_update_check:
                 else:
                     self.maindata['Reboot Required for packages']="False"
                     self.maindata['Reboot Required Packages Count']=0
-                    reboot_required_packages=None
 
                 ubuntu_command="""apt list --upgradable 2> /dev/null| awk -F'/' '{print $1}' | xargs apt show 2> /dev/null | grep -E "Package:|Version:|Installed-Size:|Description:\""""
                 upgrades_count=self.log_creator(ubuntu_command, reboot_required_packages)
@@ -140,7 +150,7 @@ class security_update_check:
                     self.maindata['Upgrades Available For Installed Packages']=0
 
 
-                install_count_cmd="apt list --installed 2> /dev/null | wc -l"
+                install_count_cmd="apt list --installed 2> /dev/null | grep -Ev 'Listing' | wc -l"
                 res=self.get_command_updates_output(install_count_cmd).decode('utf-8').strip()
                 if res.isdigit():
                     self.maindata['Installed Packages Count']=int(res)-1
@@ -149,19 +159,27 @@ class security_update_check:
 
 
                 file_path='/var/lib/update-notifier/updates-available'
-                with open(file_path, 'r') as f:
-                    lines = [line.strip('\n') for line in f]
-                self.maindata['Security Updates'] = 0
-                for line in lines:
-                    if line:
-                        if ( 'packages can be updated' in line ) or ('can be installed immediately' in line ) or ('can be applied immediately' in line):
-                            self.maindata['Packages to be Updated'] = line.split()[0]
-                        if ('updates are security updates' in line) or ('updates are standard security updates' in line) or ("updates is a standard security update" in line):
-                            self.maindata['Security Updates'] = line.split()[0]
+                if os.path.isfile(file_path):
+                    try:
+                        with open(file_path, 'r') as f:
+                            lines = [line.strip('\n') for line in f]
+                        self.maindata['Security Updates'] = 0
+                        for line in lines:
+                            if line:
+                                if ( 'packages can be updated' in line ) or ('can be installed immediately' in line ) or ('can be applied immediately' in line):
+                                    self.maindata['Packages to be Updated'] = line.split()[0]
+                                if ('updates are security updates' in line) or ('updates are standard security updates' in line) or ("updates is a standard security update" in line):
+                                    self.maindata['Security Updates'] = line.split()[0]
+                    except Exception as e:
+                        self.maindata['msg'] = str(e)
+                        self.maindata['status'] = 0
+                else:
+                    self.maindata['msg'] = "{} does not exist".format(file_path)
+                    self.maindata['status'] = 0
                             
 
 
-            elif self.os_name == "fedora":
+            elif "fedora" in self.os_name:
 
 
                 reboot_required=self.get_command_updates_output("needs-restarting -r").decode()
@@ -182,45 +200,77 @@ class security_update_check:
 
                 updates_check=self.get_command_updates_output("yum list updates")
                 updates_check=updates_check.decode()
+                
                 if "Available Upgrades" in updates_check:
-
                     centos_command="""yum list updates -q | awk '{print $1}' | xargs yum info | grep -E "^Name|^Version|^Size|^Description\""""
                 else:
                     upgrades_count=0
                     centos_command=""
+
                 upgrades_count=self.log_creator(centos_command,reboot_required_packages)
+
                 if upgrades_count:
                     self.maindata['Upgrades Available For Installed Packages']=upgrades_count
                 else:
                     self.maindata['Upgrades Available For Installed Packages']=0
 
-                install_count_cmd=" yum list installed | wc -l"
+                install_count_cmd="rpm -qa | wc -l"
                 res=self.get_command_updates_output(install_count_cmd).decode('utf-8').strip()
                 if res.isdigit():
-                    self.maindata['Installed Packages Count']=int(res)-2
+                    self.maindata['Installed Packages Count']=res
                 else:
                     self.maindata['Installed Packages Count']=0
 
-                command="yum check-update --security | grep -i 'needed for security'"
+                command="yum updateinfo list security | grep -Ev \"Updating Subscription Management repositories.|Last metadata expiration check\" | wc -l"
                 updates_output = self.get_command_updates_output(command)
-                sec_err=err.decode()
-                if "No packages needed for security" in sec_err or "No security updates needed" in sec_err:
-                        self.maindata['Security Updates'] = 0
 
                 if updates_output:
                     updates_output=updates_output.decode()
+                    security_count = updates_output.rstrip()
+                    self.maindata['Security Updates'] = security_count
+                else:
+                    self.maindata['Security Updates'] = 0
+
+            elif "suse" in self.os_name:
+
+                reboot_required=self.get_command_updates_output("zypper needs-rebooting").decode()
+
+                reboot_required_packages=[]
+
+                if "Reboot is suggested to ensure that your system benefits from these updates.Reboot is required to fully utilize these updates." in reboot_required:
+                    self.maindata['Reboot Required for packages']="True"
+                else:
+                    self.maindata['Reboot Required for packages']="False"
+
+                suse_command="""zypper list-updates --all | awk '{print $5}' | xargs zypper info | grep -E "^Name|^Version|^Installed Size|^Summary\""""
+                upgrades_count=self.log_creator(suse_command, reboot_required_packages)
+                if upgrades_count:
+                    self.maindata['Upgrades Available For Installed Packages']=upgrades_count
+                else:
+                    self.maindata['Upgrades Available For Installed Packages']=0
+
+                install_count_cmd="zypper packages --installed-only | grep -Ev \"Listing|Warning|Loading|Reading\" | wc -l"
+                res=self.get_command_updates_output(install_count_cmd).decode('utf-8').strip()
+                if res.isdigit():
+                    self.maindata['Installed Packages Count']=res
+                else:
+                    self.maindata['Installed Packages Count']=0
+
+                command="zypper lp -g security | grep -i 'patch needed'"
+                updates_output = self.get_command_updates_output(command)
+                
+                if updates_output:
+                    updates_output=updates_output.decode()
                     updates_output = updates_output.rstrip()
-                    count = updates_output.split("needed for security")
+                    count = updates_output.split(" ")
                     security_count = count[0].split()[0]
                     if security_count == 'No':
                         self.maindata['Security Updates'] = 0
                     else:
                         self.maindata['Security Updates'] = security_count
-                    packages_count = count[1].split()
-                    for each in packages_count:
-                        if each.isdigit():
-                            self.maindata['Packages to be Updated']=each
-                            
+                else:
+                    self.maindata['Security Updates'] = 0
+                        
             else:
                 self.maindata['msg']="{} not supported".format(self.os_name)
                 self.maindata['status']=0
