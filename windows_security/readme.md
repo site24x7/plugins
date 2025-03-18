@@ -24,12 +24,21 @@ Track the following metrics with the plugin:
 
 | Name                         | Description                                                                                      |
 |------------------------------|--------------------------------------------------------------------------------------------------|
-| `Failed Login Attempts`       | The number of failed login attempts in the last 6 minutes.                                        |
-| `Account Lockouts`            | The number of user account lockouts in the last 6 minutes.                                       |
+| `Failed Login Attempts`       | Tracks the number of unsuccessful login attempts on the monitored system.                                        |
+| `Account Lockouts`            | Represents the number of user accounts that have been locked due to multiple failed login attempts.                                        |
 | `Antivirus Status`            | Displays `1` if antivirus and real-time protection are enabled, otherwise `0`.                    |
-| `Malware Detections`          | The number of malware detections recorded in the last 6 minutes.                                 |
-| `Security Threats Actions`    | The number of security threats actions taken in the last 6 minutes.                              |
-| `Failed Software Updates`     | The number of failed software updates in the last 6 minutes.                                     |
-| `Malware Remediation Failed`  | The number of failed attempts to remediate malware in the last 6 minutes.        |
-| `Threat Detected Quarantined` | The number of threats detected and successfully quarantined in the last 6 minutes.|
-| `Malware Action Failed`       | The number of failed malware actions in the last 6 minutes.                      |
+| `Malware Detections`          | Displays the number of malware instances identified by windows security software.                                 |
+| `Security Threats Actions`    | Tracks the number of actions taken against identified security threats, such as quarantining infected files, removing malware, or blocking suspicious processes. |
+| `Failed Software Updates`     | Total number of failed software updates.                                     |
+| `Malware Remediation Failed`  | Monitors the number of unsuccessful attempts to remove or neutralize identified malware.        |
+| `Threat Detected Quarantined` | Represents the number of threats that were successfully identified and quarantined by security software.|
+| `Malware Action Failed`       | Tracks the number of failed actions attempted by security software to respond to malware threats.                      |
+
+
+## **Log Tracking for Windows Security Events**  
+Once the plugin monitor is successfully registered in Site24x7, you can also track the **Windows Security Event Logs** directly within the **Applog** tab under the log name **WinSecurityLog**.  
+
+This feature automatically collects and displays security-related logs, providing insights into critical events such as failed login attempts, malware detections, and other security activities.  
+
+![image](https://github.com/user-attachments/assets/745889f9-3418-4277-ac1f-2fd6ca0a2ea6)
+
