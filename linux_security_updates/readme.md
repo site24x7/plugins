@@ -1,6 +1,6 @@
 # Plugin for Monitoring Software Updates Count
 
-Supported Distros: Debian, Fedora
+Supported Distros: Debian, Fedora, Suse
 ## Plugin Installation
 
 Quick installation
@@ -42,3 +42,12 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/linux_security_up
 
 ### Package details  
   Site24x7 web client > linux_security_updates plugin monitor > select AppLog tab > User can choose logtype as "Linux Pending Security Updates" to check the details of packages which have been not updated. 
+  
+Sample Screenshots:
+
+![image](https://github.com/user-attachments/assets/562eee3e-731e-4ac3-98c1-7057b722ec91)
+![image](https://github.com/user-attachments/assets/3f5235fd-3e9b-4fec-88e7-1dd0b4df7ca8)
+
+
+
+
