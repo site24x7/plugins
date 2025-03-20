@@ -1,72 +1,118 @@
-$TimeoutSeconds = 3
-
 function Get-SecurityEventLogs {
     param (
+        [Hashtable]$logNamesAndEventIDs,  
         [string]$logFilePath,
-        [string]$logName,
-        [int]$eventID,
-        [string]$customMessage,
-        [bool]$logFileStatus
+        [bool]$logFileStatus              
     )
-        $job = Start-Job -ScriptBlock {
-        param($logFilePath, $logName, $eventID, $customMessage, $logFileStatus)
 
-        try {
+    try {
+        $eventCounts = @{
+            "Failed Windows Updates"        = 0
+            "Malware Detections"            = 0
+            "Malware Action Failed"         = 0
+            "Threat Detected Quarantined"  = 0
+            "Security Threats Actions"     = 0
+            "Failed Login Attempts"        = 0
+            "Account Lockouts"              = 0
+            "Malware Remediation Failed"   = 0
+        }
+        
+
+        $eventIDNames = @{
+            4625 = "Failed Login Attempts"
+            4740 = "Account Lockouts"
+            1116 = "Malware Detections"
+            1117 = "Security Threats Actions"
+            1118 = "Malware Action Failed"
+            1006 = "Threat Detected Quarantined"
+            1010 = "Malware Remediation Failed"
+            20 ="Failed Windows Updates"
+        }
+
+    
+        foreach ($logName in $logNamesAndEventIDs.Keys) {
+
+      
+            $eventIDs = $logNamesAndEventIDs[$logName]
+            
             $events = Get-WinEvent -FilterHashtable @{
                 LogName   = $logName
-                ID        = $eventID
-                StartTime = (Get-Date).AddMinutes(-3)
+                ID        = $eventIDs
+                StartTime = (Get-Date).AddMinutes(-3)  
             } -ErrorAction SilentlyContinue
 
-            $eventMessages = @()
+            if ($events) {
+                $events | ForEach-Object {
+                    $eventId = $_.Id
+                    $message = $_.Message
+                    
+ 
+                    $eventName = $eventIDNames[$eventId]
 
-            $events | ForEach-Object {
-                $message = $_.Message
-                $logEntry = [ordered]@{
-                    LogName  = $customMessage
-                    ID       = $eventID
-                    Message  = $message  
-                }
-                $eventMessages += $logEntry
+                    if ($eventCounts.ContainsKey($eventName)) {
+                        $eventCounts[$eventName]++
+                    }
 
-                if ($logFileStatus) {
+                    $logEntry = [ordered]@{
+                        LogName  = $logName
+                        ID       = $eventId  
+                        Message  = $message  
+                    }
+
                     try {
+                    if($logFileStatus){
                         $logEntry | ConvertTo-Json -Compress | Out-File -FilePath $logFilePath -Append -Encoding UTF8 -ErrorAction SilentlyContinue
-                    } catch {}
+                        }
+                    } catch {
+                       
+                    }
                 }
+            } else {
+                
             }
-
-            return $eventMessages
-        } catch {
-            return -1
         }
-    } -ArgumentList $logFilePath, $logName, $eventID, $customMessage, $logFileStatus
 
-    $job | Wait-Job -Timeout $TimeoutSeconds | Out-Null -ErrorAction SilentlyContinue
-
-    if ($job.State -eq 'Running') {
-        $job | Stop-Job -PassThru | Remove-Job -ErrorAction SilentlyContinue
-        return -1 
-    }
-
-    $result = Receive-Job -Job $job -ErrorAction SilentlyContinue
-    Remove-Job -Job $job -ErrorAction SilentlyContinue
-    return ($result | Measure-Object).Count
-}
-
-
-function Get-AntivirusStatus {
-    try {
-        $avStatus = Get-MpComputerStatus -ErrorAction SilentlyContinue
-        if ($avStatus.AntivirusEnabled -and $avStatus.RealTimeProtectionEnabled) {
-            return 1
-        } else {
-            return 0
+        function Get-AntivirusStatus {
+            try {
+                $avStatus = Get-MpComputerStatus -ErrorAction SilentlyContinue
+                if ($avStatus.AntivirusEnabled -and $avStatus.RealTimeProtectionEnabled) {
+                    return 1
+                } else {
+                    return 0
+                }
+            } catch {
+                return -1
+            }
         }
+
+        
+        $output = @{
+            "plugin_version"       = 1
+            "heartbeat_required"  = "true"
+            "Antivirus Status"    = Get-AntivirusStatus
+            "Failed Windows Updates" = $eventCounts["Failed Windows Updates"]
+            "Malware Detections"  = $eventCounts["Malware Detections"]
+            "Malware Action Failed" = $eventCounts["Malware Action Failed"]
+            "Threat Detected Quarantined" = $eventCounts["Threat Detected Quarantined"]
+            "Security Threats Actions" = $eventCounts["Security Threats Actions"]
+            "Failed Login Attempts" = $eventCounts["Failed Login Attempts"]
+            "Account Lockouts"    = $eventCounts["Account Lockouts"]
+            "Malware Remediation Failed" = $eventCounts["Malware Remediation Failed"]
+            "applog"             = @{
+            "logs_enabled"    = $true
+            "log_file_path"  = "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\windows_security\logs*.txt"
+            "log_type_name"  = "WinSecurityLog"
+        }
+        }
+
+
+        $output | ConvertTo-Json -Compress
+
     } catch {
-        return -1
+        
     }
 }
+
 
 
 $currentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -87,35 +133,20 @@ try {
 
 $logFileName = "logs_$(Get-Date -Format 'yyyyMMdd_HHmmss').txt"
 $logFilePath = "$currentDirectory\$logFileName"
-$logFileCreated = $false
+$logFileStatus = $false
 try {
-    if (!(Test-Path $logFilePath)) {
+    if (!(Test-Path $logFilePath -ErrorAction SilentlyContinue)) {
        New-Item -Path $logFilePath -ItemType File -Force -ErrorAction SilentlyContinue | Out-Null
-       $logFileCreated = $true
+       $logFileStatus = $true
     }
 } catch {
    }
 
 
-$logFile = if ($logFileCreated) { $logFilePath } else { $null }
-
-$metrics = @{
-    "plugin_version"           = 1
-    "heartbeat_required"       = "true"
-    "Failed Login Attempts"    = Get-SecurityEventLogs -logFilePath $logFile -logName 'Security' -eventID 4625 -customMessage "FailedLoginAttempts" -logFileStatus $logFileCreated
-    "Account Lockouts"         = Get-SecurityEventLogs -logFilePath $logFile -logName 'Security' -eventID 4740 -customMessage "AccountLockout" -logFileStatus $logFileCreated
-    "Antivirus Status"         = Get-AntivirusStatus
-    "Malware Detections"       = Get-SecurityEventLogs -logFilePath $logFile -logName "Microsoft-Windows-Windows Defender/Operational" -eventID 1116 -customMessage "MalwareDetection" -logFileStatus $logFileCreated
-    "Security Threats Actions" = Get-SecurityEventLogs -logFilePath $logFile -logName "Microsoft-Windows-Windows Defender/Operational" -eventID 1117 -customMessage "SecurityThreatsActions" -logFileStatus $logFileCreated
-    "Failed Windows Updates"   = Get-SecurityEventLogs -logFilePath $logFile -logName "System" -eventID 20 -customMessage "FailedWindowsUpdate"
-    "Malware Action Failed"    = Get-SecurityEventLogs -logFilePath $logFile -logName "Microsoft-Windows-Windows Defender/Operational" -eventID 1118 -customMessage "MalwareActionFailed" -logFileStatus $logFileCreated
-    "Threat Detected Quarantined" = Get-SecurityEventLogs -logFilePath $logFile -logName "Microsoft-Windows-Windows Defender/Operational" -eventID 1006 -customMessage "ThreatDetectedQuarantined" -logFileStatus $logFileCreated
-    "Malware Remediation Failed"  = Get-SecurityEventLogs -logFilePath $logFile -logName "Microsoft-Windows-Windows Defender/Operational" -eventID 1010 -customMessage "MalwareRemediationFailed" -logFileStatus $logFileCreated
-    "applog" = @{
-        "log_file_path" = "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\windows_security\logs*.txt"
-        "log_type_name" = "WinSecurityLog"
-        "logs_enabled"  = $true
-    }
+$logNamesAndEventIDs = @{
+    "Security" = @(4625, 4740)  
+    "Microsoft-Windows-Windows Defender/Operational" = @(1116, 1117, 1118, 1006, 1010) 
+    "System" = @(20)
 }
 
-$metrics | ConvertTo-Json -Compress
+Get-SecurityEventLogs -logNamesAndEventIDs $logNamesAndEventIDs -logFilePath $logFilePath -logFileStatus $logFileStatus
