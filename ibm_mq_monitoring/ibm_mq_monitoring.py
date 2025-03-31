@@ -472,11 +472,11 @@ class IbmMq:
                     mqi_calls[channel_name] = channel_response[self.No_of_MQI_calls]
                     channel_list.append(channel_name)
 
-            channel_list = self.object_status(
-                channel_list, "channels", channel_list, "channel_status"
+            channels = self.object_status(
+                channel_list, "channels", list(channels.values()), "channel_status"
             )
 
-            maindata["channels"] = list(channels.values())
+            maindata["channels"] = channels
 
             return maindata
         except Exception as e:
@@ -509,6 +509,7 @@ class IbmMq:
             listeners = self.object_status(
                 listener_list, "listeners", listeners, "status"
             )
+
             return maindata
         except Exception as e:
             self.maindata["status"] = 0
