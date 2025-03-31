@@ -57,8 +57,8 @@ Function GetErrorMessage
     switch($ErrorCode)
     {
         0 { $msg="The operation completed successfully";break}
-        1 { $msg="An incorrect or unsupported function was called, or a function that is not recognized was executed.";break}
-        2 { $msg="The specified file could not be located. This could be due to incorrect file paths or missing files.";break}
+        1 { $msg="An incorrect or unsupported function was called within the task, or a function that is not recognized was executed.";break}
+        2 { $msg="The specified file for the task could not be located. This could be due to incorrect file paths or missing files.";break}
         10 { $msg="The environment in which the task or application is running is not set up properly. This could involve system settings, missing dependencies, or incorrect configurations.";break}
         267008 { $msg="The task is scheduled to run but has not yet started. It is waiting for its next scheduled trigger.";break}
         267009 { $msg="Task is currently running.";break}
@@ -68,11 +68,11 @@ Function GetErrorMessage
         267014 { $msg="The task was stopped prematurely, likely due to an error or manual termination.";break}
         2147750671 { $msg="Credentials became corrupted (*)";break}
         2147750687 { $msg="Another instance of the task is already executing. The task cannot be started again until the current instance finishes.";break}
-        2147942402 { $msg="A required file is unavailable, likely due to missing or inaccessible files.";break}
+        2147942402 { $msg="A required file for the task is unavailable, likely due to missing or inaccessible files.";break}
         2147942667 { $msg="Action 'start in' directory can not be found.";break}
         2147943645 { $msg="The service required for the task is unavailable, possibly due to restrictions like 'Run only when a user is logged on'.";break}
         3221225786 { $msg="The application terminated as a result of a CTRL+C.";break}
-        3228369022 { $msg="A software exception occurred that doesn't match any predefined error codes, often indicating an unexpected issue with the application or system.";break}
+        3228369022 { $msg="A software exception occurred while fetching the task, which does not match any predefined error codes. This often indicates an unexpected issue with the application or system.";break}
         267264 { $msg="Task is ready to run at its next scheduled time."; break}
         267265 { $msg="The task is currently running."; break}
         267266 { $msg="The task has been disabled."; break}
@@ -260,7 +260,7 @@ $task2 = Get-ScheduledTaskInfo $taskName
 $data["Number Of Missed Runs"] = $task2.NumberOfMissedRuns
 
 if ($data["Last Run Time"] -eq "N/A" -or [string]::IsNullOrWhiteSpace($data["Last Run Time"])) {
-    $data["Last Run Before"] = "N/A"
+    $data["Last Run Before"] = "-"
 } else {
     $timenow = Get-Date
     $timespan = New-Timespan -Start $data["Last Run Time"] -End $timenow
@@ -270,7 +270,7 @@ if ($data["Last Run Time"] -eq "N/A" -or [string]::IsNullOrWhiteSpace($data["Las
 
 
 if ($data["Start Date"] -eq "N/A" -or [string]::IsNullOrWhiteSpace($data["Start Date"])) {
-    $data["Start Date"] = "N/A"
+    $data["Start Date"] = "-"
 } else {
     $startDateString = $data["Start Date"]
     $startDate = Convert-DateWithCultureFormat -dateString $startDateString
