@@ -57,22 +57,22 @@ Function GetErrorMessage
     switch($ErrorCode)
     {
         0 { $msg="The operation completed successfully";break}
-        1 { $msg="Incorrect function called or unknown function called.";break}
-        2 { $msg="File not found.";break}
-        10 { $msg="The environment is incorrect.";break}
-        267008 { $msg="Task is ready to run at its next scheduled time.";break}
+        1 { $msg="An incorrect or unsupported function was called, or a function that is not recognized was executed.";break}
+        2 { $msg="The specified file could not be located. This could be due to incorrect file paths or missing files.";break}
+        10 { $msg="The environment in which the task or application is running is not set up properly. This could involve system settings, missing dependencies, or incorrect configurations.";break}
+        267008 { $msg="The task is scheduled to run but has not yet started. It is waiting for its next scheduled trigger.";break}
         267009 { $msg="Task is currently running.";break}
-        267010 { $msg="Task is disabled.";break}
-        267011 { $msg="Task has not yet run.";break}
+        267010 { $msg="The task is currently disabled and won't run until re-enabled.";break}
+        267011 { $msg="The task has been created or scheduled, but it has not executed yet.";break}
         267012 { $msg="There are no more runs scheduled for this task.";break}
-        267014 { $msg="Task is terminated.";break}
+        267014 { $msg="The task was stopped prematurely, likely due to an error or manual termination.";break}
         2147750671 { $msg="Credentials became corrupted (*)";break}
-        2147750687 { $msg="An instance of this task is already running.";break}
-        2147942402 { $msg="File not available";break}
+        2147750687 { $msg="Another instance of the task is already executing. The task cannot be started again until the current instance finishes.";break}
+        2147942402 { $msg="A required file is unavailable, likely due to missing or inaccessible files.";break}
         2147942667 { $msg="Action 'start in' directory can not be found.";break}
-        2147943645 { $msg="The service is not available (is 'Run only when a user is logged on' checked?)";break}
+        2147943645 { $msg="The service required for the task is unavailable, possibly due to restrictions like 'Run only when a user is logged on'.";break}
         3221225786 { $msg="The application terminated as a result of a CTRL+C.";break}
-        3228369022 { $msg="Unknown software exception.";break}
+        3228369022 { $msg="A software exception occurred that doesn't match any predefined error codes, often indicating an unexpected issue with the application or system.";break}
         267264 { $msg="Task is ready to run at its next scheduled time."; break}
         267265 { $msg="The task is currently running."; break}
         267266 { $msg="The task has been disabled."; break}
@@ -196,7 +196,6 @@ Function Get-ScheduledJobDetails($jobName) {
             }
         }
     }
-    
 
     if ($details.ContainsKey('TaskName')) {
         $details['Task Name'] = $details['TaskName'] -replace '^\\+', ''
@@ -260,18 +259,27 @@ if ($data["Last Result"] -eq "0") {
 $task2 = Get-ScheduledTaskInfo $taskName
 $data["Number Of Missed Runs"] = $task2.NumberOfMissedRuns
 
-$timenow = Get-Date
-$timespan = New-Timespan -Start $data["Last Run Time"] -End $timenow
-$timediff = $timespan.Days.ToString() + " Days " + $timespan.Hours.ToString() + " Hours " + $timespan.Minutes.ToString() + " Minutes " + $timespan.Seconds.ToString() + " Seconds "
-$data["Last Run Before"] = $timediff
+if ($data["Last Run Time"] -eq "N/A" -or [string]::IsNullOrWhiteSpace($data["Last Run Time"])) {
+    $data["Last Run Before"] = "N/A"
+} else {
+    $timenow = Get-Date
+    $timespan = New-Timespan -Start $data["Last Run Time"] -End $timenow
+    $timediff = $timespan.Days.ToString() + " Days " + $timespan.Hours.ToString() + " Hours " + $timespan.Minutes.ToString() + " Minutes " + $timespan.Seconds.ToString() + " Seconds "
+    $data["Last Run Before"] = $timediff
+}
 
-if ($data["Start Date"] -eq "N/A") {
+
+if ($data["Start Date"] -eq "N/A" -or [string]::IsNullOrWhiteSpace($data["Start Date"])) {
     $data["Start Date"] = "N/A"
-} else{
+} else {
     $startDateString = $data["Start Date"]
-    $startDate = [datetime]::ParseExact($startDateString, $shortDatePattern, $culture)
-    $ageTimespan = New-Timespan -Start $startDate -End $timenow
-    $data["Task Age"] = $ageTimespan.Days
+    $startDate = Convert-DateWithCultureFormat -dateString $startDateString
+    if ($startDate -ne $null) {
+        $ageTimespan = New-Timespan -Start $startDate -End $timenow
+        $data["Task Age"] = $ageTimespan.Days
+    } else {
+        $data["Task Age"] = 0
+    }
 }
 
 if ($data.ContainsKey('TaskName')) {
