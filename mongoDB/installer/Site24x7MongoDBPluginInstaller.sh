@@ -50,7 +50,7 @@ fi
 
 
 
-if [[ -f "Site24x7MongoDBPluginInstallerAddOn.py" ]]; then
+if [ -f "Site24x7MongoDBPluginInstallerAddOn.py" ]; then
     rm -rf ./Site24x7MongoDBPluginInstallerAddOn.py
 fi
 
@@ -58,19 +58,19 @@ fi
 
 echo ""
 echo -e "${GREEN}Downloading related installation files from the Site24x7 GitHub repository. ${RESET}"
-wget "https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/installer/Site24x7MongoDBPluginInstallerAddOn.py" &> /dev/null
-if [[ $? -ne 0 ]]; then
+wget -q "https://raw.githubusercontent.com/site24x7/plugins/mani/mongoDB/installer/Site24x7MongoDBPluginInstallerAddOn.py" &> /dev/null
+if [ $? -ne 0 ]; then
     echo -e "${RED} Download failed. Process exited.${RESET}"
     exit 1
 fi
 
-if [[ -f "pymongo.pyz" ]]; then
+if [ -f "pymongo.pyz" ]; then
     rm -rf ./pymongo.pyz
 fi
 echo ""
 
-wget "https://github.com/site24x7/plugins/raw/master/mongoDB/pymongo.pyz" &> /dev/null
-if [[ $? -ne 0 ]]; then
+wget -q "https://github.com/site24x7/plugins/raw/mani/mongoDB/pymongo.pyz" &> /dev/null
+if [ $? -ne 0 ]; then
     echo -e "${RED} Download failed. Process exited.${RESET}"
     exit 1
 fi
@@ -82,7 +82,7 @@ echo -e "${GREEN}Download completed.${RESET}"
 
 
 python3 Site24x7MongoDBPluginInstallerAddOn.py
-if [[ $? -ne 0 ]]; then
+if [ $? -ne 0 ]; then
     echo -e "${RED}Error occured. Execution failed. Process exited.${RESET}"
     exit 1
 fi
