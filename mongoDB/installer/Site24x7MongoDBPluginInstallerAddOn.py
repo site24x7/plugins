@@ -447,8 +447,6 @@ def initiate(plugin_name, plugin_url):
             if not username:
                 print(colors.RED + "------------------------------ Error occured. A monitoring user is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
                 return
-    # else:
-    #     return
 
     args['username']=username
 
