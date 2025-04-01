@@ -103,7 +103,7 @@ if __name__=="__main__":
     
     hostname="127.0.0.1"
     port="9010"
-    server_name="AdminServer"
+    server_name="Server_Name"
     username=None
     password=None
 
