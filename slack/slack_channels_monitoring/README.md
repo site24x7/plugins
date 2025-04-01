@@ -62,7 +62,7 @@
 - Edit the "slack_channels_monitoring.cfg" file and add the configuration details to it.
 
  		[display_name]
-		oauth_token = xoxp-1115218301570-1145293321776-1107217637223-sew12saq185c59db496cad2b6655868ac4e
+		oauth_token = "Your_OAuth_Token"
 		channel_name = agent_team
 		channel_type = private
 		

@@ -5,13 +5,13 @@
    vars:
       mongoDB_host: "mongoDB_host"
       mongoDB_port: "27017"
-      mongoDB_username: "test_user"                             # mongoDB username    [Enter '"None"' in case of no username]
-      mongoDB_password: "test@123"                              # mongoDB password    [Enter '"None"' in case of no password]
+      mongoDB_username: "None"                             # mongoDB username    [Enter '"None"' in case of no username]
+      mongoDB_password: "None"                              # mongoDB password    [Enter '"None"' in case of no password]
       mongoDB_dbname: "mydatabase"
       mongoDB_authdb: "admin"                                   # mongoDB authentication database
       mongoDB_tls: True                                         # mongoDB TLS option (True/False)    
-      mongoDB_tlscertificatekeyfile: "/ssl/mongoDB.pem"         # mongoDB TLS certificate path       [Enter '"None"' in case of no TLS]
-      mongoDB_tlscertificatekeyfilepassword: "tls_pa$$"         # mongoDB TLS certificate password   [Enter '"None"' in case of no TLS]
+      mongoDB_tlscertificatekeyfile: "file.pem"         # mongoDB TLS certificate path       [Enter '"None"' in case of no TLS]
+      mongoDB_tlscertificatekeyfilepassword: "password"         # mongoDB TLS certificate password   [Enter '"None"' in case of no TLS]
       mongoDB_tlsallowinvalidcertificates: False                # mongoDB invalid TLS certificate (True/False)  
 
 

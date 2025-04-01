@@ -5,8 +5,8 @@ import time
 
 DRIVER='FreeTDS'
 SERVER='localhost'
-USER='S24X7PLUGIN'
-PASSWORD='S24x7PLUGIN'
+USER='username'
+PASSWORD='password'
 DATABASE='TESTDB'
 PORT=1433
 

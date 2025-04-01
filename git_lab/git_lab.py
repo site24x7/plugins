@@ -113,4 +113,4 @@ if __name__ == "__main__":
 
     git_lab = GitLab(args)
     git_lab.trigger_action()
-    print(json.dumps(git_lab.result_json, indent=4 sort_keys=True))
+    print(json.dumps(git_lab.result_json, indent=4, sort_keys=True))
