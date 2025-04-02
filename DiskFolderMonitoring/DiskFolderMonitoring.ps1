@@ -1,17 +1,27 @@
-﻿param(
-    [string]$path = "C:\Users\Administrator\Documents\"
+param(
+    [string]$path = "C:\Users\Site24x7Plugins\",
+    [int]$timedifference = 5
 )
 
-$version = 1 #Mandatory - If any changes in the plugin metrics, increment the plugin version here. 
+$mainJson = @{}
 
-$timedif = 5 # time intrval 
+$version = 1
 
-#$displayname = "" #OPTIONAL - Display name to be displayed in Site24x7 client 
-$heartbeat = "true" #Mandatory - Setting this to true will alert you when there is a communication problem while posting plugin data to server
+$timedif = $timedifference
 
-Function Get-Data() #The Get-Data method contains Sample data. User can enhance the code to fetch Original data 
+$heartbeat = "true" 
+
+$folderName = (Split-Path -Path $path -Leaf)
+$displayname = "$folderName-FolderMonitoring"
+
+if (-not (Test-Path -Path $path -PathType Container)) {
+    $mainJson = @{
+        "msg" = "Unable to find the provided folder, please check the folder path."
+    }
+}
+
+Function Get-Data()
 {
-#It is enough to edit this function and return the metrics required in $data
     $s = (Get-ChildItem -Force -Path $path -Recurse -ErrorAction SilentlyContinue)
 
     $timedifneg = -1 * $timedif
@@ -24,6 +34,7 @@ Function Get-Data() #The Get-Data method contains Sample data. User can enhance 
     $dirCreated = 0
     $filemodify = 0
     $dirmodify = 0
+    $changesOccurred = $false
     foreach($file in $s)
     {
 
@@ -39,10 +50,12 @@ Function Get-Data() #The Get-Data method contains Sample data. User can enhance 
                 if($file.CreationTime -gt $time)
                 {
                     $dirCreated++
+                    $changesOccurred = $true
                 }
                 elseif($file.LastWriteTime -gt $time)
                 {
                     $dirmodify++
+                    $changesOccurred = $true
                 }
                 $dirCount++
             }
@@ -60,10 +73,12 @@ Function Get-Data() #The Get-Data method contains Sample data. User can enhance 
                 if($file.CreationTime -gt $time)
                 {
                     $fileCreated++
+                    $changesOccurred = $true
                 }
                 elseif($file.LastWriteTime -gt $time)
                 {
                     $filemodify++
+                    $changesOccurred = $true
                 }
                 $filecount++
                 $size+=$file.Length
@@ -71,33 +86,36 @@ Function Get-Data() #The Get-Data method contains Sample data. User can enhance 
         } 
     }
 
-    $fileCreatedstr = "Files Created In "+ $timedif + " mins"
-    $dirCreatedstr = "Folders Created In "+ $timedif + " mins"
-    $filemodifystr = "Files Modified In "+ $timedif + " mins"
-    $dirmodifystr = "Folders Modified In "+ $timedif + " mins"
+    $formattedSize = "{0:F4}" -f ($size / 1GB)
+
+    $idleTime = if ($changesOccurred) { 0 } else { 1 }
+    $fileCreatedstr = "Files Created"
+    $dirCreatedstr = "Folders Created"
+    $filemodifystr = "Files Modified"
+    $dirmodifystr = "Folders Modified"
     $data = @{}
-    $data.Add("Size", $size/1GB)
+    $data.Add("Folder Size", $formattedSize)
     $data.Add("Files Count", $filecount)
     $data.Add("Folders Count", $dirCount)
-    $data.Add($fileCreatedstr, $dirCount)
+    $data.Add($fileCreatedstr, $fileCreated)
     $data.Add($dirCreatedstr, $dirCreated)
     $data.Add($filemodifystr, $filemodify)
     $data.Add($dirmodifystr, $dirmodify)
+    $data.Add("Is Folder Idle", $idleTime)
+    $data.Add("Tracking Folder", $path)
     return $data
 }
-Function Set-Units() #OPTIONAL - These units will be displayed in the Dashboard
+Function Set-Units() 
 {
     $units = @{}
-    $units.Add("Size", "GB")
+    $units.Add("Folder Size", "GB")
     return $units
 }
 
-$mainJson = @{}
 $mainJson.Add("plugin_version", $version)
 $mainJson.Add("heartbeat_required", $heartbeat)
-$mainJson.Add("displayname", $displayname) #Comment this if you don't display name
+$mainJson.Add("displayname", $displayname) 
 $mainJson.Add("data", (Get-Data))
-$mainJson.Add("units", (Set-Units)) #Comment this if you don't have Units
+$mainJson.Add("units", (Set-Units))
 
 return $mainJson | ConvertTo-Json
-
