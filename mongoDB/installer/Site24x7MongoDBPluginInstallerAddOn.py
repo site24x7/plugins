@@ -42,11 +42,14 @@ def delete_folder(folder_name):
 
 def move_folder(source, destination):
     try:
-        os.rename(source, destination)
+        if os.path.exists(destination):
+            shutil.rmtree(destination)  
+        os.rename(source, destination) 
     except Exception as e:
-        print(colors.RED +"    "+str(e)+colors.RESET)
+        print(colors.RED + "    " + str(e) + colors.RESET)
         return False
     return True
+
 def remove_section_from_config(config_file, section_name):
     config = configparser.ConfigParser()
     config.read(config_file)
@@ -77,15 +80,8 @@ def move_plugin(plugin_name, plugins_temp_path, agent_plugin_path):
             print(f"    {agent_plugin_path} Agent Plugins Directory not Present")
             return False
         plugin_dir=agent_plugin_path+plugin_name+"/"
-        if not check_directory(plugin_dir):
-
-            if not move_folder(plugins_temp_path+plugin_name, plugin_dir): 
+        if not move_folder(plugins_temp_path+plugin_name, plugin_dir): 
                 return False
-        else:
-            check_parse(plugin_name, plugin_dir, plugins_temp_path)
-
-            if not multi_config(plugins_temp_path+plugin_name+"/"+plugin_name+".cfg",plugin_dir+plugin_name+".cfg"):
-                 return False
 
     except Exception as e:
         print(colors.RED +"    "+str(e)+colors.RESET)
@@ -95,16 +91,31 @@ def move_plugin(plugin_name, plugins_temp_path, agent_plugin_path):
 
 def plugin_config_setter(plugin_name, plugins_temp_path, arguments, display_name):
     try:
-        full_path=plugins_temp_path+plugin_name+"/"
-        config_file_path=full_path+plugin_name+".cfg"
+        full_path = plugins_temp_path + plugin_name + "/"
+        config_file_path = full_path + plugin_name + ".cfg"
 
-        arguments='\n'.join(arguments.replace("--","").split())
-        with open(config_file_path, "w") as f:
-            f.write("[{display_name}]\n".format(display_name=display_name)+arguments)
+        args_dict = dict(arg.split("=") for arg in arguments.split("--") if "=" in arg)
 
+        config_content = f"""
+[{"mongodb_"+args_dict.get('dbname', '').strip()}]
+host = {args_dict.get('host', '')}
+port = {args_dict.get('port', '')}
+username = {args_dict.get('username', '')}
+password = {args_dict.get('password', '')}
+dbname = {args_dict.get('dbname', '')}
+authdb = {args_dict.get('authdb', '')}
+tls = {args_dict.get('tls', '')}
+tlscertificatekeyfile = {args_dict.get('tlscertificatekeyfile', '')}
+tlscertificatekeyfilepassword = {args_dict.get('tlscertificatekeyfilepassword', '')}
+tlsallowinvalidcertificates = {args_dict.get('tlsallowinvalidcertificates', '')}
+
+"""
+
+        with open(config_file_path, "a") as f:
+            f.write(config_content)
 
     except Exception as e:
-        print(colors.RED +"    "+str(e)+colors.RESET)
+        print(colors.RED + "    " + str(e) + colors.RESET)
         return False
     return True
 
@@ -186,11 +197,14 @@ def check_directory(path):
 
 def grant_previlege(args, db):
     try:
-        roles = ["clusterMonitor"]  # Adjust roles as needed
+        roles = [
+            {"role": "clusterMonitor", "db": "admin"},
+            {"role": "readAnyDatabase", "db": "admin"}
+        ]
         db.command("grantRolesToUser", args["username"], roles=roles)        
         return True
     except Exception as e:
-        print(colors.RED +"    "+str(e)+colors.RESET)
+        print(colors.RED + "    " + str(e) + colors.RESET)
         return False
 
 
@@ -200,7 +214,8 @@ def create_user(args, db):
             {
                 "role": "clusterMonitor",
                 "db": "admin" 
-            }
+            },
+            {"role": "readAnyDatabase", "db": "admin"}
         ]
         db.command("createUser", args["username"], pwd=args["password"], roles=roles)
         return True
@@ -320,14 +335,30 @@ def initiate(plugin_name, plugin_url):
         print()
         print(colors.RED + "------------------------------ Error occured. Port is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
         return
+    
+    print(colors.BLUE +"""    Multiple databases can be configured in the plugin configuration file. \n    Provide the database names to be used in the plugin configuration file.
+          """+ colors.RESET)
 
 
-    parameter="database name"
-    dbname=input_validate(parameter, default="admin")
-    if not port:
-        print()
-        print(colors.RED + "------------------------------ Error occured. Database is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
-        return
+    dbnames = [] 
+
+    while True:
+        parameter="database name"
+        dbname=input_validate(parameter, default="admin")
+        
+        if not dbname:
+            print()
+            print(colors.RED + "------------------------------ Error occured. Database is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
+            return
+        
+        dbnames.append(dbname)  
+
+        
+        user_input = input("Do you want to add another database? (y/n): ").strip().lower()
+        if user_input != 'y':
+            break
+
+    print(f"Databases to be used: {dbnames}")
 
     parameter="authentication database (authDB)"
     authdb=input_validate(parameter, default="admin")
@@ -336,7 +367,7 @@ def initiate(plugin_name, plugin_url):
         print(colors.RED + "------------------------------ Error occured. AuthDB is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
         return
 
-    print(colors.BLUE +"""    A new monitoring user with \"clusterMonitor\" privileges is required to monitor MongoDB instance.\n    Provide the admin username and password of the MongoDB instance to proceed with creating a monitoring user.\n    Note: The admin username and password you provide will not be stored in any of the Site24x7 databases."""+ colors.RESET)
+    print(colors.BLUE +"""    A new monitoring user with \"clusterMonitor and readAnyDatabase\" privileges is required to monitor MongoDB instance.\n    Provide the admin username and password of the MongoDB instance to proceed with creating a monitoring user.\n    Note: The admin username and password you provide will not be stored in any of the Site24x7 databases."""+ colors.RESET)
 
     admin_username=input_validate("admin username")
     if not admin_username:
@@ -395,8 +426,8 @@ def initiate(plugin_name, plugin_url):
         tlscertificatekeyfilepassword=None
         tlsallowinvalidcertificates=None
 
-
-    args={"host":host,"port":port,"dbname":dbname,"authdb":authdb,"admin_username":admin_username,"admin_password":admin_password, "tls":tls, "tlscertificatekeyfile":tlscertificatekeyfile, "tlscertificatekeyfilepassword":tlscertificatekeyfilepassword, "tlsallowinvalidcertificates":tlsallowinvalidcertificates}
+    
+    args={"host":host,"port":port,"dbname":dbnames,"authdb":authdb,"admin_username":admin_username,"admin_password":admin_password, "tls":tls, "tlscertificatekeyfile":tlscertificatekeyfile, "tlscertificatekeyfilepassword":tlscertificatekeyfilepassword, "tlsallowinvalidcertificates":tlsallowinvalidcertificates}
     
     connection=mongo_connect(args)
     if not connection:
@@ -407,28 +438,20 @@ def initiate(plugin_name, plugin_url):
     print(colors.GREEN + "    Connection to the MongoDB instance established successfully."+ colors.RESET)
 
     print()
-    print(colors.BLUE + """    A user with default username "site24x7" will be created with \"clusterMonitor\" privileges.\n    Note: The credentials of the created user will be securely encrypted in the agent and will not be stored in any of the Site24x7 databases.
-          """+ colors.RESET)
 
     print("")
-    print("    Select \"y\" to proceed with default username \"site24x7\". Select \"n\" to create a new username. ")
-    user_option=input("    Do you want to proceed with default username \"site24x7\"? (y/n)")    
-    if user_option=="Y" or user_option =="y":
-        username="site24x7"
-    elif user_option=="N" or user_option=="n":
-        username=input("    Enter the username to be created with \"clusterMonitor\" privileges: ")
-        if not username:
-                username=input("    Enter the username to be created with \"clusterMonitor\" privileges: ")
-                if not username:
-                    print(colors.RED + "------------------------------ Error occured. A monitoring user is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
-                    return
-    else:
-        return
+    
+    username=input("    Enter the username to be created with \"clusterMonitor and readAnyDatabase\" privileges: ")
+    if not username:
+            username=input("    Enter the username to be created with \"clusterMonitor and readAnyDatabase\" privileges: ")
+            if not username:
+                print(colors.RED + "------------------------------ Error occured. A monitoring user is required to install the plugin. Process exited.  ------------------------------" + colors.RESET)
+                return
 
     args['username']=username
 
     try:
-        db=connection[dbname]
+        db=connection[authdb]
     except Exception as e:
         print(str(e))
         print(colors.RED + "------------------------------ Error occured. Process exited.  ------------------------------" + colors.RESET)
@@ -496,22 +519,30 @@ def initiate(plugin_name, plugin_url):
         return 
     print("")
 
-    arguments="--username="+args["username"]+" --password="+args["password"]+" --host="+args["host"]+" --port="+args["port"]+ " --dbname="+args["dbname"] +" --authdb="+args["authdb"]
 
+    full_path = plugins_temp_path + plugin_name + "/"
+    config_file_path = full_path + plugin_name + ".cfg"
 
-    cmd="{plugins_temp_path}/{plugin_name}/{plugin_name}.py".format(plugins_temp_path=plugins_temp_path, plugin_name=plugin_name)+ " "+arguments
-    result=execute_command(cmd, need_out=True)
-    if not plugin_validator(result):
+    with open(config_file_path, 'w') as f:
+        f.truncate(0)
+
+    for db in dbnames:
+
+        arguments="--username="+args["username"]+" --password="+args["password"]+" --host="+args["host"]+" --port="+args["port"]+ " --dbname="+db +" --authdb="+args["authdb"]+" --tls="+str(args["tls"])+" --tlscertificatekeyfile="+str(args["tlscertificatekeyfile"])+" --tlscertificatekeyfilepassword="+str(args["tlscertificatekeyfilepassword"])+" --tlsallowinvalidcertificates="+str(args["tlsallowinvalidcertificates"])
+
+        cmd="{plugins_temp_path}/{plugin_name}/{plugin_name}.py".format(plugins_temp_path=plugins_temp_path, plugin_name=plugin_name)+ " "+arguments
+        result=execute_command(cmd, need_out=True)
+        if not plugin_validator(result):
+            print("")
+            print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
+            return
         print("")
-        print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
-        return
-    print("")
 
-    print("    Adding the plugin configurations in the mongoDB.cfg file.")
-    if not plugin_config_setter(plugin_name, plugins_temp_path, arguments, display_name=args["host"]):
-        print("")
-        print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
-        return 
+        print("    Adding the plugin configurations in the mongoDB.cfg file.")
+        if not plugin_config_setter(plugin_name, plugins_temp_path, arguments, display_name=args["host"]):
+            print("")
+            print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
+            return 
     print("    Plugin configurations added successfully.")
     print()
 
