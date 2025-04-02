@@ -1,6 +1,6 @@
 param(
-    [string]$path = "C:\Users\Administrator\Documents\",
-    [int]$timedifference = 2
+    [string]$path = "C:\Users\Site24x7Plugins\",
+    [int]$timedifference = 5
 )
 
 $mainJson = @{}
