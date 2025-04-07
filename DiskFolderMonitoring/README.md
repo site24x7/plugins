@@ -43,7 +43,7 @@ timedifference=5
 ```
 powershell .\DiskFolderMonitoring.ps1 -path "C:\Users\Site24x7Plugins\" -timedifference "5"
 ```
-Replace `C:\Users\Site24x7Plugins\` and `2` with your specific folder path and time difference.
+Replace `C:\Users\Site24x7Plugins\` and `5` with your specific folder path and time difference.
 
 5. To monitor multiple tasks, modify the .cfg file accordingly. 
 
