@@ -36,12 +36,12 @@ Download and install the latest version of the [Site24x7 Windows agent](https://
 ```
 [DiskFolderMonitoring]
 path="C:\Users\Site24x7Plugins\"
-timedifference=2
+timedifference=5
 ```
 
 4. To manually verify if the plugin is functioning correctly, navigate to the `DiskFolderMonitoring` folder in terminal (Command Prompt) and run the following command:
 ```
-powershell .\DiskFolderMonitoring.ps1 -path "C:\Users\Site24x7Plugins\" -timedifference "2"
+powershell .\DiskFolderMonitoring.ps1 -path "C:\Users\Site24x7Plugins\" -timedifference "5"
 ```
 Replace `C:\Users\Site24x7Plugins\` and `2` with your specific folder path and time difference.
 
@@ -52,11 +52,11 @@ Here's an example below:
 ```
 [DiskFolderMonitoring]
 path="C:\Users\Site24x7Plugins\"
-timedifference=2
+timedifference=5
 
 [DiskFolderMonitoring2]
 path="C:\Users\Site24x7Plugins\Folders"
-timedifference=2
+timedifference=5
 ```
 
 6. Further move the folder `DiskFolderMonitoring` into the  Site24x7 Windows Agent plugin folder:
