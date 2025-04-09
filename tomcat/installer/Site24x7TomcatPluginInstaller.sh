@@ -242,12 +242,12 @@ add_conf() {
     output=$(sed -i "/^password*/c\password = \"$password\""  $cfg_file)
     error_handler $? $output
 
-    host=$(echo "$password" | sed 's/\\/\\\\/g')
-    output=$(sed -i "/^password*/c\password = \"$host\""  $cfg_file)
+    host=$(echo "$host" | sed 's/\\/\\\\/g')
+    output=$(sed -i "/^host*/c\host = \"$host\""  $cfg_file)
     error_handler $? $output
 
-    port=$(echo "$password" | sed 's/\\/\\\\/g')
-    output=$(sed -i "/^password*/c\password = \"$port\""  $cfg_file)
+    port=$(echo "$port" | sed 's/\\/\\\\/g')
+    output=$(sed -i "/^port*/c\port = \"$port\""  $cfg_file)
     error_handler $? $output
 }
 
