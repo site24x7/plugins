@@ -139,3 +139,7 @@ The agent will automatically execute the plugin within five minutes and user can
 | Threads Waiting             | Number of threads in the 'waiting' state.                      |
 | Threads Timed Waiting       | Number of threads in the 'timed waiting' state.                |
 | Threads Terminated          | Number of threads that have been terminated.                   |
+
+![image](https://github.com/user-attachments/assets/781d1808-2f19-4bb2-90ae-dde0a505c925)
+
+![image](https://github.com/user-attachments/assets/8f46af69-cdda-4cbe-a488-b6c14e7c055c)
