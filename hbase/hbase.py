@@ -65,6 +65,8 @@ class HBaseMonitor:
 
     def metric_collector(self):
         try:
+            def to_mb(value):
+                return round(value / (1024 * 1024), 2)
             url = f"http://{self.host}:{self.port}/jmx"
             response = requests.get(url, timeout=10)
             response.raise_for_status()
@@ -72,14 +74,13 @@ class HBaseMonitor:
             beans = data.get("beans", [])
 
             for bean in beans:
-                if bean.get("name") == "Hadoop:service=HBase,name=Master,sub=Balancer":
+                name = bean.get("name")
+                if name == "Hadoop:service=HBase,name=Master,sub=Balancer":
                     hostname = bean.get("tag.Hostname")
                     if hostname:
                         self.maindata["Hostname"] = hostname
-                    break
-
-            for bean in beans:
-                if bean.get("name") == "Hadoop:service=HBase,name=Master,sub=AssignmentManager":
+                    
+                elif name == "Hadoop:service=HBase,name=Master,sub=AssignmentManager":
                     self.maindata["Rit Oldest Age"] = bean.get("ritOldestAge", 0)
                     self.maindata["Rit Count"] = bean.get("ritCount", 0)
                     self.maindata["Rit Count Over Threshold"] = bean.get("ritCountOverThreshold", 0)
@@ -87,10 +88,8 @@ class HBaseMonitor:
                     self.maindata["Rit Duration Max"] = bean.get("RitDuration_max", 0)
                     self.maindata["Rit Duration Mean"] = bean.get("RitDuration_mean", 0)
                     self.maindata["Rit Duration Median"] = bean.get("RitDuration_median", 0)
-                    break
 
-            for bean in beans:
-                if bean.get("name") == "Hadoop:service=HBase,name=Master,sub=IPC":
+                elif name == "Hadoop:service=HBase,name=Master,sub=IPC":
                     self.maindata["IPC Queue Size"] = bean.get("queueSize", 0)
                     self.maindata["IPC Calls In General Queue"] = bean.get("numCallsInGeneralQueue", 0)
                     self.maindata["IPC Calls In Replication Queue"] = bean.get("numCallsInReplicationQueue", 0)
@@ -101,20 +100,16 @@ class HBaseMonitor:
                     self.maindata["IPC Total Call Time Mean"] = bean.get("TotalCallTime_mean", 0)
                     self.maindata["IPC Total Call Time Median"] = bean.get("TotalCallTime_median", 0)
                     self.maindata["IPC Total Call Time 99th Percentile"] = bean.get("TotalCallTime_99th_percentile", 0)
-                    break
 
-            for bean in beans:
-                if bean.get("name") == "Hadoop:service=HBase,name=Master,sub=Server":
+                elif name == "Hadoop:service=HBase,name=Master,sub=Server":
                     self.maindata["Regions Servers"] = bean.get("numRegionServers", 0)
                     self.maindata["Dead Region Servers"] = bean.get("numDeadRegionServers", 0)
                     self.maindata["Cluster Requests"] = bean.get("clusterRequests", 0)
                     self.maindata["Merge Plan Count"] = bean.get("mergePlanCount", 0)
                     self.maindata["Split Plan Count"] = bean.get("splitPlanCount", 0)
                     self.maindata["Average Load"] = bean.get("averageLoad", 0)
-                    break
 
-            for bean in beans:
-                if bean.get("name") == "Hadoop:service=HBase,name=JvmMetrics":
+                elif name == "Hadoop:service=HBase,name=JvmMetrics":
                     self.maindata["Mem Non Heap Used"] = bean.get("MemNonHeapUsedM", 0)
                     self.maindata["Mem Non Heap Committed"] = bean.get("MemNonHeapCommittedM", 0)
                     self.maindata["Mem Non Heap Max"] = bean.get("MemNonHeapMaxM", 0)
@@ -134,16 +129,14 @@ class HBaseMonitor:
                     self.maindata["Threads Waiting"] = bean.get("ThreadsWaiting", 0)
                     self.maindata["Threads Timed Waiting"] = bean.get("ThreadsTimedWaiting", 0)
                     self.maindata["Threads Terminated"] = bean.get("ThreadsTerminated", 0)
-                    break
-            
-            for bean in beans:
-                if bean.get("name") == "java.lang:type=OperatingSystem":
-                    self.maindata["Free Physical Memory Size"] = round(bean.get("FreePhysicalMemorySize", 0) / (1024 * 1024), 2)
-                    self.maindata["Free Swap Space Size"] = round(bean.get("FreeSwapSpaceSize", 0) / (1024 * 1024), 2)
-                    self.maindata["Total Physical Memory Size"] = round(bean.get("TotalPhysicalMemorySize", 0) / (1024 * 1024), 2)
-                    self.maindata["Total Swap Space Size"] = round(bean.get("TotalSwapSpaceSize", 0) / (1024 * 1024), 2)
-                    self.maindata["Committed Virtual Memory Size"] = round(bean.get("CommittedVirtualMemorySize", 0) / (1024 * 1024), 2)
-                    break
+
+                elif name == "java.lang:type=OperatingSystem":
+                    self.maindata["Free Physical Memory Size"] = to_mb(bean.get("FreePhysicalMemorySize", 0))
+                    self.maindata["Free Swap Space Size"] = to_mb(bean.get("FreeSwapSpaceSize", 0))
+                    self.maindata["Total Physical Memory Size"] = to_mb(bean.get("TotalPhysicalMemorySize", 0))
+                    self.maindata["Total Swap Space Size"] = to_mb(bean.get("TotalSwapSpaceSize", 0))
+                    self.maindata["Committed Virtual Memory Size"] = to_mb(bean.get("CommittedVirtualMemorySize", 0))
+
 
 
             self.maindata["tabs"] = {
