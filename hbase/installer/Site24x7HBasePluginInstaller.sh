@@ -1,6 +1,6 @@
 #!/bin/bash
 
-plugin=tomcat
+plugin=hbase
 agent_dir=/opt/site24x7/monagent
 temp_dir=$agent_dir/temp/plugins/$plugin
 py_file="$temp_dir/$plugin.py"
@@ -10,11 +10,9 @@ plugin_dir=$agent_dir/plugins/
 flag=0
 
 func_exit() {
-    tput sgr0 # Reset Terminal Colors
-    exit 0 # Cleanly exit script
+    tput sgr0 
+    exit 0 
 }
-
-#Trap for ctr+c(SIGINT) and ctrl+z(SIGTSTP)
 
 trap func_exit SIGINT SIGTSTP
 
@@ -29,7 +27,6 @@ error_handler() {
 }
 
 agent_check(){
-# Check if the service exists
     if  ! [ -d $agent_dir"/bin"  ]; then
       agent_path_change=true
       output=$(ls $agent_dir )
@@ -149,9 +146,7 @@ get_plugin(){
 
 get_plugin_data() {
     default_host="localhost"
-    default_port="8080"
-    default_username="Admin"
-    default_password="Admin"
+    default_port="16010"
     tput setaf 3
     echo
     echo "------------Provide connection details to connect to Tomcat------------"
@@ -173,14 +168,6 @@ get_plugin_data() {
     if [ -z $port ] ; then
         port=$default_port
     fi
-    read -r -p "  Enter the User Name (default: $default_username): " username
-    if [ -z $username ] ; then
-        username=$default_username
-    fi
-    read -r -sp "  Enter the Password (default: $default_password): " password
-        if [ -z $password ] ; then
-        password=$default_password
-    fi
     tput sgr0
     echo
 }
@@ -188,7 +175,7 @@ get_plugin_data() {
 
 check_plugin_execution() {
 
-    output=$($python $py_file --host "$host" --port "$port" --username "$username" --password "$password")
+    output=$($python $py_file --host "$host" --port "$port")
     if  [ $? -ne 0 ]; then
         tput setaf 1
         echo "------------Error occured. Incorrect credentials provided.------------"
@@ -205,16 +192,13 @@ check_plugin_execution() {
         echo "------------Error occured. Incorrect credentials provided.------------"
         echo $output
         echo
-        echo "Status and Error Message:"
-        echo $(grep -E '"status": 0' <<< "$output" )
-        echo $(grep -E '"msg": *' <<< "$output" )
         tput sgr0
         flag=$((flag + 1))
 
-    elif ! echo "$output" | grep -qE "\"Bytes Received\":|\"Bytes Sent\":"; then
+    elif ! echo "$output" | grep -qE "\"Rit Oldest Age\":|\"Rit Count\":"; then
         tput setaf 3
         echo "The output does not contain metrics. Check if you have provided the correct endpoint for the status URL."
-        echo "An example of a status URL: http://localhost:8080/manager"
+        echo "An example of a status URL: http://localhost:16010/jmx"
         error_handler 1 "$output"
         flag=$((flag + 1))
 
@@ -234,21 +218,14 @@ check_plugin_execution() {
 
 add_conf() {
     echo
-    username=$(echo "$username" | sed 's/\\/\\\\/g')
-    output=$(sed -i "/^username*/c\username = \"$username\"" $cfg_file)
-    error_handler $? $output
-
-    password=$(echo "$password" | sed 's/\\/\\\\/g')
-    output=$(sed -i "/^password*/c\password = \"$password\""  $cfg_file)
-    error_handler $? $output
 
     host=$(echo "$host" | sed 's/\\/\\\\/g')
     output=$(sed -i "/^host*/c\host = \"$host\""  $cfg_file)
-    error_handler $? $output
+    error_handler $? "$output"
 
     port=$(echo "$port" | sed 's/\\/\\\\/g')
     output=$(sed -i "/^port*/c\port = \"$port\""  $cfg_file)
-    error_handler $? $output
+    error_handler $? "$output"
 }
 
 python_path_update() {

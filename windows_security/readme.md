@@ -1,4 +1,4 @@
-# Plugin for monitoring Windows security
+# Windows security monitoring
 
 This plugin monitors key Windows security activities such as failed login attempts, antivirus status, malware detections, account lockouts, and more. It helps in tracking and ensuring the health of your system's security posture.
 
@@ -17,7 +17,12 @@ Download and install the latest version of the [Site24x7 Windows agent](https://
     C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
     ```
 The agent will automatically execute the plugin within few minutes and user can see the plugin monitor under Site24x7 -> Plugins -> Plugin Integrations.
-  
+
+## **Log Tracking for Windows Security Events**  
+Once the plugin monitor is successfully registered in Site24x7, you can also track the **Windows Security Event Logs** directly within the **Applog** tab under the log name **WinSecurityLog**.  
+
+This feature automatically collects and displays security-related logs, providing insights into critical events such as failed login attempts, malware detections, and other security activities.  
+
 ## Supported Metrics
 
 Track the following metrics with the plugin:
@@ -33,12 +38,6 @@ Track the following metrics with the plugin:
 | `Malware Remediation Failed`  | Monitors the number of unsuccessful attempts to remove or neutralize identified malware.        |
 | `Threat Detected Quarantined` | Represents the number of threats that were successfully identified and quarantined by security software.|
 | `Malware Action Failed`       | Tracks the number of failed actions attempted by security software to respond to malware threats.                      |
-
-
-## **Log Tracking for Windows Security Events**  
-Once the plugin monitor is successfully registered in Site24x7, you can also track the **Windows Security Event Logs** directly within the **Applog** tab under the log name **WinSecurityLog**.  
-
-This feature automatically collects and displays security-related logs, providing insights into critical events such as failed login attempts, malware detections, and other security activities.  
 
 ![image](https://github.com/user-attachments/assets/745889f9-3418-4277-ac1f-2fd6ca0a2ea6)
 
