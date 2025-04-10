@@ -120,8 +120,8 @@ install (){
             rm $cfg_file
         fi
 
-        download_files https://raw.githubusercontent.com/site24x7/plugins/mani/$plugin/$plugin.cfg
-        download_files https://raw.githubusercontent.com/site24x7/plugins/mani/$plugin/$plugin.py
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.cfg
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.py
 
     else
         output=$(mkdir -p $temp_dir)
@@ -133,8 +133,8 @@ install (){
             exit
         fi
 
-        download_files https://raw.githubusercontent.com/site24x7/plugins/mani/$plugin/$plugin.cfg
-        download_files https://raw.githubusercontent.com/site24x7/plugins/mani/$plugin/$plugin.py
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.cfg
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.py
         
     fi
 
