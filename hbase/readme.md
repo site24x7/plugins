@@ -42,8 +42,9 @@ python hbase.py --host "hostname" --port "port"
 
 ```bash
 [HBase]
-host = "localhost"
-port = "16010"
+host="localhost"
+port="16010"
+log_file_path= "/var/log/*hbase*/*.log , /opt/*hbase*/logs/*.log*, /*hbase*/*log*/*.log, C:\\*hbase*\\logs\\*.log*, C:\\Program Files\\*hbase*\\logs\\*.log*"
 ```
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
@@ -83,6 +84,14 @@ The agent will automatically execute the plugin within five minutes and user can
 | Total Physical Memory Size        | Total physical memory of the system.                           |
 | Total Swap Space Size             | Total swap space of the system.                                |
 | Committed Virtual Memory Size     | Amount of committed virtual memory.                            |
+| VM Name                     | Name of the Java Virtual Machine implementation.               |
+| VM Vendor                   | Vendor of the Java Virtual Machine.                            |
+| VM Version                  | Version of the Java Virtual Machine.                           |
+| Boot Class Path             | Boot class path used by the JVM.                               |
+| Library Path                | Native library path used by the JVM.                           |
+| Spec Name                   | Name of the JVM specification.                                 |
+| Spec Vendor                 | Vendor of the JVM specification.                               |
+| Spec Version                | Version of the JVM specification.       
 
 ## Assignment Manager
 
@@ -110,7 +119,11 @@ The agent will automatically execute the plugin within five minutes and user can
 | IPC Total Call Time Mean             | Mean total call time for IPC requests.                         |
 | IPC Total Call Time Median           | Median total call time for IPC requests.                       |
 | IPC Total Call Time 99th Percentile  | 99th percentile of total call time for IPC requests.           |
-
+| Sent Data | Total data sent (bytes). |
+| Received Data | Total data received (bytes). |
+| Out Of Order Scanner Exception | Count of out-of-order scanner exceptions. |
+| Unknown Scanner Exception | Count of unknown scanner exceptions. |
+| Region Too Busy Exception | Count of region-too-busy exceptions. |
 
 ## JVM
 
@@ -140,6 +153,22 @@ The agent will automatically execute the plugin within five minutes and user can
 | Threads Timed Waiting       | Number of threads in the 'timed waiting' state.                |
 | Threads Terminated          | Number of threads that have been terminated.                   |
 
+### HLog
+
+| **Metric Name** | **Description** |
+|------------------|-----------------|
+| HLog Split Time Mean | Mean time to split HLog. |
+| HLog Split Time Min | Minimum time to split HLog. |
+| HLog Split Time Max | Maximum time to split HLog. |
+| HLog Split Time Num Operations | Number of HLog split time operations. |
+| HLog Split Size Mean | Mean size of HLog splits. |
+| HLog Split Size Min | Minimum size of HLog splits.|
+| HLog Split Size Max | Maximum size of HLog splits. |
+| HLog Split Size Num Operations | Number of HLog split size operations. |
+
 ![image](https://github.com/user-attachments/assets/781d1808-2f19-4bb2-90ae-dde0a505c925)
 
 ![image](https://github.com/user-attachments/assets/8f46af69-cdda-4cbe-a488-b6c14e7c055c)
+
+## HBase Logs
+![image](https://github.com/user-attachments/assets/2022bb8c-b12c-4939-910d-6e3c4e1bcf18)
