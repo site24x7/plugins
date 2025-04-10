@@ -50,6 +50,19 @@ METRICS_UNITS = {
     "Total Physical Memory Size": "MB",
     "Total Swap Space Size": "MB",
     "Committed Virtual Memory Size": "MB",
+    "Sent Data": "bytes",
+    "Received Data": "bytes",
+    "Out Of Order Scanner Exception": "count",
+    "Unknown Scanner Exception": "count",
+    "Region Too Busy Exception": "count",
+    "HLog Split Time Mean": "ms",
+    "HLog Split Time Min": "ms",
+    "HLog Split Time Max": "ms",
+    "HLog Split Time Num Operations": "count",
+    "HLog Split Size Mean": "bytes",
+    "HLog Split Size Min": "bytes",
+    "HLog Split Size Max": "bytes",
+    "HLog Split Size Num Operations": "count"
 }
 
 class HBaseMonitor:
@@ -62,13 +75,14 @@ class HBaseMonitor:
         }
         self.host = args.host
         self.port = args.port
+        self.log_file_path = args.log_file_path
 
     def metric_collector(self):
         try:
             def to_mb(value):
                 return round(value / (1024 * 1024), 2)
             url = f"http://{self.host}:{self.port}/jmx"
-            response = requests.get(url, timeout=10)
+            response = requests.get(url)
             response.raise_for_status()
             data = response.json()
             beans = data.get("beans", [])
@@ -100,6 +114,12 @@ class HBaseMonitor:
                     self.maindata["IPC Total Call Time Mean"] = bean.get("TotalCallTime_mean", 0)
                     self.maindata["IPC Total Call Time Median"] = bean.get("TotalCallTime_median", 0)
                     self.maindata["IPC Total Call Time 99th Percentile"] = bean.get("TotalCallTime_99th_percentile", 0)
+                    self.maindata["Sent Data"] = bean.get("sentBytes", 0)
+                    self.maindata["Received Data"] = bean.get("receivedBytes", 0)
+                    self.maindata["Out Of Order Scanner Exception"] = bean.get("exceptions.OutOfOrderScannerNextException", 0)
+                    self.maindata["Unknown Scanner Exception"] = bean.get("exceptions.UnknownScannerException", 0)
+                    self.maindata["Region Too Busy Exception"] = bean.get("exceptions.RegionTooBusyException", 0)
+
 
                 elif name == "Hadoop:service=HBase,name=Master,sub=Server":
                     self.maindata["Regions Servers"] = bean.get("numRegionServers", 0)
@@ -137,6 +157,26 @@ class HBaseMonitor:
                     self.maindata["Total Swap Space Size"] = to_mb(bean.get("TotalSwapSpaceSize", 0))
                     self.maindata["Committed Virtual Memory Size"] = to_mb(bean.get("CommittedVirtualMemorySize", 0))
 
+                elif name == "Hadoop:service=HBase,name=Master,sub=FileSystem":
+                    self.maindata["HLog Split Time Mean"] = bean.get("HlogSplitTime_mean", 0)
+                    self.maindata["HLog Split Time Min"] = bean.get("HlogSplitTime_min", 0)
+                    self.maindata["HLog Split Time Max"] = bean.get("HlogSplitTime_max", 0)
+                    self.maindata["HLog Split Time Num Operations"] = bean.get("HlogSplitTime_num_ops", 0)
+
+                    self.maindata["HLog Split Size Mean"] = bean.get("HlogSplitSize_mean", 0)
+                    self.maindata["HLog Split Size Min"] = bean.get("HlogSplitSize_min", 0)
+                    self.maindata["HLog Split Size Max"] = bean.get("HlogSplitSize_max", 0)
+                    self.maindata["HLog Split Size Num Operations"] = bean.get("HlogSplitSize_num_ops", 0)
+
+                elif name == "java.lang:type=Runtime":
+                    self.maindata["VM Name"] = bean.get("VmName", "")
+                    self.maindata["Boot Class Path"] = bean.get("BootClassPath", "")
+                    self.maindata["VM Vendor"] = bean.get("VmVendor", "")
+                    self.maindata["VM Version"] = bean.get("VmVersion", "")
+                    self.maindata["Library Path"] = bean.get("LibraryPath", "")
+                    self.maindata["Spec Name"] = bean.get("SpecName", "")
+                    self.maindata["Spec Vendor"] = bean.get("SpecVendor", "")
+                    self.maindata["Spec Version"] = bean.get("SpecVersion", "")
 
 
             self.maindata["tabs"] = {
@@ -164,7 +204,12 @@ class HBaseMonitor:
                         "IPC Total Call Time Max",
                         "IPC Total Call Time Mean",
                         "IPC Total Call Time Median",
-                        "IPC Total Call Time 99th Percentile"
+                        "IPC Total Call Time 99th Percentile",
+                        "Sent Data",
+                        "Received Data",
+                        "Out Of Order Scanner Exception",
+                        "Unknown Scanner Exception",
+                        "Region Too Busy Exception"
                     ]
                 },
                 "JVM": {
@@ -195,9 +240,27 @@ class HBaseMonitor:
                         "Threads Timed Waiting",
                         "Threads Terminated"
                     ]
+                },
+                "HLog": {
+                    "order": 5,
+                    "tablist": [
+                        "HLog Split Time Mean",
+                        "HLog Split Time Min",
+                        "HLog Split Time Max",
+                        "HLog Split Time Num Operations",
+                        "HLog Split Size Mean",
+                        "HLog Split Size Min",
+                        "HLog Split Size Max",
+                        "HLog Split Size Num Operations"
+                    ]
                 }
             }
 
+            self.maindata["applog"] = {
+                "logs_enabled": True,
+                "log_type_name":"HBase Logs",
+                "log_file_path": self.log_file_path
+            }
 
             return self.maindata
 
@@ -212,11 +275,21 @@ class HBaseMonitor:
 if __name__ == "__main__":
     import argparse
 
+    default_log_path = (
+        "/var/log/*hbase*/*.log , "
+        "/opt/*hbase*/logs/*.log*, "
+        "/*hbase*/*log*/*.log, "
+        "C:\\*hbase*\\logs\\*.log*, "
+        "C:\\Program Files\\*hbase*\\logs\\*.log*"
+    )
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', help='HBase host', default='localhost')
     parser.add_argument('--port', help='HBase JMX port', default='16010')
+    parser.add_argument('--log_file_path', help='HBase log file path', default=default_log_path)
     args = parser.parse_args()
 
     obj = HBaseMonitor(args)
     result = obj.metric_collector()
     print(json.dumps(result))
+    
