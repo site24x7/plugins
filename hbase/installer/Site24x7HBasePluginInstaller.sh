@@ -120,8 +120,8 @@ install (){
             rm $cfg_file
         fi
 
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.cfg
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.py
+        download_files https://raw.githubusercontent.com/site24x7/plugins/mani/$plugin/$plugin.cfg
+        download_files https://raw.githubusercontent.com/site24x7/plugins/mani/$plugin/$plugin.py
 
     else
         output=$(mkdir -p $temp_dir)
@@ -133,8 +133,8 @@ install (){
             exit
         fi
 
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.cfg
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.py
+        download_files https://raw.githubusercontent.com/site24x7/plugins/mani/$plugin/$plugin.cfg
+        download_files https://raw.githubusercontent.com/site24x7/plugins/mani/$plugin/$plugin.py
         
     fi
 
@@ -147,6 +147,8 @@ get_plugin(){
 get_plugin_data() {
     default_host="localhost"
     default_port="16010"
+    default_log_path="/var/log/*hbase*/*.log , /opt/*hbase*/logs/*.log* , /*hbase*/*log*/*.log"
+
     tput setaf 3
     echo
     echo "------------Provide connection details to connect to Tomcat------------"
@@ -168,6 +170,23 @@ get_plugin_data() {
     if [ -z $port ] ; then
         port=$default_port
     fi
+
+     echo
+    echo "By default, the plugin will look for HBase logs in the following locations:"
+    echo "$default_log_path"
+    echo
+    read -r -p "  If HBase logs are in a different folder, enter the full path (or press Enter to use defaults): " log_path
+    if [ -z "$log_path" ]; then
+        log_path="$default_log_path"
+    else
+        if [[ "$log_path" == */ ]]; then
+            log_path="${log_path}*.log"
+        else
+            log_path="${log_path}/*.log"
+        fi
+    fi
+
+
     tput sgr0
     echo
 }
@@ -226,6 +245,14 @@ add_conf() {
     port=$(echo "$port" | sed 's/\\/\\\\/g')
     output=$(sed -i "/^port*/c\port = \"$port\""  $cfg_file)
     error_handler $? "$output"
+
+    log_path=$(echo "$log_path" | sed 's/\\/\\\\/g')
+    if grep -q "^log_file_path" "$cfg_file"; then
+        sed -i "/^log_file_path*/c\log_file_path = \"$log_path\"" "$cfg_file"
+    else
+        echo "log_file_path = \"$log_path\"" >> "$cfg_file"
+    fi
+    error_handler $? "Failed to write log_file_path"
 }
 
 python_path_update() {
