@@ -16,7 +16,6 @@
 
 	```bash
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/pacemaker/pacemaker.py
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/pacemaker/pacemaker.cfg
 	```
 
 - Execute the below command with appropriate arguments to check for the valid JSON output:
@@ -51,3 +50,11 @@ Total Votes                    |  Current total voting power
 Quorum                         |  Minimum votes needed for cluster operation
 Flag                           | Configuration of the cluster
 Node Status                    |  Shows the current state of each node.
+
+#### Sample Images:
+
+![image](https://github.com/user-attachments/assets/2c222708-bd12-441f-8216-a18b96367646)
+![image](https://github.com/user-attachments/assets/57e01ce4-a0ad-43e8-a5f0-363b76527601)
+![image](https://github.com/user-attachments/assets/e85ba0fd-0cd0-4d95-a4ac-957a5293523b)
+
+
