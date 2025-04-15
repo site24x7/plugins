@@ -1,6 +1,40 @@
 #!/bin/bash
 
-plugin=hbase
+echo
+echo "Select the HBase node type to monitor:"
+echo "  1. HBase Master Server (default)"
+echo "  2. HBase RegionServer"
+read -r -p "Enter your choice [1 or 2] (default: 1): " node_choice
+
+case "$node_choice" in
+  1|"")
+    plugin="hbase"
+    ;;
+  2)
+    plugin="hbase_regionserver"
+    ;;
+  *)
+    echo "Invalid choice. Please enter 1 or 2."
+    read -r -p "Enter your choice [1 or 2] (default: 1): " second_try
+
+    case "$second_try" in
+      1|"")
+        plugin="hbase"
+        ;;
+      2)
+        plugin="hbase_regionserver"
+        ;;
+      *)
+        tput setaf 1
+        echo "Invalid input again. Exiting script."
+        tput sgr0
+        exit 1
+        ;;
+    esac
+    ;;
+esac
+
+
 agent_dir=/opt/site24x7/monagent
 temp_dir=$agent_dir/temp/plugins/$plugin
 py_file="$temp_dir/$plugin.py"
@@ -19,7 +53,7 @@ trap func_exit SIGINT SIGTSTP
 error_handler() {
     if  [ $1 -ne 0 ]; then
         tput setaf 1
-        echo  "------------Error occured. Download failed. Process exited.---------"
+        echo  "------------Error occured.---------"
         echo $2
         tput sgr0
         exit
@@ -109,35 +143,27 @@ download_files() {
 
 }
 
-install (){
-    
+install () {
+
     if [[ -d $temp_dir ]] ; then
-
-        if ( [[ -f $py_file ]] ) ; then 
-            rm $py_file
-        fi
-        if ( [[ -f $cfg_file ]] ) ; then 
-            rm $cfg_file
-        fi
-
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.cfg
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.py
-
+        [[ -f $py_file ]] && rm $py_file
+        [[ -f $cfg_file ]] && rm $cfg_file
     else
-        output=$(mkdir -p $temp_dir)
-         if [ $? -ne 0 ]; then
+        mkdir -p $temp_dir || {
             tput setaf 1
-            echo "------------Error occured. Process exited.------------"
-            echo $output
+            echo "------------Error occurred. Process exited.------------"
             tput sgr0
-            exit
-        fi
-
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.cfg
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.py
-        
+            exit 1
+        }
     fi
 
+    if [[ "$plugin" == "hbase_regionserver" ]]; then
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/hbase/$plugin/$plugin.cfg
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/hbase/$plugin/$plugin.py
+    else
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.cfg
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/$plugin/$plugin.py
+    fi
 }
 
 get_plugin(){
@@ -151,7 +177,7 @@ get_plugin_data() {
 
     tput setaf 3
     echo
-    echo "------------Provide connection details to connect to Tomcat------------"
+    echo "------------Provide connection details to connect to $plugin------------"
     tput sgr0
     echo 
     echo " Press Enter to keep the default values. If you hit Enter, the default values will be used for the connection."
@@ -193,6 +219,15 @@ get_plugin_data() {
 
 
 check_plugin_execution() {
+    
+
+    if [[ "$plugin" == "hbase" ]]; then
+        metric_check='"Rit Oldest Age":|"Rit Count":'
+        example_url="http://localhost:16010/jmx"
+    elif [[ "$plugin" == "hbase_regionserver" ]]; then
+        metric_check='"Total Tables":|"Put Count":'
+        example_url="http://localhost:16030/jmx"
+    fi
 
     output=$($python $py_file --host "$host" --port "$port")
     if  [ $? -ne 0 ]; then
@@ -214,12 +249,11 @@ check_plugin_execution() {
         tput sgr0
         flag=$((flag + 1))
 
-    elif ! echo "$output" | grep -qE "\"Rit Oldest Age\":|\"Rit Count\":"; then
-        tput setaf 3
+    elif ! echo "$output" | grep -qE "$metric_check"; then
+        tput setaf 1
         echo "The output does not contain metrics. Check if you have provided the correct endpoint for the status URL."
-        echo "An example of a status URL: http://localhost:16010/jmx"
-        error_handler 1 "$output"
-        flag=$((flag + 1))
+        echo "An example of a status URL: $example_url"
+        flag=$((flag + 1))        
 
     else
         tput setaf 3
@@ -231,7 +265,6 @@ check_plugin_execution() {
         flag=0
 
     fi
-
 
 }
 
