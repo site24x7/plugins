@@ -69,14 +69,24 @@ class Jenkins(object):
             name = job.get("name", "unknown")
 
             last_build = job.get("lastBuild", {})
-            last_build_number = last_build.get("number", 0)
-            last_build_result = last_build.get("result", "UNKNOWN").upper()
-            last_build_status = 1 if last_build_result == "SUCCESS" else 0
-            last_build_duration = round(last_build.get("duration", 0) / 60, 2)
-            last_build_estimated_duration = round(last_build.get("estimatedDuration", 0) / 60, 2)
+
+            if last_build is not None:
+                last_build_number = last_build.get("number", 0)
+                last_build_result = last_build.get("result", "UNKNOWN").upper()
+                last_build_status = 1 if last_build_result == "SUCCESS" else 0
+                last_build_duration = round(last_build.get("duration", 0) / 60, 2)
+                last_build_estimated_duration = round(last_build.get("estimatedDuration", 0) / 60, 2)
+            else:
+                last_build_number = 0
+                last_build_status = 0
+                last_build_duration = 0
+                last_build_estimated_duration = 0
 
             health_report = job.get("healthReport", [])
-            recent_build_health = health_report[0].get("score", 0) if health_report else 0
+            if health_report is not None:
+                recent_build_health = health_report[0].get("score", 0) if health_report else 0
+            else:
+                recent_build_health = 0
 
             processed_job = {
                 "name": name,
