@@ -323,7 +323,7 @@ class esk:
                     self.maindata['msg']=str(e)
                     self.maindata['status']=0
 
-            nodes_list.append(node_dict)
+                nodes_list.append(node_dict)
             self.maindata["node_metrics"]=nodes_list
             return True
         
