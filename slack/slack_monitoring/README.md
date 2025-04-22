@@ -1,6 +1,6 @@
-### Plugin for monitoring Slack Application
+# Plugin for monitoring Slack Application
 
-### Prerequisites
+## Prerequisites
 
 * Make sure you have Installed python version 3.6 and above.
 
@@ -48,11 +48,11 @@
         * Oauth token will be generated in that top of the page
         * Please copy the Oauth token and save it. This has to be configured in the plugin configuration file.
 
-### Plugin Installation 
+## Plugin Installation 
 
-- Create a directory "slack_monitoring".
+- Create a directory `slack_monitoring`.
 
-- Download the files "slack_monitoring.py" and "slack_monitoring.cfg" and place it under the "slack_monitoring" directory
+- Download the files `slack_monitoring.py` and `slack_monitoring.cfg` and place it under the `slack_monitoring` directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/slack/slack_monitoring/slack_monitoring.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/slack/slack_monitoring/slack_monitoring.cfg
@@ -62,13 +62,13 @@
 - Edit the "slack_monitoring.cfg" file and add the configuration details to it.
 
  		[display_name]
-		oauth_token = xoxp-1115218301570-1145293321776-1107217637223-sew12saq185c59db496cad2b6655868ac4e
+		oauth_token = xoxp-your-token
 		
 oauth_token - oauth token of your slack account
 
 - Execute the below command to check for valid json output
 
-		python slack_monitoring.py --oauth_token="oauth_token"
+		python slack_monitoring.py --oauth_token "oauth_token"
             
 - Move the directory "slack_monitoring" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
 
