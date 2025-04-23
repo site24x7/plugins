@@ -20,7 +20,10 @@ METRICS_UNITS = { 'JVM garbage collector old generation time':'ms',
 
                 }
 
-counterFilePath="counter.json"
+script_directory = os.path.dirname(os.path.abspath(__file__))
+
+counterFilePath = os.path.join(script_directory, "counter.json")
+
 all_metrics={
 
 "standard_metrics":{
@@ -115,6 +118,60 @@ class esk:
         self.logsenabled=args.logs_enabled
         self.logtypename=args.log_type_name
         self.logfilepath=args.log_file_path
+        self.node_metrics = {}
+
+
+        self.maindata["tabs"]={
+
+            "Search and Query Performance":{
+                "order":1,
+                "tablist":[
+                "Total queries",
+                "Time spent on queries",
+                "Queries in progress",
+                "Number of fetches",
+                "Time spent on fetches",
+                "Fetches in progress",
+                "Queries hit count",
+                "Query cache memory size",
+                "Query cache miss count",
+                "Request cache hit count",
+                "Number of evictions",
+                "Request cache memory size",
+                "Number of GET requests where the document was missing",
+                "Total time on GET requests where the document was missing"
+                ]},
+
+
+            "Index Performance":{
+                "order":2,
+                "tablist":[
+                "Documents indexed",
+                "Time of indexing documents",
+                "Documents currently indexed",
+                "Index refreshes",
+                "Time spent on refreshing indices",
+                "Index flushes to disk",
+                "Time spent on flushing indices to disk",
+                "Indices docs count",
+                "Indices docs deleted"
+                ]
+            },
+
+            "System Performance":{
+                "order":3,
+                "tablist":[
+                "CPU used (%)",
+                "OS memory free(%)",
+                "OS memory used(%)",
+                "HTTP connections currently open",
+                "HTTP connections opened over time",
+                "JVM heap memory used (%)",
+                "JVM heap memory committed"
+                ]
+            }
+        }
+
 
         if self.username=="None":
             self.username=None
@@ -137,23 +194,24 @@ class esk:
 
 
     def loadCounterValues(self):
-        file_obj = None
         if not os.path.exists(counterFilePath):
-            file_obj = open(counterFilePath,'w')
-            file_obj.close()
+            with open(counterFilePath, 'w') as f:
+                json.dump({"counter": {}, "node_metrics": {}} , f)
         else:
-            file_obj = open(counterFilePath,'r')
-            str_counterValues = file_obj.read()
-            if str_counterValues:
-                self.dictCounterValues = json.loads(str_counterValues)
-            file_obj.close()
+            with open(counterFilePath, 'r') as f:
+                str_counterValues = f.read()
+                if str_counterValues:
+                    full_data = json.loads(str_counterValues)
+                    self.dictCounterValues = full_data.get("counter", {})
+                    self.node_metrics = full_data.get("node_metrics", {})
 
-
-    def updateCounterValues(self,dict_valuesToUpdate):
-        if os.path.exists(counterFilePath):
-            file_obj = open(counterFilePath,'w')
-            file_obj.write(json.dumps(dict_valuesToUpdate))
-            file_obj.close()
+    def updateCounterValues(self, dict_valuesToUpdate):
+        full_data = {
+            "counter": dict_valuesToUpdate,
+            "node_metrics": self.node_metrics  
+        }
+        with open(counterFilePath, 'w') as f:
+            json.dump(full_data, f, indent=4)
 
 
     def overall_metrics(self, searchdata):
@@ -304,32 +362,56 @@ class esk:
                 self.maindata['status']=0
                 return False
 
-
     def all_node_metrics(self, nodesdata):
         try:
-            nodes_list=[]
-            for node in nodesdata:
-                try:
-                    node_dict={}
-                    node_dict['name']=nodesdata[node]["name"]
-                    node_dict['time_spent_on_queries']=nodesdata[node]["indices"]["search"]["query_time_in_millis"]
-                    node_dict['queries_in_progress']=nodesdata[node]["indices"]["search"]["query_current"]
-                    node_dict['number_of_fetches']=nodesdata[node]["indices"]["search"]["fetch_total"]
-                    node_dict['documents_indexed']=nodesdata[node]["indices"]["indexing"]["index_total"]
-                    node_dict['cpu_used']=nodesdata[node]["os"]["cpu"]["percent"]
-                except KeyError:
-                    pass
-                except Exception as e:
-                    self.maindata['msg']=str(e)
-                    self.maindata['status']=0
+            chunk_size = 25
+            tablist_keys = []
 
-                nodes_list.append(node_dict)
-            self.maindata["node_metrics"]=nodes_list
+            sorted_nodes = sorted(nodesdata.items(), key=lambda x: x[1].get("name", ""))
+            total_chunks = (len(sorted_nodes) + chunk_size - 1) // chunk_size
+
+            for chunk_index in range(total_chunks):
+                chunk_key = f"node_metrics_{chunk_index + 1}"
+                chunk_nodes = sorted_nodes[chunk_index * chunk_size:(chunk_index + 1) * chunk_size]
+                chunk_data = []
+
+                for node_name, node_data in chunk_nodes:
+                    try:
+                        node_dict = {
+                            "name": node_data.get("name", f"node_{node_name}"),
+                            f"time_spent_on_queries_{chunk_index + 1}": node_data["indices"]["search"]["query_time_in_millis"],
+                            f"queries_in_progress_{chunk_index + 1}": node_data["indices"]["search"]["query_current"],
+                            f"number_of_fetches_{chunk_index + 1}": node_data["indices"]["search"]["fetch_total"],
+                            f"documents_indexed_{chunk_index + 1}": node_data["indices"]["indexing"]["index_total"],
+                            f"cpu_used_{chunk_index + 1}": node_data["os"]["cpu"]["percent"]
+                        }
+                        chunk_data.append(node_dict)
+                    except KeyError:
+                        continue
+                    except Exception as e:
+                        self.maindata['msg'] = str(e)
+                        self.maindata['status'] = 0
+
+                self.maindata[chunk_key] = chunk_data
+                tablist_keys.append(chunk_key)
+
+                self.node_metrics[chunk_key] = [node_data["name"] for node_data in chunk_data]
+
+            self.updateCounterValues(self.dictCounterValues)
+
+            if "tabs" not in self.maindata:
+                self.maindata["tabs"] = {}
+
+            self.maindata["tabs"]["Nodes"] = {
+                "order": 4,
+                "tablist": tablist_keys
+            }
+
             return True
-        
+
         except Exception as e:
-            self.maindata['msg']=str(e)
-            self.maindata['status']=0
+            self.maindata['msg'] = str(e)
+            self.maindata['status'] = 0
             return False
 
 
@@ -379,67 +461,6 @@ class esk:
 
         nodesdata=all_data["nodes"]
         self.all_node_metrics(nodesdata)
-
-
-
-
-        self.maindata["tabs"]={
-
-            "Search and Query Performance":{
-                "order":1,
-                "tablist":[
-                "Total queries",
-                "Time spent on queries",
-                "Queries in progress",
-                "Number of fetches",
-                "Time spent on fetches",
-                "Fetches in progress",
-                "Queries hit count",
-                "Query cache memory size",
-                "Query cache miss count",
-                "Request cache hit count",
-                "Number of evictions",
-                "Request cache memory size",
-                "Number of GET requests where the document was missing",
-                "Total time on GET requests where the document was missing"
-                ]},
-
-
-            "Index Performance":{
-                "order":2,
-                "tablist":[
-                "Documents indexed",
-                "Time of indexing documents",
-                "Documents currently indexed",
-                "Index refreshes",
-                "Time spent on refreshing indices",
-                "Index flushes to disk",
-                "Time spent on flushing indices to disk",
-                "Indices docs count",
-                "Indices docs deleted"
-                ]
-            },
-
-            "System Performance":{
-                "order":3,
-                "tablist":[
-                "CPU used (%)",
-                "OS memory free(%)",
-                "OS memory used(%)",
-                "HTTP connections currently open",
-                "HTTP connections opened over time",
-                "JVM heap memory used (%)",
-                "JVM heap memory committed"
-                ]
-            },
-            "Nodes":{
-            "order":4,
-            "tablist":[
-                "node_metrics"
-            ]
-            }
-        }
-
 
         applog={}
         if(self.logsenabled in ['True', 'true', '1']):
