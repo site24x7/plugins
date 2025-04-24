@@ -6,6 +6,33 @@ Get to know how to configure the Elasticsearch plugin and the monitoring metrics
                                                                                               
 ---
 
+### Prerequisites
+
+- Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Python version 3 or higher
+- Python packages required: `urllib3`, `requests`
+
+Install them using the following commands:
+
+```bash
+pip3 install urllib3
+```
+
+```bash
+pip3 install requests
+```
+
+## The connecting Elasticsearch user must have the following privileges:
+
+### Cluster-Level Privileges:
+- `monitor`
+- `manage`
+
+### Index-Level Privileges:
+- `read`
+- `monitor`
+- `view_index_metadata`
+
 ## Quick installation
 
 If you're using Linux servers, use the Elasticsearch plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
@@ -18,11 +45,6 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/ins
 
 ## Standard Installation
 If you're not using Linux servers or want to install the plugin manually, follow the steps below.
-
-### Prerequisites
-
-- Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
-- Python version 3 or higher
 
 ### Plugin Installation  
 
@@ -80,96 +102,88 @@ If you're not using Linux servers or want to install the plugin manually, follow
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
 ---
+# Elasticsearch Monitoring Plugin Metrics
 
-## Supported Metrics
+## Summary
 
-- **CPU used (%)**
-
-- **OS memory free(%)**
-
-- **OS memory used(%)**
-
-- **CPU used (%)**
- 
-- **Total queries**
-
-- **Time spent on queries**
-
-- **Queries in progress**
-
-- **Number of fetches**
-
-- **Time spent on fetches**
-
-- **Fetches in progress**
-    
-- **Documents indexed**
-
-- **Time of indexing documents**
-
-- **Documents currently indexed**
-
-- **Index refreshes**
-
-- **Time spent on refreshing indices**
-
-- **Index flushes to disk**
-    
-- **Time spent on flushing indices to disk**
-
-- **Indices docs count**
-
-- **Indices docs deleted**
-
-- **HTTP connections currently open**
-
-- **HTTP connections opened over time**
-
-- **Cluster Name**
-    
-- **Cluster status**
-
-- **Number of Nodes**
-
-- **Initializing shards**
-
-- **Unassigned shards**
-
-- **Active primary shards**
-
-- **Relocating shards**
-
-- **Delayed unassigned shards**
-
-- **Number of GET requests where the document was missing**
-
-- **Total time on GET requests where the document was missing**
-  
-- **JVM heap memory used (%)**
-
-- **JVM heap memory committed**
-
-- **JVM garbage collector old generation count**
-
-- **JVM garbage collector old generation time**
-
-- **Average JVM memory usage in garbage collector(%)**
-
-- **Fetch to query ratio**
-
-- **Latency of the query**
-
-- **Queries hit count**
-
-- **Query cache memory size**
-
-- **Query cache miss count**
-
-- **Request cache hit count**
-
-- **Number of evictions**
-
-- **Request cache memory size**
+| **Metric Name**                                  | **Description**                                                              |
+|--------------------------------------------------|------------------------------------------------------------------------------|
+| Cluster Name                                     | Name of the Elasticsearch cluster.                                           |
+| Cluster status                                   | Health status of the cluster (`green`, `yellow`, or `red`).                  |
+| Number of Nodes                                  | Total number of nodes in the cluster.                                        |
+| Number of data nodes                             | Number of nodes that store data in the cluster.                              |
+| Initializing shards                              | Count of shards currently in the initializing state.                         |
+| Unassigned shards                                | Number of shards that are currently not assigned to any node.               |
+| Active primary shards                            | Number of active primary shards in the cluster.                              |
+| Relocating shards                                | Count of shards that are currently being moved between nodes.                |
+| Delayed unassigned shards                        | Number of shards delayed from being assigned due to allocation delays.       |
+| JVM garbage collector old generation count       | Number of old generation garbage collection events.                          |
+| JVM garbage collector old generation time        | Time spent in old generation garbage collection (in ms).                     |
+| Average JVM memory usage in garbage collector(%) | Average percentage of memory used during garbage collection.                 |
+| Status of the node                               | Numeric indicator of node status (1 = Available, 0 = Unavailable).           |
+| Node Availability                                | Human-readable node availability status (e.g., "Available", "Unavailable").  |
 
 
+## Search and Query Performance
+
+| **Metric Name**                                              | **Description**                                                              |
+|--------------------------------------------------------------|------------------------------------------------------------------------------|
+| Total queries                                                | Total number of queries executed.                                           |
+| Time spent on queries                                        | Cumulative time spent executing queries (in ms).                            |
+| Queries in progress                                          | Number of queries currently in progress.                                    |
+| Number of fetches                                            | Total number of fetch phases executed.                                      |
+| Time spent on fetches                                        | Cumulative time spent on fetch phases (in ms).                              |
+| Fetches in progress                                          | Number of fetches currently in progress.                                    |
+| Queries hit count                                            | Number of queries that returned cached results.                             |
+| Query cache memory size                                      | Memory used by the query cache.                                             |
+| Query cache miss count                                       | Number of queries that resulted in cache misses.                            |
+| Request cache hit count                                      | Number of request cache hits.                                               |
+| Number of evictions                                          | Number of evictions from the query or request cache.                        |
+| Request cache memory size                                    | Memory used by the request cache.                                           |
+| Number of GET requests where the document was missing        | Count of GET requests for missing documents.                                |
+| Total time on GET requests where the document was missing    | Time spent on GET requests for missing documents.                           |
+
+## Index Performance
+
+| **Metric Name**                          | **Description**                                                              |
+|------------------------------------------|------------------------------------------------------------------------------|
+| Documents indexed                        | Number of documents indexed.                                                |
+| Time of indexing documents               | Cumulative time spent indexing documents (in ms).                           |
+| Documents currently indexed              | Number of documents currently being indexed.                                |
+| Index refreshes                          | Total number of index refreshes.                                            |
+| Time spent on refreshing indices         | Time spent on index refresh operations (in ms).                             |
+| Index flushes to disk                    | Number of index flushes.                                                    |
+| Time spent on flushing indices to disk  | Time spent flushing index data to disk (in ms).                             |
+| Indices docs count                       | Total number of documents across all indices.                               |
+| Indices docs deleted                     | Number of documents deleted from indices.                                   |
+
+## System Performance
+
+| **Metric Name**                         | **Description**                                                              |
+|-----------------------------------------|------------------------------------------------------------------------------|
+| CPU used (%)                            | CPU usage percentage of the node.                                            |
+| OS memory free(%)                       | Percentage of free system memory.                                            |
+| OS memory used(%)                       | Percentage of system memory used.                                            |
+| HTTP connections currently open         | Number of currently open HTTP connections.                                  |
+| HTTP connections opened over time       | Total number of HTTP connections opened.                                    |
+| JVM heap memory used (%)                | Percentage of heap memory used by the JVM.                                  |
+| JVM heap memory committed               | Amount of memory committed to the JVM heap.                                 |
+
+## Node Availability
+
+| **Metric Name**             | **Description**                                                        |
+|-----------------------------|------------------------------------------------------------------------|
+| name                        | Name of the Elasticsearch node.                                       |
+| time_spent_on_queries     | Time spent on queries on this specific node.                   |
+| queries_in_progress       | Number of queries currently running on this node.                      |
+| number_of_fetches         | Number of fetch operations on this node.                               |
+| documents_indexed         | Number of documents indexed on this node.                              |
+| cpu_used                  | CPU usage percentage of this node.                                     |
+
+
+## Sample images
+
+![image](https://github.com/user-attachments/assets/c6ad2369-146d-4605-8ee9-1e762bd4cd81)
+
+![image](https://github.com/user-attachments/assets/1545adf5-ec3d-491f-92e6-f6b152e990f1)
 
