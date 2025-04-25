@@ -243,9 +243,8 @@ def run(param=None):
     )
     args = parser.parse_args()
     PLUGIN_VERSION = args.plugin_version
-    cifs_instance = cifs()  # Use a different variable name
+    cifs_instance = cifs()
     result = cifs_instance.metriccollector()
-    print(result)
     return result
 
 
