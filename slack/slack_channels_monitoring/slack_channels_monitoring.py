@@ -1,13 +1,15 @@
-#!/usr/bin/python3.6
-
+#!/usr/bin/python3
+import time
 from re import search
 import json
 import os
 import datetime
 import requests
 import argparse
+import traceback
 
 from slack import WebClient
+from slack.errors import SlackApiError
 
 CHANNEL_NAME = ""
 CHANNEL_TYPE = ""
@@ -30,12 +32,16 @@ if args.channel_name:
 if args.channel_type:
     CHANNEL_TYPE = str(args.channel_type)
 
+headers = {
+            "Authorization": f"Bearer {auth_token}",
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
 
 ############################################ CHANNEL TYPES ######################################################
-PUBLIC_CHANNEL_TYPE = "1"
-PRIVATE_CHANNEL_TYPE = "2"
-DIRECT_MESSAGE_CHANNEL_TYPE = "3"
-MULTI_PARTY_DIRECT_MESSAGE_CHANNEL_TYPE = "4"
+PUBLIC_CHANNEL_TYPE = "public_channel"
+PRIVATE_CHANNEL_TYPE = "private_channel"
+DIRECT_MESSAGE_CHANNEL_TYPE = "direct_message"
+MULTI_PARTY_DIRECT_MESSAGE_CHANNEL_TYPE = "multi_party_direct_message"
 ################################################################################################################################################################################
 
 invalid_channel_name_or_channel_type = "Invalid Channel Name or Channel Type. Please Enter the Correct Channel name and Channel Type"
@@ -44,40 +50,40 @@ audio_extentions = "8svx_SEPA_aac_SEPA_ac3_SEPA_aiff_SEPA_amb_SEPA_au_SEPA_avr_S
 image_extentions = "tif_SEPA_jpg_SEPA_png_SEPA_jpeg_SEPA_tiff_SEPA_bmp_SEPA_eps_SEPA_raw_SEPA_cr2_SEPA_nef_SEPA_orf_SEPA_sr2"
 executable_file_extentions = "oxe_SEPA_agp_SEPA_action_SEPA_app_SEPA_applescript_SEPA_bat_SEPA_cgi_SEPA_cod_SEPA_com_SEPA_dek_SEPA_dex_SEPA_ebm_SEPA_elf_SEPA_es_SEPA_esh_SEPA_ex4_SEPA_exe_SEPA_exopc_SEPA_fpi_SEPA_gpe_SEPA_gpu_SEPA_hms_SEPA_hta_SEPA_ipa_SEPA_isu_SEPA_jar_SEPA_jsx_SEPA_kix_SEPA_mau_SEPA_mel_SEPA_mem_SEPA_mrc_SEPA_pex_SEPA_pef_SEPA_plsc_SEPA_prg_SEPA_ps1_SEPA_pwc_SEPA_qit_SEPA_rbx_SEPA_rox_SEPA_rxe_SEPA_scar_SEPA_scb_SEPA_scpt_SEPA_sct_SEPA_seed_SEPA_u3p_SEPA_vb_SEPA_vbe_SEPA_vbs_SEPA_vbscript_SEPA_vlx_SEPA_widget_SEPA_workflow_SEPA_ws_SEPA_xbe_SEPA_xex_SEPA_xys_SEPA_java_SEPA_jsp_SEPA_py_SEPA_xpi_SEPA_htm_SEPA_html_SEPA_sh_SEPA_css_SEPA_xhtml_SEPA_jhtml_SEPA_jspx_SEPA_wss_SEPA_yaws_SEPA_swf_SEPA_asp_SEPA_php_SEPA_php4_SEPA_php3_SEPA_rb_SEPA_rhtml_SEPA_shtml_SEPA_xml_SEPA_rss_SEPA_svg_SEPA_cgi_SEPA_dll_SEPA_json"
 
-PUBLIC_CHANNELS_API = "https://slack.com/api/users.conversations?token=" + auth_token + "&types=public_channel"
-PRIVATE_CHANNELS_API = "https://slack.com/api/users.conversations?token=" + auth_token + "&types=private_channel"
-DIRECT_MESSAGE_API = "https://slack.com/api/conversations.list?token=" + auth_token + "&types=im"
-MULTI_PARTY_DIRECT_MESSAGE_API = "https://slack.com/api/conversations.list?token=" + auth_token + "&types=mpim"
-STARS_API = "https://slack.com/api/stars.list?token=" + auth_token + "&limit=999"
+PUBLIC_CHANNELS_API = "https://slack.com/api/users.conversations?" + "&types=public_channel"
+PRIVATE_CHANNELS_API = "https://slack.com/api/users.conversations?" + "&types=private_channel"
+DIRECT_MESSAGE_API = "https://slack.com/api/conversations.list?" + "&types=im"
+MULTI_PARTY_DIRECT_MESSAGE_API = "https://slack.com/api/conversations.list?" + "&types=mpim"
+STARS_API = "https://slack.com/api/stars.list?" + "&limit=999"
 
 
 def get_initial_file_read_api(channel_id):
-    INITIAL_FILE_READ_API = "https://slack.com/api/files.list?token=" + auth_token + "&channel=" + channel_id + "&count=1000"
+    INITIAL_FILE_READ_API = "https://slack.com/api/files.list?" + "&channel=" + channel_id + "&count=1000"
     return INITIAL_FILE_READ_API
 
 
 def get_time_based_file_read_api(channel_id):
-    TIME_BASED_FILE_READ_API = "https://slack.com/api/files.list?token=" + auth_token + "&channel=" + channel_id + "&ts_from=" + previous_timestamp + "&ts_to=" + str(datetime.datetime.now().timestamp())
+    TIME_BASED_FILE_READ_API = "https://slack.com/api/files.list?" + "&channel=" + channel_id + "&ts_from=" + previous_timestamp + "&ts_to=" + str(datetime.datetime.now().timestamp())
     return TIME_BASED_FILE_READ_API
 
 
 def get_initial_message_count_api(channel_id):
-    INITIAL_MESSAGE_COUNT_API = "https://slack.com/api/conversations.history?token=" + auth_token + "&channel=" + channel_id + "&limit=1000"
+    INITIAL_MESSAGE_COUNT_API = "https://slack.com/api/conversations.history?" + "&channel=" + channel_id + "&limit=1000"
     return INITIAL_MESSAGE_COUNT_API
 
 
 def get_time_based_message_count_api(channel_id):
-    TIME_BASED_MESSAGE_COUNT_API = "https://slack.com/api/conversations.history?token=" + auth_token + "&channel=" + channel_id + "&limit=1000" + "&oldest=" + previous_timestamp
+    TIME_BASED_MESSAGE_COUNT_API = "https://slack.com/api/conversations.history?" + "&channel=" + channel_id + "&limit=1000" + "&oldest=" + previous_timestamp
     return TIME_BASED_MESSAGE_COUNT_API
 
 
 def get_scheduled_message_count_api(channel_id):
-    SCHEDULED_MESSAGES_API = "https://slack.com/api/chat.scheduledMessages.list?token=" + auth_token + "&channel=" + channel_id + "&limit=999"
+    SCHEDULED_MESSAGES_API = "https://slack.com/api/chat.scheduledMessages.list?" + "&channel=" + channel_id + "&limit=999"
     return SCHEDULED_MESSAGES_API
 
 
 def get_pin_count_api(channel_id):
-    PIN_COUNT_API = "https://slack.com/api/pins.list?token=" + auth_token + "&channel=" + channel_id
+    PIN_COUNT_API = "https://slack.com/api/pins.list?" + "&channel=" + channel_id
     return PIN_COUNT_API
 
 
@@ -113,8 +119,15 @@ members_list = {}
 client = {}
 channel_id = ""
 
-
-
+def request_falied(response):
+    if "error" in response.keys():
+        data["status"] = 0
+        data["msg"] = str(response["error"])
+        print(json.dumps(data))
+        exit()
+    else:   
+        return
+    
 
 def initialize_WebClient():
     global client
@@ -170,9 +183,12 @@ def load_file_info():
              file_url = get_initial_file_read_api(channel_id)
         else:
              file_url = get_time_based_file_read_api(channel_id)
-        file_response = requests.get(file_url)
+        file_response = requests.get(file_url,headers=headers)
         files_list = json.loads(file_response.text)
-    except:
+        request_falied(files_list)
+    except SystemExit:
+        exit()
+    except Exception:
         construct_error_message(str(files_list))
 
 
@@ -193,18 +209,20 @@ def total_members_list():
     try:
         members_list = client.users_list()
         data["total_users"] =  str((len(members_list["members"]))-2)
-    except:
-        construct_error_message(str(members_list))
+    except Exception as e:
+        construct_error_message(str(e))
+
 
 
 def get_scheduled_messages_count():
     scheduled_messages = {}
     try:
-        scheduled_response = requests.get(get_scheduled_message_count_api(channel_id))
+        scheduled_response = requests.get(get_scheduled_message_count_api(channel_id),headers=headers)
         scheduled_messages = json.loads(scheduled_response.text)
+        request_falied(scheduled_messages)
         return len(scheduled_messages["scheduled_messages"])
-    except:
-        construct_error_message(str(scheduled_messages))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def remainder_list():
@@ -212,33 +230,34 @@ def remainder_list():
     try:
         remainder = client.reminders_list()
         data["remainder_count"] = str(len(remainder["reminders"]))
-    except:
-        construct_error_message(str(remainder))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def stars_list():
     stars_list = {}
     try:
-        stars_response = requests.get(STARS_API)
+        stars_response = requests.get(STARS_API,headers=headers)
         stars_list = json.loads(stars_response.text)
+        request_falied(stars_list)
         data["is_stared"] = "False"
         for stars_info in stars_list["items"]:
             if str(stars_info["channel"]) == channel_id:
                 data["is_stared"] = "True"
 
-    except:
-        construct_error_message(str(stars_list))
-
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def get_reaction_list(userid):
     reaction_list = {}
     try:
-        reaction_response = requests.get("https://slack.com/api/reactions.list?token=" + auth_token + "&full=true&limit=1000")
+        reaction_response = requests.get("https://slack.com/api/reactions.list?" + "&full=true&limit=1000",headers=headers)
         reaction_list = json.loads(reaction_response.text)
+        request_falied(reaction_list)
         return len(reaction_list["items"])
-    except:
-        construct_error_message(str(reaction_list))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def get_dnd_info():
@@ -251,8 +270,8 @@ def get_dnd_info():
         time_range = str(start_time) + " - " + str(end_time)
         data["next_do_not_distrub_start_and_end_time"] = time_range
         data["do_not_disturb_snooze_enabled"] = str(do_not_disturb["snooze_enabled"])
-    except:
-        construct_error_message(str(do_not_disturb))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 
@@ -318,16 +337,17 @@ def get_total_files_info():
                 data["other_files"] = str(other_files)
                 count_stats["other_files"] = str(other_files)
 
-    except:
-        construct_error_message(str(files_list))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def get_public_channels_list():
     public_channels_list = {}
     global  channel_id
     try:
-        public_channels_response = requests.get(PUBLIC_CHANNELS_API)
+        public_channels_response = requests.get(PUBLIC_CHANNELS_API,headers=headers)
         public_channels_list = json.loads(public_channels_response.text)
+        request_falied(public_channels_list)
         data["public_channels_count"] = str(len(public_channels_list["channels"]))
 
 
@@ -341,16 +361,17 @@ def get_public_channels_list():
                 count_stats["public_channels_message_count"] = str(public_message_count)
                 return
         construct_error_message(invalid_channel_name_or_channel_type)
-    except:
-        construct_error_message(str(public_channels_list))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def get_private_channels_list():
     private_channels_list = {}
     global  channel_id
     try:
-        private_channels_response = requests.get(PRIVATE_CHANNELS_API)
+        private_channels_response = requests.get(PRIVATE_CHANNELS_API,headers=headers)
         private_channels_list = json.loads(private_channels_response.text)
+        request_falied(private_channels_list)
         data["private_channels_count"] = str(len(private_channels_list["channels"]))
         for private_info in private_channels_list["channels"]:
             if str(private_info["name"] == CHANNEL_NAME):
@@ -362,8 +383,8 @@ def get_private_channels_list():
                  count_stats["private_channels_message_count"] = str(private_message_count)
                  return
         construct_error_message(invalid_channel_name_or_channel_type)
-    except:
-        construct_error_message(str(private_channels_list))
+    except Exception as e:
+        construct_error_message(str(e))
 
 def get_message_count(id):
     global pin_count
@@ -377,8 +398,9 @@ def get_message_count(id):
         else:
             url = url + get_time_based_message_count_api(id)
 
-        message_response = requests.get(url)
+        message_response = requests.get(url,headers=headers)
         message_list = json.loads(message_response.text)
+        request_falied(message_list)
 
         if CHANNEL_TYPE != DIRECT_MESSAGE_CHANNEL_TYPE:
             pin_count = pin_count + int(message_list["pin_count"])
@@ -386,8 +408,8 @@ def get_message_count(id):
             pin_count = pin_count + get_pin_count()
         scheduled_messages_count = scheduled_messages_count + get_scheduled_messages_count()
         return len(message_list["messages"])
-    except:
-        construct_error_message(str(message_list))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def get_direct_message_channels_list():
@@ -395,8 +417,9 @@ def get_direct_message_channels_list():
     global members_list
     global channel_id
     try:
-        direct_message_channels_response = requests.get(DIRECT_MESSAGE_API)
+        direct_message_channels_response = requests.get(DIRECT_MESSAGE_API,headers=headers)
         direct_message_channels_list = json.loads(direct_message_channels_response.text)
+        request_falied(direct_message_channels_list)
         user_id = ""
 
         for user_info in members_list["members"]:
@@ -414,16 +437,17 @@ def get_direct_message_channels_list():
                 count_stats["direct_message_count"] = str(direct_message_count)
                 return
         construct_error_message(invalid_channel_name_or_channel_type)
-    except:
-        construct_error_message(str(direct_message_channels_list))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def get_multi_party_direct_message_channels_list():
     multi_part_channels_list = {}
     global  channel_id
     try:
-        multi_party_channels_response = requests.get(MULTI_PARTY_DIRECT_MESSAGE_API)
+        multi_party_channels_response = requests.get(MULTI_PARTY_DIRECT_MESSAGE_API,headers=headers)
         multi_part_channels_list = json.loads(multi_party_channels_response.text)
+        request_falied(multi_part_channels_list)
         data["multi_party_channels_count"] = str(len(multi_part_channels_list["channels"]))
         for multi_party_info in multi_part_channels_list["channels"]:
             if str(multi_party_info["name"]) == CHANNEL_NAME:
@@ -435,8 +459,9 @@ def get_multi_party_direct_message_channels_list():
                 count_stats["multi_party_channels_message_count"] = str(multi_party_message_count)
                 return
         construct_error_message(invalid_channel_name_or_channel_type)
-    except:
-        construct_error_message(str(multi_part_channels_list))
+    except Exception as e:
+        construct_error_message(str(e))
+
 
 def get_current_timestamp():
     return str(datetime.datetime.now().timestamp())
@@ -453,16 +478,18 @@ def load_count_stat_in_file():
 def get_pin_count():
     pin_list = {}
     try:
-        pin_response = requests.get(get_pin_count_api(channel_id))
+        pin_response = requests.get(get_pin_count_api(channel_id),headers=headers)
         pin_list = json.loads(pin_response.text)
+        request_falied(pin_list)
         return len(pin_list["items"])
-    except:
-        construct_error_message(str(pin_list))
+    except Exception as e:
+        construct_error_message(str(e))
 
 def construct_error_message(error):
     data["status"] = 0
     data["msg"] = error
-    print(data)
+    #traceback.print_exc()
+    print(json.dumps(data))
     exit()
 
 
@@ -475,6 +502,7 @@ if __name__ == "__main__":
  elif CHANNEL_TYPE == PRIVATE_CHANNEL_TYPE:
     get_private_channels_list()
  elif CHANNEL_TYPE == DIRECT_MESSAGE_CHANNEL_TYPE:
+     
      get_direct_message_channels_list()
  elif CHANNEL_TYPE == MULTI_PARTY_DIRECT_MESSAGE_CHANNEL_TYPE:
      get_multi_party_direct_message_channels_list()
@@ -488,7 +516,3 @@ if __name__ == "__main__":
  data["pin_count"] = str(pin_count)
  data["scheduled_messages_count"] = str(scheduled_messages_count)
  print(json.dumps(data, indent=4, sort_keys=True))
-
-
-
-
