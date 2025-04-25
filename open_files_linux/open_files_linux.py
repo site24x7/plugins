@@ -4,7 +4,7 @@
 ### Tested in Ubuntu
 
 import sys,json
-
+import argparse
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
 
@@ -30,8 +30,23 @@ def metricCollector():
         data["msg"] = str(e)
     data["units"] = METRIC_UNITS
     return data
+    
+def run(param=None):
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--host", help="host", type=str, default="localhost"
+    )
+    result = metricCollector()
+    return result
 
 if __name__ == "__main__":
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--host", help="host", type=str, default="localhost"
+    )
+
     result = metricCollector()
     
     print(json.dumps(result, indent=4, sort_keys=True))
