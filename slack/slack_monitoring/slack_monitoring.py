@@ -1,13 +1,18 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 from re import search
 import json
 import os
 import datetime
 import requests
+import argparse
 from slack import WebClient
+from slack.errors import SlackApiError
 import time
+import traceback
 start = time.process_time()
+
+
 
 data = {}
 data["plugin_version"] = "1"
@@ -61,39 +66,44 @@ args = parser.parse_args()
 if args.oauth_token:
     auth_token = str(args.oauth_token)
 
-INITIAL_FILE_READ_API =  "https://slack.com/api/files.list?token=" + auth_token + "&count=1000"
-PUBLIC_CHANNELS_API = "https://slack.com/api/users.conversations?token=" + auth_token + "&types=public_channel"
-PRIVATE_CHANNELS_API = "https://slack.com/api/users.conversations?token=" + auth_token + "&types=private_channel"
-DIRECT_MESSAGE_API = "https://slack.com/api/conversations.list?token=" + auth_token + "&types=im"
-MULTI_PARTY_DIRECT_MESSAGE_API = "https://slack.com/api/conversations.list?token=" + auth_token + "&types=mpim"
-STARS_API = "https://slack.com/api/stars.list?token=" + auth_token + "&limit=999"
+INITIAL_FILE_READ_API =  "https://slack.com/api/files.list?" + "&count=1000"
+PUBLIC_CHANNELS_API = "https://slack.com/api/users.conversations?" + "&types=public_channel"
+PRIVATE_CHANNELS_API = "https://slack.com/api/users.conversations?" + "&types=private_channel"
+DIRECT_MESSAGE_API = "https://slack.com/api/conversations.list?" + "&types=im"
+MULTI_PARTY_DIRECT_MESSAGE_API = "https://slack.com/api/conversations.list?" + "&types=mpim"
+STARS_API = "https://slack.com/api/stars.list?" + "&limit=999"
+
+headers = {
+            "Authorization": f"Bearer {auth_token}",
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
 
 def get_time_based_file_read_api():
-    TIME_BASED_FILE_READ_API = "https://slack.com/api/files.list?token=" + auth_token + "&ts_from=" + previous_timestamp + "&ts_to=" + str(datetime.datetime.now().timestamp())
+    TIME_BASED_FILE_READ_API = "https://slack.com/api/files.list?" + "&ts_from=" + previous_timestamp + "&ts_to=" + str(datetime.datetime.now().timestamp())
     return TIME_BASED_FILE_READ_API
 
 
 def get_scheduled_message_api(id):
-    SCHEDULED_MESSAGE_API = "https://slack.com/api/chat.scheduledMessages.list?token=" + auth_token + "&channel=" + id + "&limit=999"
+    SCHEDULED_MESSAGE_API = "https://slack.com/api/chat.scheduledMessages.list?" + "&channel=" + id + "&limit=999"
     return SCHEDULED_MESSAGE_API
 
 def get_reaction_count_api(userid):
-    REACTION_COUNT_API = "https://slack.com/api/reactions.list?token=" + auth_token + "&full=true&limit=1000&user=" + userid
+    REACTION_COUNT_API = "https://slack.com/api/reactions.list?" + "&full=true&limit=1000&user=" + userid
     return REACTION_COUNT_API
 
 
 def get_initial_message_count_api(id):
-    INITIAL_MESSAGE_COUNT_API = "https://slack.com/api/conversations.history?token=" + auth_token + "&channel=" + id + "&limit=1000"
+    INITIAL_MESSAGE_COUNT_API = "https://slack.com/api/conversations.history?" + "&channel=" + id + "&limit=1000"
     return INITIAL_MESSAGE_COUNT_API
 
 
 def get_time_based_message_count_api(id):
-    TIME_BASED_MESSAGE_COUNT_API = "https://slack.com/api/conversations.history?token=" + auth_token + "&channel=" + id + "&limit=1000" + "&oldest=" + previous_timestamp
+    TIME_BASED_MESSAGE_COUNT_API = "https://slack.com/api/conversations.history?" + "&channel=" + id + "&limit=1000" + "&oldest=" + previous_timestamp
     return TIME_BASED_MESSAGE_COUNT_API
 
 
 def get_pin_count_api(id):
-    PIN_COUNT_API = "https://slack.com/api/pins.list?token=" + auth_token + "&channel=" + id
+    PIN_COUNT_API = "https://slack.com/api/pins.list?" + "&channel=" + id
     return PIN_COUNT_API
 
 
@@ -104,7 +114,7 @@ def initializeWebclient():
     except Exception as config_error:
         data["status"] = 0
         data["msg"] = str(config_error)
-        print(data)
+        print(json.dumps(data))
         exit()
 
 
@@ -138,6 +148,15 @@ def load_previous_data_from_count_stat_file():
             previous_executable_files = str(json_data["executable_files"])
             previous_other_files = str(json_data["other_files"])
 
+def request_falied(response):
+    if "error" in response.keys():
+        data["status"] = 0
+        data["msg"] = str(response["error"])
+        print(json.dumps(data))
+        exit()
+    else:   
+        return
+    
 
 def load_file_info():
     global files_list
@@ -148,10 +167,14 @@ def load_file_info():
         else:
             file_url = get_time_based_file_read_api()
 
-        file_response = requests.get(file_url)
+
+        file_response = requests.get(file_url,headers=headers)
         files_list = json.loads(file_response.text)
-    except:
-        construct_error_message(str(files_list))
+        request_falied(files_list)
+        #print(files_list,file_response.status_code)
+        
+    except Exception as e:
+        construct_error_message(str(e))
 
 def get_total_files_count():
     global files_list
@@ -173,8 +196,8 @@ def total_members_list():
         for user_info in members_list["members"]:
             reaction_made_by_each_user_count = reaction_made_by_each_user_count + get_reaction_list(user_info["id"])
         data["total_reaction_count"] = str(reaction_made_by_each_user_count)
-    except:
-        construct_error_message(str(members_list))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def total_usergroup_list():
@@ -183,18 +206,19 @@ def total_usergroup_list():
         user_group_list = client.usergroups_list()
         data["user_groups"] = str(len([user_group_list["usergroups"]]))
 
-    except:
-        construct_error_message(str(user_group_list))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def get_scheduled_messages_count(id):
     scheduled_messages = {}
     try:
-        scheduled_response = requests.get(get_scheduled_message_api(id))
+        scheduled_response = requests.get(get_scheduled_message_api(id),headers=headers)
         scheduled_messages = json.loads(scheduled_response.text)
+        request_falied(scheduled_messages)
         return len(scheduled_messages["scheduled_messages"])
-    except:
-        construct_error_message(str(scheduled_messages))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def remainder_list():
@@ -202,29 +226,30 @@ def remainder_list():
     try:
         remainder = client.reminders_list()
         data["remainder_count"] = str(len(remainder["reminders"]))
-    except:
-        construct_error_message(str(remainder))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def stars_list():
     stars_list = {}
     try:
-        stars_response = requests.get(STARS_API)
+        stars_response = requests.get(STARS_API,headers=headers)
         stars_list = json.loads(stars_response.text)
+        request_falied(stars_list)
         data["stars_count"] = str(len(stars_list["items"]))
-    except:
-        construct_error_message(str(stars_list))
-
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def get_reaction_list(userid):
     reaction = {}
     try:
-        reaction_response = requests.get(get_reaction_count_api(userid))
+        reaction_response = requests.get(get_reaction_count_api(userid),headers=headers)
         reaction_list = json.loads(reaction_response.text)
+        #print(reaction_list,get_reaction_count_api)
         return len(reaction_list["items"])
-    except:
-        construct_error_message(str(reaction))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def emoji_list():
@@ -232,8 +257,8 @@ def emoji_list():
     try:
         emo = client.emoji_list()
         data["emoji_count"] = str(len(emo["emoji"]))
-    except:
-        construct_error_message(str(emo))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def get_dnd_info():
@@ -246,9 +271,8 @@ def get_dnd_info():
         time_range = str(start_time) + " - " + str(end_time)
         data["next_do_not_distrub_start_and_end_time"] = time_range
         data["do_not_disturb_snooze_enabled"] = str(do_not_disturb["snooze_enabled"])
-    except:
-        construct_error_message(str(do_not_disturb))
-
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def get_date_time(UnixTime):
@@ -256,7 +280,6 @@ def get_date_time(UnixTime):
         int(UnixTime)
     ).strftime('%Y-%m-%d %H:%M:%S')
     return date_time
-
 
 
 def get_total_files_info():
@@ -313,16 +336,17 @@ def get_total_files_info():
         data["other_files"] = str(other_files)
         count_stats["other_files"] = str(other_files)
 
-    except:
-        construct_error_message(str(files_list))
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def get_public_channels_list():
     public_message_count = 0
     public_channels_list = {}
     try:
-        public_channels_response = requests.get(PUBLIC_CHANNELS_API)
+        public_channels_response = requests.get(PUBLIC_CHANNELS_API,headers=headers)
         public_channels_list = json.loads(public_channels_response.text)
+        request_falied(public_channels_list)
         data["public_channels_count"] = str(len(public_channels_list["channels"]))
 
         for public_info in public_channels_list["channels"]:
@@ -332,16 +356,17 @@ def get_public_channels_list():
             public_message_count = public_message_count + int(previous_public_channels_message_count)
         data["public_channels_message_count"] = str(public_message_count)
         count_stats["public_channels_message_count"] = str(public_message_count)
-    except:
-        construct_error_message(public_channels_list)
+    except Exception as e:
+        construct_error_message(str(e))
 
 
 def get_private_channels_list():
     private_message_count = 0
     private_channels_list = {}
     try:
-        private_channels_response = requests.get(PRIVATE_CHANNELS_API)
+        private_channels_response = requests.get(PRIVATE_CHANNELS_API,headers=headers)
         private_channels_list = json.loads(private_channels_response.text)
+        request_falied(private_channels_list)
         data["private_channels_count"] = str(len(private_channels_list["channels"]))
         for private_info in private_channels_list["channels"]:
             private_message_count = private_message_count + get_message_count(str(private_info["id"]) , PRIVATE_CHANNEL_TYPE)
@@ -349,8 +374,8 @@ def get_private_channels_list():
             private_message_count = private_message_count + int(previous_private_channels_message_count)
         data["private_channels_message_count"] = str(private_message_count)
         count_stats["private_channels_message_count"] = str(private_message_count)
-    except:
-        construct_error_message(private_channels_list)
+    except Exception as e:
+        construct_error_message(str(e))
 
 def get_message_count(id , CHANNEL_TYPE):
     global pin_count
@@ -363,40 +388,41 @@ def get_message_count(id , CHANNEL_TYPE):
         else:
             url = url + get_time_based_message_count_api(id)
 
-        message_response = requests.get(url)
+        message_response = requests.get(url,headers=headers)
         message_list = json.loads(message_response.text)
+        request_falied(message_list)
         if DIRECT_MESSAGE_TYPE != CHANNEL_TYPE:
             pin_count = pin_count + int(message_list["pin_count"])
         else:
             pin_count = pin_count + get_pin_count(id)
         scheduled_messages_count = scheduled_messages_count + get_scheduled_messages_count(id)
         return len(message_list["messages"])
-    except:
-        construct_error_message(str(message_list))
-
+    except Exception as e:
+        construct_error_message(str(e))
 
 def get_direct_message_channels_list():
     direct_message_count = 0
     direct_message_channels_list = {}
     try:
-        direct_message_channels_response = requests.get(DIRECT_MESSAGE_API)
+        direct_message_channels_response = requests.get(DIRECT_MESSAGE_API,headers=headers)
         direct_message_channels_list = json.loads(direct_message_channels_response.text)
+        request_falied(direct_message_channels_list)
         for direct_message_info in direct_message_channels_list["channels"]:
             direct_message_count = direct_message_count + get_message_count(str(direct_message_info["id"]) , DIRECT_MESSAGE_TYPE)
         if len(previous_direct_message_count) > 0:
             direct_message_count = direct_message_count + int(previous_direct_message_count)
         data["direct_message_count"] = str(direct_message_count)
         count_stats["direct_message_count"] = str(direct_message_count)
-    except:
-        construct_error_message(str(direct_message_channels_list))
-
+    except Exception as e:
+        construct_error_message(str(e))
 
 def get_multi_party_direct_message_channels_list():
     multi_party_message_count = 0
     multi_part_channels_list = {}
     try:
-        multi_party_channels_response = requests.get(MULTI_PARTY_DIRECT_MESSAGE_API)
+        multi_party_channels_response = requests.get(MULTI_PARTY_DIRECT_MESSAGE_API,headers=headers)
         multi_part_channels_list = json.loads(multi_party_channels_response.text)
+        request_falied(multi_part_channels_list)
         data["multi_party_channels_count"] = str(len(multi_part_channels_list["channels"]))
         for multi_party_info in multi_part_channels_list["channels"]:
             multi_party_message_count = multi_party_message_count + get_message_count(str(multi_party_info["id"]) , MULTI_PARTY_DIRECT_MESSAGE_TYPE)
@@ -404,8 +430,8 @@ def get_multi_party_direct_message_channels_list():
             multi_party_message_count = multi_party_message_count + int(previous_multi_party_channels_message_count)
         data["multi_party_channels_message_count"] = str(multi_party_message_count)
         count_stats["multi_party_channels_message_count"] = str(multi_party_message_count)
-    except:
-        construct_error_message(str(multi_part_channels_list))
+    except Exception as e:
+        construct_error_message(str(e))
 
 def total_message_count():
     try:
@@ -428,16 +454,19 @@ def load_count_stat_in_file():
 def get_pin_count(id):
     pin_list = {}
     try:
-        pin_response = requests.get(get_pin_count_api(id))
+        pin_response = requests.get(get_pin_count_api(id),headers=headers)
         pin_list = json.loads(pin_response.text)
+        request_falied(pin_list)
         return len(pin_list["items"])
-    except:
-        construct_error_message(str(pin_list))
+    except Exception as e:
+        construct_error_message(str(e))
 
 def construct_error_message(error):
     data["status"] = 0
     data["msg"] = error
-    print(data)
+    # traceback.print_exc()
+    
+    print(json.dumps(data))
     exit()
 
 
