@@ -236,6 +236,17 @@ class cifs:
 
         return self.maindata
 
+def run(param=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--plugin_version", help="plugin version", type=str, default=1
+    )
+    args = parser.parse_args()
+    PLUGIN_VERSION = args.plugin_version
+    cifs_instance = cifs()
+    result = cifs_instance.metriccollector()
+    return result
+
 
 if __name__ == "__main__":
 

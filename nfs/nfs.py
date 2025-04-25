@@ -238,6 +238,16 @@ class nfs:
 
         return self.maindata
 
+def run(param=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--plugin_version", help="plugin version", type=str, default=1
+    )
+    args = parser.parse_args()
+    PLUGIN_VERSION = args.plugin_version
+    nfs_instance = nfs()
+    result = nfs_instance.metriccollector()
+    return result
 
 if __name__ == "__main__":
 
@@ -247,6 +257,6 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     PLUGIN_VERSION = args.plugin_version
-    nfs = nfs()
-    result = nfs.metriccollector()
+    nfs_result = nfs()
+    result = nfs_result.metriccollector()
     print(json.dumps(result, indent=True))
