@@ -28,6 +28,21 @@ python3 vpn_check.py --host localhost --port 943 --url 'https://localhost:943/ad
 
 - Provide your vpn_check configurations in vpn_check.cfg file.
 
+#### For linux
+
+```bash
+[global_configurations]
+use_agent_python=1
+
+[vpn_check]
+host='localhost'
+port='943'
+url='https://localhost:943/admin'
+vpn_interface='None'
+```
+
+#### For windows
+
 ```bash
 [vpn_check]
 host='localhost'
