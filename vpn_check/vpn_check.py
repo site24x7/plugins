@@ -1,11 +1,23 @@
 #!/usr/bin/python3
-import sys, json, time, subprocess, requests, urllib3
+import sys, json, time, subprocess, requests, urllib3, argparse
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 PLUGIN_VERSION = "1"
 HEARTBEAT = "true"
 METRICS_UNITS={'URL Response Time':'ms','Packet Loss':'%','Latency':'ms'}
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--host', help='intranet url to be monitored', default="localhost")
+parser.add_argument('--url', help='intranet url to be monitored', default="https://localhost:943/admin/")
+parser.add_argument('--port', help='intranet url to be monitored', default="943")
+parser.add_argument('--vpn_interface', help='intranet url to be monitored', default="tun0")
+args, unknown = parser.parse_known_args()
+
+VPN_HOST = args.host
+VPN_PORT = args.port
+VPN_INTERFACE = args.vpn_interface
+URL_BEHIND_VPN = args.url
 
 def metric_collector(URL, vpn_data):
     try:
@@ -127,21 +139,11 @@ def run(param=None):
         vpn_data = get_packet_loss(VPN_HOST, vpn_data)
         vpn_data = metric_collector(URL_BEHIND_VPN, vpn_data)
         vpn_data = get_isp_info(vpn_data)
-    vpn_data['plugin_version'] = PLUGIN_VERSION
+    vpn_data['plugin_version'] = PLUGIN_VERSION 
     vpn_data['heartbeat_required'] = HEARTBEAT
     vpn_data['units'] = METRICS_UNITS
+    vpn_data['status'] = 1
     return vpn_data
 
 if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--host', help='intranet url to be monitored', default="localhost")
-    parser.add_argument('--url', help='intranet url to be monitored', default="https://localhost:943/admin/")
-    parser.add_argument('--port', help='intranet url to be monitored', default="943")
-    parser.add_argument('--vpn_interface', help='intranet url to be monitored', default=None)
-    args = parser.parse_args()
-    URL_BEHIND_VPN = args.url
-    VPN_HOST = args.host
-    VPN_PORT = args.port
-    VPN_INTERFACE = args.vpn_interface
-    print(json.dumps(run(), indent=4))
+    print(json.dumps(run()))
