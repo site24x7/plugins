@@ -68,3 +68,6 @@ The agent will automatically execute the plugin within five minutes and user can
 | URL Response Time      | Time taken to get a response from the specified URL behind the VPN. |
 | URL Status Code        | HTTP status code received when accessing the URL behind the VPN.               |
 | ISP                    | The name of the Internet Service Provider (ISP) detected for the current public IP. |
+
+## Sample Image
+![image](https://github.com/user-attachments/assets/53e207bf-281a-4f9c-acfa-25b520e7ef86)
