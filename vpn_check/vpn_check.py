@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--host', help='intranet url to be monitored', default="localhost")
 parser.add_argument('--url', help='intranet url to be monitored', default="https://localhost:943/admin/")
 parser.add_argument('--port', help='intranet url to be monitored', default="943")
-parser.add_argument('--vpn_interface', help='intranet url to be monitored', default="tun0")
+parser.add_argument('--vpn_interface', help='intranet url to be monitored', default=None)
 args, unknown = parser.parse_known_args()
 
 VPN_HOST = args.host
