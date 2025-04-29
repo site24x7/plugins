@@ -142,7 +142,6 @@ def run(param=None):
     vpn_data['plugin_version'] = PLUGIN_VERSION 
     vpn_data['heartbeat_required'] = HEARTBEAT
     vpn_data['units'] = METRICS_UNITS
-    vpn_data['status'] = 1
     return vpn_data
 
 if __name__ == '__main__':
