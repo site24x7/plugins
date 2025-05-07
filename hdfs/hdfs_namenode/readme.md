@@ -16,8 +16,8 @@ cd hdfs_namenode/
 - Download below files and place it under the "hdfs_namenode" directory.
 
 ```bash
-wget https://raw.githubusercontent.com/site24x7/plugins/master/hdfs_namenode/hdfs_namenode.py && sed -i "1s|^.*|#! $(which python3)|" hdfs_namenode.py
-wget https://raw.githubusercontent.com/site24x7/plugins/master/hdfs_namenode/hdfs_namenode.cfg
+wget https://raw.githubusercontent.com/site24x7/plugins/master/hdfs/hdfs_namenode/hdfs_namenode.py && sed -i "1s|^.*|#! $(which python3)|" hdfs_namenode.py
+wget https://raw.githubusercontent.com/site24x7/plugins/master/hdfs/hdfs_namenode/hdfs_namenode.cfg
 ```
 
 - Execute the below command with appropriate arguments to check for the valid json output:
@@ -44,7 +44,7 @@ port=9870
 ```bash
 [HDFS]
 host="localhost"
-port="16010"
+port="9870"
 ```
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
