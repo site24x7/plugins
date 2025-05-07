@@ -4,7 +4,7 @@ import json
 import requests
 import argparse
 
-PLUGIN_VERSION = 1
+PLUGIN_VERSION = 4
 HEARTBEAT = True
 
 METRICS_UNITS = {
@@ -22,14 +22,14 @@ METRICS_UNITS = {
 }
 
 class HDFSMonitor:
-    def __init__(self, args):
+    def __init__(self,host,port):
         self.maindata = {
             'plugin_version': PLUGIN_VERSION,
             'heartbeat_required': HEARTBEAT,
             'units': METRICS_UNITS
         }
-        self.host = args.host
-        self.port = args.port
+        self.host = host
+        self.port = port
 
     def metric_collector(self):
         try:
@@ -92,15 +92,22 @@ class HDFSMonitor:
                     self.maindata["Free Memory"] = bean.get("FreePhysicalMemorySize", 0)
 
             self.maindata["tabs"] = {
-                "Storage": {
+                "Threads": {
                     "order": 1,
+                    "tablist": [
+                        "New Threads", "Runnable Threads", "Blocked Threads",
+                        "Waiting Threads", "Terminated Threads"
+                    ]
+                },
+                "Storage": {
+                    "order": 2,
                     "tablist": [
                         "Total Capacity", "Used Capacity", "Remaining Capacity",
                         "Estimated Capacity Lost Total", "Total Volume Failures"
                     ]
                 },
                 "Blocks": {
-                    "order": 2,
+                    "order": 3,
                     "tablist": [
                         "Total Blocks", "Total Files", "Corrupted Blocks",
                         "Missing Blocks", "Pending Deletion Blocks",
@@ -109,19 +116,12 @@ class HDFSMonitor:
                         "Fs Lock Queue Length", "Maximum Objects"
                     ]
                 },
-                "Datanode": {
-                    "order": 3,
+                "DataNode": {
+                    "order": 4,
                     "tablist": [
                         "Dead Data Nodes", "Decommissioning Dead Data Nodes",
                         "Decommissioning Live Data Nodes", "Total Decommissioning Data Nodes",
                         "Total Live Data Nodes", "Total Stale Data Nodes"
-                    ]
-                },
-                "Threads": {
-                    "order": 4,
-                    "tablist": [
-                        "New Threads", "Runnable Threads", "Blocked Threads",
-                        "Waiting Threads", "Terminated Threads"
                     ]
                 }
             }
@@ -136,14 +136,17 @@ class HDFSMonitor:
                 "msg": f"Error fetching HDFS metrics: {e}"
             }
 
-def run(param=None):
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--host', help='HDFS host', default='localhost')
-    parser.add_argument('--port', help='HDFS JMX port', default='9870')
-    args = parser.parse_args()
-
-    obj = HDFSMonitor(args)
+def run(param):
+    host = param.get("host")
+    port = param.get("port")
+    obj = HDFSMonitor(host, port)
     return obj.metric_collector()
 
 if __name__ == "__main__":
-    print(json.dumps(run()))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', required=True, help='HDFS host', default="localhost")
+    parser.add_argument('--port', required=True, help='HDFS JMX port', default="9870")
+    args = parser.parse_args()
+
+    param = {"host": args.host, "port": args.port}
+    print(json.dumps(run(param)))
