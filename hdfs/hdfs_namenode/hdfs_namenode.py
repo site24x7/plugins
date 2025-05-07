@@ -4,7 +4,7 @@ import json
 import requests
 import argparse
 
-PLUGIN_VERSION = 4
+PLUGIN_VERSION = 1
 HEARTBEAT = True
 
 METRICS_UNITS = {
