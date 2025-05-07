@@ -42,7 +42,7 @@ port=9870
 ### For Windows
 
 ```bash
-[HDFS]
+[hdfs]
 host="localhost"
 port="9870"
 ```
