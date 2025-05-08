@@ -94,7 +94,7 @@ def plugin_config_setter(plugin_name, plugins_temp_path, arguments, display_name
         full_path = plugins_temp_path + plugin_name + "/"
         config_file_path = full_path + plugin_name + ".cfg"
 
-        args_dict = dict(arg.split("=") for arg in arguments.split("--") if "=" in arg)
+        args_dict = dict(arg.split("=",1) for arg in arguments.split("--") if "=" in arg)
 
         config_content = f"""
 [{"mongodb_"+args_dict.get('dbname', '').strip()}]
