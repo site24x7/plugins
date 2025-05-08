@@ -5,19 +5,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 PLUGIN_VERSION = "1"
 HEARTBEAT = "true"
-METRICS_UNITS={'URL Response Time':'ms','Packet Loss':'%','Latency':'ms'}
-
-parser = argparse.ArgumentParser()
-parser.add_argument('--host', help='intranet url to be monitored', default="localhost")
-parser.add_argument('--url', help='intranet url to be monitored', default="https://localhost:943/admin/")
-parser.add_argument('--port', help='intranet url to be monitored', default="943")
-parser.add_argument('--vpn_interface', help='intranet url to be monitored', default=None)
-args, unknown = parser.parse_known_args()
-
-VPN_HOST = args.host
-VPN_PORT = args.port
-VPN_INTERFACE = args.vpn_interface
-URL_BEHIND_VPN = args.url
+METRICS_UNITS = {'URL Response Time': 'ms', 'Packet Loss': '%', 'Latency': 'ms'}
 
 def metric_collector(URL, vpn_data):
     try:
@@ -51,21 +39,25 @@ def check_connected_to_vpn(VPN_INTERFACE, vpn_data):
 def check_vpn(VPN_HOST, VPN_PORT):
     vpn_data = {}
     try:
-        response = requests.head(f'https://{VPN_HOST}:{VPN_PORT}', 
-                              timeout=5, 
-                              verify=False)
-        vpn_data['VPN Status'] = 1
-        return vpn_data, True
-    except requests.RequestException:
+        response = requests.head(f'https://{VPN_HOST}:{VPN_PORT}', timeout=5, verify=False)
+        if response.status_code == 200:
+            vpn_data['VPN Status'] = 1
+            return vpn_data, True
+        else:
+            vpn_data['VPN Status'] = 0
+            vpn_data['status'] = 0
+            vpn_data['msg'] = f"Unexpected status code: {response.status_code}"
+            vpn_data['URL Status Code'] = response.status_code
+            return vpn_data, False
+    except requests.RequestException as e:
         vpn_data['VPN Status'] = 0
         vpn_data['status'] = 0
-        vpn_data['msg'] = "failed to connect to vpn server"
+        vpn_data['msg'] = f"Failed to connect to VPN server: {str(e)}"
         return vpn_data, False
 
 def get_command_output(command):
     p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     (output, err) = p.communicate()
-    p_status = p.wait()
     return output
 
 def get_packet_loss(VPN_HOST, vpn_data):
@@ -130,11 +122,17 @@ def get_isp_info(vpn_data):
         vpn_data['ISP'] = "unknown"
     return vpn_data
 
+def run(param):
+    VPN_HOST = param.get("host")
+    VPN_PORT = param.get("port")
+    VPN_INTERFACE = param.get("vpn_interface")
+    URL_BEHIND_VPN = param.get("url")
 
-def run(param=None):
     vpn_data, vpn_status = check_vpn(VPN_HOST, int(VPN_PORT))
     if VPN_INTERFACE:
         vpn_data = check_connected_to_vpn(VPN_INTERFACE, vpn_data)
+    else:
+        vpn_data['VPN Connected'] = 0
     if vpn_status:
         vpn_data = get_packet_loss(VPN_HOST, vpn_data)
         vpn_data = metric_collector(URL_BEHIND_VPN, vpn_data)
@@ -145,4 +143,18 @@ def run(param=None):
     return vpn_data
 
 if __name__ == '__main__':
-    print(json.dumps(run()))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', help='VPN server host (default: localhost)', default="localhost")
+    parser.add_argument('--port', help='VPN server port (default: 9430)', default="943")
+    parser.add_argument('--url', help='Internal URL behind VPN', default="https://localhost:943/admin/")
+    parser.add_argument('--vpn_interface', help='VPN interface name (e.g., tun0)', default=None)
+    args = parser.parse_args()
+
+    param = {
+        "host": args.host,
+        "url": args.url,
+        "port": args.port,
+        "vpn_interface": args.vpn_interface
+    }
+
+    print(json.dumps(run(param)))
