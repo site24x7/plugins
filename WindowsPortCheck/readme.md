@@ -37,7 +37,7 @@ Here's an example below:
 portNumber=80
 
 [port_check2]
-portNumber=802
+portNumber=443
 ```
 
 6. Further move the folder `WindowsPortCheck` into the  Site24x7 Windows Agent plugin folder:
@@ -53,12 +53,12 @@ Track the following metrics with the plugin:
 
 | Metric Name           | Description                                                                 |
 |-----------------------|-----------------------------------------------------------------------------|
-| Total Processes       | The number of unique processes currently listening on the specified port.   |
-| Total CPU Usage       | The total CPU usage percentage of all processes using the specified port.   |
-| Total Memory Usage    | The total memory consumed (in MB) by all processes using the port.          |
+| Port Processes       | The number of unique processes currently listening on the specified port.   |
+| Port CPU Usage       | The total CPU usage percentage of all processes using the specified port.   |
+| Port Memory Usage    | The total memory consumed (in MB) by all processes using the port.          |
 | Port Status Text      | Indicates whether the specified port is currently open or closed.           |
 
 
 ## Sample Images
 
-![image](https://github.com/user-attachments/assets/0a4e1ede-5afc-4a7c-b6f9-d32a5ad0bfa3)
+![image](https://github.com/user-attachments/assets/dc2fcb17-38d7-4d82-af9c-692f06448b25)
