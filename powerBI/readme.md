@@ -6,6 +6,13 @@ Monitor the status and availability of Power BI assets using the Power BI Deskto
 
 Download and install the latest version of the [Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
+Install the Microsoft Power BI Management Module
+This plugin uses Power BI cmdlets to fetch data. Install the required module by running the following command in PowerShell as Administrator:
+
+```bash
+Install-Module -Name MicrosoftPowerBIMgmt -Scope AllUsers
+```
+
 ## **Plugin installation**
 
 1. Create a folder `powerBI`.
