@@ -106,6 +106,11 @@ $output.Add("Port Status Text", $portStatusText)
 $output.Add("heartbeat_required", $heartbeat)
 $output.Add("plugin_version", $version)
 
+if ($portStatusValue -ne 1) {
+    $output.Add("status", 0)
+    $output.Add("msg", "Port $portNumber is closed")
+}
+
 $processes = Get-PortProcesses -Port $portNumber
 
 $uniqueProcesses = @(Get-UniqueProcesses -Processes $processes)
