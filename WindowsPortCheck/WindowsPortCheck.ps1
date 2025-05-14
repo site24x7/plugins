@@ -126,18 +126,18 @@ if ($uniqueProcesses) {
         $totalCPUPercent += $cpuPercent
     }
 
-    $output.Add("Total Processes", $totalProcesses)
-    $output.Add("Total CPU Usage", [math]::Round($totalCPUPercent, 2))
-    $output.Add("Total Memory Usage", [math]::Round($totalMemory, 2))
+    $output.Add("Port Processes", $totalProcesses)
+    $output.Add("Port CPU Usage", [math]::Round($totalCPUPercent, 2))
+    $output.Add("Port Memory Usage", [math]::Round($totalMemory, 2))
 } else {
-    $output.Add("Total Processes", 0)
-    $output.Add("Total CPU Usage", 0)
-    $output.Add("Total Memory Usage", 0)
+    $output.Add("Port Processes", 0)
+    $output.Add("Port CPU Usage", 0)
+    $output.Add("Port Memory Usage", 0)
 }
 
 $units = @{
-    "Total Memory Usage" = "MB"
-    "Total CPU Usage"    = "%"
+    "Port Memory Usage" = "MB"
+    "Port CPU Usage"    = "%"
 }
 $output.Add("units", $units)
 
