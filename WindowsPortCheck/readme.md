@@ -57,7 +57,7 @@ Track the following metrics with the plugin:
 | Port CPU Usage       | The total CPU usage percentage of all processes using the specified port.   |
 | Port Memory Usage    | The total memory consumed (in MB) by all processes using the port.          |
 | Port Status Text      | Indicates whether the specified port is currently open or closed.           |
-
+| Port Status        | A numeric indicator: 1 if the port is open, 0 if it is closed.              |
 
 ## Sample Images
 
