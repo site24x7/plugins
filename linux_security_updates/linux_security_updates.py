@@ -360,12 +360,9 @@ class security_update_check:
         return self.maindata
 
 
-def run(param=None):
+def run(param={}):
 
-    parser=argparse.ArgumentParser()
-    parser.add_argument('--timeout',help="Host Name",nargs='?', default= timeout)
-    args=parser.parse_args()
-    obj=security_update_check(args.timeout)
+    obj=security_update_check(param.get('timeout',5))
     result=obj.metriccollector()
     return result
 
