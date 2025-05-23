@@ -365,37 +365,85 @@ class esk:
     def all_node_metrics(self, nodesdata):
         try:
             chunk_size = 25
+            existing_chunks = self.node_metrics.copy()
+
+            current_nodes_flat = []
+            for chunk in sorted(existing_chunks.keys(), key=lambda x: int(x.split("_")[-1])):
+                current_nodes_flat.extend(existing_chunks[chunk])
+
+            current_api_nodes = {v["name"]: v for k, v in nodesdata.items()}
+
+            new_chunks = []
+            buffer = []
+
+            for node_name in current_nodes_flat:
+                if node_name in current_api_nodes:
+                    node_data = current_api_nodes[node_name]
+                    buffer.append({
+                        "name": node_name,
+                        "time_spent_on_queries": node_data["indices"]["search"]["query_time_in_millis"],
+                        "queries_in_progress": node_data["indices"]["search"]["query_current"],
+                        "number_of_fetches": node_data["indices"]["search"]["fetch_total"],
+                        "documents_indexed": node_data["indices"]["indexing"]["index_total"],
+                        "cpu_used": node_data["os"]["cpu"]["percent"],
+                        "status":1
+                    })
+                else:
+                    buffer.append({
+                        "name": node_name,
+                        "time_spent_on_queries": 0,
+                        "queries_in_progress": 0,
+                        "number_of_fetches": 0,
+                        "documents_indexed": 0,
+                        "cpu_used": 0,
+                        "status":0
+                    })
+
+                if len(buffer) == chunk_size:
+                    new_chunks.append(buffer)
+                    buffer = []
+
+            if buffer:
+                new_chunks.append(buffer)
+
+            new_node_names = set(current_api_nodes.keys()) - set(current_nodes_flat)
+            for new_node_name in sorted(new_node_names): 
+                node_data = current_api_nodes[new_node_name]
+                node_info = {
+                    "name": new_node_name,
+                    "time_spent_on_queries": node_data["indices"]["search"]["query_time_in_millis"],
+                    "queries_in_progress": node_data["indices"]["search"]["query_current"],
+                    "number_of_fetches": node_data["indices"]["search"]["fetch_total"],
+                    "documents_indexed": node_data["indices"]["indexing"]["index_total"],
+                    "cpu_used": node_data["os"]["cpu"]["percent"],
+                    "status":1
+                }
+                if new_chunks and len(new_chunks[-1]) < chunk_size:
+                    new_chunks[-1].append(node_info)
+                else:
+                    new_chunks.append([node_info])
+
             tablist_keys = []
+            self.node_metrics = {}
 
-            sorted_nodes = sorted(nodesdata.items(), key=lambda x: x[1].get("name", ""))
-            total_chunks = (len(sorted_nodes) + chunk_size - 1) // chunk_size
+            for idx, chunk_data in enumerate(new_chunks):
+                key = f"node_metrics_{idx + 1}"
+                self.maindata[key] = []
 
-            for chunk_index in range(total_chunks):
-                chunk_key = f"node_metrics_{chunk_index + 1}"
-                chunk_nodes = sorted_nodes[chunk_index * chunk_size:(chunk_index + 1) * chunk_size]
-                chunk_data = []
+                for node in chunk_data:
+                    renamed_node = {
+                        "name": node["name"],
+                        f"time_spent_on_queries_{idx + 1}": node["time_spent_on_queries"],
+                        f"queries_in_progress_{idx + 1}": node["queries_in_progress"],
+                        f"number_of_fetches_{idx + 1}": node["number_of_fetches"],
+                        f"documents_indexed_{idx + 1}": node["documents_indexed"],
+                        f"cpu_used_{idx + 1}": node["cpu_used"],
+                        f"status_{idx+1}": node["status"]
+                    }
+                    self.maindata[key].append(renamed_node)
 
-                for node_name, node_data in chunk_nodes:
-                    try:
-                        node_dict = {
-                            "name": node_data.get("name", f"node_{node_name}"),
-                            f"time_spent_on_queries_{chunk_index + 1}": node_data["indices"]["search"]["query_time_in_millis"],
-                            f"queries_in_progress_{chunk_index + 1}": node_data["indices"]["search"]["query_current"],
-                            f"number_of_fetches_{chunk_index + 1}": node_data["indices"]["search"]["fetch_total"],
-                            f"documents_indexed_{chunk_index + 1}": node_data["indices"]["indexing"]["index_total"],
-                            f"cpu_used_{chunk_index + 1}": node_data["os"]["cpu"]["percent"]
-                        }
-                        chunk_data.append(node_dict)
-                    except KeyError:
-                        continue
-                    except Exception as e:
-                        self.maindata['msg'] = str(e)
-                        self.maindata['status'] = 0
-
-                self.maindata[chunk_key] = chunk_data
-                tablist_keys.append(chunk_key)
-
-                self.node_metrics[chunk_key] = [node_data["name"] for node_data in chunk_data]
+                self.node_metrics[key] = [n["name"] for n in chunk_data]
+                tablist_keys.append(key)
 
             self.updateCounterValues(self.dictCounterValues)
 
@@ -456,6 +504,12 @@ class esk:
         if not cluster_data:
             return self.maindata
         cluster_data=json.loads(cluster_data)
+        cluster_status=cluster_data.get('status', '').lower()
+        if cluster_status != 'green':
+            self.maindata["status"] = 0
+            self.maindata["msg"] = f"Cluster status is currently '{cluster_data.get('status', 'unknown')}'"
+
+
         if not self.ClusterHealthMetrics(cluster_data, cluster_health_node_availability_metrics):
             return self.maindata
 
