@@ -41,7 +41,6 @@ sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
 
 echo "Python path updated to use: #!$PYTHON_PATH"
 
-
 # Check if pip is installed
 PIP_CMD="$PYTHON_CMD -m pip"
 
@@ -53,17 +52,17 @@ else
     exit 1
 fi
 
-# Check if psutil is installed
-if ! $PYTHON_CMD -c "import psutil" &> /dev/null; then
-    echo "psutil is not installed. Installing..."
-    if $PIP_CMD install psutil --break-system-packages &> /dev/null; then
-        echo "psutil installed successfully."
+# Check if redis is installed
+if ! $PYTHON_CMD -c "import redis" &> /dev/null; then
+    echo "redis is not installed. Installing..."
+    if $PIP_CMD install redis --break-system-packages &> /dev/null; then
+        echo "redis installed successfully."
     else
-        echo "Failed to install psutil."
+        echo "Failed to install redis."
         exit 1
     fi
 else
-    echo "psutil is already installed."
+    echo "redis is already installed."
 fi
 
 
@@ -72,7 +71,7 @@ source "${CURRENT_DIR_NAME}/$monitorName.cfg" &> /dev/null
 
 echo "port: $port"
 
-output=$("$PYTHON_PATH" "$TARGET_PY_FILE" --port "$port")
+output=$("$PYTHON_PATH" "$TARGET_PY_FILE" --host "$host" --port "$port" --password "$password")
 
 if grep -qE '"status": 0' <<< "$output"  ; then
     echo "Failed: $(grep -oP '"msg"\s*:\s*"\K(\\.|[^"\\])*' <<< "$output")"

@@ -53,26 +53,21 @@ else
     exit 1
 fi
 
-# Check if psutil is installed
-if ! $PYTHON_CMD -c "import psutil" &> /dev/null; then
-    echo "psutil is not installed. Installing..."
-    if $PIP_CMD install psutil --break-system-packages &> /dev/null; then
-        echo "psutil installed successfully."
+# Check if gpustat is installed
+if ! $PYTHON_CMD -c "import gpustat" &> /dev/null; then
+    echo "gpustat is not installed. Installing..."
+    if $PIP_CMD install gpustat --break-system-packages &> /dev/null; then
+        echo "gpustat installed successfully."
     else
-        echo "Failed to install psutil."
+        echo "Failed to install gpustat."
         exit 1
     fi
 else
-    echo "psutil is already installed."
+    echo "gpustat is already installed."
 fi
 
 
-# Source the config file
-source "${CURRENT_DIR_NAME}/$monitorName.cfg" &> /dev/null
-
-echo "port: $port"
-
-output=$("$PYTHON_PATH" "$TARGET_PY_FILE" --port "$port")
+output=$("$PYTHON_PATH" "$TARGET_PY_FILE")
 
 if grep -qE '"status": 0' <<< "$output"  ; then
     echo "Failed: $(grep -oP '"msg"\s*:\s*"\K(\\.|[^"\\])*' <<< "$output")"

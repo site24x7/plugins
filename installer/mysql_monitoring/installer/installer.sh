@@ -41,7 +41,6 @@ sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
 
 echo "Python path updated to use: #!$PYTHON_PATH"
 
-
 # Check if pip is installed
 PIP_CMD="$PYTHON_CMD -m pip"
 
@@ -53,26 +52,21 @@ else
     exit 1
 fi
 
-# Check if psutil is installed
-if ! $PYTHON_CMD -c "import psutil" &> /dev/null; then
-    echo "psutil is not installed. Installing..."
-    if $PIP_CMD install psutil --break-system-packages &> /dev/null; then
-        echo "psutil installed successfully."
-    else
-        echo "Failed to install psutil."
-        exit 1
-    fi
-else
-    echo "psutil is already installed."
+pymysql_zip="$CURRENT_DIR_NAME/pymysql/pymysql.zip"
+# Check if the file exists
+if [ ! -f $pymysql_zip ]; then
+    echo "Python file '$pymysql_zip' not found in the current directory."
+    exit 1
 fi
 
+unzip $pymysql_zip -d $CURRENT_DIR_NAME && rm $pymysql_zip
 
 # Source the config file
 source "${CURRENT_DIR_NAME}/$monitorName.cfg" &> /dev/null
 
 echo "port: $port"
 
-output=$("$PYTHON_PATH" "$TARGET_PY_FILE" --port "$port")
+output=$("$PYTHON_PATH" "$TARGET_PY_FILE" --host "$host" --port "$port" --username "$username" --password "$password")
 
 if grep -qE '"status": 0' <<< "$output"  ; then
     echo "Failed: $(grep -oP '"msg"\s*:\s*"\K(\\.|[^"\\])*' <<< "$output")"
