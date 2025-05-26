@@ -70,8 +70,6 @@ fi
 # Source the config file
 source "${CURRENT_DIR_NAME}/$monitorName.cfg" &> /dev/null
 
-echo "port: $port"
-
 output=$("$PYTHON_PATH" "$TARGET_PY_FILE" --port "$port")
 
 if grep -qE '"status": 0' <<< "$output"  ; then
