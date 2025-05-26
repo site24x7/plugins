@@ -406,6 +406,7 @@ class MySQL(object):
                     data['reads'] = reads
                 else:
                     data['reads'] = 0
+                    reads=0
                 try:
                     data['rw_ratio'] = reads/writes
                 except ZeroDivisionError:

@@ -59,7 +59,16 @@ if [ ! -f $pymysql_zip ]; then
     exit 1
 fi
 
-unzip $pymysql_zip -d $CURRENT_DIR_NAME && rm $pymysql_zip
+unzip $pymysql_zip -d $CURRENT_DIR_NAME &> /dev/null 
+
+if [ $? -ne 0 ]; then
+    echo "There was a problem unzipping the pymysql.zip"
+    exit 1
+else
+    echo "pymysql unzipped successfully"
+fi
+
+rm $pymysql_zip &> /dev/null 
 
 # Source the config file
 source "${CURRENT_DIR_NAME}/$monitorName.cfg" &> /dev/null
