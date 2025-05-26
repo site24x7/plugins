@@ -54,21 +54,19 @@ fi
 
 pymysql_zip="$CURRENT_DIR_NAME/pymysql/pymysql.zip"
 # Check if the file exists
-if [ ! -f $pymysql_zip ]; then
-    echo "Python file '$pymysql_zip' not found in the current directory."
-    exit 1
-fi
+if [ -f $pymysql_zip ]; then
+    unzip $pymysql_zip -d $CURRENT_DIR_NAME &> /dev/null 
 
-unzip $pymysql_zip -d $CURRENT_DIR_NAME &> /dev/null 
-
-if [ $? -ne 0 ]; then
-    echo "There was a problem unzipping the pymysql.zip"
-    exit 1
+    if [ $? -ne 0 ]; then
+        echo "There was a problem unzipping the pymysql.zip"
+    else
+        echo "pymysql unzipped successfully"
+        rm $pymysql_zip &> /dev/null 
+    fi
 else
-    echo "pymysql unzipped successfully"
+    echo "Python file '$pymysql_zip' not found in the current directory. Skipping unzip step."
 fi
 
-rm $pymysql_zip &> /dev/null 
 
 # Source the config file
 source "${CURRENT_DIR_NAME}/$monitorName.cfg" &> /dev/null
