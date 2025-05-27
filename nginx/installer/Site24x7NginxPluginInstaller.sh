@@ -503,14 +503,24 @@ get_endpoint(){
 }
 
 add_content() {
+    echo "Adding Site24x7 nginx_status configuration..."
 
-    output=$(grep -P -n -m 1 'server_name\s+[\w.-]+\s+;' $nginx_conf | awk -F: '{print $1}')
-    error_handler $? $output
-    line_no=$(($output+1))
-    output=$(sed -i ""$line_no"i  $content"  $nginx_conf)
-    error_handler $? $output
+    line_no=$(awk '/^[^#]*server_name[[:space:]]/ {print NR; exit}' "$nginx_conf")
+    error_handler $? "Failed to find server_name in nginx.conf"
 
+    awk -v insert_line="$line_no" -v content="$content" '
+    NR == insert_line {
+        print $0
+        print content
+        next
+    }
+    { print $0 }' "$nginx_conf" > "$nginx_conf.tmp" && mv "$nginx_conf.tmp" "$nginx_conf"
+
+    error_handler $? "Failed to insert status location block"
+
+    echo "Successfully inserted stub_status location block after server_name."
 }
+
 
 restart_nginx(){
 
