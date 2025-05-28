@@ -4,7 +4,7 @@ import subprocess
 import argparse
 
 
-PLUGIN_VERSION = 5
+PLUGIN_VERSION = 1
 HEARTBEAT = True
 
 class HiveMQ:
