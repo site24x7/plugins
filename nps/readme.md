@@ -48,3 +48,8 @@ The agent will automatically execute the plugin within five minutes and user can
 | `Malformed Packets Received`      | Number of malformed RADIUS packets received.                                   |
 | `Accounting Requests`             | Total number of accounting requests received by the NPS server.                |
 | `Accounting Requests per Second`  | Number of accounting requests received per second.                             |
+
+
+## Sample Image
+
+![image](https://github.com/user-attachments/assets/9c9d4e04-725c-442b-bcd7-70b37e633a38)
