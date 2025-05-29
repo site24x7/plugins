@@ -82,8 +82,8 @@ download_files() {
 install() {
     mkdir -p $temp_dir
     rm -f "$py_file" "$cfg_file"
-    download_files https://raw.githubusercontent.com/site24x7/plugins/refs/heads/hivemq/$plugin/$plugin.cfg
-    download_files https://raw.githubusercontent.com/site24x7/plugins/refs/heads/hivemq/$plugin/$plugin.py
+    download_files https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/$plugin/$plugin.cfg
+    download_files https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/$plugin/$plugin.py
 }
 
 get_plugin() {
