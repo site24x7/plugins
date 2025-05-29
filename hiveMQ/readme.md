@@ -86,15 +86,20 @@ The following metrics are captured by the HiveMQ monitoring plugin:
 
 ### Summary
 
-| Metric Name                          | Description                                                              |
-|--------------------------------------|--------------------------------------------------------------------------|
-| Shared Subscription Cache Hit Rate   | Cache hit rate for shared subscriptions.                                 |
-| Shared Subscription Cache Eviction Count | Number of evictions from the shared subscription cache.             |
-| Shared Subscription Cache Miss Count | Cache miss count for shared subscriptions.                               |
-| Shared Subscription Cache Total Load Time | Total time taken to load cache entries.                              |
-| Rate Limit Exceeded Count            | Count of operations exceeding rate limits.                               |
-| Total Bytes Received                 | Total number of bytes received from clients.                             |
-| Cluster Name Request Retry Count     | Number of retry attempts made when requesting cluster name.              |
+| Metric Name                              | Description                                                              |
+|------------------------------------------|--------------------------------------------------------------------------|
+| Shared Subscription Cache Hit Rate       | Cache hit rate for shared subscriptions (hits/second).                   |
+| Shared Subscription Cache Eviction Count | Number of evictions from the shared subscription cache.                  |
+| Shared Subscription Cache Miss Count     | Cache miss count for shared subscriptions.                               |
+| Shared Subscription Cache Total Load Time| Total time taken to load cache entries (in microseconds).                |
+| Rate Limit Exceeded Count                | Count of operations exceeding rate limits.                               |
+| Total Bytes Received                     | Total number of bytes received from clients.                             |
+| Total Bytes Sent                         | Total number of bytes sent to clients.                                   |
+| Cluster Name Request Retry Count         | Number of retry attempts made when requesting cluster name.              |
+| Bytes Sent Per Second                    | Rate at which bytes are sent per second.                                 |
+| System CPU Load                          | Current system CPU load as a ratio.                                      |
+| System Memory Free                       | Amount of free system memory.                                            |
+
 
 ### Message Traffic
 
