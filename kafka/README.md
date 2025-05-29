@@ -8,7 +8,7 @@ Apache Kafka is an open-source distributed stream-processing platform developed 
 
 ## Quick installation
 
-If you're using Linux servers, use the Oracle plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
+If you're using Linux servers, use the kafka plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
 
 Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
 
@@ -74,7 +74,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 
 - Place the "kafka" under the Site24x7 Linux Agent plugin directory:
 
-        Linux    ->   /opt/site24x7/monagent/plugins/kafka
+        Linux    ->   /opt/site24x7/monagent/plugins/
   
 #### Windows
         
@@ -82,7 +82,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
 -  Further move the folder "kafka" into the  Site24x7 Windows Agent plugin directory:
 
-        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\kafka
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 
 ## Supported Metrics
 The following metrics are captured by the Kafka monitoring plugin:
