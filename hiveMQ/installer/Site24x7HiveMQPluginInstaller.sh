@@ -174,19 +174,37 @@ add_conf() {
 
 python_path_update() {
     echo "Detecting Python..."
-    if output=$(which python3); then
+    
+    if output=$(which python3 2>/dev/null); then
         python=$output
-        sed -i "1s|^.*|#! $python|" "$py_file"
-        echo "Using Python: $($python --version)"
-    elif output=$(which python); then
+    elif output=$(which python 2>/dev/null); then
         python=$output
-        sed -i "1s|^.*|#! $python|" "$py_file"
-        echo "Using Python: $($python --version)"
     else
-        echo "Python not found. Exiting."
-        exit 1
+        tput setaf 1
+        echo "❌ Python not found automatically."
+        echo "Cannot proceed without a valid Python interpreter."
+        tput sgr0
+        echo
+        echo "🔍 Please provide the full path to Python manually."
+        echo "Hint: You can find it using commands like: which python3.12"
+        while true; do
+            read -rp "Enter the full Python path (e.g., /usr/bin/python3.12): " user_path
+            if [[ -x "$user_path" && "$($user_path -c 'print(42)' 2>/dev/null)" == "42" ]]; then
+                python="$user_path"
+                break
+            else
+                tput setaf 1
+                echo "❌ Invalid Python path or not executable. Please try again."
+                tput sgr0
+            fi
+        done
     fi
+
+    # Update the Python shebang in the plugin script
+    sed -i "1s|^.*|#!$python|" "$py_file"
+    echo "✅ Using Python: $($python --version 2>&1)"
 }
+
 
 restart_agent(){
     if $reinstall ; then
