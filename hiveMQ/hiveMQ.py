@@ -2,7 +2,8 @@
 import json
 import subprocess
 import argparse
-
+import os
+import contextlib
 
 PLUGIN_VERSION = 1
 HEARTBEAT = True
@@ -91,7 +92,9 @@ class HiveMQ:
             for metric_name, query in metric_queries.items():
                 jmxQuery = [JMXQuery(query)]
                 try:
-                    metric_result = jmxConnection.query(jmxQuery)
+                    with open(os.devnull, 'w') as devnull:
+                        with contextlib.redirect_stderr(devnull):
+                            metric_result = jmxConnection.query(jmxQuery)
                     if metric_result:
                         self.maindata[metric_name] = metric_result[0].value
                 except Exception as inner_e:
