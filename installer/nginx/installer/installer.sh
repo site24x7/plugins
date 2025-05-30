@@ -1,4 +1,9 @@
 #!/bin/bash
+set -e
+
+PACKAGE_REQUIRED=()
+
+CONFIGURATION_REQUIRED=("nginx_status_url" "username" "password")
 
 # Check for python or python3
 for version in python python3; do
@@ -9,43 +14,68 @@ for version in python python3; do
 done
 
 if [ -z "$PYTHON_CMD" ]; then
-    echo "Python is not installed or not found in PATH."
+    echo "Error: Python is not installed or not available in the PATH."
     exit 1
 fi
 
 PYTHON_PATH=$(command -v "$PYTHON_CMD")
-echo "Python executable path: $PYTHON_PATH"
+echo "Python executable found at: $PYTHON_PATH"
 
-# Get current directory name
+# Get current file name
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 IFS=/ read -ra parts <<< "$SCRIPT_DIR"
 unset "parts[-1]"
 
 monitorName="${parts[-1]}"
+
 CURRENT_DIR_NAME=$(echo "${parts[*]}" | sed 's/ /\//g')
-echo "current dir $CURRENT_DIR_NAME"
 TARGET_PY_FILE="${CURRENT_DIR_NAME}/$monitorName.py"
 
-# Check if the file exists
+# Check if the Python file exists
 if [ ! -f "$TARGET_PY_FILE" ]; then
-    echo "Python file '$TARGET_PY_FILE' not found in the current directory."
+    echo "Error: Python script '$TARGET_PY_FILE' not found in the expected directory."
     exit 1
 fi
 
-echo "Updating Python path in: $TARGET_PY_FILE"
+# Add Python shebang line to the top of the Python file
 sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
-echo "Python path updated to use: #!$PYTHON_PATH"
+
+# Check if the configuration file exists
+CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Error: Configuration file '$CONFIG_FILE' not found."
+    exit 1
+fi
+source "${CURRENT_DIR_NAME}/$monitorName.cfg" &> /dev/null || :
 
 # Check if pip is installed
 PIP_CMD="$PYTHON_CMD -m pip"
+
 if $PIP_CMD --version &> /dev/null; then
     PIP_VERSION=$($PIP_CMD --version | awk '{print $2}')
-    echo "pip is installed with version: $PIP_VERSION"
+    echo "Pip is available with version: $PIP_VERSION"
 else
-    echo "pip is not installed."
+    echo "Error: Pip is not installed."
     exit 1
 fi
 
+# Check if required packages are installed
+for package in "${PACKAGE_REQUIRED[@]}"; do
+    if ! $PYTHON_CMD -c "import $package" &> /dev/null; then
+        echo "Info: Package '$package' is not installed. Attempting installation..."
+        if $PIP_CMD install "$package" --break-system-packages &> /dev/null; then
+            echo "Package '$package' installed successfully."
+        else
+            echo "Error: Failed to install the package '$package'."
+            exit 1
+        fi
+    else
+        echo "Package '$package' is already installed."
+    fi
+done
+
+
+## Additional actions for nginx monitoring start here
 # Check if urllib is available (standard library)
 if $PYTHON_CMD -c "import urllib.request" &> /dev/null; then
     echo "urllib is available."
@@ -106,15 +136,26 @@ insert_stub_status() {
 # Call insertion function (non-interactive)
 insert_stub_status
 
+## Additional actions for nginx monitoring end here
 
-# === Execute Python Plugin ===
-source "${CURRENT_DIR_NAME}/$monitorName.cfg" &> /dev/null
 
-output=$("$PYTHON_PATH" "$TARGET_PY_FILE" --nginx_status_url "$nginx_status_url" --username "$username" --password "$password")
+# Execute the Python script with the provided parameters
+for config in "${CONFIGURATION_REQUIRED[@]}"; do
+    if [ -z "${!config+x}" ]; then
+        echo "Error: Configuration parameter '$config' is missing."
+        exit 1
+    fi
+done
 
-if grep -qE '"status": 0' <<< "$output"; then
-    echo "Failed: $(grep -oP '"msg":\s*"\K[^"]+' <<< "$output")"
+output=$("$PYTHON_PATH" "$TARGET_PY_FILE" $(for config in "${CONFIGURATION_REQUIRED[@]}"; do 
+    if [ -n "${!config}" ]; then 
+        echo "--$config ${!config}"; 
+    fi; 
+done))
+
+if grep -qE '"status": 0' <<< "$output" ; then
+    echo "Error: $(grep -oP '"msg"\s*:\s*"\K(\\.|[^"\\])*' <<< "$output")"
     exit 1
 else
-    echo "Success"
+    echo "Execution completed successfully."
 fi

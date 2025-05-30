@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import json,sys
+import os,importlib
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
@@ -236,7 +237,8 @@ class Redis(object):
         data['plugin_version'] = PLUGIN_VERSION
         data['heartbeat_required']=HEARTBEAT
         try:
-            import redis
+            sys.path = [path for path in sys.path if path not in ['.', os.path.dirname(os.path.realpath(__file__))]]
+            redis = importlib.import_module('redis')
 
         except Exception as e:
             data['status']=0
