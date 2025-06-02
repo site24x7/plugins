@@ -65,7 +65,7 @@ fi
 for package in "${PACKAGE_REQUIRED[@]}"; do
     if ! $PYTHON_CMD -c "import $package" &> /dev/null; then
         echo "Info: Package '$package' is not installed. Attempting installation..."
-        if $PIP_CMD install "$package" --break-system-packages &> /dev/null; then
+        if $PIP_CMD install "$package" &> /dev/null; then
             echo "Package '$package' installed successfully."
         else
             echo "Error: Failed to install the package '$package'."
