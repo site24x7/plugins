@@ -135,6 +135,7 @@ class security_update_check:
             
             os_content=""
             self.os_name=""
+            debian=False
             distro_file="/etc/os-release"
             if not os.path.isfile(distro_file):
                 self.maindata['msg']=distro_file+", Does not exist"
@@ -154,6 +155,11 @@ class security_update_check:
                 if line.startswith('ID_LIKE='):
                     _, self.os_name = line.split('=', 1)
                     self.os_name = self.os_name.strip('"')
+                    break  
+                if line.startswith('ID='):
+                    _, self.os_name = line.split('=', 1)
+                    self.os_name = self.os_name.strip('"')
+                    debian=True
                     break  
                 
             if not self.os_name:
@@ -217,6 +223,17 @@ class security_update_check:
                     except Exception as e:
                         self.maindata['msg'] = str(e)
                         self.maindata['status'] = 0
+                elif debian:
+                    security_updates_command="apt list --upgradable 2> /dev/null | grep -i \"\-security\" | wc -l"
+                    updates_output = self.get_command_updates_output(security_updates_command)
+                    if updates_output=="":
+                        self.maindata['Security Updates'] = -1
+                    elif updates_output:
+                        updates_output=updates_output.decode()
+                        security_count = updates_output.rstrip()
+                        self.maindata['Security Updates'] = security_count
+                    else:
+                        self.maindata['Security Updates'] = 0
                 else:
                     self.maindata['msg'] = "{} does not exist".format(file_path)
                     self.maindata['status'] = 0            
