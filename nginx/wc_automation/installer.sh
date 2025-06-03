@@ -129,7 +129,7 @@ insert_stub_status() {
         return 1
     fi
 
-    if systemctl reload nginx 2>/dev/null; then
+    if sudo systemctl reload nginx 2>/dev/null; then
         echo "stub_status config added successfully."
     else
         echo "stub_status config addition failed."
@@ -169,6 +169,8 @@ for config in "${CONFIGURATION_REQUIRED[@]}"; do
         exit 1
     fi
 done
+
+sleep 5
 
 output=$("$PYTHON_PATH" "$TARGET_PY_FILE" $(for config in "${CONFIGURATION_REQUIRED[@]}"; do 
     if [ -n "${!config}" ]; then 
