@@ -95,7 +95,11 @@ insert_stub_status() {
     nginx_conf="/etc/nginx/nginx.conf"
 
     if [ ! -f "$nginx_conf" ]; then
-        echo "stub_status config added: FAIL (nginx.conf not found)"
+       nginx_conf=$(sudo nginx -t 2>&1 | grep "configuration file" | grep -oE '/[^ ]*nginx\.conf' | head -n 1)
+    fi
+
+    if [ ! -f "$nginx_conf" ]; then
+        echo "stub_status config: FAIL (nginx.conf not found)"
         return 1
     fi
 
@@ -106,7 +110,7 @@ insert_stub_status() {
 
     line_no=$(awk '/^[^#]*server_name[[:space:]]/ {print NR; exit}' "$nginx_conf")
     if [ -z "$line_no" ]; then
-        echo "stub_status config added: FAIL (server_name not found)"
+        echo "stub_status config: FAIL (server_name not found)"
         return 1
     fi
 
@@ -121,7 +125,7 @@ insert_stub_status() {
     { print $0 }' "$nginx_conf" > "$nginx_conf.tmp" && mv "$nginx_conf.tmp" "$nginx_conf"
 
     if [ $? -ne 0 ]; then
-        echo "stub_status config added: FAIL (insertion failed)"
+        echo "stub_status config: FAIL (insertion failed)"
         return 1
     fi
 
@@ -134,8 +138,27 @@ insert_stub_status() {
 }
 
 # Call insertion function (non-interactive)
+
+url_host=$(echo "$nginx_status_url" | sed -E 's#https?://([^/:]+).*#\1#')
+
+# Define a function to check if the host is local
+is_local_host() {
+    [[ "$1" == "localhost" || "$1" == "127.0.0.1" || "$1" == "::1" ]]
+}
+
+
+if is_local_host "$url_host"; then
+
+if ! systemctl is-active --quiet nginx; then
+        echo "Error: nginx service is not running or not active."
+        exit 1
+    fi
+    
 insert_stub_status
 
+else
+    echo "Remote URL detected."
+fi
 ## Additional actions for nginx monitoring end here
 
 
