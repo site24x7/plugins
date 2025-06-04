@@ -94,69 +94,139 @@ else
     exit 1
 fi
 
+
+url_host=$(echo "$url" | sed -E 's#https?://([^/:]+).*#\1#')
+
+# Define a function to check if the host is local
+is_local_host() {
+    [[ "$1" == "localhost" || "$1" == "127.0.0.1" || "$1" == "::1" ]]
+}
+
+if is_local_host "$url_host"; then
+
+if curl -s --max-time 3 "$url" | grep -q "Total Accesses"; then
+        echo "Apache mod_status already enabled. Skipping configuration."
+    else
+        echo "Apache mod_status not yet enabled. Proceeding to configure..."
+
+
 # --- Apache mod_status enable section starts here ---
-
-# Check if apache2 is installed
-if command -v apache2 &> /dev/null; then
-    echo "Apache detected. Enabling mod_status..."
-
-    # Enable mod_status module (Debian/Ubuntu style)
-    sudo a2enmod status
-
-    # Create mod_status config snippet
-    STATUS_CONF="/etc/apache2/conf-available/server-status.conf"
-
-    sudo tee "$STATUS_CONF" > /dev/null << EOF
-<Location /server-status>
-    SetHandler server-status
-    Require local
-</Location>
-EOF
-
-    # Enable the configuration
-    sudo a2enconf server-status
-
-    # Reload Apache to apply changes
-    sudo systemctl reload apache2
-
-    echo "Apache mod_status enabled and /server-status URL activated."
-    echo "You can access it at: http://localhost/server-status?auto"
-
-elif command -v httpd &> /dev/null; then
-    echo "Apache httpd detected. Enabling mod_status..."
-
-    # Try to enable mod_status by editing /etc/httpd/conf.modules.d/ or main config
-    # This part may vary depending on the distro
-
-    # Check if mod_status is already loaded, else load it
-    if ! grep -q "mod_status.so" /etc/httpd/conf.modules.d/*.conf; then
-        echo "LoadModule status_module modules/mod_status.so" | sudo tee /etc/httpd/conf.modules.d/00-status.conf
+# Function to check if a systemd service is active
+is_service_active() {
+    local service_name=$1
+    if systemctl is-active --quiet "$service_name"; then
+        return 0
+    else
+        return 1
     fi
+}
 
-    # Create mod_status config snippet
-    STATUS_CONF="/etc/httpd/conf.d/server-status.conf"
 
-    sudo tee "$STATUS_CONF" > /dev/null << EOF
+# Check if apache2 or httpd service is running
+if systemctl status apache2 &>/dev/null; then
+    SERVICE_NAME="apache2"
+elif systemctl status httpd &>/dev/null; then
+    SERVICE_NAME="httpd"
+else
+    SERVICE_NAME=""
+fi
+
+if [ -n "$SERVICE_NAME" ]; then
+    if is_service_active "$SERVICE_NAME"; then
+        echo "Apache service ($SERVICE_NAME) is running. Enabling mod_status..."
+
+        if [ "$SERVICE_NAME" == "apache2" ]; then
+            sudo a2enmod status > /dev/null
+            if [ $? -ne 0 ]; then
+                echo "Error: Failed to enable mod_status for Apache2."
+                exit 1
+            fi
+
+            if [ -d "/etc/apache2" ]; then
+                STATUS_CONF="/etc/apache2/conf-available/server-status.conf"
+                # echo "Creating server-status configuration at if $STATUS_CONF"
+            else
+                 APACHECTL=$(command -v apachectl || command -v apache2ctl)
+                if [ -n "$APACHECTL" ]; then
+                    SERVER_ROOT=$($APACHECTL -V | grep -i 'HTTPD_ROOT' | awk -F'"' '{print $2}')
+                    
+                    STATUS_CONF="$SERVER_ROOT/conf-available/server-status.conf"
+                fi
+                # echo "Creating server-status configuration at else $STATUS_CONF"
+            fi
+            # echo "Creating server-status configuration at final $STATUS_CONF"
+            if [ -z "$STATUS_CONF" ]; then
+                echo "Error: Could not determine the configuration file path for Apache2 mod_status."
+                exit 1
+            fi
+            echo "Creating server-status configuration at $STATUS_CONF"
+            sudo tee "$STATUS_CONF" > /dev/null << EOF
 <Location /server-status>
     SetHandler server-status
     Require local
 </Location>
 EOF
 
-    # Restart Apache to apply changes
-    sudo systemctl reload httpd
+            sudo a2enconf server-status > /dev/null
+            if [ $? -ne 0 ]; then
+                echo "Error: Failed to enable server-status configuration for Apache2."
+                exit 1
+            fi
+            sudo systemctl reload apache2
 
-    echo "Apache mod_status enabled and /server-status URL activated."
-    echo "You can access it at: http://localhost/server-status?auto"
+        else
+            # httpd service
+            if ! grep -q "mod_status.so" /etc/httpd/conf.modules.d/*.conf 2>/dev/null; then
+                echo "LoadModule status_module modules/mod_status.so" | sudo tee /etc/httpd/conf.modules.d/00-status.conf
+            fi
 
+             if [ -d "/etc/httpd/conf.d" ]; then
+                STATUS_CONF="/etc/httpd/conf.d/server-status.conf"
+            else
+                APACHECTL=$(command -v apachectl || command -v httpd)
+                if [ -n "$APACHECTL" ]; then
+                    SERVER_ROOT=$($APACHECTL -V | grep -i 'HTTPD_ROOT' | awk -F'"' '{print $2}')
+                    STATUS_CONF="$SERVER_ROOT/conf.d/server-status.conf"
+                else
+                    echo "Error: apachectl or httpd not found. Cannot determine httpd config path."
+                    exit 1
+                fi
+            fi
+
+            if [ -z "$STATUS_CONF" ]; then
+                echo "Error: Could not determine the configuration file path for httpd mod_status."
+                exit 1
+            fi
+
+            echo "Creating server-status configuration at $STATUS_CONF"
+            sudo tee "$STATUS_CONF" > /dev/null << EOF
+<Location /server-status>
+    SetHandler server-status
+    Require local
+</Location>
+EOF
+
+            sudo systemctl reload httpd
+        fi
+
+        echo "Apache mod_status enabled and /server-status URL activated."
+        echo "You can access it at: http://localhost/server-status?auto"
+
+    else
+        echo "Error: Apache service ($SERVICE_NAME) is installed but not running or inactive."
+        exit 1
+    fi
 else
-    echo "Apache is not installed or not found. Skipping Apache mod_status configuration."
+    echo "Apache service not found. Skipping Apache mod_status configuration."
 fi
+fi   
 
 # --- Apache mod_status enable section ends here ---
 
+else
+    echo "Remote URL detected."
+fi
 ## Additional actions for apache_monitoring end here
-
 
 output=$("$PYTHON_PATH" "$TARGET_PY_FILE" $(for config in "${CONFIGURATION_REQUIRED[@]}"; do 
     if [ -n "${!config}" ]; then 
