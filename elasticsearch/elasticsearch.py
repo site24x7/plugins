@@ -467,8 +467,9 @@ class esk:
         try:
 
             for key1 in datapath:
-                self.maindata[key1]=cluster_data[datapath[key1]]
-
+                data_key = datapath[key1]
+                if data_key in cluster_data:
+                    self.maindata[key1] = cluster_data[data_key]
             return True
         except Exception as e:
             self.maindata['msg']=str(e)
