@@ -154,7 +154,12 @@ if ! systemctl is-active --quiet nginx; then
         exit 1
     fi
     
-insert_stub_status
+if curl -s --head --request GET "$nginx_status_url" | grep -q "200 OK"; then
+    echo "URL is active."
+else
+    echo "URL is not active. Attempting to insert stub_status block..."
+    insert_stub_status
+fi
 
 else
     echo "Remote URL detected."
