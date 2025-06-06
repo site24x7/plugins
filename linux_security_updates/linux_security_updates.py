@@ -156,11 +156,11 @@ class security_update_check:
                     _, self.os_name = line.split('=', 1)
                     self.os_name = self.os_name.strip('"')
                     break  
-                if line.startswith('ID='):
+                elif line.startswith('ID='):
                     _, self.os_name = line.split('=', 1)
                     self.os_name = self.os_name.strip('"')
                     debian=True
-                    break  
+                    #break  
                 
             if not self.os_name:
                 self.maindata['msg'] = "Distro information not found in {}".format(distro_file)
