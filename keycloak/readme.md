@@ -73,3 +73,6 @@ The agent will automatically execute the plugin within five minutes and user can
 | Free Formatted Memory    | The amount of memory currently free, formatted for readability.|
 
 
+## Sample Image
+
+![image](https://github.com/user-attachments/assets/3a2ecb82-5271-4d9f-82ed-3005f3aca8b5)
