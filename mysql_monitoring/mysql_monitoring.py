@@ -155,20 +155,28 @@ METRICS_JSON={
     "Key_writes":"key_writes" 
     }
 
-REPLICATION_JSON={
+REPLICATION_JSON = {
     "Slave_IO_State": "slave_IO_state",
-    "Master_Host":"master_host",
-    "Master_User":"master_user",
-    "Connect_Retry":"connect_retry",
-    "Master_Server_Id":"master_server_id",
-    "Master_Retry_Count":"master_retry_count",
-    "Skip_Counter":"skip_counter",
-    "Relay_Log_Space":"relay_log_space",
-    "Seconds_Behind_Master":"seconds_behind_master",
-    "Last_IO_Errno":"last_IO_errno",
-    "Last_SQL_Errno":"last_sql_errno",
-    "Slave_IO_Running":"slave_IO_running",
-    "Slave_SQL_Running":"slave_sql_running"
+    "Replica_IO_State": "slave_IO_state",
+    "Master_Host": "master_host",
+    "Source_Host": "master_host",
+    "Master_User": "master_user",
+    "Source_User": "master_user",
+    "Connect_Retry": "connect_retry",
+    "Master_Server_Id": "master_server_id",
+    "Source_Server_Id": "master_server_id",
+    "Master_Retry_Count": "master_retry_count",
+    "Source_Retry_Count": "master_retry_count",
+    "Skip_Counter": "skip_counter",
+    "Relay_Log_Space": "relay_log_space",
+    "Seconds_Behind_Master": "seconds_behind_master",  # For MySQL 5.7
+    "Seconds_Behind_Source": "seconds_behind_master",  # For MySQL 8.0+
+    "Last_IO_Errno": "last_IO_errno",
+    "Last_SQL_Errno": "last_sql_errno",
+    "Slave_IO_Running": "slave_IO_running",
+    "Replica_IO_Running": "slave_IO_running",
+    "Slave_SQL_Running": "slave_sql_running",
+    "Replica_SQL_Running": "slave_sql_running"
 }
     
 #Mention the units of your metrics in this python dictionary. If any new metrics are added make an entry here for its unit.
@@ -248,7 +256,7 @@ class MySQL(object):
         except Exception as e:
             global con_error
             con_error=str(e)
-            traceback.print_exc()
+            #traceback.print_exc()
             return False
         return True
 
@@ -305,7 +313,8 @@ class MySQL(object):
                     master_query='SHOW MASTER STATUS'
                          
                 except pymysql.OperationalError as message:
-                    traceback.print_exc()
+                    data["msg"] = repr(e)
+                    data["status"]=0
                     return data
                 
                 cursor.execute(slave_query)
@@ -323,11 +332,17 @@ class MySQL(object):
                 myresult_master=cursor.fetchall()
                 if myresult_master and myresult_slave:
                         data['mysql_node_type']='Master & slave'
+                        for i in range(len(myresult_slave[0])):
+                            if REPLICATION_JSON.get(myresult_slave_key[i][0]):
+                                
+                                data[REPLICATION_JSON[myresult_slave_key[i][0]]]=myresult_slave[0][i]
+                        #data['mysql_node_type']='Slave'
                 elif myresult_master:
                         data['mysql_node_type']='Master'
                 elif myresult_slave : 
                     for i in range(len(myresult_slave[0])):
                         if REPLICATION_JSON.get(myresult_slave_key[i][0]):
+                            
                             data[REPLICATION_JSON[myresult_slave_key[i][0]]]=myresult_slave[0][i]
                     data['mysql_node_type']='Slave'
                 else:
@@ -410,7 +425,8 @@ class MySQL(object):
                 except ZeroDivisionError:
                     data['rw_ratio'] = 0
                 except Exception as e:
-                    traceback.format_exc()
+                    data["msg"] = repr(e)
+                    data["status"]=0
     
                 # transactions
                 if 'Com_commit' in global_metrics and  'Com_rollback' in global_metrics:
