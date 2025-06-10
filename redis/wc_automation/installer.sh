@@ -26,9 +26,11 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 IFS=/ read -ra parts <<< "$SCRIPT_DIR"
 unset "parts[-1]"
 
-monitorName="${parts[-1]}"
 
-CURRENT_DIR_NAME=$(echo "${parts[*]}" | sed 's/ /\//g')
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+CURRENT_DIR_NAME=$(dirname "$SCRIPT_DIR")
+monitorName=$(basename "$CURRENT_DIR_NAME")
+
 TARGET_PY_FILE="${CURRENT_DIR_NAME}/$monitorName.py"
 
 # Check if the Python file exists
@@ -46,7 +48,13 @@ if [ ! -f "$CONFIG_FILE" ]; then
     echo "Error: Configuration file '$CONFIG_FILE' not found."
     exit 1
 fi
-source "${CURRENT_DIR_NAME}/$monitorName.cfg" &> /dev/null || :
+
+while IFS='=' read -r key value; do
+key=$(echo "$key" | xargs)  
+value=$(echo "$value" | xargs)
+[[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
+eval "$key=\"$value\""
+done < "$CONFIG_FILE"
 
 # Check if pip is installed
 PIP_CMD="$PYTHON_CMD -m pip"
