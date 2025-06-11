@@ -1,4 +1,3 @@
-#!/usr/bin/python
 
 ### Language : Python
 ### Tested in Ubuntu
