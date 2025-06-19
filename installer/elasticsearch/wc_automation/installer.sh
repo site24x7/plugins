@@ -44,13 +44,13 @@ if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
         exit 1
     fi
 
-    while IFS='=' read -r key value; do
-    key=$(echo "$key" | xargs)  
-    value=$(echo "$value" | xargs)
-    [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
-    eval "$key=\"$value\""
+    while IFS='=' read -r key value || [ -n "$key" ]; do
+        key=$(echo "$key" | xargs)  
+        value=$(echo "$value" | xargs)
+        [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
+        eval "$key=\"$value\""
     done < "$CONFIG_FILE"
-
+    
 fi
 
 # Check if pip is installed
