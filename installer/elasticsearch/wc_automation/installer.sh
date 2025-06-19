@@ -36,6 +36,8 @@ fi
 # Add Python shebang line to the top of the Python file
 sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
 
+declare -A config
+
 # Check if the configuration file exists only if CONFIGURATION_REQUIRED is not empty
 if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
     CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
@@ -48,10 +50,15 @@ if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
         key=$(echo "$key" | xargs)  
         value=$(echo "$value" | xargs)
         [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
-        eval "$key=\"$value\""
+        config["$key"]="$value"
     done < "$CONFIG_FILE"
-    
 fi
+
+echo "Assigned configuration values:"
+for key in "${!config[@]}"; do
+    echo "$key=${config[$key]}"
+done
+
 
 # Check if pip is installed
 PIP_CMD="$PYTHON_CMD -m pip"
@@ -79,22 +86,19 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
     fi
 done
 
-# Execute the Python script with the provided parameters
-for config in "${CONFIGURATION_REQUIRED[@]}"; do
-    if [ -z "${!config+x}" ]; then
-        echo "Error: Configuration parameter '$config' is missing."
+ARGS_ARRAY=("$PYTHON_PATH" "$TARGET_PY_FILE")
+for param in "${CONFIGURATION_REQUIRED[@]}"; do
+    value="${config[$param]}"
+    if [ -z "$value" ]; then
+        echo "Error: Configuration parameter '$param' is missing."
         exit 1
     fi
+    ARGS_ARRAY+=("--$param" "$value")
 done
 
-ARGS=""
-for config in "${CONFIGURATION_REQUIRED[@]}"; do 
-    if [ -n "${!config}" ]; then 
-        ARGS+="--$config \"${!config}\" "
-    fi
-done
 
-output=$(eval "\"$PYTHON_PATH\" \"$TARGET_PY_FILE\" $ARGS")
+output=$("${ARGS_ARRAY[@]}")
+
 
 if grep -qE '"status": 0' <<< "$output" ; then
     echo "Error: $(grep -oP '"msg"\s*:\s*"\K(\\.|[^"\\])*' <<< "$output")"
