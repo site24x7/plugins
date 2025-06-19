@@ -23,10 +23,6 @@ echo "Python executable found at: $PYTHON_PATH"
 
 # Get current file name
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-IFS=/ read -ra parts <<< "$SCRIPT_DIR"
-unset "parts[-1]"
-
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 CURRENT_DIR_NAME=$(dirname "$SCRIPT_DIR")
 monitorName=$(basename "$CURRENT_DIR_NAME")
 
@@ -41,19 +37,23 @@ fi
 # Add Python shebang line to the top of the Python file
 sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
 
-# Check if the configuration file exists
-CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
-if [ ! -f "$CONFIG_FILE" ]; then
-    echo "Error: Configuration file '$CONFIG_FILE' not found."
-    exit 1
-fi
+declare -A config
 
-while IFS='=' read -r key value; do
-key=$(echo "$key" | xargs)  
-value=$(echo "$value" | xargs)
-[[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
-eval "$key=\"$value\""
-done < "$CONFIG_FILE"
+# Check if the configuration file exists
+if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
+    CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
+    if [ ! -f "$CONFIG_FILE" ]; then
+        echo "Error: Configuration file '$CONFIG_FILE' not found."
+        exit 1
+    fi
+
+    while IFS='=' read -r key value || [ -n "$key" ]; do
+        key=$(echo "$key" | xargs)  
+        value=$(echo "$value" | xargs)
+        [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
+        config["$key"]="$value"
+    done < "$CONFIG_FILE"
+fi
 
 # Check if pip is installed
 PIP_CMD="$PYTHON_CMD -m pip"
@@ -146,7 +146,7 @@ insert_stub_status() {
 
 # Call insertion function (non-interactive)
 
-url_host=$(echo "$nginx_status_url" | sed -E 's#https?://([^/:]+).*#\1#')
+url_host=$(echo "${config[nginx_status_url]}" | sed -E 's#https?://([^/:]+).*#\1#')
 
 # Define a function to check if the host is local
 is_local_host() {
@@ -161,7 +161,7 @@ if ! systemctl is-active --quiet nginx; then
         exit 1
     fi
     
-if curl -s --head --request GET "$nginx_status_url" | grep -q "200 OK"; then
+if curl -s --head --request GET "${config[nginx_status_url]}" | grep -q "200 OK"; then
     echo "URL is active."
 else
     echo "URL is not active. Attempting to insert stub_status block..."
@@ -173,25 +173,21 @@ else
 fi
 ## Additional actions for nginx monitoring end here
 
-
-# Execute the Python script with the provided parameters
-for config in "${CONFIGURATION_REQUIRED[@]}"; do
-    if [ -z "${!config+x}" ]; then
-        echo "Error: Configuration parameter '$config' is missing."
-        exit 1
-    fi
-done
-
 sleep 5
 
-ARGS=""
-for config in "${CONFIGURATION_REQUIRED[@]}"; do 
-    if [ -n "${!config}" ]; then 
-        ARGS+="--$config \"${!config}\" "
+# Execute the Python script with the provided parameters
+ARGS_ARRAY=("$PYTHON_PATH" "$TARGET_PY_FILE")
+for param in "${CONFIGURATION_REQUIRED[@]}"; do
+    value="${config[$param]}"
+    if [ -z "$value" ]; then
+        echo "Error: Configuration parameter '$param' is missing."
+        exit 1
     fi
+    ARGS_ARRAY+=("--$param" "$value")
 done
 
-output=$(eval "\"$PYTHON_PATH\" \"$TARGET_PY_FILE\" $ARGS")
+
+output=$("${ARGS_ARRAY[@]}")
 
 if grep -qE '"status": 0' <<< "$output" ; then
     echo "Error: $(grep -oP '"msg"\s*:\s*"\K(\\.|[^"\\])*' <<< "$output")"

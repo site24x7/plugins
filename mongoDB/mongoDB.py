@@ -542,6 +542,7 @@ class MongoDB(object):
 
 
         except Exception:
+            data['status']=0
             data['msg']=traceback.format_exc()
 
         data['units']=METRICS_UNITS
