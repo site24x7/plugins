@@ -3,7 +3,7 @@ set -e
 
 PACKAGE_REQUIRED=("urllib3" "requests")
 
-CONFIGURATION_REQUIRED=("host" "port" "username" "password" "ssl_option")
+CONFIGURATION_REQUIRED=("host" "port" "username" "password" "ssl_option" "cafile")
 
 # Check for python or python3
 for version in python python3; do
