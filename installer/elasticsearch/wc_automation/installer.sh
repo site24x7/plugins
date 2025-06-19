@@ -3,7 +3,7 @@ set -e
 
 PACKAGE_REQUIRED=("urllib3" "requests")
 
-CONFIGURATION_REQUIRED=("host" "port" "username" "password" "ssl_option" "cafile")
+CONFIGURATION_REQUIRED=("host" "port" "username" "password" "ssl_option")
 
 # Check for python or python3
 for version in python python3; do
@@ -21,14 +21,10 @@ fi
 PYTHON_PATH=$(command -v "$PYTHON_CMD")
 echo "Python executable found at: $PYTHON_PATH"
 
-# Get current file name
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-IFS=/ read -ra parts <<< "$SCRIPT_DIR"
-unset "parts[-1]"
+CURRENT_DIR_NAME=$(dirname "$SCRIPT_DIR")
+monitorName=$(basename "$CURRENT_DIR_NAME")
 
-monitorName="${parts[-1]}"
-
-CURRENT_DIR_NAME=$(echo "${parts[*]}" | sed 's/ /\//g')
 TARGET_PY_FILE="${CURRENT_DIR_NAME}/$monitorName.py"
 
 # Check if the Python file exists
@@ -40,13 +36,22 @@ fi
 # Add Python shebang line to the top of the Python file
 sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
 
-# Check if the configuration file exists
-CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
-if [ ! -f "$CONFIG_FILE" ]; then
-    echo "Error: Configuration file '$CONFIG_FILE' not found."
-    exit 1
+# Check if the configuration file exists only if CONFIGURATION_REQUIRED is not empty
+if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
+    CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
+    if [ ! -f "$CONFIG_FILE" ]; then
+        echo "Error: Configuration file '$CONFIG_FILE' not found."
+        exit 1
+    fi
+
+    while IFS='=' read -r key value; do
+    key=$(echo "$key" | xargs)  
+    value=$(echo "$value" | xargs)
+    [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
+    eval "$key=\"$value\""
+    done < "$CONFIG_FILE"
+
 fi
-source "${CURRENT_DIR_NAME}/$monitorName.cfg" &> /dev/null || :
 
 # Check if pip is installed
 PIP_CMD="$PYTHON_CMD -m pip"
@@ -82,11 +87,14 @@ for config in "${CONFIGURATION_REQUIRED[@]}"; do
     fi
 done
 
-output=$("$PYTHON_PATH" "$TARGET_PY_FILE" $(for config in "${CONFIGURATION_REQUIRED[@]}"; do 
+ARGS=""
+for config in "${CONFIGURATION_REQUIRED[@]}"; do 
     if [ -n "${!config}" ]; then 
-        echo "--$config ${!config}"; 
-    fi; 
-done))
+        ARGS+="--$config \"${!config}\" "
+    fi
+done
+
+output=$(eval "\"$PYTHON_PATH\" \"$TARGET_PY_FILE\" $ARGS")
 
 if grep -qE '"status": 0' <<< "$output" ; then
     echo "Error: $(grep -oP '"msg"\s*:\s*"\K(\\.|[^"\\])*' <<< "$output")"
