@@ -81,14 +81,19 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
 done
 
 # Execute the Python script with the provided parameters
+
 ARGS_ARRAY=("$PYTHON_PATH" "$TARGET_PY_FILE")
 for param in "${CONFIGURATION_REQUIRED[@]}"; do
-    value="${config[$param]}"
-    if [ -z "$value" ]; then
+    value=""
+    if [ -v "${config[$param]}" ]; then
         echo "Error: Configuration parameter '$param' is missing."
         exit 1
+    else
+        value="${config[$param]}"
     fi
-    ARGS_ARRAY+=("--$param" "$value")
+    if [ ! -z "$value" ]; then
+        ARGS_ARRAY+=("--$param" "$value")
+    fi 
 done
 
 
