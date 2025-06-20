@@ -5,6 +5,17 @@ PACKAGE_REQUIRED=("cryptography")
 
 CONFIGURATION_REQUIRED=("host" "port" "username" "password")
 
+check_value(){
+    value=$1
+    suspicious_regex='[`$\\|;()]'
+    command_regex='rm|curl|wget|shutdown|reboot|base64|mkfs'
+    
+    if [[ "$value" = ~$suspicious_regex ]] || [[ "$value" =~ $command_regex ]]; then
+        echo "Suspicious content detected."
+        exit 1
+    fi
+}
+
 pip_check(){
 # Check if pip is installed
 PIP_CMD="$PYTHON_CMD -m pip"
@@ -63,6 +74,7 @@ if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
     while IFS='=' read -r key value || [ -n "$key" ]; do
         key=$(echo "$key" | xargs)  
         value=$(echo "$value" | xargs)
+        check_value $value
         [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
         config["$key"]="$value"
     done < "$CONFIG_FILE"
