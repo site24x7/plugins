@@ -3,8 +3,6 @@ set -e
 
 PACKAGE_REQUIRED=("gpustat")
 
-CONFIGURATION_REQUIRED=()
-
 # Check for python or python3
 for version in python python3; do
     if command -v "$version" &> /dev/null; then

@@ -61,9 +61,14 @@ if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
     while IFS='=' read -r key value || [ -n "$key" ]; do
         key=$(echo "$key" | xargs)  
         value=$(echo "$value" | xargs)
-        check_value $value
         [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
-        config["$key"]="$value"
+        for required_key in "${CONFIGURATION_REQUIRED[@]}"; do
+            if [[ "$key" == "$required_key" ]]; then
+                check_value "$value"
+                config["$key"]="$value"
+                break
+            fi
+        done
     done < "$CONFIG_FILE"
 fi
 

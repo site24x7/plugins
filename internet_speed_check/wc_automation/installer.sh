@@ -3,19 +3,6 @@ set -e
 
 PACKAGE_REQUIRED=("speedtest-cli")
 
-CONFIGURATION_REQUIRED=()
-
-check_value(){
-    value=$1
-    suspicious_regex='[`$\\|;()]'
-    command_regex='rm|curl|wget|shutdown|reboot|base64|mkfs'
-    
-    if [[ "$value" = ~$suspicious_regex ]] || [[ "$value" =~ $command_regex ]]; then
-        echo "Suspicious content detected."
-        exit 1
-    fi
-}
-
 # Check for python or python3
 for version in python python3; do
     if command -v "$version" &> /dev/null; then
@@ -47,25 +34,6 @@ fi
 
 # Add Python shebang line to the top of the Python file
 sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
-
-declare -A config
-
-# Check if the configuration file exists only if CONFIGURATION_REQUIRED is not empty
-if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
-    CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
-    if [ ! -f "$CONFIG_FILE" ]; then
-        echo "Error: Configuration file '$CONFIG_FILE' not found."
-        exit 1
-    fi
-
-    while IFS='=' read -r key value || [ -n "$key" ]; do
-        key=$(echo "$key" | xargs)  
-        value=$(echo "$value" | xargs)
-        check_value $value
-        [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
-        config["$key"]="$value"
-    done < "$CONFIG_FILE"
-fi
 
 # Check if pip is installed
 PIP_CMD="$PYTHON_CMD -m pip"
