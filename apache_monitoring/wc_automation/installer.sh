@@ -3,7 +3,19 @@ set -e
 
 PACKAGE_REQUIRED=()
 
-CONFIGURATION_REQUIRED=("url" "username" "password")
+CONFIGURATION_REQUIRED=("url")
+
+
+check_value(){
+    value=$1
+    suspicious_regex='[`$\\|;()]'
+    command_regex='rm|curl|wget|shutdown|reboot|base64|mkfs'
+    
+    if [[ "$value" = ~$suspicious_regex ]] || [[ "$value" =~ $command_regex ]]; then
+        echo "Suspicious content detected."
+        exit 1
+    fi
+}
 
 # Check for python or python3
 for version in python python3; do
@@ -23,10 +35,6 @@ echo "Python executable found at: $PYTHON_PATH"
 
 # Get current file name
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-IFS=/ read -ra parts <<< "$SCRIPT_DIR"
-unset "parts[-1]"
-
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 CURRENT_DIR_NAME=$(dirname "$SCRIPT_DIR")
 monitorName=$(basename "$CURRENT_DIR_NAME")
 
@@ -41,6 +49,8 @@ fi
 # Add Python shebang line to the top of the Python file
 sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
 
+declare -A config
+
 # Check if the configuration file exists only if CONFIGURATION_REQUIRED is not empty
 if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
     CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
@@ -49,13 +59,18 @@ if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
         exit 1
     fi
 
-    while IFS='=' read -r key value; do
-    key=$(echo "$key" | xargs)  
-    value=$(echo "$value" | xargs)
-    [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
-    eval "$key=\"$value\""
+    while IFS='=' read -r key value || [ -n "$key" ]; do
+        key=$(echo "$key" | xargs)  
+        value=$(echo "$value" | xargs)
+        [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
+        for required_key in "${CONFIGURATION_REQUIRED[@]}"; do
+            if [[ "$key" == "$required_key" ]]; then
+                check_value "$value"
+                config["$key"]="$value"
+                break
+            fi
+        done
     done < "$CONFIG_FILE"
-
 fi
 
 # Check if pip is installed
@@ -84,14 +99,6 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
     fi
 done
 
-# Execute the Python script with the provided parameters
-for config in "${CONFIGURATION_REQUIRED[@]}"; do
-    if [ -z "${!config+x}" ]; then
-        echo "Error: Configuration parameter '$config' is missing."
-        exit 1
-    fi
-done
-
 
 ## Additional actions for apache_monitoring start here
 # Check if urllib is available (standard library)
@@ -103,7 +110,7 @@ else
 fi
 
 
-url_host=$(echo "$url" | sed -E 's#https?://([^/:]+).*#\1#')
+url_host=$(echo "${config[url]}" | sed -E 's#https?://([^/:]+).*#\1#')
 
 # Define a function to check if the host is local
 is_local_host() {
@@ -112,7 +119,7 @@ is_local_host() {
 
 if is_local_host "$url_host"; then
 
-if curl -s --max-time 3 "$url" | grep -q "Total Accesses"; then
+if curl -s --max-time 3 "${config[url]}" | grep -q "Total Accesses"; then
         echo "Apache mod_status already enabled. Skipping configuration."
     else
         echo "Apache mod_status not yet enabled. Proceeding to configure..."
@@ -234,20 +241,4 @@ fi
 else
     echo "Remote URL detected."
 fi
-## Additional actions for apache_monitoring end here
 
-ARGS=""
-for config in "${CONFIGURATION_REQUIRED[@]}"; do 
-    if [ -n "${!config}" ]; then 
-        ARGS+="--$config \"${!config}\" "
-    fi
-done
-
-output=$(eval "\"$PYTHON_PATH\" \"$TARGET_PY_FILE\" $ARGS")
-
-if grep -qE '"status": 0' <<< "$output" ; then
-    echo "Error: $(grep -oP '"msg"\s*:\s*"\K(\\.|[^"\\])*' <<< "$output")"
-    exit 1
-else
-    echo "Execution completed successfully."
-fi
