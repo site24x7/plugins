@@ -23,12 +23,9 @@ echo "Python executable found at: $PYTHON_PATH"
 
 # Get current file name
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-IFS=/ read -ra parts <<< "$SCRIPT_DIR"
-unset "parts[-1]"
+CURRENT_DIR_NAME=$(dirname "$SCRIPT_DIR")
+monitorName=$(basename "$CURRENT_DIR_NAME")
 
-monitorName="${parts[-1]}"
-
-CURRENT_DIR_NAME=$(echo "${parts[*]}" | sed 's/ /\//g')
 TARGET_PY_FILE="${CURRENT_DIR_NAME}/$monitorName.py"
 
 # Check if the Python file exists
@@ -40,15 +37,6 @@ fi
 # Add Python shebang line to the top of the Python file
 sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
 
-# Check if the configuration file exists only if CONFIGURATION_REQUIRED is not empty
-if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
-    CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
-    if [ ! -f "$CONFIG_FILE" ]; then
-        echo "Error: Configuration file '$CONFIG_FILE' not found."
-        exit 1
-    fi
-    source "${CURRENT_DIR_NAME}/$monitorName.cfg" &> /dev/null || :
-fi
 
 # Check if pip is installed
 PIP_CMD="$PYTHON_CMD -m pip"
@@ -76,23 +64,4 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
     fi
 done
 
-# Execute the Python script with the provided parameters
-for config in "${CONFIGURATION_REQUIRED[@]}"; do
-    if [ -z "${!config+x}" ]; then
-        echo "Error: Configuration parameter '$config' is missing."
-        exit 1
-    fi
-done
 
-output=$("$PYTHON_PATH" "$TARGET_PY_FILE" $(for config in "${CONFIGURATION_REQUIRED[@]}"; do 
-    if [ -n "${!config}" ]; then 
-        echo "--$config ${!config}"; 
-    fi; 
-done))
-
-if grep -qE '"status": 0' <<< "$output" ; then
-    echo "Error: $(grep -oP '"msg"\s*:\s*"\K(\\.|[^"\\])*' <<< "$output")"
-    exit 1
-else
-    echo "Execution completed successfully."
-fi

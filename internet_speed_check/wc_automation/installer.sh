@@ -92,28 +92,3 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
         echo "Package '$package' is already installed."
     fi
 done
-
-# Execute the Python script with the provided parameters
-ARGS_ARRAY=("$PYTHON_PATH" "$TARGET_PY_FILE")
-for param in "${CONFIGURATION_REQUIRED[@]}"; do
-    value=""
-    if [ -v "${config[$param]}" ]; then
-        echo "Error: Configuration parameter '$param' is missing."
-        exit 1
-    else
-        value="${config[$param]}"
-    fi
-    if [ ! -z "$value" ]; then
-        ARGS_ARRAY+=("--$param" "'"$value"'")
-    fi 
-done
-
-
-output=$("${ARGS_ARRAY[@]}")
-
-if grep -qE '"status": 0' <<< "$output" ; then
-    echo "Error: $(grep -oP '"msg"\s*:\s*"\K(\\.|[^"\\])*' <<< "$output")"
-    exit 1
-else
-    echo "Execution completed successfully."
-fi

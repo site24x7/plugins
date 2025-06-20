@@ -3,7 +3,7 @@ set -e
 
 PACKAGE_REQUIRED=()
 
-CONFIGURATION_REQUIRED=("nginx_status_url" "username" "password")
+CONFIGURATION_REQUIRED=("nginx_status_url")
 
 check_value(){
     value=$1
@@ -129,7 +129,7 @@ insert_stub_status() {
 
     line_no=$(awk '/^[^#]*server_name[[:space:]]/ {print NR; exit}' "$nginx_conf")
     if [ -z "$line_no" ]; then
-        echo "stub_status config: FAIL (server_name not found)"
+        echo "stub_status config: FAIL (Server block not found)"
         return 1
     fi
 
@@ -186,29 +186,3 @@ fi
 ## Additional actions for nginx monitoring end here
 
 sleep 5
-
-# Execute the Python script with the provided parameters
-
-ARGS_ARRAY=("$PYTHON_PATH" "$TARGET_PY_FILE")
-for param in "${CONFIGURATION_REQUIRED[@]}"; do
-    value=""
-    if [ -v "${config[$param]}" ]; then
-        echo "Error: Configuration parameter '$param' is missing."
-        exit 1
-    else
-        value="${config[$param]}"
-    fi
-    if [ ! -z "$value" ]; then
-        ARGS_ARRAY+=("--$param" "'"$value"'")
-    fi 
-done
-
-
-output=$("${ARGS_ARRAY[@]}")
-
-if grep -qE '"status": 0' <<< "$output" ; then
-    echo "Error: $(grep -oP '"msg"\s*:\s*"\K(\\.|[^"\\])*' <<< "$output")"
-    exit 1
-else
-    echo "Execution completed successfully."
-fi

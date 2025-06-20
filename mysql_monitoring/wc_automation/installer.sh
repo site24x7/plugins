@@ -3,7 +3,7 @@ set -e
 
 PACKAGE_REQUIRED=("cryptography")
 
-CONFIGURATION_REQUIRED=("host" "port" "username" "password")
+CONFIGURATION_REQUIRED=()
 
 check_value(){
     value=$1
@@ -114,30 +114,4 @@ fi
 if [ ! -d "$CURRENT_DIR_NAME/pymysql" ]; then
     echo "Error: pymysql directory does not exist."
     exit 1
-fi
-
-## Additional actions for mysql_monitoring end here
-
-
-ARGS_ARRAY=("$PYTHON_PATH" "$TARGET_PY_FILE")
-for param in "${CONFIGURATION_REQUIRED[@]}"; do
-    value=""
-    if [ -v "${config[$param]}" ]; then
-        echo "Error: Configuration parameter '$param' is missing."
-        exit 1
-    else
-        value="${config[$param]}"
-    fi
-    if [ ! -z "$value" ]; then
-        ARGS_ARRAY+=("--$param" "'"$value"'")
-    fi 
-done
-
-output=$("${ARGS_ARRAY[@]}")
-
-if grep -qE '"status": 0' <<< "$output" ; then
-    echo "Error: $(grep -oP '"msg"\s*:\s*"\K(\\.|[^"\\])*' <<< "$output")"
-    exit 1
-else
-    echo "Execution completed successfully."
 fi
