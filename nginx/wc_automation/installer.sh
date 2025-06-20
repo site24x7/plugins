@@ -199,7 +199,7 @@ for param in "${CONFIGURATION_REQUIRED[@]}"; do
         value="${config[$param]}"
     fi
     if [ ! -z "$value" ]; then
-        ARGS_ARRAY+=("--$param" "$value")
+        ARGS_ARRAY+=("--$param" "'"$value"'")
     fi 
 done
 
