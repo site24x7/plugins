@@ -1,9 +1,22 @@
 #!/bin/bash
 set -e
 
-PACKAGE_REQUIRED=()
+PACKAGE_REQUIRED=("cryptography")
 
 CONFIGURATION_REQUIRED=("host" "port" "username" "password")
+
+pip_check(){
+# Check if pip is installed
+PIP_CMD="$PYTHON_CMD -m pip"
+
+if $PIP_CMD --version &> /dev/null; then
+    PIP_VERSION=$($PIP_CMD --version | awk '{print $2}')
+    echo "Pip is available with version: $PIP_VERSION"
+else
+    echo "Error: Pip is not installed."
+    exit 1
+fi
+}
 
 # Check for python or python3
 for version in python python3; do
@@ -60,6 +73,7 @@ fi
 for package in "${PACKAGE_REQUIRED[@]}"; do
     if ! $PYTHON_CMD -c "import $package" &> /dev/null; then
         echo "Info: Package '$package' is not installed. Attempting installation..."
+        pip_check
         if $PIP_CMD install "$package" &> /dev/null; then
             echo "Package '$package' installed successfully."
         else
