@@ -1,0 +1,148 @@
+---
+ - name: "Site24x7 elasticsearch Plugin Installation"
+   hosts: all
+   become: yes
+   vars:
+      elasticsearch_host: <elasticsearch_host>
+      elasticsearch_port: <elasticsearch_port>
+      elasticsearch_node_name: <elasticsearch_node_name>
+      elasticsearch_username: <elasticsearch_username>
+      elasticsearch_password: <elasticsearch_password>
+      elasticsearch_ssl_option: <elasticsearch_ssl_option>
+      elasticsearch_cafile: <elasticsearch_cafile>
+
+
+   tasks:    
+  # Site24x7 elasticsearch Prerequisites Check
+
+   - name: "Python3 Installation Check."
+     command: "python3 --version"
+     register: python_version_output
+     ignore_errors: yes
+
+   - name: "Installing Python if not found (for Debian/Ubuntu)."
+     apt:
+        name: python3
+        state: present
+     when: "not python_version_output.stdout and ansible_facts['os_family'] == 'Debian'"
+
+   - name: "Installing Python if not found (for CentOS/RedHat)."
+     yum:
+        name: python3
+        state: present
+     when: "not python_version_output.stdout and ansible_facts['os_family'] == 'RedHat'"
+
+   - name: "pip3 Installation Check."
+     command: "pip3 --version"
+     register: pip_version_output
+     ignore_errors: yes
+
+   - name: "Installing pip3 if not found (for Debian/Ubuntu)."
+     apt:
+        name: python3-pip
+        state: present
+     when: "not pip_version_output.stdout and ansible_facts['os_family'] == 'Debian'"
+
+   - name: "Installing pip3 if not found (for RedHat/CentOS)."
+     yum:
+        name: python3-pip
+        state: present
+     when: "not pip_version_output.stdout and ansible_facts['os_family'] == 'RedHat'"
+
+   - name: "Installing requests Python3 Package."
+     pip:
+        name: requests
+        state: present
+        executable: pip3
+     ignore_errors: yes
+
+   - name: "Site24x7 Agent Directory Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp"
+     register: agent_path_check
+
+   - name: "Hosts with no Site24x7 Agent Directory"
+     debug:
+      msg: "Agent Directory not found"
+     when: not agent_path_check.stat.exists
+
+
+   - name: "Site24x7 Temp Plugins Directory Creation."
+     file:
+      path: "/opt/site24x7/monagent/temp/plugins/elasticsearch"
+      state: directory
+     when: agent_path_check.stat.exists
+
+   - name: "Site24x7 Plugin Directory Check"
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/elasticsearch"
+     register: plugin_path_check
+
+   - name: "Download the Site24x7 elasticsearch Plugin Files."
+     get_url:
+        url: "{{ item }}"
+        dest: "/opt/site24x7/monagent/temp/plugins/elasticsearch"
+        mode: 0744
+     loop: ["https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.py","https://raw.githubusercontent.com/site24x7/plugins/master/elasticsearch/elasticsearch.cfg"]
+     when: plugin_path_check.stat.exists
+    
+
+  # Site24x7 elasticsearch Plugin Config File Setup
+
+   - name: "Site24x7 elasticsearch Config File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/elasticsearch/elasticsearch.cfg"
+     register: elasticsearch_file_check
+
+   - name: "Site24x7 elasticsearch configuration."
+     lineinfile: 
+       path: "/opt/site24x7/monagent/temp/plugins/elasticsearch/elasticsearch.cfg"
+       regexp: "{{ item.regex }}"
+       line: "{{ item.line }}"
+     loop:
+       - { regex: 'host =', line: 'host ={{elasticsearch_host}}' }
+       - { regex: 'port =', line: 'port ={{elasticsearch_port}}' }
+       - { regex: 'node_name =', line: 'nodename ={{elasticsearch_node_name}}' }
+       - { regex: 'username =', line: 'username ={{elasticsearch_username}}' }
+       - { regex: 'password =', line: 'password ={{elasticsearch_password}}' }
+       - { regex: 'ssl_option =', line: 'ssl_option ={{elasticsearch_ssl_option}}' }
+       - { regex: 'cafile =', line: 'cafile ={{elasticsearch_cafile}}' }
+     when: elasticsearch_file_check.stat.exists
+
+
+  # Site24x7 elasticsearch Python File Setup
+
+   - name: "Site24x7 elasticsearch Python File Check."
+     stat:
+      path: "/opt/site24x7/monagent/temp/plugins/elasticsearch/elasticsearch.py"
+     register: elasticsearch_python_file_check
+
+   - name: "Extracting Python3 Default Path."
+     command: which python3
+     register: python3_path
+
+   - set_fact:
+      actual_path: "{{ '#!'+python3_path.stdout }}"
+
+   - name: "Setting the Default Python Path for the Site24x7 elasticsearch Plugin"
+     lineinfile:
+       path: "/opt/site24x7/monagent/temp/plugins/elasticsearch/elasticsearch.py"
+       regexp: "#!"
+       line: "{{actual_path}}"
+     when: elasticsearch_python_file_check.stat.exists
+
+   - name: "Checking the Site24x7 elasticsearch Plugin Output"
+     shell: "python3 /opt/site24x7/monagent/temp/plugins/elasticsearch/elasticsearch.py --host={{elasticsearch_host}} --port={{elasticsearch_port}} --username={{elasticsearch_username}} --password={{elasticsearch_password}} --node_name={{elasticsearch_node_name}} --ssl_option={{elasticsearch_ssl_option}} --cafile={{elasticsearch_cafile}}"
+     register: elasticsearch_python_output
+     when: elasticsearch_python_file_check.stat.exists
+
+   - name: "Site24x7 elasticsearch plugins with Error !"
+     debug:
+      msg: "Site24x7 elasticsearch Plugin OUTPUT error ! \n {{ elasticsearch_python_output.stdout }}"
+     when: "'\"status\": 0' in elasticsearch_python_output.stdout and elasticsearch_python_file_check.stat.exists"
+
+   - name: "Moving the Site24x7 elasticsearch Folder to the Plugins Directory"
+     command: "mv  /opt/site24x7/monagent/temp/plugins/elasticsearch /opt/site24x7/monagent/plugins"
+     ignore_errors: true
+     when: "plugin_path_check.stat.exists and '\"status\": 0' not in elasticsearch_python_output.stdout"
+

@@ -522,7 +522,7 @@ if __name__ == "__main__":
 
     queue_manager_name = "QM1"
     channel_name = "DEV.APP.SVRCONN"
-    host = "10.15.208.159"
+    host = "localhost"
     port = "1414"
     username = "app"
     password = "plugin"

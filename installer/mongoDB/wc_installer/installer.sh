@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-PACKAGE_REQUIRED=("pymqi")
+PACKAGE_REQUIRED=("pymongo")
 
 # Check for python or python3
 for version in python python3; do
