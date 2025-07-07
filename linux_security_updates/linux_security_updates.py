@@ -288,7 +288,7 @@ class security_update_check:
                 else:
                     self.maindata['Installed Packages Count']=0
 
-                command="yum updateinfo list security --noplugins | grep -Ev \"Updating Subscription Management repositories.|Last metadata expiration check\" | wc -l"
+                command="yum check-update --security | grep -Ev \"Updating Subscription Management repositories.|Last metadata expiration check\" | wc -l"
                 updates_output = self.get_command_updates_output(command)
 
                 if updates_output=="":
