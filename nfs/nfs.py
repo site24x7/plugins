@@ -17,10 +17,9 @@ current_file_path = os.path.dirname(os.path.abspath(__file__))
 
 class nfs:
 
-    def __init__(self):
-
+    def __init__(self, plugin_version=PLUGIN_VERSION):
         self.maindata = {}
-        self.maindata["plugin_version"] = PLUGIN_VERSION
+        self.maindata["plugin_version"] = plugin_version
         self.maindata["heartbeat_required"] = HEARTBEAT
         self.maindata["units"] = METRICS_UNITS
         self.mounts = {}
@@ -238,14 +237,9 @@ class nfs:
 
         return self.maindata
 
-def run(param=None):
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--plugin_version", help="plugin version", type=str, default=1
-    )
-    args = parser.parse_args()
-    PLUGIN_VERSION = args.plugin_version
-    nfs_instance = nfs()
+def run(param):
+    plugin_version = str(param.get("plugin_version")).strip('"') if param else PLUGIN_VERSION
+    nfs_instance = nfs(plugin_version)
     result = nfs_instance.metriccollector()
     return result
 
@@ -253,10 +247,9 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--plugin_version", help="plugin version", type=str, default=PLUGIN_VERSION
+        "--plugin_version", help="plugin version", default=PLUGIN_VERSION
     )
     args = parser.parse_args()
-    PLUGIN_VERSION = args.plugin_version
-    nfs_result = nfs()
+    nfs_result = nfs(args.plugin_version)
     result = nfs_result.metriccollector()
     print(json.dumps(result, indent=True))
