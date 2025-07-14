@@ -72,7 +72,7 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
 
 - Run the below command with apprpriate values to check the manual execution of the plugin.
 	```bash
- 	python IBM_iSeries_AS400.py --host "localhost" --username "user" --password "test" --java_path "C:\Program Files\Java\jdk1.8.0_241\bin"
+ 	python IBM_iSeries_AS400.py -host "localhost" -username "user" -password "test" -java_path "C:\Program Files\Java\jdk1.8.0_241\bin"
  	```
  
 - Move the `IBM_iSeries_AS400` into the Site24x7 Windows Agent plugin directory.
