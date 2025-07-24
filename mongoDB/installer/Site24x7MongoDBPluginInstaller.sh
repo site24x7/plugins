@@ -83,7 +83,7 @@ fi
 
 echo ""
 echo -e "${GREEN}Downloading related installation files from the Site24x7 GitHub repository. ${RESET}"
-wget -q "https://raw.githubusercontent.com/site24x7/plugins/mongodb_installer/mongoDB/installer/Site24x7MongoDBPluginInstallerAddOn.py" &> /dev/null
+wget -q "https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/installer/Site24x7MongoDBPluginInstallerAddOn.py" &> /dev/null
 if [ $? -ne 0 ]; then
     echo -e "${RED} Download failed. Process exited.${RESET}"
     exit 1
