@@ -4,6 +4,7 @@ import subprocess
 import json
 import warnings
 import urllib.parse
+import sys
 import urllib.request
 import shutil
 import configparser
@@ -309,6 +310,10 @@ def input_validate(msg, default=None, custom_msg=None):
 
 def initiate(plugin_name, plugin_url):
 
+    python_executable = sys.argv[1] if len(sys.argv) > 1 else "/usr/bin/python3"
+    
+    print("python_executable:", python_executable)
+    
     args={}
     agent_path="/opt/site24x7/monagent/"
     agent_temp_path=agent_path+"temp/"
@@ -506,7 +511,7 @@ def initiate(plugin_name, plugin_url):
         return 
 
 
-    py_update_cmd = [ "sed", "-i", "1s|^.*|#! /usr/bin/python3|", "{plugins_temp_path}{plugin_name}/{plugin_name}.py".format(plugins_temp_path=plugins_temp_path,plugin_name=plugin_name ) ]
+    py_update_cmd = [ "sed", "-i", f"1s|^.*|#! {python_executable}|", "{plugins_temp_path}{plugin_name}/{plugin_name}.py".format(plugins_temp_path=plugins_temp_path,plugin_name=plugin_name ) ]
     if not execute_command(py_update_cmd):
         print(colors.RED + "------------------------------ Error occured. Process exited. ------------------------------" + colors.RESET)
         return 
