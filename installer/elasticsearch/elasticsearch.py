@@ -455,6 +455,10 @@ class esk:
                 "tablist": tablist_keys
             }
 
+            self.maindata["s247config"] = {
+                "childdiscovery": tablist_keys
+            }
+
             return True
 
         except Exception as e:
