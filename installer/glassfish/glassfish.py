@@ -337,6 +337,9 @@ class glassfish:
                             self.maindata[metrics[key]] = value["count"]
 
             self.maindata["Request_Status_Code_Class"] = requests_list
+            self.maindata["s247config"]={
+                "childdiscovery": ["Request_Status_Code_Class"]
+            }
 
             if not self.connection_success:
                 self.maindata["status"] = 0
