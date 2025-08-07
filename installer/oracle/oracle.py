@@ -457,6 +457,14 @@ class oracle:
         
 
         self.maindata['units']=METRICS_UNITS
+        self.maindata['s247config']={
+            "childdiscovery":[
+                "Tablespace_Details",
+                "Tablespace_Datafile_Details",
+                "PDB_Details",
+                "ASM_Details"
+            ]
+        }
         return self.maindata
 
 
