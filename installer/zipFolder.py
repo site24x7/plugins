@@ -1,7 +1,7 @@
 import os
 from zipfile import ZipFile
 
-EXCLUDE_DIRS = {".git", "zips", "installer", "build", "dist", "__pycache__"}
+EXCLUDE_DIRS = {".git", "zips", "installer", "build", "dist", "__pycache__",".venv", "venv", ".idea", ".vscode"}
 
 def zip_folders_in_current_directory():
     """Create zip files for all folders in the current directory and plugins directory."""
@@ -32,7 +32,7 @@ def zip_folders(source_dir, destination_dir):
                 for root, _, files in os.walk(folder_path):
                     for file in files:
                         file_path = os.path.join(root, file)
-                        arcname = os.path.relpath(file_path, folder_path)
+                        arcname = '/'+ folder + '/' + os.path.relpath(file_path, start=source_dir)
                         zipf.write(file_path, arcname)
                         
     except (OSError, IOError) as e:
