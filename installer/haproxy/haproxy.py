@@ -46,6 +46,9 @@ class haproxy:
                 self.maindata['msg']=str(e)
                 return self.maindata
             
+            if not self.url.endswith(';csv'):
+                self.url = self.url + ';csv'
+                
             try:
                 response = requests.get(url = self.url,  auth = HTTPBasicAuth(self.username,  self.password))
                 if response.status_code== 200:
