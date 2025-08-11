@@ -179,7 +179,7 @@ class esk:
         if self.password=="None":
             self.password=None
 
-        if self.ssl_option.lower()=="no":
+        if self.ssl_option.lower()=="false":
             self.ssl_option=False
             self.url="http://"+self.hostname+":"+str(self.port)
 
@@ -538,7 +538,7 @@ if __name__=="__main__":
     port="9200"
     username=None
     password=None
-    ssl_option="NO"
+    ssl_option="false"
     cafile=None
     logs_enabled="True"
     log_type_name="Elasticsearch Slow Log"
