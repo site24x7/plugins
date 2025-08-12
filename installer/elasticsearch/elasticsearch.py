@@ -179,7 +179,7 @@ class esk:
         if self.password=="None":
             self.password=None
 
-        if self.ssl_option.lower()=="false":
+        if self.ssl_option.lower()=="no":
             self.ssl_option=False
             self.url="http://"+self.hostname+":"+str(self.port)
 
@@ -455,6 +455,10 @@ class esk:
                 "tablist": tablist_keys
             }
 
+            self.maindata["s247config"] = {
+                "childdiscovery": tablist_keys
+            }
+
             return True
 
         except Exception as e:
@@ -538,7 +542,7 @@ if __name__=="__main__":
     port="9200"
     username=None
     password=None
-    ssl_option="false"
+    ssl_option="NO"
     cafile=None
     logs_enabled="True"
     log_type_name="Elasticsearch Slow Log"
