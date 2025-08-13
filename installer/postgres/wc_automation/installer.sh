@@ -2,6 +2,7 @@
 set -e
 
 PACKAGE_REQUIRED=("psycopg2-binary")
+PACKAGE_IMPORT_NAMES=("psycopg2")
 
 for version in python python3; do
     if command -v "$version" &> /dev/null; then
@@ -104,13 +105,16 @@ else
 fi
 
 
-for package in "${PACKAGE_REQUIRED[@]}"; do
+for i in "${!PACKAGE_REQUIRED[@]}"; do
+    package="${PACKAGE_REQUIRED[$i]}"
+    import_name="${PACKAGE_IMPORT_NAMES[$i]}"
+    
     if [ "$USE_VENV" = true ]; then
-        if ! "$PYTHON_PATH" -c "import $package" &> /dev/null; then
+        if ! "$PYTHON_PATH" -c "import $import_name" &> /dev/null; then
             echo "Info: Package '$package' is not installed in virtual environment. Attempting installation..."
             if $PIP_CMD install "$package" &> /dev/null; then
                 echo "Package '$package' installed successfully in virtual environment."
-                if "$PYTHON_PATH" -c "import $package" &> /dev/null; then
+                if "$PYTHON_PATH" -c "import $import_name" &> /dev/null; then
                     echo "Package '$package' verified successfully in virtual environment."
                 else
                     echo "Error: Package '$package' installation verification failed in virtual environment."
@@ -124,11 +128,11 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
             echo "Package '$package' is already installed in virtual environment."
         fi
     else
-        if ! $PYTHON_CMD -c "import $package" &> /dev/null; then
+        if ! $PYTHON_CMD -c "import $import_name" &> /dev/null; then
             echo "Info: Package '$package' is not installed. Attempting installation..."
             if $PIP_CMD install "$package" &> /dev/null; then
                 echo "Package '$package' installed successfully."
-                if $PYTHON_CMD -c "import $package" &> /dev/null; then
+                if $PYTHON_CMD -c "import $import_name" &> /dev/null; then
                     echo "Package '$package' verified successfully."
                 else
                     echo "Error: Package '$package' installation verification failed."
