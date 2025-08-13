@@ -3,6 +3,8 @@ from zipfile import ZipFile
 
 EXCLUDE_DIRS = {".git", "zips", "installer", "build", "dist", "__pycache__",".venv", "venv", ".idea", ".vscode"}
 
+TEST=False
+
 def zip_folders_in_current_directory():
     """Create zip files for all folders in the current directory and plugins directory."""
     installer_dir = os.path.dirname(os.path.abspath(__file__))
@@ -11,6 +13,9 @@ def zip_folders_in_current_directory():
     os.makedirs(zip_dir, exist_ok=True)
 
     plugins_dir = os.path.dirname(installer_dir)
+    if TEST:
+        zip_folders(plugins_dir, '/home/mani-22358/Downloads/temp/plugin_zips')
+        return
     zip_folders(plugins_dir, zip_dir)
     zip_folders(installer_dir, zip_dir)
 
@@ -32,8 +37,10 @@ def zip_folders(source_dir, destination_dir):
                 for root, _, files in os.walk(folder_path):
                     for file in files:
                         file_path = os.path.join(root, file)
-                        arcname = '/'+ folder + '/' + os.path.relpath(file_path, start=source_dir)
+                        arcname = '/' + os.path.relpath(file_path, start=source_dir)
                         zipf.write(file_path, arcname)
+            if TEST:
+                return
                         
     except (OSError, IOError) as e:
         print(f"Error processing {source_dir}: {e}")
