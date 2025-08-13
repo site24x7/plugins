@@ -61,7 +61,14 @@ class ApacheMonitoring(object):
         '''
         Constructor
         '''
-        self.url=args.url
+
+        self.url = args.url.strip()
+
+        if not self.url.endswith('?auto'):
+            if self.url.endswith('/'):
+                self.url = self.url[:-1]
+            self.url += '?auto'
+        
         self.username=args.username
         self.password=args.password  
         self.logsenabled=args.logs_enabled
@@ -155,4 +162,3 @@ if __name__ == '__main__':
     apache = ApacheMonitoring(args)
     data = apache._collect_metrics()
     print(json.dumps(data, indent=4, sort_keys=True))
-    

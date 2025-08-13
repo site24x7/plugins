@@ -1,24 +1,29 @@
 # The plugin to monitor TCP and UDP connections
 
-The plugin will report the following metrics.
+## Metrics Reported
 
-1. Number_of_TCP_connections - 
-      The number of TCP connections are listening.
+| Metric Name              | Description                                                       |
+|--------------------------|-------------------------------------------------------------------|
+| `TCP_Listening_Ports`    | Number of TCP ports in the listening state                        |
+| `TCP_Packets_Received`   | Number of TCP packets received                       |
+| `TCP_Packets_Sent`       | Number of TCP packets sent                       |
+| `TCP_Retransmissions`    | Number of TCP segments retransmitted                              |
+| `UDP_Listening_Ports`    | Number of UDP ports in the listening state                        |
+| `UDP_Datagrams_Received` | Number of UDP datagrams received                                  |
+| `UDP_Datagrams_Sent`     | Number of UDP datagrams sent                                      |
+| `UDP_Packet_Loss`        | Number of UDP input errors                      |
+| `UDP_Dropped_Packets`    | Number of UDP packets dropped due to receive/send buffer issues   |
 
-2. Number_of_UDP_connections - 
-      The number of UDP connections are listening.
-      
 ### Plugin Installation
 
 - Create a folder named "tcp_udp_connections"
 
 #### For Linux servers - 
 
-- Download the file "tcp_udp_connections.py" and place it under the "tcp_udp_connections" directory using below command 
-
+- Download the file "tcp_udp_connections.py", "tcp_udp_connections.cfg" and place it under the "tcp_udp_connections" directory using below command 
+	
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/tcp_udp_connections/tcp_udp_connections.py
-
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the tcp_udp_connections.py script.
+  		wget https://raw.githubusercontent.com/site24x7/plugins/master/tcp_udp_connections/tcp_udp_connections.cfg
 
 - Move the folder "tcp_udp_connections" under "/opt/site24x7/monagent/plugins/" 
 

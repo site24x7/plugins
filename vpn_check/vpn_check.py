@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+
 import sys, json, time, subprocess, requests, urllib3, argparse
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -123,10 +123,11 @@ def get_isp_info(vpn_data):
     return vpn_data
 
 def run(param):
-    VPN_HOST = param.get("host")
-    VPN_PORT = param.get("port")
-    VPN_INTERFACE = param.get("vpn_interface")
-    URL_BEHIND_VPN = param.get("url")
+    VPN_HOST = str(param.get("host", "")).strip('"')
+    VPN_PORT = str(param.get("port", "")).strip('"')
+    VPN_INTERFACE = str(param.get("vpn_interface", "")).strip('"') if param.get("vpn_interface") else None
+    URL_BEHIND_VPN = str(param.get("url", "")).strip('"')
+
 
     vpn_data, vpn_status = check_vpn(VPN_HOST, int(VPN_PORT))
     if VPN_INTERFACE:

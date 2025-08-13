@@ -23,7 +23,6 @@ This plugin monitors the performance metrics of CIFS mount point status, IP addr
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/cifs/cifs.py
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/cifs/cifs.cfg
 	```
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the cifs.py script.
 	
 - Configure the mount point to be monitored in the cifs.cfg file, as mentioned below.
 

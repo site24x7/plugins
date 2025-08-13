@@ -15,15 +15,15 @@ Use this Plugin to monitor the state such as running, stopped, etc,. of the JDE 
 
 ## **Plugin installation**
 
-1. Create a folder named "jde_instance_info".
-2. Download the below files and place them under the created "jde_instance_info" directory.
+1. Create a folder named "jde_server_status".
+2. Download the below files and place them under the created "jde_server_status" directory.
 	```
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/jde_instance_info/jde_instance_info.ps1
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/jde_instance_info/jde_instance_info.cfg
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/jde_server_status/jde_server_status.ps1
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/jde_server_status/jde_server_status.cfg
 	```
 3. The plugin uses "/manage/mgmtrestservice/targettype", "/manage/mgmtrestservice/instancestate" api endpoints to fetch the data from the server. Please enable the endpoints if it is blocked.
 
-4. Open the "jde_instance_info.cfg" and enter the url, agentHostName, jde home, etc,. in  the file. Eg:
+4. Open the "jde_server_status.cfg" and enter the url, agentHostName, jde home, etc,. in  the file. Eg:
 
 	```
 	[Server_Status_EXP001]
@@ -35,10 +35,10 @@ Use this Plugin to monitor the state such as running, stopped, etc,. of the JDE 
 	password = "Password"
 	```
 
-5. Further move the folder "jde_instance_info" into the Site24x7 Windows Agent plugin directory:
+5. Further move the folder "jde_server_status" into the Site24x7 Windows Agent plugin directory:
    
 	```
-	Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\jde_server_status
+	C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 	```
  
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations. 

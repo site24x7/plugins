@@ -17,7 +17,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/installer
 ### Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
- - Execute the following command in your server to install pymongo: 
+ - Execute the following command in your server to install pymongo or download the pymongo.pyz from the github: 
 
 		pip install pymongo
  - Create a user with **clusterMonitor** role.
@@ -34,14 +34,15 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/installer
 - Create a directory named `mongoDB` in your server.		
 
 	```bash
-	mkdir gpu_monitoring
- 	cd gpu_monitoring/
+	mkdir mongoDB
+ 	cd mongoDB/
  	```
 - Download the below files and place it under the "mongoDB" directory.
 
 	```bash
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.py  && sed -i "1s|^.*|#! $(which python3)|" mongoDB.py
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/mongoDB.cfg
+ 	wget https://github.com/site24x7/plugins/raw/refs/heads/master/mongoDB/pymongo.pyz
  	```
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
@@ -166,5 +167,3 @@ Name		        			| Description
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7. 
 
 To see the mongoDb monitor in the Site24x7's web client, login Site24x7 with your account, navigate to Server tab -> Plugin Integration -> list of plugin monitors -> user can check the mongoDB monitor.
-
-

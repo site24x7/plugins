@@ -1,9 +1,8 @@
-param([string]$certPath , [string]$thumbprint ,[string]$certname)
+param([string]$certPath , [string]$thumbprint)
 
 $version = 1 
 $heartbeat = "true"
 
-$displayname = $certname + " certificate_monitoring"
 
 Function Get-Data() 
 {    
@@ -49,6 +48,5 @@ Function Get-Data()
 $mainJson = @{}
 $mainJson.Add("plugin_version", $version)
 $mainJson.Add("heartbeat_required", $heartbeat)
-$mainJson.Add("displayname", $displayname) 
 $mainJson.Add("data", (Get-Data $certPath $thumbprint)) 
 return $mainJson | ConvertTo-Json

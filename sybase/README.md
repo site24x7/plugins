@@ -47,14 +47,16 @@ If you're not using Linux servers or want to install the plugin manually, follow
 - Open sybase.sh file and set the values for HOST, USERNAME, PASSWORD, JAVA_HOME
 
 - Run the command- which java. Copy the output you get and paste it in the JAVA_HOME field. Make sure to paste the path to bin directory and not the path to java.
-
+- Run the following command to verify if the plugin is functioning correctly and returning valid JSON output:
+```
+bash sybase.sh
+```
 - Move the "sybase" folder to the site24x7 agent directory
 ```
   Linux             ->   /opt/site24x7/monagent/plugins/sybase
 ```
 - Once configured the agent will automatically execute the plugin in five minutes interval and send performance data to the Site24x7 data center.
 
-	```	
 ### Windows
 
 - Create a directory "sybase" 
@@ -69,7 +71,10 @@ If you're not using Linux servers or want to install the plugin manually, follow
 - Open sybase.bat file and set the values for HOST, USERNAME, PASSWORD, JAVA_HOME
 
 - Run the command- where java. Copy the output of, bin directory of jdk and not the path to java.
-
+- Run the following command to verify if the plugin is functioning correctly and returning valid JSON output:
+```
+.\sybase.bat
+```
 - Move the "sybase" into the Site24x7 Windows Agent plugin directory.
 ```
 C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\sybase

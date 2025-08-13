@@ -43,6 +43,7 @@ class security_update_check:
             p_status = p.wait()
 
         except subprocess.TimeoutExpired as e:
+            p.kill()
             #print(command)
             # traceback.print_exc()
             return ""
@@ -79,7 +80,7 @@ class security_update_check:
     def log_creator(self, updates_output, reboot_required_packages):
             current_datetime = datetime.now()
             file_time=current_datetime.strftime("%Y-%m-%d-%H:%M:%S") 
-            updates_output = updates_output.decode()
+            updates_output = updates_output.decode('utf-8',errors='replace')
             og_updates_output=updates_output.split("\n")
             log_count=len(og_updates_output)//4
 
@@ -135,6 +136,7 @@ class security_update_check:
             
             os_content=""
             self.os_name=""
+            debian=False
             distro_file="/etc/os-release"
             if not os.path.isfile(distro_file):
                 self.maindata['msg']=distro_file+", Does not exist"
@@ -155,6 +157,11 @@ class security_update_check:
                     _, self.os_name = line.split('=', 1)
                     self.os_name = self.os_name.strip('"')
                     break  
+                elif line.startswith('ID='):
+                    _, self.os_name = line.split('=', 1)
+                    self.os_name = self.os_name.strip('"')
+                    debian=True
+                    #break  
                 
             if not self.os_name:
                 self.maindata['msg'] = "Distro information not found in {}".format(distro_file)
@@ -196,7 +203,7 @@ class security_update_check:
                 if res == "":
                     self.maindata['Installed Packages Count'] = -1
                 else:
-                    res=res.decode('utf-8').strip()
+                    res=res.decode('utf-8',errors='replace').strip()
                 if res.isdigit():
                     self.maindata['Installed Packages Count']=res
                 else:
@@ -217,6 +224,17 @@ class security_update_check:
                     except Exception as e:
                         self.maindata['msg'] = str(e)
                         self.maindata['status'] = 0
+                elif debian:
+                    security_updates_command="apt list --upgradable 2> /dev/null | grep -i \"\-security\" | wc -l"
+                    updates_output = self.get_command_updates_output(security_updates_command)
+                    if updates_output=="":
+                        self.maindata['Security Updates'] = -1
+                    elif updates_output:
+                        updates_output=updates_output.decode('utf-8',errors='replace')
+                        security_count = updates_output.rstrip()
+                        self.maindata['Security Updates'] = security_count
+                    else:
+                        self.maindata['Security Updates'] = 0
                 else:
                     self.maindata['msg'] = "{} does not exist".format(file_path)
                     self.maindata['status'] = 0            
@@ -233,7 +251,7 @@ class security_update_check:
                     self.maindata['Reboot Required for packages']="False"
                     self.maindata['Reboot Required Packages Count']=-1
                 else:
-                    reboot_required=reboot_required.decode()
+                    reboot_required=reboot_required.decode('utf-8',errors='replace')
 
                 if "Reboot is required to fully utilize these updates." in reboot_required:
                     self.maindata['Reboot Required for packages']="True"
@@ -264,19 +282,19 @@ class security_update_check:
                 if res == "":
                     self.maindata['Installed Packages Count'] = -1
                 else:
-                    res=res.decode('utf-8').strip()
+                    res=res.decode('utf-8',errors='replace').strip()
                 if res.isdigit():
                     self.maindata['Installed Packages Count']=res
                 else:
                     self.maindata['Installed Packages Count']=0
 
-                command="yum updateinfo list security --noplugins | grep -Ev \"Updating Subscription Management repositories.|Last metadata expiration check\" | wc -l"
+                command="yum check-update --security | grep -Ev \"Updating Subscription Management repositories.|Last metadata expiration check\" | wc -l"
                 updates_output = self.get_command_updates_output(command)
 
                 if updates_output=="":
                     self.maindata['Security Updates'] = -1
                 elif updates_output:
-                    updates_output=updates_output.decode()
+                    updates_output=updates_output.decode('utf-8',errors='replace')
                     security_count = updates_output.rstrip()
                     self.maindata['Security Updates'] = security_count
                 else:
@@ -291,7 +309,7 @@ class security_update_check:
                 if reboot_required == "":
                     self.maindata['Reboot Required for packages']=-1
                 else:
-                    reboot_required=reboot_required.decode()
+                    reboot_required=reboot_required.decode('utf-8',errors='replace')
                 
                 if "Reboot is suggested to ensure that your system benefits from these updates.Reboot is required to fully utilize these updates." in reboot_required:
                     self.maindata['Reboot Required for packages']="True"
@@ -301,7 +319,7 @@ class security_update_check:
                 # suse_command="""zypper list-updates --all | awk '{print $5}' | xargs zypper info | grep -E "^Name|^Version|^Installed Size|^Summary\""""
                 # upgrades_count=self.log_creator(suse_command, reboot_required_packages)
                 
-                upgrades_count=self.get_updates_list("zypper list-updates --all | awk '{print $5}' > "+self.package_list,"cat {} | xargs zypper info | grep -E \"^Name|^Version|^Installed Size|^Summary\"".format(self.package_list), reboot_required_packages)
+                upgrades_count=self.get_updates_list("zypper list-updates | awk '{print $5}' > "+self.package_list,"cat {} | xargs zypper info | grep -E \"^Name|^Version|^Installed Size|^Summary\"".format(self.package_list), reboot_required_packages)
 
                 if upgrades_count == "":
                     self.maindata['Upgrades Available For Installed Packages'] = -1
@@ -316,7 +334,7 @@ class security_update_check:
                 if res == "":
                     self.maindata['Installed Packages Count']=-1
                 else:
-                    res=res.decode('utf-8').strip()
+                    res=res.decode('utf-8',errors='replace').strip()
                 if res.isdigit():
                     self.maindata['Installed Packages Count']=res
                 else:
@@ -328,7 +346,7 @@ class security_update_check:
                 if updates_output=="":
                     self.maindata['Security Updates'] = -1
                 elif updates_output:
-                    updates_output=updates_output.decode()
+                    updates_output=updates_output.decode('utf-8',errors='replace')
                     updates_output = updates_output.rstrip()
                     count = updates_output.split(" ")
                     security_count = count[0].split()[0]
@@ -360,12 +378,9 @@ class security_update_check:
         return self.maindata
 
 
-def run(param=None):
+def run(param={}):
 
-    parser=argparse.ArgumentParser()
-    parser.add_argument('--timeout',help="Host Name",nargs='?', default= timeout)
-    args=parser.parse_args()
-    obj=security_update_check(args.timeout)
+    obj=security_update_check(param.get('timeout',5))
     result=obj.metriccollector()
     return result
 

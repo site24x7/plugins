@@ -47,7 +47,7 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
 
 - Move the `IBM_iSeries_AS400` folder to the site24x7 agent directory.
 	```
-	mv IBM_iSeries_AS400 /opt/site24x7/monagent/plugins/IBM_iSeries_AS400
+	mv IBM_iSeries_AS400 /opt/site24x7/monagent/plugins/
 	```
 - Once configured the agent will automatically execute the plugin in five minutes interval and send performance data to the Site24x7 data center.
 
@@ -72,12 +72,12 @@ IBM AS400/iSeries is used by enterprises from industries such as banking, insura
 
 - Run the below command with apprpriate values to check the manual execution of the plugin.
 	```bash
- 	python IBM_iSeries_AS400.py --host "localhost" --username "user" --password "test" --java_path "C:\Program Files\Java\jdk1.8.0_241\bin"
+ 	powershell IBM_iSeries_AS400.ps1 -host "localhost" -username "user" -password "test" -java_path "C:\Program' 'Files\Java\jdk1.8.0_241\bin"
  	```
  
 - Move the `IBM_iSeries_AS400` into the Site24x7 Windows Agent plugin directory.
 	```
-	 C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\IBM_iSeries_AS400
+	 C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 	```
 - Once configured the agent will automatically execute the plugin in five minutes interval and send performance data to the Site24x7 data center.
 

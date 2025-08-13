@@ -16,7 +16,8 @@ cd vpn_check/
 - Download below files and place it under the "vpn_check" directory.
 
 ```bash
-wget https://raw.githubusercontent.com/site24x7/plugins/master/vpn_check/vpn_check.py && sed -i "1s|^.*|#! $(which python3)|" vpn_check.py
+wget https://raw.githubusercontent.com/site24x7/plugins/master/vpn_check/vpn_check.py 
+
 wget https://raw.githubusercontent.com/site24x7/plugins/master/vpn_check/vpn_check.cfg
 ```
 

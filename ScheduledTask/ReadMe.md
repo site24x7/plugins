@@ -43,12 +43,6 @@ Download and install the latest version of the [Site24x7 Windows agent](https://
 
 2. Download the files [ScheduledTask.ps1](https://github.com/site24x7/plugins/blob/master/ScheduledTask/ScheduledTask.ps1), [ScheduledTask.cfg](https://github.com/site24x7/plugins/blob/master/ScheduledTask/ScheduledTask.cfg) and place it under the `ScheduledTask` folder.
 
-```
-wget https://raw.githubusercontent.com/site24x7/plugins/master/ScheduledTask/ScheduledTask.ps1
-
-wget https://raw.githubusercontent.com/site24x7/plugins/master/ScheduledTask/ScheduledTask.cfg
-```
-
 3. Modify the ScheduledTask.cfg file with the task name to monitor the particular task.
 
 

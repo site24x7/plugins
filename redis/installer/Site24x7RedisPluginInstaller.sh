@@ -11,7 +11,7 @@ func_exit() {
 trap func_exit SIGINT SIGTSTP
 
 # Agent and Plugin Directory
-plugin=Redis
+plugin=redis
 agent_dir=/opt/site24x7/monagent
 agent_path_change=false
 
@@ -182,8 +182,8 @@ install (){
             rm $cfg_file
         fi
 
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/redis/Redis.py
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/redis/Redis.cfg
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/redis/redis.py
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/redis/redis.cfg
 
     else
         output=$(mkdir -p $temp_dir)
@@ -192,8 +192,8 @@ install (){
             echo "------------Error Occured------------"
          fi
 
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/redis/Redis.py
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/redis/Redis.cfg
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/redis/redis.py
+        download_files https://raw.githubusercontent.com/site24x7/plugins/master/redis/redis.cfg
         
     
     fi

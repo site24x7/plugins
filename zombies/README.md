@@ -25,7 +25,6 @@ Learn more about the plugin installation steps and the various performance metri
 	wget https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/zombies/zombies.cfg
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/zombies/zombies.py
 	```
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the zombies.py script.
 
 - Edit the zombies.py file with appropriate arguments and Execute the below command to check for the valid JSON output:
 

@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.sql.Driver;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -27,7 +27,9 @@ public class sybaseDB {
     	List<String> databse_list=new ArrayList<>();
     	
     	 try {
-    		 Class.forName("com.sybase.jdbc4.jdbc.SybDriver");
+    		 Class<?> driverClass = Class.forName("com.sybase.jdbc4.jdbc.SybDriver");
+                 Driver driver = (Driver) driverClass.getDeclaredConstructor().newInstance();
+		 DriverManager.registerDriver(driver);
     		 String PLUGIN_VERSION = args[0];
                  String HEARTBEAT_REQUIRED = args[1];
 	         data.put("plugin_version",PLUGIN_VERSION);
