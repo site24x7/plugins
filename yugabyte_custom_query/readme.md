@@ -26,14 +26,14 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/yugabyte_custom_q
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 ```bash
-python3 yugabyte_custom_query.py --host "localhost" --port "5433" --username "yugabyte" --password "yugabyte" --db 'demo'
+python3 yugabyte_custom_query.py --hostname "localhost" --port "5433" --username "yugabyte" --password "yugabyte" --db 'demo'
 ```
 
 - Provide your yugabyte_custom_query configurations in yugabyte_custom_query.cfg file.
 
 ```bash
 [Demo]
-host = "localhost"
+hostname = "localhost"
 port = "5433"
 username = "yugabyte"
 password = "yugabyte"
