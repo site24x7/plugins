@@ -4,16 +4,15 @@ set -e
 PACKAGE_REQUIRED=("pandas")
 
 pip_check(){
-# Check if pip is installed
-PIP_CMD="$PYTHON_CMD -m pip"
-
-if $PIP_CMD --version &> /dev/null; then
-    PIP_VERSION=$($PIP_CMD --version | awk '{print $2}')
-    echo "Pip is available with version: $PIP_VERSION"
-else
-    echo "Error: Pip is not installed."
-    exit 1
-fi
+    # Check if pip is installed
+    PIP_CMD="$PYTHON_CMD -m pip"
+    if $PIP_CMD --version &> /dev/null; then
+        PIP_VERSION=$($PIP_CMD --version | awk '{print $2}')
+        echo "Pip is available with version: $PIP_VERSION"
+    else
+        echo "Error: Pip is not installed."
+        exit 1
+    fi
 }
 
 # List of common haproxy.cfg locations
@@ -23,7 +22,6 @@ HAPROXY_CFG_LOCATIONS=(
     "/opt/haproxy/haproxy.cfg"
     "/usr/local/haproxy/haproxy.cfg"
 )
-
 HAPROXY_CFG_PATH=""
 
 # 1. Search for haproxy.cfg in common locations
@@ -49,33 +47,46 @@ if [ -z "$HAPROXY_CFG_PATH" ]; then
 fi
 
 # 3. Final check and append configuration
+STATS_BLOCK="listen stats
+    bind 0.0.0.0:8404
+    mode http
+    stats enable
+    stats uri /stats
+    stats realm Strictly\\ Private
+"
+
 if [ -z "$HAPROXY_CFG_PATH" ]; then
     echo "Warning: HAProxy configuration file not found in common locations or via process."
     echo "Skipping HAProxy configuration append."
 else
-    # Check if the config already contains 'frontend http_front'
-    if grep -q "^frontend http_front" "$HAPROXY_CFG_PATH"; then
-        echo "'frontend http_front' already exists in haproxy.cfg. Skipping append."
+    # Check if the stats block already exists (by looking for 'listen stats')
+    if grep -q "^listen stats" "$HAPROXY_CFG_PATH"; then
+        echo "'listen stats' already exists in haproxy.cfg. Skipping append."
     else
         # Take a backup with date and time before making changes
         BACKUP_PATH="${HAPROXY_CFG_PATH}.$(date +%Y%m%d_%H%M%S).bak"
         cp "$HAPROXY_CFG_PATH" "$BACKUP_PATH"
-        echo "Appending frontend configuration to haproxy.cfg..."
-        cat <<EOF >> "$HAPROXY_CFG_PATH"
+        if [ $? -ne 0 ]; then
+            echo "haproxy.cfg backup: FAIL"
+            exit 1
+        fi
+        echo "Backup of haproxy.cfg created at $BACKUP_PATH"
 
-frontend http_front
-    bind *:80
-    default_backend http_back
+        # Append the stats block
+        echo "Appending listen stats configuration to haproxy.cfg..."
+        echo "$STATS_BLOCK" >> "$HAPROXY_CFG_PATH"
+        if [ $? -ne 0 ]; then
+            echo "haproxy.cfg config: FAIL (append failed)"
+            exit 1
+        fi
 
-EOF
-        
         # Reload HAProxy
         if sudo systemctl reload haproxy 2>/dev/null; then
             echo "haproxy.cfg config added and HAProxy reloaded successfully."
         else
             echo "haproxy.cfg config addition succeeded, but HAProxy reload failed."
-    exit 1
-fi
+            exit 1
+        fi
     fi
 fi
 
@@ -86,17 +97,14 @@ for version in python python3; do
         break
     fi
 done
-
 if [ -z "$PYTHON_CMD" ]; then
     echo "Error: Python is not installed or not available in the PATH."
     exit 1
 fi
-
 PYTHON_PATH=$(command -v "$PYTHON_CMD")
 echo "Python executable found at: $PYTHON_PATH"
 
 # Get current file name
-
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 CURRENT_DIR_NAME=$(dirname "$SCRIPT_DIR")
 monitorName=$(basename "$CURRENT_DIR_NAME")
