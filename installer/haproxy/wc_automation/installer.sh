@@ -53,13 +53,13 @@ if [ -z "$HAPROXY_CFG_PATH" ]; then
     echo "Warning: HAProxy configuration file not found in common locations or via process."
     echo "Skipping HAProxy configuration append."
 else
-    # Take a backup with date and time before making changes
-    BACKUP_PATH="${HAPROXY_CFG_PATH}.$(date +%Y%m%d_%H%M%S).bak"
-    cp "$HAPROXY_CFG_PATH" "$BACKUP_PATH"
     # Check if the config already contains 'frontend http_front'
     if grep -q "^frontend http_front" "$HAPROXY_CFG_PATH"; then
         echo "'frontend http_front' already exists in haproxy.cfg. Skipping append."
     else
+        # Take a backup with date and time before making changes
+        BACKUP_PATH="${HAPROXY_CFG_PATH}.$(date +%Y%m%d_%H%M%S).bak"
+        cp "$HAPROXY_CFG_PATH" "$BACKUP_PATH"
         echo "Appending frontend configuration to haproxy.cfg..."
         cat <<EOF >> "$HAPROXY_CFG_PATH"
 
