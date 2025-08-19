@@ -16,6 +16,62 @@ else
 fi
 }
 
+# List of common haproxy.cfg locations
+HAPROXY_CFG_LOCATIONS=(
+    "/etc/haproxy/haproxy.cfg"
+    "/usr/local/etc/haproxy/haproxy.cfg"
+    "/opt/haproxy/haproxy.cfg"
+    "/usr/local/haproxy/haproxy.cfg"
+)
+
+HAPROXY_CFG_PATH=""
+
+# 1. Search for haproxy.cfg in common locations
+for cfg in "${HAPROXY_CFG_LOCATIONS[@]}"; do
+    if [ -f "$cfg" ]; then
+        HAPROXY_CFG_PATH="$cfg"
+        echo "Found HAProxy configuration at $HAPROXY_CFG_PATH"
+        break
+    fi
+done
+
+# 2. If not found, try to get the config path from the running haproxy process
+if [ -z "$HAPROXY_CFG_PATH" ]; then
+    HAPROXY_PID=$(pgrep haproxy | head -n 1)
+    if [ -n "$HAPROXY_PID" ]; then
+        HAPROXY_CMD=$(ps -p "$HAPROXY_PID" -o args=)
+        CFG_FROM_PROC=$(echo "$HAPROXY_CMD" | grep -oE -- '-f[ ]*[^ ]+' | awk '{print $2}')
+        if [ -n "$CFG_FROM_PROC" ] && [ -f "$CFG_FROM_PROC" ]; then
+            HAPROXY_CFG_PATH="$CFG_FROM_PROC"
+            echo "Found HAProxy configuration from process at $HAPROXY_CFG_PATH"
+        fi
+    fi
+fi
+
+# 3. Final check and append configuration
+if [ -z "$HAPROXY_CFG_PATH" ]; then
+    echo "Warning: HAProxy configuration file not found in common locations or via process."
+    echo "Skipping HAProxy configuration append."
+else
+    # Take a backup with date and time before making changes
+    BACKUP_PATH="${HAPROXY_CFG_PATH}.$(date +%Y%m%d_%H%M%S).bak"
+    cp "$HAPROXY_CFG_PATH" "$BACKUP_PATH"
+    # Check if the config already contains 'frontend http_front'
+    if grep -q "^frontend http_front" "$HAPROXY_CFG_PATH"; then
+        echo "'frontend http_front' already exists in haproxy.cfg. Skipping append."
+    else
+        echo "Appending frontend configuration to haproxy.cfg..."
+        cat <<EOF >> "$HAPROXY_CFG_PATH"
+
+frontend http_front
+    bind *:80
+    default_backend http_back
+
+EOF
+        echo "Configuration appended successfully."
+    fi
+fi
+
 # Check for python or python3
 for version in python python3; do
     if command -v "$version" &> /dev/null; then
