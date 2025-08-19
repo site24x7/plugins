@@ -68,7 +68,14 @@ frontend http_front
     default_backend http_back
 
 EOF
-        echo "Configuration appended successfully."
+        
+        # Reload HAProxy
+        if sudo systemctl reload haproxy 2>/dev/null; then
+            echo "haproxy.cfg config added and HAProxy reloaded successfully."
+        else
+            echo "haproxy.cfg config addition succeeded, but HAProxy reload failed."
+    exit 1
+fi
     fi
 fi
 
