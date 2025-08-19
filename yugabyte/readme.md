@@ -23,14 +23,14 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/yugabyte/yugabyte
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 ```bash
-python3 yugabyte.py --host localhost --port 8080 --username yugabyte --password yugabyte 
+python3 yugabyte.py --hostname localhost --port 8080 --username yugabyte --password yugabyte 
 ```
 
 - Provide your yugabyte configurations in yugabyte.cfg file.
 
 ```bash
 [yugabyte-server]
-host = "localhost"
+hostname = "localhost"
 port = "5433"
 username = "yugabyte"
 password = "yugabyte"
