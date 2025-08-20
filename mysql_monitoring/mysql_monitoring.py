@@ -23,6 +23,7 @@ MYSQL_PORT="3306"
 MYSQL_USERNAME="user"
 MYSQL_PASSWORD=""
 
+
 METRICS_JSON={
     "Uptime":"uptime",
     "Open_tables":"open_tables",
@@ -79,6 +80,7 @@ METRICS_JSON={
     "Innodb_rows_inserted":"rows_inserted",
     "Innodb_rows_read":"rows_read",
     "Innodb_rows_updated":"rows_updated",
+    
     # Query cache items    
     # The query cache is deprecated as of MySQL 5.7.20, and is removed in MySQL 8.0. Deprecation
     "Qcache_hits":"hits",
@@ -152,8 +154,19 @@ METRICS_JSON={
     "Key_read_requests":"read_requests",
     "Key_reads":"key_reads",
     "Key_write_requests":"write_requests",
-    "Key_writes":"key_writes" 
-    }
+    "Key_writes":"key_writes",
+    
+    # New Metrics added inspired by ManageEngine
+    "Innodb_row_lock_time_max":"row_lock_time_max",
+    "Innodb_row_lock_current_waits":"row_lock_current_waits",
+    "Innodb_deadlocks":"deadlocks",
+    "Warnings":"warnings",
+    "Errors":"errors",
+    "Connection_errors_abort":"connection_errors_abort",
+    "Connection_errors_internal":"connection_errors_internal",
+    "Connection_errors_peer_address":"connection_errors_peer_address",
+    "Connection_errors_select":"connection_errors_select"
+}
 
 REPLICATION_JSON = {
     "Slave_IO_State": "slave_IO_state",
@@ -178,7 +191,7 @@ REPLICATION_JSON = {
     "Slave_SQL_Running": "slave_sql_running",
     "Replica_SQL_Running": "slave_sql_running"
 }
-    
+
 #Mention the units of your metrics in this python dictionary. If any new metrics are added make an entry here for its unit.
 METRICS_UNITS={'uptime':'seconds',
                'row_length':'bytes',
@@ -189,15 +202,21 @@ METRICS_UNITS={'uptime':'seconds',
                'connection_usage':'%',
                'open_files_usage':'%',
                'row_lock_time_avg':'ms',
+               'row_lock_time_max':'ms',
                'received':'bytes',
                'sent':'bytes',
                'relay_log_space':'bytes',
                'os_log_written':'bytes',
                'free_memory':'bytes',
-               'seconds_behind_master':'seconds'
+               'seconds_behind_master':'seconds',
+               'deadlocks':'count',
+               'warnings':'count',
+               'errors':'count',
+               'connection_errors_abort':'count',
+               'connection_errors_internal':'count',
+               'connection_errors_peer_address':'count',
+               'connection_errors_select':'count'
                }
-               
-
 
 class MySQL(object):
     
@@ -212,7 +231,6 @@ class MySQL(object):
         self.logtypename=args.log_type_name
         self.logfilepath=args.log_file_path
        
-
     #execute a mysql query and returns a dictionary
     def executeQuery(self, query):
         try:
@@ -227,12 +245,14 @@ class MySQL(object):
         except Exception as e:
             metric["error"] = str(e)
             return metric
+
     def executeQuery_replica(self, query):
         try:
             cursor = self.connection.cursor()
         except Exception as e:
             metric["error"] = str(e)
             return metric
+
     def executeQuery_mysql(self, con, query):
         try:
             cursor = con.cursor()
@@ -241,13 +261,13 @@ class MySQL(object):
             for entry in cursor:
                 try:
                     metric[entry[0]] = float(entry[1])
-                except ValueError as e:
+                except ValueError:
                     metric[entry[0]] = entry[1]
-
             return metric
-        except pymysql.OperationalError as message:
-            pass
-            
+        except Exception:
+            # Operational errors or others handled silently here
+            return {}
+
     def getDbConnection(self):
         try:
             import pymysql
@@ -256,7 +276,6 @@ class MySQL(object):
         except Exception as e:
             global con_error
             con_error=str(e)
-            #traceback.print_exc()
             return False
         return True
 
@@ -277,8 +296,6 @@ class MySQL(object):
 
     def metricCollector(self):
         data = {}
-
-        #bool_result,data = self.checkPreRequisites(data)
         bool_result = True
         
         if bool_result==False:
@@ -288,9 +305,8 @@ class MySQL(object):
                 import pymysql
             except Exception:
                 data['status']=0
-                data['msg']='pymysql module not installed\n Solution : Use the following command to install pymysql\n pip install pymysql \n(or)\n pip3 install pymysql'
+                data['msg']='pymysql module not installed\\n Solution : Use the following command to install pymysql\\n pip install pymysql \\n(or)\\n pip3 install pymysql'
                 return data
-
             if not self.getDbConnection():
                 data['status']=0
                 data['msg']='Connection Error: '+con_error
@@ -303,16 +319,24 @@ class MySQL(object):
                     cursor = con.cursor()
                     cursor.execute(VERSION_QUERY)
                     result = cursor.fetchone()
-                    data['mysql_version'] = result[0]
-                    version=result[0].split(".")
+                    # Fix for tuple issue
+                    if result and isinstance(result, tuple):
+                        version_string = result[0]
+                    else:
+                        version_string = ""
+                    data['mysql_version'] = version_string
+                    if version_string:
+                        version = version_string.split(".")
+                    else:
+                        version = ["0", "0", "0"]  # Fallback default
+                    
                     if int(version[0]) >=8:
                          slave_query="SHOW REPLICA STATUS"
-                         #master_query="SHOW BINARY LOG STATUS"
                     else:
                          slave_query='SHOW SLAVE STATUS'
                     master_query='SHOW MASTER STATUS'
                          
-                except pymysql.OperationalError as message:
+                except Exception as e:
                     data["msg"] = repr(e)
                     data["status"]=0
                     return data
@@ -322,7 +346,7 @@ class MySQL(object):
                 myresult_slave=cursor.fetchall()
                 try:
                     cursor.execute(master_query)
-                except pymysql.ProgrammingError as e:
+                except Exception as e:
                     if int(version[0]) >=8:
                         cursor.execute('SHOW BINARY LOG STATUS')
                     else:
@@ -334,24 +358,18 @@ class MySQL(object):
                         data['mysql_node_type']='Master & slave'
                         for i in range(len(myresult_slave[0])):
                             if REPLICATION_JSON.get(myresult_slave_key[i][0]):
-                                
                                 data[REPLICATION_JSON[myresult_slave_key[i][0]]]=myresult_slave[0][i]
-                        #data['mysql_node_type']='Slave'
                 elif myresult_master:
                         data['mysql_node_type']='Master'
                 elif myresult_slave : 
                     for i in range(len(myresult_slave[0])):
                         if REPLICATION_JSON.get(myresult_slave_key[i][0]):
-                            
                             data[REPLICATION_JSON[myresult_slave_key[i][0]]]=myresult_slave[0][i]
                     data['mysql_node_type']='Slave'
                 else:
                         data['mysql_node_type']='Standalone'
-
                         
                 json_file={} 
-                #MySQL Replication
-                
                 file_name="mysql_info_"+self.host+".json"
                 if os.path.exists(file_name):
                         if os.stat(file_name).st_size == 0:
@@ -376,23 +394,16 @@ class MySQL(object):
                         json_file['MySQLNodeType']=data['mysql_node_type']
                         with open(file_name, 'w') as f:
                                 json.dump(json_file, f)
-                #global_table = self.executeQuery('select * from information_schema.tables where table_schema="' + self.database + '" and table_name="'+self.table+'"')
+
                 data["row_length"] = 0
                 data["data_length"] = 0
                 data["index_length"] = 0
                 data["max_data_length"] = 0
                 data["rows_count"] = 0
+                
                 global_metrics = self.executeQuery_mysql(con,'SHOW GLOBAL STATUS')
                 global_variables = self.executeQuery_mysql(con,'SHOW VARIABLES') 
-                """global_db = self.executeQuery_mysql(con, 'SELECT table_schema "DB Name",ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) "DB Size in MB" FROM information_schema.tables GROUP BY table_schema;')
-       
-                for k,v in global_db.items():
-                    db_list = {}
-                    db_list["name"]=k
-                    db_list["size"]=v
-                    db.append(db_list)"""
-                    #data[k]=v
-                    #METRICS_UNITS[k] = "MB"
+
                 for attribute_keys in METRICS_JSON:
                     if attribute_keys in global_metrics:
                         data[METRICS_JSON[attribute_keys]]=global_metrics[attribute_keys]
@@ -400,29 +411,34 @@ class MySQL(object):
                         data[METRICS_JSON[attribute_keys]]=global_variables[attribute_keys]
                     else:
                         data[METRICS_JSON[attribute_keys]]=0
-                if 'threads_running' in data and  'max_connections' in global_variables:
-                    data['connection_usage'] = ((data['threads_running'] /global_variables['max_connections'])*100)
+
+                if 'running' in data and  'max_connections' in global_variables:
+                    data['connection_usage'] = ((data['running'] / global_variables['max_connections']) * 100)
                 else:
                     data['connection_usage'] = 0
+
                 if 'open_files' in data and  'open_files_limit' in global_variables:
-                    data['open_files_usage'] = ((data['open_files'] /global_variables['open_files_limit'])*100)                                                                                                                                                                                        
+                    data['open_files_usage'] = ((data['open_files'] / global_variables['open_files_limit']) * 100)                                                                                                                                                                                        
                 else:
                     data['open_files_usage'] = 0 
+                
                 #no of reads & writes
-                if 'Com_insert' in global_metrics and  'Com_replace' in global_metrics and 'Com_update' in global_metrics and  'Com_delete' in global_metrics:
-                    writes = (global_metrics['Com_insert'] +global_metrics['Com_replace'] +global_metrics['Com_update'] +global_metrics['Com_delete'])
+                writes = 0
+                if all(k in global_metrics for k in ['Com_insert','Com_replace','Com_update','Com_delete']):
+                    writes = (global_metrics['Com_insert'] + global_metrics['Com_replace'] + global_metrics['Com_update'] + global_metrics['Com_delete'])
                     data['writes'] = writes
                 else:
                     data['writes'] = 0
                 # reads
-                if 'Com_select' in global_metrics and  'qcache_hits' in data:
-                    reads = global_metrics['Com_select'] + data['qcache_hits']
+                if 'Com_select' in global_metrics and  'hits' in data:
+                    reads = global_metrics['Com_select'] + data['hits']
                     data['reads'] = reads
                 else:
                     data['reads'] = 0
                     reads = 0
+
                 try:
-                    data['rw_ratio'] = reads/writes
+                    data['rw_ratio'] = reads / writes
                 except ZeroDivisionError:
                     data['rw_ratio'] = 0
                 except Exception as e:
@@ -431,10 +447,11 @@ class MySQL(object):
     
                 # transactions
                 if 'Com_commit' in global_metrics and  'Com_rollback' in global_metrics:
-                    transactions = (global_metrics['Com_commit'] +global_metrics['Com_rollback'])
+                    transactions = ( global_metrics['Com_commit'] + global_metrics['Com_rollback'])
                     data['transactions'] = transactions
                 else:
                     data['transactions'] = 0                                                                                                             
+                
                 # slave_running
                 if 'Slave_running' in global_metrics:
                     result = global_metrics['Slave_running']
@@ -453,11 +470,13 @@ class MySQL(object):
                 cluster=cursor.fetchall()
                 if cluster:
                     data['tags']="MYSQL_CLUSTER:"+cluster[0][1]+",MYSQL_NODE:"+self.host+""
+                
             except Exception as e:
                 data["error"] = repr(e)
                 cursor.close()
                 con.close()
                 return data
+
         applog={}
         if(self.logsenabled in ['True', 'true', '1']):
             applog["logs_enabled"]=True
@@ -465,6 +484,7 @@ class MySQL(object):
             applog["log_file_path"]=self.logfilepath
         else:
             applog["logs_enabled"]=False
+
         data['applog'] = applog
         #data['tags']="Node Type:"+data['mysql_node_type']+""
         data['units']=METRICS_UNITS
