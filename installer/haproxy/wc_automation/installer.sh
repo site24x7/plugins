@@ -4,7 +4,6 @@ set -e
 PACKAGE_REQUIRED=("pandas")
 
 pip_check(){
-    # Check if pip is installed
     PIP_CMD="$PYTHON_CMD -m pip"
     if $PIP_CMD --version &> /dev/null; then
         PIP_VERSION=$($PIP_CMD --version | awk '{print $2}')
@@ -15,7 +14,6 @@ pip_check(){
     fi
 }
 
-# List of common haproxy.cfg locations
 HAPROXY_CFG_LOCATIONS=(
     "/etc/haproxy/haproxy.cfg"
     "/usr/local/etc/haproxy/haproxy.cfg"
@@ -24,7 +22,6 @@ HAPROXY_CFG_LOCATIONS=(
 )
 HAPROXY_CFG_PATH=""
 
-# 1. Search for haproxy.cfg in common locations
 for cfg in "${HAPROXY_CFG_LOCATIONS[@]}"; do
     if [ -f "$cfg" ]; then
         HAPROXY_CFG_PATH="$cfg"
@@ -33,7 +30,6 @@ for cfg in "${HAPROXY_CFG_LOCATIONS[@]}"; do
     fi
 done
 
-# 2. If not found, try to get the config path from the running haproxy process
 if [ -z "$HAPROXY_CFG_PATH" ]; then
     HAPROXY_PID=$(pgrep haproxy | head -n 1)
     if [ -n "$HAPROXY_PID" ]; then
@@ -46,24 +42,64 @@ if [ -z "$HAPROXY_CFG_PATH" ]; then
     fi
 fi
 
-# 3. Final check and append configuration
-STATS_BLOCK="listen stats
-    bind 0.0.0.0:8404
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+PARENT_DIR=$(dirname "$SCRIPT_DIR")
+CFG_FILE=""
+
+for cfg in "$PARENT_DIR"/*.cfg; do
+    if [ -f "$cfg" ]; then
+        CFG_FILE="$cfg"
+        break
+    fi
+done
+
+if [ -z "$CFG_FILE" ]; then
+    echo "Error: Plugin configuration file (.cfg) not found in parent directory."
+    exit 1
+fi
+
+echo "Found plugin configuration file: $CFG_FILE"
+
+USERNAME=$(grep "^username" "$CFG_FILE" | sed 's/^username[[:space:]]*=[[:space:]]*//' | tr -d '"')
+PASSWORD=$(grep "^password" "$CFG_FILE" | sed 's/^password[[:space:]]*=[[:space:]]*//' | tr -d '"')
+URL=$(grep "^url" "$CFG_FILE" | sed 's/^url[[:space:]]*=[[:space:]]*//' | tr -d '"')
+
+PORT="8404"
+if [ -n "$URL" ] && [ "$URL" != "None" ]; then
+    PORT=$(echo "$URL" | grep -oE ':[0-9]+' | cut -d':' -f2)
+    if [ -z "$PORT" ]; then
+        PORT="8404"
+    fi
+fi
+
+if [ -n "$USERNAME" ] && [ "$USERNAME" != "None" ] && [ -n "$PASSWORD" ] && [ "$PASSWORD" != "None" ]; then
+    STATS_BLOCK="
+listen stats
+    bind 0.0.0.0:$PORT
+    mode http
+    stats enable
+    stats uri /stats
+    stats realm Strictly\\ Private
+    stats auth $USERNAME:$PASSWORD
+"
+else
+    STATS_BLOCK="
+listen stats
+    bind 0.0.0.0:$PORT
     mode http
     stats enable
     stats uri /stats
     stats realm Strictly\\ Private
 "
+fi
 
 if [ -z "$HAPROXY_CFG_PATH" ]; then
     echo "Warning: HAProxy configuration file not found in common locations or via process."
     echo "Skipping HAProxy configuration append."
 else
-    # Check if the stats block already exists (by looking for 'listen stats')
     if grep -q "^listen stats" "$HAPROXY_CFG_PATH"; then
         echo "'listen stats' already exists in haproxy.cfg. Skipping append."
     else
-        # Take a backup with date and time before making changes
         BACKUP_PATH="${HAPROXY_CFG_PATH}.$(date +%Y%m%d_%H%M%S).bak"
         cp "$HAPROXY_CFG_PATH" "$BACKUP_PATH"
         if [ $? -ne 0 ]; then
@@ -72,7 +108,6 @@ else
         fi
         echo "Backup of haproxy.cfg created at $BACKUP_PATH"
 
-        # Append the stats block
         echo "Appending listen stats configuration to haproxy.cfg..."
         echo "$STATS_BLOCK" >> "$HAPROXY_CFG_PATH"
         if [ $? -ne 0 ]; then
@@ -80,7 +115,6 @@ else
             exit 1
         fi
 
-        # Reload HAProxy
         if sudo systemctl reload haproxy 2>/dev/null; then
             echo "haproxy.cfg config added and HAProxy reloaded successfully."
         else
@@ -90,7 +124,6 @@ else
     fi
 fi
 
-# Check for python or python3
 for version in python python3; do
     if command -v "$version" &> /dev/null; then
         PYTHON_CMD=$version
@@ -104,22 +137,18 @@ fi
 PYTHON_PATH=$(command -v "$PYTHON_CMD")
 echo "Python executable found at: $PYTHON_PATH"
 
-# Get current file name
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 CURRENT_DIR_NAME=$(dirname "$SCRIPT_DIR")
 monitorName=$(basename "$CURRENT_DIR_NAME")
 TARGET_PY_FILE="${CURRENT_DIR_NAME}/$monitorName.py"
 
-# Check if the Python file exists
 if [ ! -f "$TARGET_PY_FILE" ]; then
     echo "Error: Python script '$TARGET_PY_FILE' not found in the expected directory."
     exit 1
 fi
 
-# Add Python shebang line to the top of the Python file
 sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
 
-# Check if required packages are installed
 for package in "${PACKAGE_REQUIRED[@]}"; do
     if ! $PYTHON_CMD -c "import $package" &> /dev/null; then
         echo "Info: Package '$package' is not installed. Attempting installation..."
