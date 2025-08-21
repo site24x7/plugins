@@ -67,7 +67,7 @@ def move_folder(source,destination):
             while i<=3:
                 cx_inp=input("Do you want to proceed with adding another MySQL instance for monitoring ? (Y or N) ")
                 if(cx_inp == "Y" or cx_inp=="y" or cx_inp.lower()=="yes"):
-                    if not multi_config(source+"/mysql_monitoring.cfg",destination+"/mysql_monitoring.cfg"):
+                    if not multi_config(source+"/mysql.cfg",destination+"/mysql.cfg"):
                         return False
                     else:
                         print(colors.GREEN+"Plugin installed successfully. "+colors.RESET)
@@ -344,12 +344,12 @@ def initiate(plugin_name, plugin_url):
         print(colors.RED+str(e)+colors.RESET)
         return
 
-    shutil.copyfile("pymysql.zip",plugins_temp_path+"mysql_monitoring/pymysql.zip")
+    shutil.copyfile("pymysql.zip",plugins_temp_path+"mysql/pymysql.zip")
     
-    shutil.unpack_archive('pymysql.zip', plugins_temp_path+"mysql_monitoring/")
+    shutil.unpack_archive('pymysql.zip', plugins_temp_path+"mysql/")
 
     # Remove the original pymysql.zip file
-    os.remove(plugins_temp_path+"mysql_monitoring/pymysql.zip")
+    os.remove(plugins_temp_path+"mysql/pymysql.zip")
     print("")
 
     # Updating pyhton path
@@ -399,8 +399,8 @@ def initiate(plugin_name, plugin_url):
 
 
 if __name__ == "__main__":
-    plugin_name="mysql_monitoring"
-    plugin_url="https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/"
+    plugin_name="mysql"
+    plugin_url="https://raw.githubusercontent.com/site24x7/plugins/master/mysql/"
 
 
     initiate(plugin_name, plugin_url)

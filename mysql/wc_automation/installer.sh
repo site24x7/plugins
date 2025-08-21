@@ -64,7 +64,7 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
     fi
 done
 
-## Additional actions for mysql_monitoring start here
+## Additional actions for mysql start here
 pymysql_zip="$CURRENT_DIR_NAME/pymysql/pymysql.zip"
 # Check if the file exists
 if [ -f $pymysql_zip ]; then

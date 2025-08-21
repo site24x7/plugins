@@ -44,7 +44,7 @@
 - Create a directory "mysql_custom_query".
 - Copy and execute the below command under the "mysql_custom_query" folder to download the pymysql module.
 	
-		wget https://github.com/site24x7/plugins/raw/master/mysql_monitoring/pymysql/pymysql.zip && unzip pymysql.zip && rm pymysql.zip
+		wget https://github.com/site24x7/plugins/raw/master/mysql/pymysql/pymysql.zip && unzip pymysql.zip && rm pymysql.zip
 		
 - Download  the below files in "mysql_custom_query" folder and place it under the "mysql_custom_query" directory.
 

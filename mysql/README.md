@@ -8,7 +8,7 @@ If you're using Linux servers, use the MySQL plugin installer that checks the pr
 Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
 
 ```bash
-wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/installer/Site24x7MySQLPluginInstaller.sh && sudo bash Site24x7MySQLPluginInstaller.sh
+wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql/installer/Site24x7MySQLPluginInstaller.sh && sudo bash Site24x7MySQLPluginInstaller.sh
 ```
 ## Standard Installation
 If you're not using Linux servers or want to install the plugin manually, follow the steps below.
@@ -57,21 +57,21 @@ If you're not using Linux servers or want to install the plugin manually, follow
 ---
 ### Plugin Installation 
 
-- Create a directory `mysql_monitoring`.
+- Create a directory `mysql`.
 		
-- Download  the below files and place it under the `mysql_monitoring` directory.
+- Download  the below files and place it under the `mysql` directory.
 
 	```bash
-	wget https://github.com/site24x7/plugins/raw/master/mysql_monitoring/pymysql/pymysql.zip && unzip pymysql.zip && rm pymysql.zip
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/mysql_monitoring.py && sed -i "1s|^.*|#! $(which python3)|" mysql_monitoring.py
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql_monitoring/mysql_monitoring.cfg
+	wget https://github.com/site24x7/plugins/raw/master/mysql/pymysql/pymysql.zip && unzip pymysql.zip && rm pymysql.zip
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql/mysql.py && sed -i "1s|^.*|#! $(which python3)|" mysql.py
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/mysql/mysql.cfg
   	```
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 	```bash
-	python mysql_monitoring.py --host "localhost" --port "3306" --username "username" --password "password" 
+	python mysql.py --host "localhost" --port "3306" --username "username" --password "password" 
 	```
-- After above command with parameters gives expected output, please configure the relevant parameters in the mysql_monitoring.cfg file.
+- After above command with parameters gives expected output, please configure the relevant parameters in the mysql.cfg file.
 	```bash
 	[MySQL]
 	host = "localhost"
@@ -86,14 +86,14 @@ If you're not using Linux servers or want to install the plugin manually, follow
 - Applog is supported for MySQL Monitoring. To enable applog for this plugin, configure logs_enabled=true and configure log_type_name and log_file_path as need.
 
 #### Linux
-- Place the `mysql_monitoring` folder under Site24x7 Linux Agent plugin directory : 
+- Place the `mysql` folder under Site24x7 Linux Agent plugin directory : 
 	```bash
-	mv mysql_monitoring /opt/site24x7/monagent/plugins
+	mv mysql /opt/site24x7/monagent/plugins
  	```
 #### Windows
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
-- Move the folder `mysql_monitoring` under Site24x7 Windows Agent plugin directory: 
+- Move the folder `mysql` under Site24x7 Windows Agent plugin directory: 
 
 		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
 ---
@@ -301,7 +301,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 
 _The pymysql source can be found [here](https://github.com/PyMySQL/PyMySQL/tree/main)._
 
-_Zoho Corporation has made this into one single [zip file](https://github.com/site24x7/plugins/tree/master/mysql_monitoring/pymysql/pymysql.zip) and is licensed under the same [license](https://github.com/PyMySQL/PyMySQL/blob/main/LICENSE) which can be found [here](https://github.com/site24x7/plugins/tree/master/mysql_monitoring/pymysql/LICENSE.txt)._
+_Zoho Corporation has made this into one single [zip file](https://github.com/site24x7/plugins/tree/master/mysql/pymysql/pymysql.zip) and is licensed under the same [license](https://github.com/PyMySQL/PyMySQL/blob/main/LICENSE) which can be found [here](https://github.com/site24x7/plugins/tree/master/mysql/pymysql/LICENSE.txt)._
 
 
 
