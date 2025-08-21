@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-PACKAGE_REQUIRED=("pandas")
+PACKAGE_REQUIRED=("csv")
 
 pip_check(){
     PIP_CMD="$PYTHON_CMD -m pip"
