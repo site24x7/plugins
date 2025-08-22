@@ -23,59 +23,6 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 CURRENT_DIR_NAME=$(dirname "$SCRIPT_DIR")
 monitorName=$(basename "$CURRENT_DIR_NAME")
 
-VENV_DIR=$(dirname "$CURRENT_DIR_NAME")/.plugin-venv
-PLUGINS_DIR=$(dirname "$CURRENT_DIR_NAME")
-
-if [ "$(basename "$PLUGINS_DIR")" != "plugins" ]; then
-    echo "Error: plugins directory is not found"
-    exit 1
-fi
-
-VENV_RELATIVE_PATH="plugins/.plugin-venv"
-
-USE_VENV=false
-
-if [ -d "$VENV_DIR" ]; then
-    echo "Virtual environment found at: $VENV_RELATIVE_PATH"
-    VENV_PYTHON="$VENV_DIR/bin/python"
-    VENV_PIP="$VENV_DIR/bin/pip"
-    
-    if [ -f "$VENV_PYTHON" ] && [ -f "$VENV_PIP" ]; then
-        PYTHON_PATH="$VENV_PYTHON"
-        PIP_CMD="$VENV_PIP"
-        USE_VENV=true
-        echo "Using existing virtual environment Python: $VENV_RELATIVE_PATH/bin/python"
-    else
-        echo "Warning: Virtual environment exists but Python/pip not found."
-    fi
-fi
-
-if [ "$USE_VENV" = false ]; then
-    echo "Attempting to create virtual environment at: $VENV_RELATIVE_PATH"
-    if $PYTHON_CMD -m venv "$VENV_DIR" &>/dev/null; then
-        echo "Virtual environment created successfully."
-        VENV_PYTHON="$VENV_DIR/bin/python"
-        VENV_PIP="$VENV_DIR/bin/pip"
-        
-        if [ -f "$VENV_PYTHON" ] && [ -f "$VENV_PIP" ]; then
-            PYTHON_PATH="$VENV_PYTHON"
-            PIP_CMD="$VENV_PIP"
-            USE_VENV=true
-            echo "Using newly created virtual environment Python: $VENV_RELATIVE_PATH/bin/python"
-        else
-            echo "Warning: Virtual environment created but Python/pip not found."
-        fi
-    else
-        echo "Warning: Failed to create virtual environment. Falling back to global Python installation."
-    fi
-fi
-
-if [ "$USE_VENV" = false ]; then
-    echo "Using global Python installation."
-    PYTHON_PATH=$(command -v "$PYTHON_CMD")
-    PIP_CMD="$PYTHON_CMD -m pip"
-fi
-
 TARGET_PY_FILE="${CURRENT_DIR_NAME}/$monitorName.py"
 
 if [ ! -f "$TARGET_PY_FILE" ]; then
@@ -83,67 +30,66 @@ if [ ! -f "$TARGET_PY_FILE" ]; then
     exit 1
 fi
 
-sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
-
-if [ "$USE_VENV" = true ]; then
-    if $PIP_CMD --version &> /dev/null; then
-        PIP_VERSION=$($PIP_CMD --version | awk '{print $2}')
-        echo "Pip is available in virtual environment with version: $PIP_VERSION"
-    else
-        echo "Error: Pip is not available in virtual environment."
-        exit 1
-    fi
-else
-    PIP_CMD="$PYTHON_CMD -m pip"
-    if $PIP_CMD --version &> /dev/null; then
-        PIP_VERSION=$($PIP_CMD --version | awk '{print $2}')
-        echo "Pip is available with version: $PIP_VERSION"
-    else
-        echo "Error: Pip is not installed."
-        exit 1
-    fi
-fi
-
+SHEBANG_PYTHON_PATH=""
+PIP_CMD="$PYTHON_CMD -m pip"
 
 for i in "${!PACKAGE_REQUIRED[@]}"; do
     package="${PACKAGE_REQUIRED[$i]}"
     import_name="${PACKAGE_IMPORT_NAMES[$i]}"
-    
-    if [ "$USE_VENV" = true ]; then
-        if ! "$PYTHON_PATH" -c "import $import_name" &> /dev/null; then
-            echo "Info: Package '$package' is not installed in virtual environment. Attempting installation..."
-            if $PIP_CMD install "$package" &> /dev/null; then
-                echo "Package '$package' installed successfully in virtual environment."
-                if "$PYTHON_PATH" -c "import $import_name" &> /dev/null; then
-                    echo "Package '$package' verified successfully in virtual environment."
-                else
-                    echo "Error: Package '$package' installation verification failed in virtual environment."
-                    exit 1
-                fi
-            else
-                echo "Error: Failed to install the package '$package' in virtual environment."
-                exit 1
-            fi
-        else
-            echo "Package '$package' is already installed in virtual environment."
-        fi
+    if $PYTHON_CMD -c "import $import_name" &> /dev/null; then
+        echo "Package '$package' is already installed globally."
+        SHEBANG_PYTHON_PATH=$(command -v "$PYTHON_CMD")
     else
-        if ! $PYTHON_CMD -c "import $import_name" &> /dev/null; then
-            echo "Info: Package '$package' is not installed. Attempting installation..."
-            if $PIP_CMD install "$package" &> /dev/null; then
-                echo "Package '$package' installed successfully."
-                if $PYTHON_CMD -c "import $import_name" &> /dev/null; then
-                    echo "Package '$package' verified successfully."
-                else
-                    echo "Error: Package '$package' installation verification failed."
-                    exit 1
-                fi
+        echo "Info: Package '$package' is not installed globally. Attempting global installation..."
+        if $PYTHON_CMD -m pip install "$package" &> /dev/null; then
+            echo "Package '$package' installed successfully globally."
+            if $PYTHON_CMD -c "import $import_name" &> /dev/null; then
+                echo "Package '$package' verified successfully globally."
+                SHEBANG_PYTHON_PATH=$(command -v "$PYTHON_CMD")
             else
-                echo "Error: Failed to install the package '$package'."
+                echo "Error: Package '$package' installation verification failed globally."
                 exit 1
             fi
         else
-            echo "Package '$package' is already installed."
+            echo "Warning: Failed to install the package '$package' globally. Will try in virtual environment."
+            VENV_DIR=$(dirname "$(dirname "$CURRENT_DIR_NAME")")/.plugin-venv
+            VENV_RELATIVE_PATH="../.plugin-venv"
+            if [ ! -d "$VENV_DIR" ]; then
+                echo "Attempting to create virtual environment at: $VENV_RELATIVE_PATH"
+                if $PYTHON_CMD -m venv "$VENV_DIR" &>/dev/null; then
+                    echo "Virtual environment created successfully."
+                else
+                    echo "Warning: Failed to create virtual environment."
+                    exit 1
+                fi
+            fi
+            VENV_PYTHON="$VENV_DIR/bin/python"
+            VENV_PIP="$VENV_DIR/bin/pip"
+            if [ -f "$VENV_PYTHON" ] && [ -f "$VENV_PIP" ]; then
+                if "$VENV_PIP" install "$package" &> /dev/null; then
+                    echo "Package '$package' installed successfully in virtual environment."
+                    if "$VENV_PYTHON" -c "import $import_name" &> /dev/null; then
+                        echo "Package '$package' verified successfully in virtual environment."
+                        SHEBANG_PYTHON_PATH="$VENV_PYTHON"
+                    else
+                        echo "Error: Package '$package' installation verification failed in virtual environment."
+                        exit 1
+                    fi
+                else
+                    echo "Error: Failed to install the package '$package' in virtual environment."
+                    exit 1
+                fi
+            else
+                echo "Error: Virtual environment Python/pip not found."
+                exit 1
+            fi
         fi
     fi
 done
+
+if [ -n "$SHEBANG_PYTHON_PATH" ]; then
+    sed -i "1s|^.*$|#!$SHEBANG_PYTHON_PATH|" "$TARGET_PY_FILE"
+    echo "Updated shebang in plugin to use: $SHEBANG_PYTHON_PATH"
+else
+    echo "Warning: Could not determine Python path for shebang update."
+fi
