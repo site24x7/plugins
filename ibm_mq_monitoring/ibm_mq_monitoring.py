@@ -477,6 +477,13 @@ class IbmMq:
             )
 
             maindata["channels"] = channels
+            maindata["s247config"]={
+                "childdiscovery":[
+                    "channels",
+                    "queues",
+                    "listeners"
+                ]
+            }
 
             return maindata
         except Exception as e:
