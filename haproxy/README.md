@@ -1,5 +1,4 @@
-
-Plugin for Haproxy Monitoring
+# Plugin for Haproxy Monitoring
   
 Get to know how to configure the HAProxy plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of HAProxy servers.
 
@@ -186,3 +185,5 @@ BACKEND Lastsess   | Time since last session (ms)
 BACKEND Cookie     | Cookie usage for persistence
 
 ## Sample Images
+
+<img width="1650" height="881" alt="image" src="https://github.com/user-attachments/assets/cbb71298-e226-4085-93a2-9bc325103125" />
