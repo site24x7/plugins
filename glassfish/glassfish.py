@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import json
 import requests
 import platform
@@ -337,6 +336,9 @@ class glassfish:
                             self.maindata[metrics[key]] = value["count"]
 
             self.maindata["Request_Status_Code_Class"] = requests_list
+            self.maindata["s247config"]={
+                "childdiscovery": ["Request_Status_Code_Class"]
+            }
 
             if not self.connection_success:
                 self.maindata["status"] = 0
@@ -355,11 +357,38 @@ class glassfish:
             applog["logs_enabled"] = False
         self.maindata["applog"] = applog
         return self.maindata
+    
 
+def run(param):
+    host = str(param.get("host")).strip('"') if param else "localhost"
+    port = str(param.get("port")).strip('"') if param else "4848"
+    ssl = str(param.get("ssl")).strip('"') if param else "false"
+    insecure = str(param.get("insecure")).strip('"') if param else "false"
+    username = str(param.get("username")).strip('"') if param else "None"
+    password = str(param.get("password")).strip('"') if param else "None"
+    logs_enabled = str(param.get("logs_enabled")).strip('"') if param else "False"
+    log_type_name = str(param.get("log_type_name")).strip('"') if param else "None"
+    log_file_path = str(param.get("log_file_path")).strip('"') if param else "None"
+    
+    class Args:
+        def __init__(self, host, port, ssl, insecure, username, password, logs_enabled, log_type_name, log_file_path):
+            self.host = host
+            self.port = port
+            self.ssl = ssl
+            self.insecure = insecure
+            self.username = username
+            self.password = password
+            self.logs_enabled = logs_enabled
+            self.log_type_name = log_type_name
+            self.log_file_path = log_file_path
+    
+    args = Args(host, port, ssl, insecure, username, password, logs_enabled, log_type_name, log_file_path)
+    glassfish_instance = glassfish(args)
+    result = glassfish_instance.metriccollector()
+    return result
 
 if __name__ == "__main__":
 
-    glassfish_status_url = "http://localhost:4848"
     glassfish_host = "localhost"
     glassfish_port = "4848"
     glassfish_ssl = "false"

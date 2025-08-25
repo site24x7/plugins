@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 
 ### This plugin is used for monitoring PostGres Database
@@ -255,6 +255,12 @@ class pgsql():
 
         self._results["Tranasctions_and_Session_per_Database"]=conn_result
         self._results["Stats_per_DB"]=db_result
+        self._results["s247config"]={
+            "childdiscovery":[
+                "Tranasctions_and_Session_per_Database",
+                "Stats_per_DB"
+            ]
+        }
 
         
 

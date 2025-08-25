@@ -74,11 +74,22 @@ class oracle:
         try:
             import oracledb
             oracledb.init_oracle_client()
-            conn = oracledb.connect(user=self.username, password=self.password, dsn=dsn)
-            self.c = conn.cursor()
+            self.conn = oracledb.connect(user=self.username, password=self.password, dsn=dsn)
+            self.c = self.conn.cursor()
             return (True, "Connected")
         except Exception as e:
+            self.conn = None
+            self.c = None
             return (False, str(e))
+
+    def close_connection(self):
+        try:
+            if hasattr(self, 'c') and self.c:
+                self.c.close()
+            if hasattr(self, 'conn') and self.conn:
+                self.conn.close()
+        except Exception:
+            pass
 
     def execute_query_row_col(self, query, col_change=False):
         queried_data={}
@@ -272,8 +283,6 @@ class oracle:
 
 
     def metriccollector(self):
-
-
         self.metric_queries={
             "Bulk Queries":{
 
@@ -304,12 +313,12 @@ class oracle:
                 "Invalid Index Count":"""SELECT COUNT(*) AS invalid_index_count FROM dba_indexes WHERE status = 'INVALID'"""
                     },
             "Tablespace Queries":{
-                "Tablespace Metrics Query":"""  SELECT b.TABLESPACE_NAME as "dba_tablespace", d.* , b.CONTENTS, b.LOGGING, b.STATUS FROM dba_tablespace_usage_metrics d FULL JOIN dba_tablespaces b ON d.TABLESPACE_NAME = b.TABLESPACE_NAME FETCH FIRST 25 ROWS ONLY""",
-                "Tablespace Datafile Query":""" SELECT TABLESPACE_NAME, FILE_NAME, (BYTES/1024/1024) , BLOCKS, AUTOEXTENSIBLE, (MAXBYTES/1024/1024), (MAXBLOCKS/1024/1024), INCREMENT_BY, (USER_BYTES/1024/1024), USER_BLOCKS FROM DBA_DATA_FILES FETCH FIRST 25 ROWS ONLY"""
+                "Tablespace Metrics Query":"""  SELECT b.TABLESPACE_NAME as "dba_tablespace", d.* , b.CONTENTS, b.LOGGING, b.STATUS FROM dba_tablespace_usage_metrics d FULL JOIN dba_tablespaces b ON d.TABLESPACE_NAME = b.TABLESPACE_NAME""",
+                "Tablespace Datafile Query":""" SELECT TABLESPACE_NAME, FILE_NAME, (BYTES/1024/1024) , BLOCKS, AUTOEXTENSIBLE, (MAXBYTES/1024/1024), (MAXBLOCKS/1024/1024), INCREMENT_BY, (USER_BYTES/1024/1024), USER_BLOCKS FROM DBA_DATA_FILES"""
             },
             "FRA Query":"""SELECT name AS "FRA File Dest", space_limit / (1024 * 1024) AS "FRA Space Limit", space_used / (1024 * 1024) AS "FRA Space Used", space_reclaimable / (1024 * 1024) AS "FRA Space Reclaimable", number_of_files AS "FRA Number of Files" FROM V$RECOVERY_FILE_DEST""",
             "Waits Query":"""select n.name , round(m.time_waited/100,3) time_waited, m.wait_count from v$eventmetric m, v$event_name n where m.event_id=n.event_id and n.name in ( 'free buffer waits' , 'buffer busy waits', 'latch free', 'library cache pin', 'library cache load lock', 'log buffer space', 'library object reloads count', 'enqueue waits', 'db file parallel read', 'db file parallel write', 'control file sequential read', 'control file parallel write', 'write complete waits', 'log file sync', 'sort segment request', 'direct path read', 'direct path write')""",
-            "PDB Query":"""SELECT a.PDB_NAME, a.PDB_ID,  a.STATUS, b.OPEN_MODE, b.RESTRICTED, b.OPEN_TIME, b.total_size/1024/1024, b.BLOCK_SIZE FROM DBA_PDBS a join V$PDBS b on a.PDB_NAME=b.NAME FETCH FIRST 25 ROWS ONLY""",
+            "PDB Query":"""SELECT a.PDB_NAME, a.PDB_ID,  a.STATUS, b.OPEN_MODE, b.RESTRICTED, b.OPEN_TIME, b.total_size/1024/1024, b.BLOCK_SIZE FROM DBA_PDBS a join V$PDBS b on a.PDB_NAME=b.NAME""",
             "DB Query":"""select cdb as "CDB", open_mode as "Open Mode", TO_CHAR(created, 'YYYY-MM-DD HH24:MI:SS') AS "Created Date", log_mode as "Log Mode", switchover_status as "Switchover Status", protection_mode as "Protection Mode", current_scn as "Current SCN" from v$database"""
                 }
 
@@ -327,46 +336,52 @@ class oracle:
         if not connection_status[0]:
             self.maindata['status']=0
             self.maindata['msg']=connection_status[1]
+            self.close_connection()
             return self.maindata
 
         for query_name ,bulk_query in self.metric_queries['Bulk Queries'].items():
             query_output_data=self.execute_query_bulk(bulk_query, query_name=query_name)
-
             self.maindata.update(query_output_data)
             if 'status' in self.maindata and self.maindata['status']==0:
+                self.close_connection()
                 return self.maindata
 
         for query_name in self.metric_queries['Single Queries']:
             query_output_data=self.execute_query(query_name)
             self.maindata.update(query_output_data)
             if 'status' in self.maindata and self.maindata['status']==0:
+                self.close_connection()
                 return self.maindata
-        
+
         query_output_data=self.tablespace_complete()
         self.maindata.update(query_output_data)
         if 'status' in self.maindata and self.maindata['status']==0:
-                return self.maindata
+            self.close_connection()
+            return self.maindata
 
         query_output_data=self.execute_waits_query("Waits Query")
         self.maindata.update(query_output_data)
         if 'status' in self.maindata and self.maindata['status']==0:
-                return self.maindata        
+            self.close_connection()
+            return self.maindata
 
         query_output_data=self.execute_pdb("PDB Query")
         self.maindata.update(query_output_data)
         if 'status' in self.maindata and self.maindata['status']==0:
-                return self.maindata 
+            self.close_connection()
+            return self.maindata
 
         query_output_data=self.execute_query_row_col(self.metric_queries["DB Query"])
         self.maindata.update(query_output_data)
         if 'status' in self.maindata and self.maindata['status']==0:
-                return self.maindata 
-
+            self.close_connection()
+            return self.maindata
 
         query_output_data=self.execute_query_row_col(self.metric_queries["FRA Query"])
         self.maindata.update(query_output_data)
         if 'status' in self.maindata and self.maindata['status']==0:
-                return self.maindata
+            self.close_connection()
+            return self.maindata
 
         self.maindata['tabs']={
             "Tablespace and PDB":{
@@ -457,6 +472,15 @@ class oracle:
         
 
         self.maindata['units']=METRICS_UNITS
+        self.maindata['s247config']={
+            "childdiscovery":[
+                "Tablespace_Details",
+                "Tablespace_Datafile_Details",
+                "PDB_Details",
+                "ASM_Details"
+            ]
+        }
+        self.close_connection()
         return self.maindata
 
 
