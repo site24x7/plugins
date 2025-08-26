@@ -19,7 +19,8 @@ def get_data():
 		(output, err) = p.communicate()
 		p_status = p.wait()
 		error=err.decode('utf-8')
-		if p_status != 0:
+		
+		if p_status not in [0, 1]:
 			raise Exception("Command failed with exit code {}: {}".format(p_status,error))
 		
 		data['mailq_count'] = int(output)
@@ -33,7 +34,8 @@ def get_data():
 			p_status=p.wait()
 			error=err.decode('utf-8')
 			if p_status != 0:
-				raise Exception("Command failed with exit code {}: {}".format(p_status,error))
+				data[qshape_metrics[i]] = 0
+				continue
 			
 			if not error:
 				output_original=output.strip().decode("utf-8")
