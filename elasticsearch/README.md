@@ -72,16 +72,33 @@ If you're not using Linux servers or want to install the plugin manually, follow
 #### Configurations
 
 - Provide your elasticsearch configurations elasticsearch.cfg file.
+
+#### For Linux 
   
-	```bash
-	[elasticsearch]
-	host = "localhost"
-	port = "9200"
-	username = "elasticsearch_username"
-	password = "elasticsearch_password"
-	ssl_option = "No" #Yes if you are using https
-	cafile = "None"
-	```
+```bash
+[global_configurations]
+use_agent_python=1
+
+[elasticsearch]
+host = "localhost"
+port = "9200"
+username = "elasticsearch_username"
+password = "elasticsearch_password"
+ssl_option = "No" #True if you are using https
+cafile = "None"
+```
+
+#### For Windows 
+  
+```bash
+[elasticsearch]
+host = "localhost"
+port = "9200"
+username = "elasticsearch_username"
+password = "elasticsearch_password"
+ssl_option = "No" #True if you are using https
+cafile = "None"
+```
  
 #### Linux
 
