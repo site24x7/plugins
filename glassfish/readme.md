@@ -45,16 +45,33 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/glassfish/install
 
 #### Configurations
 
-- Provide your IBM MQ configurations in glassfish.cfg file.
+- Provide your configurations in glassfish.cfg file.
+
+#### For Linux
   ```ini
-  [localhost]
-  host="localhost"
-  port="4848"
-  ssl="false"  
-  insecure="false"
-  username="None"
-  password="None"
+[global_configurations]
+use_agent_python=1
+
+[localhost]
+host="localhost"
+port="4848"
+ssl="false"  
+insecure="false"
+username="None"
+password="None"
   ```
+
+#### For Windows
+  ```ini
+[localhost]
+host="localhost"
+port="4848"
+ssl="false"  
+insecure="false"
+username="None"
+password="None"
+  ```
+
  - Where,
    - host: The IP address or domain name of the server you're trying to connect to.
    - port: Admin port of the glassfish server.
