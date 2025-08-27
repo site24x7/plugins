@@ -84,7 +84,7 @@ host = "localhost"
 port = "9200"
 username = "elasticsearch_username"
 password = "elasticsearch_password"
-ssl_option = "No" #True if you are using https
+ssl_option = "false" #true if you are using https
 cafile = "None"
 ```
 
@@ -96,7 +96,7 @@ host = "localhost"
 port = "9200"
 username = "elasticsearch_username"
 password = "elasticsearch_password"
-ssl_option = "No" #True if you are using https
+ssl_option = "false" #true if you are using https
 cafile = "None"
 ```
  
