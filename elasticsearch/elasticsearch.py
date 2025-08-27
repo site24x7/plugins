@@ -1,9 +1,13 @@
-#!/usr/bin/python3
 import json
 import time
 import os
 import urllib3
+import requests
+import warnings
+from requests.auth import HTTPBasicAuth
+
 urllib3.disable_warnings()
+warnings.filterwarnings("ignore")
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
@@ -296,9 +300,6 @@ class esk:
 
     def response_data(self, url):
         try:
-            import requests
-            from requests.auth import HTTPBasicAuth
-
             r=requests.get(url, timeout=5, auth = HTTPBasicAuth(self.username,  self.password), verify=False)
             r.raise_for_status()
         
@@ -438,7 +439,7 @@ class esk:
                         f"number_of_fetches_{idx + 1}": node["number_of_fetches"],
                         f"documents_indexed_{idx + 1}": node["documents_indexed"],
                         f"cpu_used_{idx + 1}": node["cpu_used"],
-                        f"status_{idx+1}": node["status"]
+                        f"status": node["status"]
                     }
                     self.maindata[key].append(renamed_node)
 
@@ -454,6 +455,11 @@ class esk:
                 "order": 4,
                 "tablist": tablist_keys
             }
+            self.maindata['s247config']={
+            "childdiscovery":[
+                tablist_keys
+            ]
+        }
 
             return True
 
@@ -529,6 +535,33 @@ class esk:
         return self.maindata
 
 
+def run(param):
+    host = str(param.get("host")).strip('"') if param and param.get("host") else "localhost"
+    port = str(param.get("port")).strip('"') if param and param.get("port") else "9200"
+    username = str(param.get("username")).strip('"') if param and param.get("username") else "None"
+    password = str(param.get("password")).strip('"') if param and param.get("password") else "None"
+    ssl_option = str(param.get("ssl_option")).strip('"') if param and param.get("ssl_option") else "false"
+    cafile = str(param.get("cafile")).strip('"') if param and param.get("cafile") else "None"
+    logs_enabled = str(param.get("logs_enabled")).strip('"') if param and param.get("logs_enabled") else "True"
+    log_type_name = str(param.get("log_type_name")).strip('"') if param and param.get("log_type_name") else "Elasticsearch Slow Log"
+    log_file_path = str(param.get("log_file_path")).strip('"') if param and param.get("log_file_path") else "/var/log/elasticsearch/*_index_indexing_slowlog*.log"
+    
+    class Args:
+        def __init__(self, host, port, username, password, ssl_option, cafile, logs_enabled, log_type_name, log_file_path):
+            self.host = host
+            self.port = int(port)
+            self.username = username
+            self.password = password
+            self.ssl_option = ssl_option
+            self.cafile = cafile
+            self.logs_enabled = logs_enabled
+            self.log_type_name = log_type_name
+            self.log_file_path = log_file_path
+    
+    args = Args(host, port, username, password, ssl_option, cafile, logs_enabled, log_type_name, log_file_path)
+    elasticsearch_instance = esk(args)
+    result = elasticsearch_instance.metriccollector()
+    return result
 
 
 if __name__=="__main__":
