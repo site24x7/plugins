@@ -37,7 +37,17 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
         SHEBANG_PYTHON_PATH=$(command -v "$PYTHON_CMD")
     else
         echo "Info: Package '$package' is not installed globally. Attempting global installation..."
-        if $PYTHON_CMD -m pip install "$package" ; then
+        
+        set +e
+        output=$($PYTHON_CMD -m pip install "$package" 2>&1)
+        exit_status=$?
+        set -e
+        
+        echo "$output" | head -n 2
+        
+        if [ $exit_status -ne 0 ]; then
+            echo "Global installation failed with exit status $exit_status"
+        else
             echo "Package '$package' installed successfully globally."
             if $PYTHON_CMD -c "import $package" ; then
                 echo "Package '$package' verified successfully globally."
@@ -46,7 +56,9 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
                 echo "Error: Package '$package' installation verification failed globally."
                 exit 1
             fi
-        else
+        fi
+        
+        if [ $exit_status -ne 0 ]; then
             echo "Warning: Failed to install the package '$package' globally. Will try in virtual environment."
             VENV_DIR=$(dirname "$(dirname "$CURRENT_DIR_NAME")")/.plugin-venv
             VENV_RELATIVE_PATH="../.plugin-venv"
@@ -74,7 +86,17 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
             VENV_PYTHON="$VENV_DIR/bin/python"
             VENV_PIP="$VENV_DIR/bin/pip"
             if [ -f "$VENV_PYTHON" ] && [ -f "$VENV_PIP" ]; then
-                if "$VENV_PIP" install "$package" ; then
+                set +e
+                output=$("$VENV_PIP" install "$package" 2>&1)
+                exit_status=$?
+                set -e
+                
+                echo "$output" | head -n 2
+                
+                if [ $exit_status -ne 0 ]; then
+                    echo "Virtual environment installation failed with exit status $exit_status"
+                    exit 1
+                else
                     echo "Package '$package' installed successfully in virtual environment."
                     if "$VENV_PYTHON" -c "import $package" ; then
                         echo "Package '$package' verified successfully in virtual environment."
@@ -83,9 +105,6 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
                         echo "Error: Package '$package' installation verification failed in virtual environment."
                         exit 1
                     fi
-                else
-                    echo "Error: Failed to install the package '$package' in virtual environment."
-                    exit 1
                 fi
             else
                 echo "Error: Virtual environment Python/pip not found."
