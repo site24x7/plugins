@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-PACKAGE_REQUIRED=("JPype1")
-PACKAGE_IMPORT_NAMES=("jpype")
+PACKAGE_REQUIRED=("psycopg2-binary")
+PACKAGE_IMPORT_NAMES=("psycopg2")
 
 for version in python python3; do
     if command -v "$version" ; then

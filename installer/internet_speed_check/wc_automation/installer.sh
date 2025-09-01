@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-PACKAGE_REQUIRED=("JPype1")
-PACKAGE_IMPORT_NAMES=("jpype")
+PACKAGE_REQUIRED=("speedtest-cli")
+PACKAGE_IMPORT_NAMES=("speedtest")
 
 for version in python python3; do
     if command -v "$version" ; then
