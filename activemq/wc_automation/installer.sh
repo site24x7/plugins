@@ -2,6 +2,7 @@
 set -e
 
 PACKAGE_REQUIRED=("JPype1")
+PACKAGE_IMPORT_NAMES=("jpype")
 
 for version in python python3; do
     if command -v "$version" ; then
@@ -30,8 +31,10 @@ fi
 
 SHEBANG_PYTHON_PATH=""
 
-for package in "${PACKAGE_REQUIRED[@]}"; do
-    if $PYTHON_CMD -c "import $package" ; then
+for i in "${!PACKAGE_REQUIRED[@]}"; do
+    package="${PACKAGE_REQUIRED[$i]}"
+    import_name="${PACKAGE_IMPORT_NAMES[$i]}"
+    if $PYTHON_CMD -c "import $import_name" ; then
         echo "Package '$package' is already installed globally."
         SHEBANG_PYTHON_PATH=$(command -v "$PYTHON_CMD")
     else
@@ -46,7 +49,7 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
         
         if [ $exit_status -eq 0 ]; then
             echo "Package '$package' installed successfully globally."
-            if $PYTHON_CMD -c "import $package" ; then
+            if $PYTHON_CMD -c "import $import_name" ; then
                 echo "Package '$package' verified successfully globally."
                 SHEBANG_PYTHON_PATH=$(command -v "$PYTHON_CMD")
             else
@@ -94,7 +97,7 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
                     exit 1
                 else
                     echo "Package '$package' installed successfully in virtual environment."
-                    if "$VENV_PYTHON" -c "import $package" ; then
+                    if "$VENV_PYTHON" -c "import $import_name" ; then
                         echo "Package '$package' verified successfully in virtual environment."
                         SHEBANG_PYTHON_PATH="$VENV_PYTHON"
                     else
