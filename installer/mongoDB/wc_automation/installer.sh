@@ -29,7 +29,6 @@ if [ ! -f "$TARGET_PY_FILE" ]; then
 fi
 
 SHEBANG_PYTHON_PATH=""
-PIP_CMD="$PYTHON_CMD -m pip"
 
 for package in "${PACKAGE_REQUIRED[@]}"; do
     if $PYTHON_CMD -c "import $package" ; then
@@ -43,11 +42,9 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
         exit_status=$?
         set -e
         
-        echo "$output" | head -n 2
+        echo "$output" | head -n 4
         
-        if [ $exit_status -ne 0 ]; then
-            echo "Global installation failed with exit status $exit_status"
-        else
+        if [ $exit_status -eq 0 ]; then
             echo "Package '$package' installed successfully globally."
             if $PYTHON_CMD -c "import $package" ; then
                 echo "Package '$package' verified successfully globally."
@@ -56,14 +53,13 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
                 echo "Error: Package '$package' installation verification failed globally."
                 exit 1
             fi
-        fi
-        
-        if [ $exit_status -ne 0 ]; then
+        else
+            echo "Global installation failed with exit status $exit_status"
             echo "Warning: Failed to install the package '$package' globally. Will try in virtual environment."
             VENV_DIR=$(dirname "$(dirname "$CURRENT_DIR_NAME")")/.plugin-venv
-            VENV_RELATIVE_PATH="../.plugin-venv"
+            VENV_RELATIVE_PATH=".plugin-venv"
             if [ ! -d "$VENV_DIR" ]; then
-                echo "Attempting to create virtual environment at: $VENV_RELATIVE_PATH"
+                echo "Attempting to create virtual environment: $VENV_RELATIVE_PATH"
                 if $PYTHON_CMD -c "import venv"; then
                     if $PYTHON_CMD -m venv "$VENV_DIR"; then
                         echo "Virtual environment created successfully using built-in venv."
@@ -91,7 +87,7 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
                 exit_status=$?
                 set -e
                 
-                echo "$output" | head -n 2
+                echo "$output" | head -n 4
                 
                 if [ $exit_status -ne 0 ]; then
                     echo "Virtual environment installation failed with exit status $exit_status"

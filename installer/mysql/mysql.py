@@ -1,4 +1,4 @@
-#!/home/mani-22230/plugins/installer/monagent/.plugin-venv/bin/python
+#!/usr/bin/python3
 """
 Site24x7 MySql table stats Plugin
 """
