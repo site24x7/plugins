@@ -60,9 +60,9 @@ for i in "${!PACKAGE_REQUIRED[@]}"; do
             echo "Global installation failed with exit status $exit_status"
             echo "Warning: Failed to install the package '$package' globally. Will try in virtual environment."
             VENV_DIR=$(dirname "$(dirname "$CURRENT_DIR_NAME")")/.plugin-venv
-            VENV_RELATIVE_PATH="../.plugin-venv"
+            VENV_RELATIVE_PATH=".plugin-venv"
             if [ ! -d "$VENV_DIR" ]; then
-                echo "Attempting to create virtual environment at: $VENV_RELATIVE_PATH"
+                echo "Attempting to create virtual environment: $VENV_RELATIVE_PATH"
                 if $PYTHON_CMD -c "import venv"; then
                     if $PYTHON_CMD -m venv "$VENV_DIR"; then
                         echo "Virtual environment created successfully using built-in venv."
