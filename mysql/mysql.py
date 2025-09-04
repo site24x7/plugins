@@ -347,7 +347,6 @@ class MySQLMonitor:
                 FROM information_schema.PROCESSLIST
             """)
             row = self.cursor.fetchone()
-            # Safely cast and supply session stats; handle None gracefully
             sessions = {
                 "total_sessions": int(row.get('total_sessions', 0)),
                 "active_sessions": int(row.get('active_sessions', 0)),
