@@ -35,7 +35,7 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
     if ! $PYTHON_CMD -c "import $package" ; then
         echo "Info: Package '$package' is not installed globally. Attempting global installation..."
         set +e
-        output=$($PYTHON_CMD -m pip install "$package" --break-system-packages 2>&1)
+        output=$($PYTHON_CMD -m pip install "$package" 2>&1)
         exit_status=$?
         set -e
         echo "$output" | head -n 4
