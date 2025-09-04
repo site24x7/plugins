@@ -2,8 +2,6 @@
 import json
 import pymysql
 import traceback
-from decimal import Decimal
-HAS_PSUTIL = False
 PLUGIN_VERSION = "1"
 HEARTBEAT = True
 MYSQL_DEFAULTS = {
@@ -206,7 +204,7 @@ class MySQLMonitor:
     def to_str(self, val):
         try:
             f = float(val)
-            return f"{f:.2f}"
+            return "{:.2f}".format(f)
         except Exception:
             return str(val)
         
@@ -223,7 +221,7 @@ class MySQLMonitor:
             return True
         except Exception as e:
             self.maindata["status"] = 0
-            self.maindata["msg"] = f"Connection error: {repr(e)}"
+            self.maindata["msg"] = "Connection error: {}".format(repr(e))
             return False
         
     def close(self):
@@ -329,7 +327,7 @@ class MySQLMonitor:
                 dbs.append(rec)
         except Exception as e:
             self.maindata["status"] = 0
-            self.maindata["msg"] = f"Database collection error: {e}"
+            self.maindata["msg"] = "Database collection error: {}".format(e)
         return dbs
     
     def collect_sessions(self):
@@ -356,7 +354,7 @@ class MySQLMonitor:
             return sessions
         except Exception as e:
             self.maindata["status"] = 0
-            self.maindata["msg"] = f"Session collection error: {e}"
+            self.maindata["msg"] = "Session collection error: {}".format(e)
 
 
     def collect_metrics(self):
@@ -526,7 +524,7 @@ class MySQLMonitor:
             
         except Exception as e:
             self.maindata["status"] = 0
-            self.maindata["msg"] = f"Metric collection error: {e}\n{traceback.format_exc()}"
+            self.maindata["msg"] = "Metric collection error: {}\n{}".format(e, traceback.format_exc())
         finally:
             self.close()
         return self.maindata
