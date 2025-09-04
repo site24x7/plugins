@@ -180,15 +180,26 @@ METRICS_MAPPING = {
 class MySQLMonitor:
     def __init__(self, args):
         self.args = args
-        self.host = getattr(args, "host", MYSQL_DEFAULTS["host"])
-        self.port = int(getattr(args, "port", MYSQL_DEFAULTS["port"]))
-        self.username = getattr(args, "username", MYSQL_DEFAULTS["username"])
-        self.password = getattr(args, "password", MYSQL_DEFAULTS["password"])
+        self.host = args.host
+        self.port = args.port
+        self.username = args.username
+        self.password = args.password
+        self.logs_enabled = args.logs_enabled
+        self.log_type_name = args.log_type_name
+        self.log_file_path = args.log_file_path
         self.maindata = {
             "plugin_version": PLUGIN_VERSION,
             "heartbeat_required": HEARTBEAT,
             
         }
+        applog={}
+        if(self.logs_enabled in ['True', 'true', '1']):
+            applog["logs_enabled"]=True
+            applog["log_type_name"]=self.log_type_name
+            applog["log_file_path"]=self.log_file_path
+        else:
+            applog["logs_enabled"]=False
+        self.maindata['applog'] = applog
         self.connection = None
         self.cursor = None
         
@@ -222,8 +233,7 @@ class MySQLMonitor:
             if self.connection:
                 self.connection.close()
         except Exception as e:
-            self.maindata["status"] = 0
-            self.maindata["msg"] = f"Error closing the connection: {repr(e)}"
+            pass
 
     def collect_database(self):
         dbs = []
@@ -514,6 +524,7 @@ class MySQLMonitor:
                     ]
                 }
             }
+            
         except Exception as e:
             self.maindata["status"] = 0
             self.maindata["msg"] = f"Metric collection error: {e}\n{traceback.format_exc()}"
@@ -525,7 +536,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", default=MYSQL_DEFAULTS["host"])
-    parser.add_argument("--port", default=MYSQL_DEFAULTS["port"])
+    parser.add_argument('--port',help="Port",nargs='?', default= MYSQL_DEFAULTS["port"], type=int)
     parser.add_argument("--username", default=MYSQL_DEFAULTS["username"])
     parser.add_argument("--password", default=MYSQL_DEFAULTS["password"])
 
