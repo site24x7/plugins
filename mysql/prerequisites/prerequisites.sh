@@ -86,7 +86,7 @@ set_permissions(){
     echo "Setting permissions"
 
     if [ "$MySQL" -eq 1 ]; then
-        privilege_query="UPDATE mysql.user SET Super_Priv='Y' WHERE user='$username' AND host='$user_host'; UPDATE mysql.user SET Repl_client_priv='Y' WHERE user='$username' AND host='$user_host';UPDATE mysql.user SET Show_db_priv='Y' WHERE user='$username' AND host='$user_host'; FLUSH PRIVILEGES;"
+        privilege_query="GRANT SELECT ON mysql.* TO '$username'@'$user_host'; GRANT SELECT ON *.* TO '$username'@'$user_host'; GRANT SHOW DATABASES ON *.* TO '$username'@'$user_host'; UPDATE mysql.user SET Super_Priv='Y' WHERE user='$username' AND host='$user_host'; UPDATE mysql.user SET Repl_client_priv='Y' WHERE user='$username' AND host='$user_host'; FLUSH PRIVILEGES;"
     else
         privilege_query="GRANT SELECT ON *.* TO '$username'@'$user_host'; GRANT SHOW DATABASES ON *.* TO '$username'@'$user_host'; GRANT SUPER ON *.* TO '$username'@'$user_host'; GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO '$username'@'$user_host'; FLUSH PRIVILEGES;"
     fi
