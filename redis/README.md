@@ -1,4 +1,4 @@
-# redis Monitoring
+# Redis Monitoring
 
 ## Quick installation
 
@@ -7,13 +7,13 @@ If you're using Linux servers, use the redis plugin installer that checks the pr
 Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
 
 ```bash
-wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/installer/Site24x7redisPluginInstaller.sh && sudo bash Site24x7redisPluginInstaller.sh
+wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/installer/Site24x7RedisPluginInstaller.sh && sudo bash Site24x7RedisPluginInstaller.sh
 ```
 ## Prerequisites
 
 - Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
-- Execute the following command in your server to install redis: 
+- Execute the following command in your server to install Redis: 
 
 		pip install redis
 
@@ -78,12 +78,12 @@ Active Defrag Running		|	When activedefrag is enabled, this indicates whether de
 AOF Last Bgrewrite Status	|	Status of the last AOF rewrite operation.
 AOF Last Rewrite Time		|	Duration of the last AOF rewrite operation in seconds.
 Blocked Clients			|	Number of clients waiting on a blocking call.
-CPU Sys				|	System CPU consumed by the redis server, which is the sum of system CPU consumed by all threads of the server process.
+CPU Sys				|	System CPU consumed by the Redis server, which is the sum of system CPU consumed by all threads of the server process.
 CPU Sys Children		|	System CPU consumed by the background processes.
-CPU User			|	User CPU consumed by the redis server, which is the sum of user CPU consumed by all threads of the server process.
+CPU User			|	User CPU consumed by the Redis server, which is the sum of user CPU consumed by all threads of the server process.
 CPU User Children		|	User CPU consumed by the background processes.
-CPU Sys Main Thread		|	System CPU consumed by the redis server main thread.	
-Cluster Enabled			|	Indicate redis cluster is enabled.
+CPU Sys Main Thread		|	System CPU consumed by the Redis server main thread.	
+Cluster Enabled			|	Indicate Redis cluster is enabled.
 Connected Clients		|	Number of client connections (excluding replicas).
 Connected Slaves		|	Number of connected replicas.
 Evicted Keys			|	The total number of keys evicted due to the maxmemory limit.
@@ -104,17 +104,17 @@ Max Clients			|	The maximum number of connected clients.
 Max Memory			|	The value of the maxmemory configuration directive.
 Memory Lua			|	NumbeSync Fullr of bytes used by the Lua engine for EVAL scripts.
 Memory Overhead			|	The sum in bytes of all overheads that the server allocated for managing its internal data structures.
-Memory Peak			|	Peak memory consumed by redis.
-Memory RSS			|	Number of bytes that redis allocated as seen by the operating system (a.k.a resident set size). 
-Memory Startup			|	Initial amount of memory consumed by redis at startup.
+Memory Peak			|	Peak memory consumed by Redis.
+Memory RSS			|	Number of bytes that Redis allocated as seen by the operating system (a.k.a resident set size). 
+Memory Startup			|	Initial amount of memory consumed by Redis at startup.
 Ops/Sec				|	Number of commands processed per second.
 Pubsub Channels			|	The number of active pubsub channels.
 Pubsub Patterns			|	The number of active pubsub patterns.
 RDB Bgsave in Progress		|	Indicating a RDB save is on-going.
 RDB Changes Since Last Save	|	Number of changes since the last dump.
 RDB Last Save Time		|	Epoch-based timestamp of last successful RDB save.
-redis Mode			|	The server's mode ( standalone, sentinel or cluster).
-redis Version			|	Version of the redis server.
+Redis Mode			|	The server's mode ( standalone, sentinel or cluster).
+Redis Version			|	Version of the Redis server.
 Rejected Connections		|	Number of connections rejected because of maxclients limit.
 Repl Backlog Histlen		| 	Size of the data in the replication backlog buffer.
 Role				|	Role of the server ( master or slave ).
@@ -126,9 +126,9 @@ Total Connections Received	|	Total number of connections accepted by the server.
 Total Expires			|	The total number of keys with an expiration.
 Total Keys			|	The total number of keys.
 Total Persists			|	The total number of keys persisted (keys - expires).
-Uptime				|	Number of seconds since the redis server start.
-Uptime in Days			|	Number of days since the redis server start.
-Used Memory			|	Total number of bytes allocated by redis using its allocator.
+Uptime				|	Number of seconds since the Redis server start.
+Uptime in Days			|	Number of days since the Redis server start.
+Used Memory			|	Total number of bytes allocated by Redis using its allocator.
 expires				|	The number of keys with an expiration in a db.
 expires_percent			|	Percentage of total keys with an expiration in a db.
 keys				|	The total number of keys in a db.
