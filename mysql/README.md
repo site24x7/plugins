@@ -39,9 +39,11 @@ If you're not using Linux servers or want to install the plugin manually, follow
   	```sql
 	CREATE USER site24x7@localhost IDENTIFIED BY 'site24x7';
 	GRANT SELECT ON mysql.* TO site24x7@localhost IDENTIFIED BY 'site24x7';
+	GRANT SELECT ON *.* TO site24x7@localhost IDENTIFIED BY 'site24x7';
+	GRANT SHOW DATABASES ON *.* TO site24x7@localhost IDENTIFIED BY 'site24x7';
 	use mysql;
-  	UPDATE mysql.user SET Super_Priv='Y' WHERE user='site24x7' AND host='localhost'; 
-  	UPDATE mysql.user SET Repl_client_priv='Y' WHERE user='site24x7' AND host='localhost';
+	UPDATE mysql.user SET Super_Priv='Y' WHERE user='site24x7' AND host='localhost'; 
+	UPDATE mysql.user SET Repl_client_priv='Y' WHERE user='site24x7' AND host='localhost';
 	FLUSH PRIVILEGES;
 	```
    
@@ -49,6 +51,8 @@ If you're not using Linux servers or want to install the plugin manually, follow
   
   	```sql
 	CREATE USER site24x7@localhost IDENTIFIED BY 'site24x7';
+	GRANT SELECT ON *.* TO 'site24x7'@'localhost';
+	GRANT SHOW DATABASES ON *.* TO 'site24x7'@'localhost';
 	GRANT SUPER ON *.* TO 'site24x7'@'localhost';
 	GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'site24x7'@'localhost'; 
 	FLUSH PRIVILEGES;
