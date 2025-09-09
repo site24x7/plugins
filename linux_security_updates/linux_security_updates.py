@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#! /usr/bin/python3
 import json
 import os
 import os.path
@@ -139,29 +139,36 @@ class security_update_check:
             debian=False
             distro_file="/etc/os-release"
             if not os.path.isfile(distro_file):
-                self.maindata['msg']=distro_file+", Does not exist"
-                self.maindata['status']=0
-                return self.maindata
-            
-            with open(distro_file, 'r') as f:
-                os_content=f.read()
+                if os.path.isfile("/etc/debian_version"):
+                    self.os_name="debian"
+                elif os.path.isfile("/etc/redhat-release"):
+                    self.os_name="fedora"
+                elif os.path.isfile("/etc/SUSE-brand"):
+                    self.os_name="suse"
+                else:
+                    self.maindata['msg']=distro_file+", Does not exist"
+                    self.maindata['status']=0
+                    return self.maindata
+            else:
+                with open(distro_file, 'r') as f:
+                    os_content=f.read()
 
-            fileContent = os_content.splitlines()
-            if fileContent == []:
-                self.maindata['msg']="{} is empty".format(distro_file)
-                self.maindata['status']=0
-                return self.maindata
+                fileContent = os_content.splitlines()
+                if fileContent == []:
+                    self.maindata['msg']="{} is empty".format(distro_file)
+                    self.maindata['status']=0
+                    return self.maindata
 
-            for line in fileContent:
-                if line.startswith('ID_LIKE='):
-                    _, self.os_name = line.split('=', 1)
-                    self.os_name = self.os_name.strip('"')
-                    break  
-                elif line.startswith('ID='):
-                    _, self.os_name = line.split('=', 1)
-                    self.os_name = self.os_name.strip('"')
-                    debian=True
-                    #break  
+                for line in fileContent:
+                    if line.startswith('ID_LIKE='):
+                        _, self.os_name = line.split('=', 1)
+                        self.os_name = self.os_name.strip('"')
+                        break  
+                    elif line.startswith('ID='):
+                        _, self.os_name = line.split('=', 1)
+                        self.os_name = self.os_name.strip('"')
+                        debian=True
+                        #break  
                 
             if not self.os_name:
                 self.maindata['msg'] = "Distro information not found in {}".format(distro_file)
