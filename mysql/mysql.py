@@ -4,11 +4,15 @@ import pymysql
 import traceback
 PLUGIN_VERSION = "1"
 HEARTBEAT = True
+
 MYSQL_DEFAULTS = {
     "host": "localhost",
     "port": 3306,
-    "username": "user",
-    "password": ""
+    "username": "site24x7",
+    "password": "site24x7",
+    "logs_enabled": True,
+    "log_type_name": "Mysql General Logs",
+    "log_file_path": "/var/log/mysql/error.log"
 }
 METRICS_UNITS = {
     "Uptime": "seconds",
@@ -175,21 +179,23 @@ METRICS_MAPPING = {
         "Key_write_requests"
     ]
 }
+
+
 class MySQLMonitor:
-    def __init__(self, args):
-        self.args = args
-        self.host = args.host
-        self.port = args.port
-        self.username = args.username
-        self.password = args.password
-        self.logs_enabled = args.logs_enabled
-        self.log_type_name = args.log_type_name
-        self.log_file_path = args.log_file_path
+    def __init__(self,host,port,username,password,logs_enabled,log_type_name,log_file_path):
+        self.host = host
+        self.port = int(port)
+        self.username = username
+        self.password = password
+        self.logs_enabled = logs_enabled
+        self.log_type_name = log_type_name
+        self.log_file_path = log_file_path
         self.maindata = {
             "plugin_version": PLUGIN_VERSION,
             "heartbeat_required": HEARTBEAT,
             
         }
+
         applog={}
         if(self.logs_enabled in ['True', 'true', '1']):
             applog["logs_enabled"]=True
@@ -529,6 +535,16 @@ class MySQLMonitor:
             self.close()
         return self.maindata
     
+def run(param={}):
+    mysql_params = {**MYSQL_DEFAULTS, **param}
+    mysql_params = {
+    k: (v.strip('\'"') if isinstance(v, str) else v)
+    for k, v in mysql_params.items()
+    }
+    monitor = MySQLMonitor(**mysql_params)
+    result = monitor.collect_metrics()
+    return result
+    
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
@@ -537,11 +553,12 @@ if __name__ == "__main__":
     parser.add_argument("--username", default=MYSQL_DEFAULTS["username"])
     parser.add_argument("--password", default=MYSQL_DEFAULTS["password"])
 
-    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
-    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
-    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
+    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default=MYSQL_DEFAULTS["logs_enabled"])
+    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=MYSQL_DEFAULTS["log_type_name"])
+    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=MYSQL_DEFAULTS["log_file_path"])
     
     args = parser.parse_args()
-    monitor = MySQLMonitor(args)
+    monitor = MySQLMonitor(args.host, args.port, args.username, args.password, args.logs_enabled, args.log_type_name, args.log_file_path)
     result = monitor.collect_metrics()
+
     print(json.dumps(result, indent=2))
