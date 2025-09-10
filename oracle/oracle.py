@@ -68,12 +68,13 @@ class oracle:
         self.port=args.port
         self.tls=args.tls.lower()
         self.wallet_location=args.wallet_location
+        self.oracle_home=args.oracle_home
         
 
     def connect(self, dsn):
         try:
             import oracledb
-            oracledb.init_oracle_client()
+            oracledb.init_oracle_client(lib_dir=self.oracle_home)
             self.conn = oracledb.connect(user=self.username, password=self.password, dsn=dsn)
             self.c = self.conn.cursor()
             return (True, "Connected")
@@ -483,7 +484,31 @@ class oracle:
         self.close_connection()
         return self.maindata
 
-
+def run(param):
+    hostname = str(param.get("hostname")).strip('"') if param else "localhost"
+    port = str(param.get("port")).strip('"') if param else "1521"
+    sid = str(param.get("sid")).strip('"') if param else "ORCL"
+    username = str(param.get("username")).strip('"') if param else "None"
+    password = str(param.get("password")).strip('"') if param else "None"
+    tls = str(param.get("tls")).strip('"') if param else "false"
+    wallet_location = str(param.get("wallet_location")).strip('"') if param else "None"
+    oracle_home = str(param.get("oracle_home")).strip('"') if param else "/opt/oracle/product/19c/dbhome_1/"
+    
+    class Args:
+        def __init__(self, hostname, port, sid, username, password, tls, wallet_location, oracle_home):
+            self.hostname = hostname
+            self.port = port
+            self.sid = sid
+            self.username = username
+            self.password = password
+            self.tls = tls
+            self.wallet_location = wallet_location
+            self.oracle_home = oracle_home
+    
+    args = Args(hostname, port, sid, username, password, tls, wallet_location, oracle_home)
+    oracle_instance = oracle(args)
+    result = oracle_instance.metriccollector()
+    return result
 
 if __name__=="__main__":
     
