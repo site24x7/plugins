@@ -25,11 +25,7 @@ done
 
 if [ -z "$PYTHON_CMD" ]; then
     echo "Error: Python is not installed or not available in the PATH."
-    exit 1
 fi
-
-PYTHON_PATH=$(command -v "$PYTHON_CMD")
-echo "Python executable found at: $PYTHON_PATH"
 
 # Get current file name
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
@@ -45,7 +41,11 @@ if [ ! -f "$TARGET_PY_FILE" ]; then
 fi
 
 # Add Python shebang line to the top of the Python file
-sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
+if [ -n "$PYTHON_CMD" ]; then
+    PYTHON_PATH=$(command -v "$PYTHON_CMD")
+    echo "Python executable found at: $PYTHON_PATH"
+    sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
+fi
 
 declare -A config
 
@@ -77,7 +77,6 @@ if $PYTHON_CMD -c "import urllib.request" &> /dev/null; then
     echo "urllib is available."
 else
     echo "urllib is not available."
-    exit 1
 fi
 
 
@@ -156,7 +155,6 @@ EOF
             sudo a2enconf server-status > /dev/null
             if [ $? -ne 0 ]; then
                 echo "Error: Failed to enable server-status configuration for Apache2."
-                exit 1
             fi
             sudo systemctl reload apache2
 
@@ -196,7 +194,6 @@ EOF
         fi
 
         echo "Apache mod_status enabled and /server-status URL activated."
-        echo "You can access it at: http://localhost/server-status?auto"
 
     else
         echo "Error: Apache service ($SERVICE_NAME) is installed but not running or inactive."

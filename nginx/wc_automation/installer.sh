@@ -24,11 +24,7 @@ done
 
 if [ -z "$PYTHON_CMD" ]; then
     echo "Error: Python is not installed or not available in the PATH."
-    exit 1
 fi
-
-PYTHON_PATH=$(command -v "$PYTHON_CMD")
-echo "Python executable found at: $PYTHON_PATH"
 
 # Get current file name
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
@@ -44,7 +40,11 @@ if [ ! -f "$TARGET_PY_FILE" ]; then
 fi
 
 # Add Python shebang line to the top of the Python file
-sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
+if [ -n "$PYTHON_CMD" ]; then
+    PYTHON_PATH=$(command -v "$PYTHON_CMD")
+    echo "Python executable found at: $PYTHON_PATH"
+    sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
+fi
 
 declare -A config
 
@@ -76,7 +76,6 @@ if $PYTHON_CMD -c "import urllib.request" &> /dev/null; then
     echo "urllib is available."
 else
     echo "urllib is not available."
-    exit 1
 fi
 
 # === Insert stub_status block into nginx.conf ===
