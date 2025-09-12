@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-PACKAGE_REQUIRED=()
-
 CONFIGURATION_REQUIRED=("url")
 
 
@@ -27,11 +25,7 @@ done
 
 if [ -z "$PYTHON_CMD" ]; then
     echo "Error: Python is not installed or not available in the PATH."
-    exit 1
 fi
-
-PYTHON_PATH=$(command -v "$PYTHON_CMD")
-echo "Python executable found at: $PYTHON_PATH"
 
 # Get current file name
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
@@ -47,7 +41,11 @@ if [ ! -f "$TARGET_PY_FILE" ]; then
 fi
 
 # Add Python shebang line to the top of the Python file
-sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
+if [ -n "$PYTHON_CMD" ]; then
+    PYTHON_PATH=$(command -v "$PYTHON_CMD")
+    echo "Python executable found at: $PYTHON_PATH"
+    sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
+fi
 
 declare -A config
 
@@ -73,40 +71,12 @@ if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
     done < "$CONFIG_FILE"
 fi
 
-# Check if pip is installed
-PIP_CMD="$PYTHON_CMD -m pip"
-
-if $PIP_CMD --version &> /dev/null; then
-    PIP_VERSION=$($PIP_CMD --version | awk '{print $2}')
-    echo "Pip is available with version: $PIP_VERSION"
-else
-    echo "Error: Pip is not installed."
-    exit 1
-fi
-
-# Check if required packages are installed
-for package in "${PACKAGE_REQUIRED[@]}"; do
-    if ! $PYTHON_CMD -c "import $package" &> /dev/null; then
-        echo "Info: Package '$package' is not installed. Attempting installation..."
-        if $PIP_CMD install "$package" &> /dev/null; then
-            echo "Package '$package' installed successfully."
-        else
-            echo "Error: Failed to install the package '$package'."
-            exit 1
-        fi
-    else
-        echo "Package '$package' is already installed."
-    fi
-done
-
-
 ## Additional actions for apache_monitoring start here
 # Check if urllib is available (standard library)
 if $PYTHON_CMD -c "import urllib.request" &> /dev/null; then
     echo "urllib is available."
 else
     echo "urllib is not available."
-    exit 1
 fi
 
 
@@ -185,7 +155,6 @@ EOF
             sudo a2enconf server-status > /dev/null
             if [ $? -ne 0 ]; then
                 echo "Error: Failed to enable server-status configuration for Apache2."
-                exit 1
             fi
             sudo systemctl reload apache2
 
@@ -225,7 +194,6 @@ EOF
         fi
 
         echo "Apache mod_status enabled and /server-status URL activated."
-        echo "You can access it at: http://localhost/server-status?auto"
 
     else
         echo "Error: Apache service ($SERVICE_NAME) is installed but not running or inactive."
