@@ -10,7 +10,6 @@ pip_check(){
         echo "Pip is available with version: $PIP_VERSION"
     else
         echo "Error: Pip is not installed."
-        exit 1
     fi
 }
 
@@ -65,10 +64,16 @@ PASSWORD=$(grep "^password" "$CFG_FILE" | sed 's/^password[[:space:]]*=[[:space:
 URL=$(grep "^url" "$CFG_FILE" | sed 's/^url[[:space:]]*=[[:space:]]*//' | tr -d '"')
 
 PORT="8404"
+STATS_PATH="/stats"
 if [ -n "$URL" ] && [ "$URL" != "None" ]; then
     PORT=$(echo "$URL" | grep -oE ':[0-9]+' | cut -d':' -f2)
     if [ -z "$PORT" ]; then
         PORT="8404"
+    fi
+    
+    STATS_PATH=$(echo "$URL" | sed 's|^[^/]*//[^/]*||' | sed 's|;.*$||')
+    if [ -z "$STATS_PATH" ] || [ "$STATS_PATH" = "/" ]; then
+        STATS_PATH="/stats"
     fi
 fi
 
@@ -78,7 +83,7 @@ listen stats
     bind 0.0.0.0:$PORT
     mode http
     stats enable
-    stats uri /stats
+    stats uri $STATS_PATH
     stats realm Strictly\\ Private
     stats auth $USERNAME:$PASSWORD
 "
@@ -88,7 +93,7 @@ listen stats
     bind 0.0.0.0:$PORT
     mode http
     stats enable
-    stats uri /stats
+    stats uri $STATS_PATH
     stats realm Strictly\\ Private
 "
 fi
@@ -104,7 +109,6 @@ else
         cp "$HAPROXY_CFG_PATH" "$BACKUP_PATH"
         if [ $? -ne 0 ]; then
             echo "haproxy.cfg backup: FAIL"
-            exit 1
         fi
         echo "Backup of haproxy.cfg created at $BACKUP_PATH"
 
@@ -112,14 +116,12 @@ else
         echo "$STATS_BLOCK" >> "$HAPROXY_CFG_PATH"
         if [ $? -ne 0 ]; then
             echo "haproxy.cfg config: FAIL (append failed)"
-            exit 1
         fi
 
         if sudo systemctl reload haproxy 2>/dev/null; then
             echo "haproxy.cfg config added and HAProxy reloaded successfully."
         else
             echo "haproxy.cfg config addition succeeded, but HAProxy reload failed."
-            exit 1
         fi
     fi
 fi
@@ -132,7 +134,6 @@ for version in python python3; do
 done
 if [ -z "$PYTHON_CMD" ]; then
     echo "Error: Python is not installed or not available in the PATH."
-    exit 1
 fi
 PYTHON_PATH=$(command -v "$PYTHON_CMD")
 echo "Python executable found at: $PYTHON_PATH"
@@ -147,7 +148,12 @@ if [ ! -f "$TARGET_PY_FILE" ]; then
     exit 1
 fi
 
-sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
+if [ -n "$PYTHON_PATH" ]; then
+    sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
+    echo "Updated shebang in $TARGET_PY_FILE with Python path: $PYTHON_PATH"
+else
+    echo "Warning: Python path not available, skipping shebang update."
+fi
 
 for package in "${PACKAGE_REQUIRED[@]}"; do
     if ! $PYTHON_CMD -c "import $package" &> /dev/null; then
@@ -157,7 +163,6 @@ for package in "${PACKAGE_REQUIRED[@]}"; do
             echo "Package '$package' installed successfully."
         else
             echo "Error: Failed to install the package '$package'."
-            exit 1
         fi
     else
         echo "Package '$package' is already installed."
