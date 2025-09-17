@@ -39,7 +39,15 @@ try:
     plugin_rs['units'] = metric_units
 
 except Exception as e:
-    plugin_rs['status'] = 0
-    plugin_rs['msg'] = str(e)
+    error_msg = str(e)
+    if "403" in error_msg or "Forbidden" in error_msg:
+        plugin_rs["upload"] = 0
+        plugin_rs["download"] = 0
+        plugin_rs["ping"] = 0
+        plugin_rs['units'] = metric_units
+        plugin_rs['msg'] = error_msg
+    else:
+        plugin_rs['status'] = 0
+        plugin_rs['msg'] = error_msg
 
 print(json.dumps(plugin_rs))
