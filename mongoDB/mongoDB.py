@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 
 import collections
 import datetime
@@ -541,6 +540,36 @@ class MongoDB(object):
         data['tabs']=METRICS_TABS
 
         return data
+    
+def run(param):
+    host = str(param.get("host")).strip('"') if param and param.get("host") else "localhost"
+    port = str(param.get("port")).strip('"') if param and param.get("port") else "9200"
+    username = str(param.get("username")).strip('"') if param and param.get("username") else "None"
+    password = str(param.get("password")).strip('"') if param and param.get("password") else "None"
+    dbname = str(param.get("dbname")).strip('"') if param and param.get("dbname") else "mydatabase"
+    authdb = str(param.get("authdb")).strip('"') if param and param.get("authdb") else "admin"
+    tls = str(param.get("tls")).strip('"') if param and param.get("tls") else "False"
+    tlscertificatekeyfile = str(param.get("tlscertificatekeyfile")).strip('"') if param and param.get("tlscertificatekeyfile") else "None"
+    tlscertificatekeyfilepassword = str(param.get("tlscertificatekeyfilepassword")).strip('"') if param and param.get("tlscertificatekeyfilepassword") else "None"
+    tlsallowinvalidcertificates = str(param.get("tlsallowinvalidcertificates")).strip('"') if param and param.get("tlsallowinvalidcertificates") else "True"
+
+    class Args:
+        def __init__(self, host, port, username, password, dbname, authdb, tls, tlscertificatekeyfile, tlscertificatekeyfilepassword, tlsallowinvalidcertificates):
+            self.host = host
+            self.port = int(port)
+            self.username = username
+            self.password = password
+            self.dbname = dbname
+            self.authdb = authdb
+            self.tls = tls
+            self.tlscertificatekeyfile = tlscertificatekeyfile
+            self.tlscertificatekeyfilepassword = tlscertificatekeyfilepassword
+            self.tlsallowinvalidcertificates = tlsallowinvalidcertificates
+    
+    args = Args(host, port, username, password, dbname, authdb, tls, tlscertificatekeyfile, tlscertificatekeyfilepassword, tlsallowinvalidcertificates)
+    mongo_check = MongoDB(args)
+    result = mongo_check.metricCollector()
+    return result
 
 if __name__ == "__main__":
 
