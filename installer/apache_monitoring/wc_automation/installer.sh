@@ -1,6 +1,17 @@
 #!/bin/bash
 set -e
 
+check_value(){
+    value=$1
+    suspicious_regex='[`$\\|;&()]'
+    command_regex='rm|curl|wget|shutdown|reboot|base64|mkfs|sudo|su|chmod|chown|mv|cp|ln|kill|killall|nc|netcat|ssh|scp'
+    
+    if [[ "$value" =~ $suspicious_regex ]] || [[ "$value" =~ $command_regex ]]; then
+        echo "Suspicious content detected in value: '$value'"
+        exit 1
+    fi
+}
+
 # Check for python or python3
 for version in python python3; do
     if command -v "$version" &> /dev/null; then
@@ -42,18 +53,21 @@ if [ ! -f "$CONFIG_FILE" ]; then
     exit 1
 fi
 
-# Parse all configuration keys (not just required ones)
 while IFS='=' read -r key value || [ -n "$key" ]; do
-    key=$(echo "$key" | xargs)  
-    value=$(echo "$value" | xargs)
-    # Skip comments, empty lines, and section headers
+    key="${key#"${key%%[![:space:]]*}"}"   
+    key="${key%"${key##*[![:space:]]}"}"   
+    value="${value#"${value%%[![:space:]]*}"}"   
+    value="${value%"${value##*[![:space:]]}"}" 
+    
     [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
     
-    # Remove quotes from value if present
-    value=$(echo "$value" | sed 's/^"\(.*\)"$/\1/')
+    if [[ "$value" =~ ^\".*\"$ ]]; then
+        value="${value#\"}"   
+        value="${value%\"}"   
+    fi
     
-    # Store all keys in config array
-    # No need for security checks since values are passed as arguments, not executed
+    check_value "$value"
+    
     config["$key"]="$value"
 done < "$CONFIG_FILE"
 
