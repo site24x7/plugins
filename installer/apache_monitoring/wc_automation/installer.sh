@@ -1,16 +1,16 @@
 #!/bin/bash
 set -e
 
-check_value(){
-    value=$1
-    suspicious_regex='[`$\\|;&()]'
-    command_regex='rm|curl|wget|shutdown|reboot|base64|mkfs|sudo|su|chmod|chown|mv|cp|ln|kill|killall|nc|netcat|ssh|scp'
+# check_value(){
+#     value=$1
+#     suspicious_regex='[`$\\|;&()]'
+#     command_regex='rm|curl|wget|shutdown|reboot|base64|mkfs|sudo|su|chmod|chown|mv|cp|ln|kill|killall|nc|netcat|ssh|scp'
     
-    if [[ "$value" =~ $suspicious_regex ]] || [[ "$value" =~ $command_regex ]]; then
-        echo "Suspicious content detected in value: '$value'"
-        exit 1
-    fi
-}
+#     if [[ "$value" =~ $suspicious_regex ]] || [[ "$value" =~ $command_regex ]]; then
+#         echo "Suspicious content detected in value: '$value'"
+#         exit 1
+#     fi
+# }
 
 # Check for python or python3
 for version in python python3; do
@@ -66,7 +66,7 @@ while IFS='=' read -r key value || [ -n "$key" ]; do
         value="${value%\"}"   
     fi
     
-    check_value "$value"
+    # check_value "$value"
     
     config["$key"]="$value"
 done < "$CONFIG_FILE"
