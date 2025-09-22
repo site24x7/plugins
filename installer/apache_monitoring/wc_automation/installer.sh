@@ -1,16 +1,24 @@
 #!/bin/bash
 set -e
 
-# check_value(){
-#     value=$1
-#     suspicious_regex='[`$\\|;&()]'
-#     command_regex='rm|curl|wget|shutdown|reboot|base64|mkfs|sudo|su|chmod|chown|mv|cp|ln|kill|killall|nc|netcat|ssh|scp'
+check_value(){
+    value=$1
     
-#     if [[ "$value" =~ $suspicious_regex ]] || [[ "$value" =~ $command_regex ]]; then
-#         echo "Suspicious content detected in value: '$value'"
-#         exit 1
-#     fi
-# }
+    # Check for command execution patterns: $(...), `...`, and dangerous shell characters
+    execution_regex='\$\(|\`|[\\|;&]'
+    if [[ "$value" =~ $execution_regex ]]; then
+        echo "ERROR: Command execution pattern detected in value: '$value'"
+        exit 1
+    fi
+    
+    # Check for command patterns with parentheses - like $(rm -rf *), $(curl ...), ~(wget)
+    # This targets actual command execution attempts, not just names containing commands
+    command_with_parens_regex='\$?\(?~?\(?(rm|curl|wget|chmod|sudo|su|cat|echo|eval|exec|sh|bash|python|perl|ruby|php|node|java|shutdown|reboot|base64|mkfs|chown|mv|cp|ln|kill|killall|nc|netcat|ssh|scp)\s'
+    if [[ "$value" =~ $command_with_parens_regex ]]; then
+        echo "ERROR: Potential command execution detected in value: '$value'"
+        exit 1
+    fi
+}
 
 # Check for python or python3
 for version in python python3; do
@@ -66,7 +74,7 @@ while IFS='=' read -r key value || [ -n "$key" ]; do
         value="${value%\"}"   
     fi
     
-    # check_value "$value"
+    check_value "$value"
     
     config["$key"]="$value"
 done < "$CONFIG_FILE"
