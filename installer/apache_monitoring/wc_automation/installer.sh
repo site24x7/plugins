@@ -235,7 +235,7 @@ for ((i=0; i<${#CMD_ARGS_ARRAY[@]}; i+=2)); do
     DISPLAY_CMD="$DISPLAY_CMD $key '$value'"
 done
 
-echo "Command: $DISPLAY_CMD"
+# echo "Command: $DISPLAY_CMD"
 
 if [ ${#CMD_ARGS_ARRAY[@]} -gt 0 ]; then
     OUTPUT=$("$PYTHON_PATH" "$TARGET_PY_FILE" "${CMD_ARGS_ARRAY[@]}")
