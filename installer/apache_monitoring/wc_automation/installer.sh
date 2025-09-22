@@ -4,18 +4,9 @@ set -e
 check_value(){
     value=$1
     
-    # Check for command execution patterns: $(...), `...`, and dangerous shell characters
-    execution_regex='\$\(|\`|[\\|;&]'
-    if [[ "$value" =~ $execution_regex ]]; then
+    execution_pattern='\$\([^)]*\)|`[^`]*`|~\([^)]*\)'
+    if [[ "$value" =~ $execution_pattern ]]; then
         echo "ERROR: Command execution pattern detected in value: '$value'"
-        exit 1
-    fi
-    
-    # Check for command patterns with parentheses - like $(rm -rf *), $(curl ...), ~(wget)
-    # This targets actual command execution attempts, not just names containing commands
-    command_with_parens_regex='\$?\(?~?\(?(rm|curl|wget|chmod|sudo|su|cat|echo|eval|exec|sh|bash|python|perl|ruby|php|node|java|shutdown|reboot|base64|mkfs|chown|mv|cp|ln|kill|killall|nc|netcat|ssh|scp)\s'
-    if [[ "$value" =~ $command_with_parens_regex ]]; then
-        echo "ERROR: Potential command execution detected in value: '$value'"
         exit 1
     fi
 }
@@ -243,14 +234,14 @@ for ((i=0; i<${#CMD_ARGS_ARRAY[@]}; i+=2)); do
     DISPLAY_CMD="$DISPLAY_CMD $key '$value'"
 done
 
-# echo "Command: $DISPLAY_CMD"
+echo "Command: $DISPLAY_CMD"
 
 if [ ${#CMD_ARGS_ARRAY[@]} -gt 0 ]; then
     OUTPUT=$("$PYTHON_PATH" "$TARGET_PY_FILE" "${CMD_ARGS_ARRAY[@]}")
 fi
 
 # Display the output
-# echo "$OUTPUT"
+echo "$OUTPUT"
 
 if [ -z "$OUTPUT" ]; then
     echo "Execution failed: Output is empty"
