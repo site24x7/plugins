@@ -1,16 +1,12 @@
 #!/bin/bash
 set -e
 
-CONFIGURATION_REQUIRED=("url")
-
-
 check_value(){
     value=$1
-    suspicious_regex='[`$\\|;()]'
-    command_regex='rm|curl|wget|shutdown|reboot|base64|mkfs'
     
-    if [[ "$value" = ~$suspicious_regex ]] || [[ "$value" =~ $command_regex ]]; then
-        echo "Suspicious content detected."
+    execution_pattern='\$\([^)]*\)|`[^`]*`|<\([^)]*\)|>\([^)]*\)|;\([^)]*\)|\|\|\([^)]*\)|&&\([^)]*\)'
+    if [[ "$value" =~ $execution_pattern ]]; then
+        echo "ERROR: Command execution pattern detected in value: '$value'"
         exit 1
     fi
 }
@@ -49,31 +45,34 @@ fi
 
 declare -A config
 
-# Check if the configuration file exists only if CONFIGURATION_REQUIRED is not empty
-if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
-    CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
-    if [ ! -f "$CONFIG_FILE" ]; then
-        echo "Error: Configuration file '$CONFIG_FILE' not found."
-        exit 1
-    fi
-
-    while IFS='=' read -r key value || [ -n "$key" ]; do
-        key=$(echo "$key" | xargs)  
-        value=$(echo "$value" | xargs)
-        [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
-        for required_key in "${CONFIGURATION_REQUIRED[@]}"; do
-            if [[ "$key" == "$required_key" ]]; then
-                check_value "$value"
-                config["$key"]="$value"
-                break
-            fi
-        done
-    done < "$CONFIG_FILE"
+# Always check for configuration file
+CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Error: Configuration file '$CONFIG_FILE' not found."
+    exit 1
 fi
+
+while IFS='=' read -r key value || [ -n "$key" ]; do
+    key="${key#"${key%%[![:space:]]*}"}"   
+    key="${key%"${key##*[![:space:]]}"}"   
+    value="${value#"${value%%[![:space:]]*}"}"   
+    value="${value%"${value##*[![:space:]]}"}" 
+    
+    [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
+    
+    if [[ "$value" =~ ^\".*\"$ ]]; then
+        value="${value#\"}"   
+        value="${value%\"}"   
+    fi
+    
+    check_value "$value"
+    
+    config["$key"]="$value"
+done < "$CONFIG_FILE"
 
 ## Additional actions for apache_monitoring start here
 # Check if urllib is available (standard library)
-if $PYTHON_CMD -c "import urllib.request" &> /dev/null; then
+if $PYTHON_PATH -c "import urllib.request" &> /dev/null; then
     echo "urllib is available."
 else
     echo "urllib is not available."
@@ -88,6 +87,11 @@ is_local_host() {
 }
 
 if is_local_host "$url_host"; then
+
+STATUS_PATH=$(echo "${config[url]}" | sed -E 's#https?://[^/]+(/[^?]*).*#\1#')
+if [ -z "$STATUS_PATH" ] || [ "$STATUS_PATH" = "${config[url]}" ]; then
+    STATUS_PATH="/"
+fi
 
 if curl -s --max-time 3 "${config[url]}" | grep -q "Total Accesses"; then
         echo "Apache mod_status already enabled. Skipping configuration."
@@ -146,7 +150,7 @@ if [ -n "$SERVICE_NAME" ]; then
             fi
             echo "Creating server-status configuration at $STATUS_CONF"
             sudo tee "$STATUS_CONF" > /dev/null << EOF
-<Location /server-status>
+<Location $STATUS_PATH>
     SetHandler server-status
     Require local
 </Location>
@@ -184,7 +188,7 @@ EOF
 
             echo "Creating server-status configuration at $STATUS_CONF"
             sudo tee "$STATUS_CONF" > /dev/null << EOF
-<Location /server-status>
+<Location $STATUS_PATH>
     SetHandler server-status
     Require local
 </Location>
@@ -210,3 +214,47 @@ else
     echo "Remote URL detected."
 fi
 
+if [ -z "$PYTHON_PATH" ]; then
+    exit 1
+fi
+
+declare -a CMD_ARGS_ARRAY
+
+for key in "${!config[@]}"; do
+    value="${config[$key]}"
+    CMD_ARGS_ARRAY+=("--$key")
+    CMD_ARGS_ARRAY+=("$value")
+done
+
+echo "Executing Apache monitoring script..."
+
+DISPLAY_CMD="$PYTHON_PATH \"$TARGET_PY_FILE\""
+for ((i=0; i<${#CMD_ARGS_ARRAY[@]}; i+=2)); do
+    key="${CMD_ARGS_ARRAY[i]}"
+    value="${CMD_ARGS_ARRAY[i+1]}"
+    DISPLAY_CMD="$DISPLAY_CMD $key '$value'"
+done
+
+# echo "Command: $DISPLAY_CMD"
+
+if [ ${#CMD_ARGS_ARRAY[@]} -gt 0 ]; then
+    OUTPUT=$("$PYTHON_PATH" "$TARGET_PY_FILE" "${CMD_ARGS_ARRAY[@]}")
+fi
+
+# echo "$OUTPUT"
+
+if [ -z "$OUTPUT" ]; then
+    echo "Execution failed: Output is empty"
+    exit 1
+fi
+
+if echo "$OUTPUT" | grep -q '"status": 0'; then
+    ERROR_MSG=$(echo "$OUTPUT" | grep -o '"msg": *"[^"]*"' | sed 's/"msg": *"\([^"]*\)"/\1/')
+    
+    echo "Execution failed: $ERROR_MSG"
+    exit 1
+else
+    echo "Executed successfully"
+fi
+
+echo "Apache monitoring script execution completed."
