@@ -4,7 +4,7 @@ set -e
 check_value(){
     value=$1
     
-    execution_pattern='\$\([^)]*\)|`[^`]*`|~\([^)]*\)'
+    execution_pattern='\$\([^)]*\)|`[^`]*`|<\([^)]*\)|>\([^)]*\)|;\([^)]*\)|\|\|\([^)]*\)|&&\([^)]*\)'
     if [[ "$value" =~ $execution_pattern ]]; then
         echo "ERROR: Command execution pattern detected in value: '$value'"
         exit 1
