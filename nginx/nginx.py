@@ -48,6 +48,11 @@ class NginxServerMonitoring():
         read_writes = re.search(r'Reading: (\d+)\s+Writing: (\d+)\s+Waiting: (\d+)', output)
         per_s_connections = re.search(r'\s*(\d+)\s+(\d+)\s+(\d+)', output)
         
+        if not active_con and not read_writes and not per_s_connections:
+            self.data['status'] = 0
+            self.data['msg'] = "Invalid nginx status URL - no status data found"
+            return self.data
+        
         if active_con: self. data['Currently active client connections'] = int(active_con.group(1)) # current active client connections including Waiting connections.        
         if read_writes:
             reading, writing, waiting = read_writes.groups()
