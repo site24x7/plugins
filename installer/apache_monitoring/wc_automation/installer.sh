@@ -72,7 +72,7 @@ done < "$CONFIG_FILE"
 
 ## Additional actions for apache_monitoring start here
 # Check if urllib is available (standard library)
-if "$PYTHON_PATH" -c "import urllib.request" &> /dev/null; then
+if $PYTHON_PATH -c "import urllib.request" &> /dev/null; then
     echo "urllib is available."
 else
     echo "urllib is not available."
@@ -88,12 +88,10 @@ is_local_host() {
 
 if is_local_host "$url_host"; then
 
-# Extract the path from the configured URL for Apache mod_status configuration
 STATUS_PATH=$(echo "${config[url]}" | sed -E 's#https?://[^/]+(/[^?]*).*#\1#')
 if [ -z "$STATUS_PATH" ] || [ "$STATUS_PATH" = "${config[url]}" ]; then
     STATUS_PATH="/"
 fi
-echo "Configuring Apache mod_status for path: $STATUS_PATH"
 
 if curl -s --max-time 3 "${config[url]}" | grep -q "Total Accesses"; then
         echo "Apache mod_status already enabled. Skipping configuration."
@@ -216,7 +214,10 @@ else
     echo "Remote URL detected."
 fi
 
-echo "Building command line arguments from configuration..."
+if [ -z "$PYTHON_PATH" ]; then
+    exit 1
+fi
+
 declare -a CMD_ARGS_ARRAY
 
 for key in "${!config[@]}"; do
@@ -240,7 +241,6 @@ if [ ${#CMD_ARGS_ARRAY[@]} -gt 0 ]; then
     OUTPUT=$("$PYTHON_PATH" "$TARGET_PY_FILE" "${CMD_ARGS_ARRAY[@]}")
 fi
 
-# Display the output
 # echo "$OUTPUT"
 
 if [ -z "$OUTPUT" ]; then
