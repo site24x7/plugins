@@ -88,7 +88,6 @@ is_local_host() {
 
 if is_local_host "$url_host"; then
 
-# Extract the path from the configured URL for Apache mod_status configuration
 STATUS_PATH=$(echo "${config[url]}" | sed -E 's#https?://[^/]+(/[^?]*).*#\1#')
 if [ -z "$STATUS_PATH" ] || [ "$STATUS_PATH" = "${config[url]}" ]; then
     STATUS_PATH="/"
@@ -242,7 +241,6 @@ if [ ${#CMD_ARGS_ARRAY[@]} -gt 0 ]; then
     OUTPUT=$("$PYTHON_PATH" "$TARGET_PY_FILE" "${CMD_ARGS_ARRAY[@]}")
 fi
 
-# Display the output
 # echo "$OUTPUT"
 
 if [ -z "$OUTPUT" ]; then
