@@ -72,7 +72,7 @@ done < "$CONFIG_FILE"
 
 ## Additional actions for nginx monitoring start here
 # Check if urllib is available (standard library)
-if $PYTHON_CMD -c "import urllib.request" &> /dev/null; then
+if $PYTHON_PATH -c "import urllib.request" &> /dev/null; then
     echo "urllib is available."
 else
     echo "urllib is not available."
@@ -167,7 +167,10 @@ fi
 
 sleep 5
 
-echo "Building command line arguments from configuration..."
+if [ -z "$PYTHON_PATH" ]; then
+    exit 1
+fi
+
 declare -a CMD_ARGS_ARRAY
 
 for key in "${!config[@]}"; do
