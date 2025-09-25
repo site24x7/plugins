@@ -30,6 +30,9 @@ class haproxy:
         self.username=args.username
         self.password=args.password
         self.url=args.url
+        
+        if ';csv' not in self.url:
+            self.url = self.url + ';csv'
 
     def metriccollector(self):
         try:

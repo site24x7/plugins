@@ -12,12 +12,17 @@ plugin_rs['plugin_version'] = PLUGIN_VERSION
 plugin_rs['heartbeat_required'] = HEARTBEAT
 
 try:
-    # Specify the path to the .pyz file
-    speedtest_pyz_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "speedtest-cli.pyz")
-    sys.path.insert(0, speedtest_pyz_path)
-
-    # Import the speedtest module
-    import speedtest
+    plugin_script_path = os.path.dirname(os.path.realpath(__file__))
+    
+    try:
+        import zipimport
+        importer = zipimport.zipimporter(plugin_script_path + "/speedtest-cli.pyz")
+        speedtest = importer.load_module("speedtest")
+    except:
+        plugin_rs['status'] = 0
+        plugin_rs['msg'] = 'speedtest module not installed'
+        print(json.dumps(plugin_rs))
+        sys.exit(1)
 
     threads = None
     servers = []
@@ -34,7 +39,15 @@ try:
     plugin_rs['units'] = metric_units
 
 except Exception as e:
-    plugin_rs['status'] = 0
-    plugin_rs['msg'] = str(e)
+    error_msg = str(e)
+    if "403" in error_msg or "Forbidden" in error_msg:
+        plugin_rs["upload"] = 0
+        plugin_rs["download"] = 0
+        plugin_rs["ping"] = 0
+        plugin_rs['units'] = metric_units
+        plugin_rs['msg'] = error_msg
+    else:
+        plugin_rs['status'] = 0
+        plugin_rs['msg'] = error_msg
 
 print(json.dumps(plugin_rs))

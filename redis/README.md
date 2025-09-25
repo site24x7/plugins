@@ -18,27 +18,27 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/installer/S
 		pip install redis
 
 ## Plugin Installation  
-- Create a directory named `Redis`.
+- Create a directory named `redis`.
   
 	```bash
-	mkdir Redis
- 	cd Redis/
+	mkdir redis
+ 	cd redis/
   	```
  
-- Download all the files under the `Redis` directory.
+- Download all the files under the `redis` directory.
 
 	```bash
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/Redis.py
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/Redis.cfg
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/redis.py
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/redis.cfg
 	```
 
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
 	```bash
-	python Redis.py --host "localhost" --port "6379" --password "" 
+	python redis.py --host "localhost" --port "6379" --password "" 
 	```
 
-- Provide your Redis configurations in Redis.cfg file.
+- Provide your redis configurations in redis.cfg file.
 
 	```bash
 	[redis]
@@ -48,12 +48,12 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/installer/S
 	```
  
   #### Linux
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the Redis.py script.
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the redis.py script.
 
-- Move the `Redis` directory to the Site24x7 Linux Agent plugin directory: 
+- Move the `redis` directory to the Site24x7 Linux Agent plugin directory: 
 
 	```bash
-	mv Redis /opt/site24x7/monagent/plugins/
+	mv redis /opt/site24x7/monagent/plugins/
 	```
  
   #### Windows 
@@ -61,7 +61,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/installer/S
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
 
-- Move the folder `Redis` under Site24x7 Windows Agent plugin directory: 
+- Move the folder `redis` under Site24x7 Windows Agent plugin directory: 
 
 		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.

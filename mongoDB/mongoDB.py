@@ -276,18 +276,10 @@ class MongoDB(object):
             ps = int(diff / elapsed_time)
             return ps
         try:
-            try:
-                import pymongo
-                pymongo_installed=True
-
-            except ImportError:
-                pymongo_installed=False
-
-            if not pymongo_installed:
-                import zipimport
-                importer=zipimport.zipimporter(plugin_script_path+"/pymongo.pyz")
-                bson=importer.load_module("bson")
-                pymongo=importer.load_module("pymongo")
+            import zipimport
+            importer=zipimport.zipimporter(plugin_script_path+"/pymongo.pyz")
+            bson=importer.load_module("bson")
+            pymongo=importer.load_module("pymongo")
         except:
             data['status']=0
             data['msg']='pymongo module not installed'

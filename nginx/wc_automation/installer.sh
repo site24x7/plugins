@@ -1,17 +1,12 @@
 #!/bin/bash
 set -e
 
-PACKAGE_REQUIRED=()
-
-CONFIGURATION_REQUIRED=("nginx_status_url")
-
 check_value(){
     value=$1
-    suspicious_regex='[`$\\|;()]'
-    command_regex='rm|curl|wget|shutdown|reboot|base64|mkfs'
     
-    if [[ "$value" = ~$suspicious_regex ]] || [[ "$value" =~ $command_regex ]]; then
-        echo "Suspicious content detected."
+    execution_pattern='\$\([^)]*\)|`[^`]*`|<\([^)]*\)|>\([^)]*\)|;\([^)]*\)|\|\|\([^)]*\)|&&\([^)]*\)'
+    if [[ "$value" =~ $execution_pattern ]]; then
+        echo "ERROR: Command execution pattern detected in value: '$value'"
         exit 1
     fi
 }
@@ -26,11 +21,7 @@ done
 
 if [ -z "$PYTHON_CMD" ]; then
     echo "Error: Python is not installed or not available in the PATH."
-    exit 1
 fi
-
-PYTHON_PATH=$(command -v "$PYTHON_CMD")
-echo "Python executable found at: $PYTHON_PATH"
 
 # Get current file name
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
@@ -46,71 +37,55 @@ if [ ! -f "$TARGET_PY_FILE" ]; then
 fi
 
 # Add Python shebang line to the top of the Python file
-sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
+if [ -n "$PYTHON_CMD" ]; then
+    PYTHON_PATH=$(command -v "$PYTHON_CMD")
+    echo "Python executable found at: $PYTHON_PATH"
+    sed -i "1s|^.*$|#!$PYTHON_PATH|" "$TARGET_PY_FILE"
+fi
 
 declare -A config
 
 # Check if the configuration file exists
-if [ ${#CONFIGURATION_REQUIRED[@]} -ne 0 ]; then
-    CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
-    if [ ! -f "$CONFIG_FILE" ]; then
-        echo "Error: Configuration file '$CONFIG_FILE' not found."
-        exit 1
-    fi
-
-    while IFS='=' read -r key value || [ -n "$key" ]; do
-        key=$(echo "$key" | xargs)  
-        value=$(echo "$value" | xargs)
-        [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
-        for required_key in "${CONFIGURATION_REQUIRED[@]}"; do
-            if [[ "$key" == "$required_key" ]]; then
-                check_value "$value"
-                config["$key"]="$value"
-                break
-            fi
-        done
-    done < "$CONFIG_FILE"
-fi
-
-# Check if pip is installed
-PIP_CMD="$PYTHON_CMD -m pip"
-
-if $PIP_CMD --version &> /dev/null; then
-    PIP_VERSION=$($PIP_CMD --version | awk '{print $2}')
-    echo "Pip is available with version: $PIP_VERSION"
-else
-    echo "Error: Pip is not installed."
+CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Error: Configuration file '$CONFIG_FILE' not found."
     exit 1
 fi
 
-# Check if required packages are installed
-for package in "${PACKAGE_REQUIRED[@]}"; do
-    if ! $PYTHON_CMD -c "import $package" &> /dev/null; then
-        echo "Info: Package '$package' is not installed. Attempting installation..."
-        if $PIP_CMD install "$package" &> /dev/null; then
-            echo "Package '$package' installed successfully."
-        else
-            echo "Error: Failed to install the package '$package'."
-            exit 1
-        fi
-    else
-        echo "Package '$package' is already installed."
+while IFS='=' read -r key value || [ -n "$key" ]; do
+    key="${key#"${key%%[![:space:]]*}"}"   
+    key="${key%"${key##*[![:space:]]}"}"   
+    value="${value#"${value%%[![:space:]]*}"}"   
+    value="${value%"${value##*[![:space:]]}"}" 
+    
+    [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
+    
+    if [[ "$value" =~ ^\".*\"$ ]]; then
+        value="${value#\"}"   
+        value="${value%\"}"   
     fi
-done
-
+    
+    check_value "$value"
+    
+    config["$key"]="$value"
+done < "$CONFIG_FILE"
 
 ## Additional actions for nginx monitoring start here
 # Check if urllib is available (standard library)
-if $PYTHON_CMD -c "import urllib.request" &> /dev/null; then
+if $PYTHON_PATH -c "import urllib.request" &> /dev/null; then
     echo "urllib is available."
 else
     echo "urllib is not available."
-    exit 1
 fi
 
 # === Insert stub_status block into nginx.conf ===
+url_path=$(echo "${config[nginx_status_url]}" | sed -E 's#https?://[^/]+(/[^?#]*)?.*#\1#')
+if [ -z "$url_path" ] || [ "$url_path" = "${config[nginx_status_url]}" ]; then
+    url_path="/nginx_status" 
+fi
+
 stub_status_block=" 
-    location /nginx_status {
+    location $url_path {
         stub_status on;
         allow 127.0.0.1;
     }"
@@ -127,8 +102,8 @@ insert_stub_status() {
         return 1
     fi
 
-    if grep -q "stub_status on;" "$nginx_conf"; then
-        echo "stub_status config: already exists"
+    if grep -q "location $url_path" "$nginx_conf" && grep -A 3 "location $url_path" "$nginx_conf" | grep -q "stub_status on;"; then
+        echo "stub_status config: already exists for $url_path"
         return 0
     fi
 
@@ -191,3 +166,48 @@ fi
 ## Additional actions for nginx monitoring end here
 
 sleep 5
+
+if [ -z "$PYTHON_PATH" ]; then
+    exit 1
+fi
+
+declare -a CMD_ARGS_ARRAY
+
+for key in "${!config[@]}"; do
+    value="${config[$key]}"
+    CMD_ARGS_ARRAY+=("--$key")
+    CMD_ARGS_ARRAY+=("$value")
+done
+
+echo "Executing Nginx monitoring script..."
+
+DISPLAY_CMD="$PYTHON_PATH \"$TARGET_PY_FILE\""
+for ((i=0; i<${#CMD_ARGS_ARRAY[@]}; i+=2)); do
+    key="${CMD_ARGS_ARRAY[i]}"
+    value="${CMD_ARGS_ARRAY[i+1]}"
+    DISPLAY_CMD="$DISPLAY_CMD $key '$value'"
+done
+
+# echo "Command: $DISPLAY_CMD"
+
+if [ ${#CMD_ARGS_ARRAY[@]} -gt 0 ]; then
+    OUTPUT=$("$PYTHON_PATH" "$TARGET_PY_FILE" "${CMD_ARGS_ARRAY[@]}")
+fi
+
+# echo "$OUTPUT"
+
+if [ -z "$OUTPUT" ]; then
+    echo "Execution failed: Output is empty"
+    exit 1
+fi
+
+if echo "$OUTPUT" | grep -q '"status": 0'; then
+    ERROR_MSG=$(echo "$OUTPUT" | grep -o '"msg": *"[^"]*"' | sed 's/"msg": *"\([^"]*\)"/\1/')
+    
+    echo "Execution failed: $ERROR_MSG"
+    exit 1
+else
+    echo "Executed successfully"
+fi
+
+echo "Nginx monitoring script execution completed."

@@ -43,8 +43,8 @@ echo_success() {
 }
 
 create_user() {
-    create_user_query="CREATE USER $username WITH PASSWORD '$password';"
-    result=$(PGPASSWORD="$admin_password" psql -h "$host" -p "$port" -U "$admin_username" -c "$create_user_query" 2>&1)
+    create_user_query="CREATE USER \"$username\" WITH PASSWORD '$password';"
+    result=$(PGPASSWORD="$admin_password" psql -h "$host" -p "$port" -U "$admin_username" -d "$database" -c "$create_user_query" 2>&1)
     echo $result
     error_handler $? $result
     query_error $result
@@ -55,8 +55,8 @@ set_permissions() {
     echo
     echo "Setting permissions"
 
-    privilege_query="GRANT pg_monitor TO $username;"
-    result=$(PGPASSWORD="$admin_password" psql -h "$host" -p "$port" -U "$admin_username" -c "$privilege_query" 2>&1)
+    privilege_query="GRANT pg_monitor TO \"$username\";"
+    result=$(PGPASSWORD="$admin_password" psql -h "$host" -p "$port" -U "$admin_username" -d "$database" -c "$privilege_query" 2>&1)
     echo $result
     error_handler $? $result
     query_error $result
@@ -88,6 +88,11 @@ if [ -z "$admin_username" ]; then
 fi
 
 read -r -p "Enter the Admin password: " admin_password
+
+read -r -p "Enter the database name (default: postgres): " database
+if [ -z "$database" ]; then
+    database="postgres"
+fi
 
 tput sgr0
 

@@ -90,10 +90,17 @@ class ApacheMonitoring(object):
     
     def _parse_data_(self, _data_):
         try:
+            metrics_found = 0
             listStatsData = _data_.split('\n')
             for eachStat in listStatsData:
                 stats = eachStat.split(':') 
-                if str(stats[0]) in METRICS: self.data.setdefault(METRICS[str(stats[0])], str.strip(str(stats[1])))
+                if str(stats[0]) in METRICS: 
+                    self.data.setdefault(METRICS[str(stats[0])], str.strip(str(stats[1])))
+                    metrics_found += 1
+            
+            if metrics_found == 0:
+                self.data['status'] = 0
+                self.data['msg'] = 'No Apache server status metrics found.'
             
         except TypeError as e:
             self.data['status'] = 0
