@@ -63,6 +63,8 @@ while IFS='=' read -r key value || [ -n "$key" ]; do
     if [[ "$value" =~ ^\".*\"$ ]]; then
         value="${value#\"}"   
         value="${value%\"}"   
+        value="${value#\'}"
+        value="${value%\'}"   
     fi
     
     check_value "$value"
