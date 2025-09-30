@@ -1,135 +1,236 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import json
+import requests
+import argparse
 
-import sys
+PLUGIN_VERSION = 1
+HEARTBEAT = "true"
 
-#if any changes to this plugin kindly increment the plugin version here.
-PLUGIN_VERSION=1
+# -------------------------
+# Metric Units
+# -------------------------
+UNITS = {
+    'request_time': 'ms',
+    'couchdb.couchdb.request_time.arithmetic_mean': 'ms',
+    'couchdb.couchdb.request_time.geometric_mean': 'ms',
+    'couchdb.couchdb.request_time.harmonic_mean': 'ms',
+    'couchdb.couchdb.request_time.max': 'ms',
+    'couchdb.couchdb.request_time.median': 'ms',
+    'couchdb.couchdb.request_time.min': 'ms',
+    'couchdb.couchdb.request_time.percentile.50': 'ms',
+    'couchdb.couchdb.request_time.percentile.75': 'ms',
+    'couchdb.couchdb.request_time.percentile.90': 'ms',
+    'couchdb.couchdb.request_time.percentile.95': 'ms',
+    'couchdb.couchdb.request_time.percentile.99': 'ms',
+    'couchdb.couchdb.request_time.percentile.999': 'ms'
+}
 
-#Setting this to true will alert you when there is a network problem while posting plugin data to server
-HEARTBEAT="true"
+# -------------------------
+# Tabs
+# -------------------------
+TABS = {
+    "Database": {
+        "order": 1,
+        "tablist": [
+            'auth_cache_hits',
+            'auth_cache_misses',
+            'couchdb.couchdb.local_document_writes',
+            'couchdb.couchdb.document_purges.total',
+            'couchdb.couchdb.document_purges.success',
+            'couchdb.couchdb.document_purges.failure',
+            'couchdb.couchdb.dbinfo.n',
+            'couchdb.couchdb.dbinfo.max',
+            'couchdb.couchdb.dbinfo.min',
+            'couchdb.couchdb.dbinfo.median',
+            'couchdb.active_tasks.db_compaction.count',
+            'couchdb.active_tasks.indexer.count',
+            'couchdb.active_tasks.view_compaction.count',
+            'Databases_Details'
+        ]
+    },
+    "HTTP": {
+        "order": 2,
+        "tablist": [
+            'no_of_http_post_requests',
+            'no_of_http_copy_requests',
+            'no_of_http_get_requests',
+            'no_of_http_head_requests',
+            'no_of_http_move_requests',
+            'no_of_http_put_requests',
+            'no_of_http_200_responses',
+            'no_of_http_201_responses',
+            'no_of_http_202_responses',
+            'no_of_http_301_responses',
+            'no_of_http_304_responses',
+            'no_of_http_400_responses',
+            'no_of_http_401_responses',
+            'no_of_http_403_responses',
+            'no_of_http_404_responses',
+            'no_of_http_405_responses',
+            'no_of_http_409_responses',
+            'no_of_http_412_responses',
+            'no_of_http_500_responses',
+            'view_reads',
+            'bulk_requests',
+            'temporary_view_reads',
+            'clients_requesting_changes'
+        ]
+    },
+    "Performance": {
+        "order": 3,
+        "tablist": [
+            'couchdb.couchdb.request_time.min',
+            'couchdb.couchdb.request_time.max',
+            'couchdb.couchdb.request_time.arithmetic_mean',
+            'couchdb.couchdb.request_time.geometric_mean',
+            'couchdb.couchdb.request_time.harmonic_mean',
+            'couchdb.couchdb.request_time.median',
+            'couchdb.couchdb.request_time.variance',
+            'couchdb.couchdb.request_time.standard_deviation',
+            'couchdb.couchdb.request_time.skewness',
+            'couchdb.couchdb.request_time.kurtosis',
+            'couchdb.couchdb.request_time.percentile.50',
+            'couchdb.couchdb.request_time.percentile.75',
+            'couchdb.couchdb.request_time.percentile.90',
+            'couchdb.couchdb.request_time.percentile.95',
+            'couchdb.couchdb.request_time.percentile.99',
+            'couchdb.couchdb.request_time.percentile.999'
+        ]
+    }
+}
 
-#Config Section
-COUCHDB_HOST='127.0.0.1'
+# -------------------------
+# Helper to convert Bytes to MB
+# -------------------------
+def bytes_to_mb(value):
+    try:
+        return round(float(value)/1024/1024,2)
+    except:
+        return 0
 
-COUCHDB_PORT="5984"
+# -------------------------
+# CouchDB Database Details (dynamic)
+# -------------------------
+def get_databases_details(host, port, user, password, data):
+    databases_details = []
+    try:
+        r = requests.get(f"http://{host}:{port}/_all_dbs", auth=(user,password), timeout=10)
+        db_list = r.json()  # List of database names
+        for db_name in db_list:
+            r_db = requests.get(f"http://{host}:{port}/{db_name}", auth=(user,password), timeout=10)
+            db_info = r_db.json()
+            databases_details.append({
+                "name": db_name,
+                "doc_count": db_info.get("doc_count", 0),
+                "disk_size": round(db_info.get("disk_size", 0)/1024/1024,2),
+                "doc_del_count": db_info.get("doc_del_count", 0)
+            })
+    except Exception as e:
+        data['msg'] = f"CouchDB Error fetching DB info: {str(e)}"
+    return databases_details
 
-COUCHDB_STATS_URI="/_stats/"
+# -------------------------
+# CouchDB Metrics
+# -------------------------
+def collect_couchdb(host, port, user, password):
+    data = {}
+    url = f"http://{host}:{port}/_node/_local/_stats"
+    try:
+        r = requests.get(url, auth=(user,password), timeout=10)
+        stats = r.json().get('couchdb', {})
 
-COUCHDB_USERNAME=None
+        # Basic metrics
+        for key in ['request_time','auth_cache_hits','auth_cache_misses','database_reads','database_writes',
+                    'open_databases','open_os_files']:
+            val = stats.get(key,{}).get('value',0)
+            if key == 'request_time' and isinstance(val, dict):
+                for sub_key, sub_val in val.items():
+                    if sub_key == "percentile" and isinstance(sub_val, list):
+                        for item in sub_val:
+                            pct, pct_val = item
+                            data[f"couchdb.couchdb.request_time.percentile.{pct}"] = pct_val
+                    elif sub_key == "histogram" and isinstance(sub_val, list):
+                        for idx, item in enumerate(sub_val):
+                            if isinstance(item, list) and len(item) == 2:
+                                data[f"couchdb.couchdb.request_time.histogram.{idx}_bucket"] = item[0]
+                                data[f"couchdb.couchdb.request_time.histogram.{idx}_count"] = item[1]
+                    else:
+                        data[f"couchdb.couchdb.request_time.{sub_key}"] = sub_val
+            data[key] = val if key != 'request_time' else data.get(f"couchdb.couchdb.request_time.arithmetic_mean", val)
 
-COUCHDB_PASSWORD=None
+        # HTTP methods
+        methods = stats.get('httpd_request_methods',{})
+        for m in ['POST','COPY','GET','HEAD','MOVE','PUT']:
+            data[f'no_of_http_{m.lower()}_requests'] = methods.get(m,{}).get('value',0)
 
-REALM=None
+        # HTTP status codes
+        status = stats.get('httpd_status_codes',{})
+        for s in ['200','201','202','301','304','400','401','403','404','405','409','412','500']:
+            data[f'no_of_http_{s}_responses'] = status.get(s,{}).get('value',0)
 
-METRICS_UNITS={'request_time':'ms','auth_cache_hits':'number','auth_cache_misses':'number','database_reads':'number','database_writes':'number','open_databases':'number','open_os_files':'number','no_of_http_post_requests':'number',
-			  'no_of_http_copy_requests':'number','no_of_http_get_requests':'number','no_of_http_head_requests':'number','no_of_http_move_requests':'number','no_of_http_put_requests':'number','no_of_http_200_responses':'number','no_of_http_201_responses':'number',
-			  'no_of_http_202_responses':'number','no_of_http_301_responses':'number','no_of_http_304_responses':'number','no_of_http_400_responses':'number','no_of_http_401_responses':'number','no_of_http_403_responses':'number',
-			  'no_of_http_404_responses':'number','no_of_http_405_responses':'number','no_of_http_409_responses':'number','no_of_http_412_responses':'number','no_of_http_500_responses':'number',
-			  'bulk_requests':'number','view_reads':'number','clients_requesting_changes':'number','temporary_view_reads':'number'}
+        # HTTP other metrics
+        httpd = stats.get('httpd',{})
+        for key in ['view_reads','bulk_requests','temporary_view_reads','clients_requesting_changes']:
+            data[key] = httpd.get(key,{}).get('value',0)
 
-METRICS_KEY_VS_NAME ={'COPY':'no_of_http_copy_requests','GET':'no_of_http_get_requests','HEAD':'no_of_http_head_requests','MOVE':'no_of_http_move_requests','PUT':'no_of_http_put_requests','POST':'no_of_http_post_requests',
-					 '200':'no_of_http_200_responses','201':'no_of_http_201_responses','202':'no_of_http_202_responses','301':'no_of_http_301_responses','304':'no_of_http_304_responses','400':'no_of_http_400_responses',
-					 '401':'no_of_http_401_responses','403':'no_of_http_403_responses','404':'no_of_http_404_responses','405':'no_of_http_405_responses','409':'no_of_http_409_responses','412':'no_of_http_412_responses','500':'no_of_http_500_responses'}
+        # Active tasks & logs
+        tasks = stats.get('active_tasks',{})
+        data['couchdb.active_tasks.db_compaction.count'] = tasks.get('db_compaction',{}).get('count',0)
+        data['couchdb.active_tasks.indexer.count'] = tasks.get('indexer',{}).get('count',0)
+        data['couchdb.active_tasks.view_compaction.count'] = tasks.get('view_compaction',{}).get('count',0)
 
-HTTP_METHOD_METRICS={'COPY':'no_of_http_copy_requests','GET':'no_of_http_get_requests','HEAD':'no_of_http_head_requests','MOVE':'no_of_http_move_requests','PUT':'no_of_http_put_requests','POST':'no_of_http_post_requests'}
+        couch_log = stats.get('couch_log',{})
+        for level in ['alert','critical','error','warning','info']:
+            data[f'couchdb.couch_log.level.{level}'] = couch_log.get('level',{}).get(level,0)
 
-HTTP_STATUS_METRICS={'200':'no_of_http_200_responses','201':'no_of_http_201_responses','202':'no_of_http_202_responses','301':'no_of_http_301_responses','304':'no_of_http_304_responses','400':'no_of_http_400_responses',
-					 '401':'no_of_http_401_responses','403':'no_of_http_403_responses','404':'no_of_http_404_responses','405':'no_of_http_405_responses','409':'no_of_http_409_responses','412':'no_of_http_412_responses','500':'no_of_http_500_responses'}
+        data['couchdb.couchdb.open_databases'] = stats.get('couchdb',{}).get('open_databases',{}).get('value',0)
+        data['couchdb.couchdb.open_os_files'] = stats.get('couchdb',{}).get('open_os_files',{}).get('value',0)
 
-OTHER_METRICS=['request_time','auth_cache_hits','auth_cache_misses','database_reads','database_writes','open_databases','open_os_files','bulk_requests','view_reads','clients_requesting_changes','temporary_view_reads']
+        # Document & DB info
+        couchdb_main = stats.get('couchdb', {})
+        for key in ['document_inserts','document_writes','local_document_writes']:
+            data[f'couchdb.couchdb.{key}'] = couchdb_main.get(key,{}).get('value',0)
 
+        for key in ['document_purges']:
+            for sub_key in ['total','success','failure']:
+                data[f'couchdb.couchdb.{key}.{sub_key}'] = couchdb_main.get(key,{}).get(sub_key,0)
 
-PYTHON_MAJOR_VERSION = sys.version_info[0]
+        dbinfo = couchdb_main.get('dbinfo', {})
+        for sub_key in ['n','max','min','median']:
+            data[f'couchdb.couchdb.dbinfo.{sub_key}'] = dbinfo.get(sub_key,0)
 
-if PYTHON_MAJOR_VERSION == 3:
-    import urllib
-    import urllib.request as connector
-elif PYTHON_MAJOR_VERSION == 2:
-    import urllib2 as connector
+        # Add dynamic database info
+        data['Databases_Details'] = get_databases_details(host, port, user, password, data)
 
-def metricCollector():
-	data = {}
-	
-	#defaults
-	data['plugin_version'] = PLUGIN_VERSION
+    except Exception as e:
+        data['msg'] = f"CouchDB Error: {str(e)}"
+    return data
 
-	data['heartbeat_required']=HEARTBEAT
+# -------------------------
+# Main
+# -------------------------
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--couchdb_host", default="127.0.0.1")
+    parser.add_argument("--couchdb_port", default="5984")
+    parser.add_argument("--couchdb_user", default="admin")
+    parser.add_argument("--couchdb_pass", default="admin")
+    args = parser.parse_args()
 
-	data['units']=METRICS_UNITS
+    output = {
+        "plugin_version": PLUGIN_VERSION,
+        "heartbeat_required": HEARTBEAT,
+        "units": UNITS
+    }
 
-	URL = "http://"+COUCHDB_HOST+":"+COUCHDB_PORT+COUCHDB_STATS_URI
-	
-	try:
-		if COUCHDB_USERNAME and COUCHDB_PASSWORD:
-			password_mgr = connector.HTTPPasswordMgrWithDefaultRealm()
-			password_mgr.add_password(REALM, URL, COUCHDB_USERNAME, COUCHDB_PASSWORD)
-			auth_handler = connector.HTTPBasicAuthHandler(password_mgr)
-			opener = connector.build_opener(auth_handler)
-			connector.install_opener(opener)
-		response = connector.urlopen(URL, timeout=10)
-		byte_responseData = response.read()
-		str_responseData = byte_responseData.decode('UTF-8')
-		couch_dict = json.loads(str_responseData)
+    # CouchDB metrics
+    output.update(collect_couchdb(args.couchdb_host, args.couchdb_port, args.couchdb_user, args.couchdb_pass))
 
+    # Tabs at the end
+    output["tabs"] = TABS
 
-		for attribute, attribute_value in couch_dict.items():
-			if attribute=='couchdb':
-				for key in attribute_value:
-					
-					if key=='httpd_request_methods':
-						http_method_data=attribute_value[key]
-						for http_method in HTTP_METHOD_METRICS:
-							if http_method in http_method_data:
-								data[METRICS_KEY_VS_NAME[http_method]]= http_method_data[http_method]['value']
-
-					if key=='httpd_status_codes':
-						http_status_data=attribute_value[key]
-						for http_status in HTTP_STATUS_METRICS:
-							if http_status in http_status_data:
-								data[METRICS_KEY_VS_NAME[http_status]]= http_status_data[http_status]['value']				
-
-					if key=="request_time":
-						data["request_time"]=attribute_value[key]['value']['arithmetic_mean']
-					
-					if key=="open_os_files":
-						data["open_os_files"]=attribute_value[key]['value']
-					
-					if key=="open_databases":
-						data["open_databases"]=attribute_value[key]['value']
-					
-					if key=="database_writes":
-						data["database_writes"]=attribute_value[key]['value']
-
-					if key=="database_reads":
-						data["database_reads"]=attribute_value[key]['value']
-
-					if key=="auth_cache_hits":
-						data["auth_cache_hits"]=attribute_value[key]['value']
-
-					if key=="auth_cache_misses":
-						data["auth_cache_misses"]=attribute_value[key]['value']
-					
-					if key=='httpd':
-						if "view_reads" in attribute_value[key]:
-							data['view_reads']=attribute_value[key]['view_reads']['value']
-						
-						if "bulk_requests" in attribute_value[key]:
-							data["bulk_requests"]=attribute_value[key]["bulk_requests"]['value']
-
-						if "temporary_view_reads" in attribute_value[key]:
-							data["temporary_view_reads"]=attribute_value[key]["temporary_view_reads"]['value']
-						
-						if "clients_requesting_changes" in attribute_value[key]:
-							data["clients_requesting_changes"]=attribute_value[key]["clients_requesting_changes"]['value']
-						
-	except Exception as e:
-			data['status']=0
-			data['msg']=str(e)  
-	
-	return data
+    print(json.dumps(output, indent=4))
 
 if __name__ == "__main__":
-	
-	print(json.dumps(metricCollector(), indent=4, sort_keys=True))
+    main()
