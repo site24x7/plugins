@@ -42,3 +42,16 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 - Move the folder "couchserver" under Site24x7 Windows Agent plugin directory: 
 
 		Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\couchserver
+
+## Metrics Captured
+| Metric Name                  | Description                                                      |
+|-------------------------------|------------------------------------------------------------------|
+| hddquotaTotal                 | Total hard disk quota assigned to CouchDB (in bytes).           |
+| hddtotal                      | Total physical hard disk available on the system (in bytes).    |
+| hddused                       | Total hard disk used by CouchDB (in bytes).                     |
+| hddusedByData                 | Hard disk space used specifically by database data (in bytes).  |
+| ramquotaTotalPerNode           | Total RAM quota assigned per CouchDB node (in bytes).           |
+| ramquotaUsed                  | RAM quota currently used by CouchDB cluster (in bytes).         |
+| ramquotaUsedPerNode            | RAM used per CouchDB node (in bytes).                            |
+| ramtotal                       | Total physical RAM available on the system (in bytes).          |
+| ramused                        | Total RAM currently used by CouchDB (in bytes).                 |
