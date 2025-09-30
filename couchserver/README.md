@@ -25,7 +25,7 @@ Learn more https://www.site24x7.com/plugins/couchbase-monitoring.html
 
 - Edit the couchserver.py file with appropriate arguments and Execute the below command to check for the valid JSON output:
 
-		python couchserver.py
+		python3 couchserver.py
   #### Linux
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the couchserver.py script.
@@ -42,3 +42,16 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 - Move the folder "couchserver" under Site24x7 Windows Agent plugin directory: 
 
 		Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\couchserver
+
+## METRICS CAPTURED
+| Metric Name                  | Description                                                      |
+|-------------------------------|------------------------------------------------------------------|
+| hddquotaTotal                 | Total hard disk quota assigned to CouchDB (in bytes).           |
+| hddtotal                      | Total physical hard disk available on the system (in bytes).    |
+| hddused                       | Total hard disk used by CouchDB (in bytes).                     |
+| hddusedByData                 | Hard disk space used specifically by database data (in bytes).  |
+| ramquotaTotalPerNode           | Total RAM quota assigned per CouchDB node (in bytes).           |
+| ramquotaUsed                  | RAM quota currently used by CouchDB cluster (in bytes).         |
+| ramquotaUsedPerNode            | RAM used per CouchDB node (in bytes).                            |
+| ramtotal                       | Total physical RAM available on the system (in bytes).          |
+| ramused                        | Total RAM currently used by CouchDB (in bytes).                 |
