@@ -1,94 +1,82 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import json
+import requests
+import argparse
 
-import sys
+PLUGIN_VERSION = 1
+HEARTBEAT = "true"
 
-#if any changes to this plugin kindly increment the plugin version here.
-PLUGIN_VERSION=1
+# -------------------------
+# Metric Units
+# -------------------------
+UNITS = {
+    'hdd.total': 'MB',
+    'hdd.quotaTotal': 'MB',
+    'hdd.used': 'MB',
+    'hdd.usedByData': 'MB',
+    'ram.total': 'MB',
+    'ram.used': 'MB',
+    'ram.quotaUsed': 'MB',
+    'ram.quotaUsedPerNode': 'MB',
+    'ram.quotaTotalPerNode': 'MB'
+}
 
-#Setting this to true will alert you when there is a network problem while posting plugin data to server
-HEARTBEAT="true"
-
-#Config Section
-COUCHBASE_SERVER_HOST='127.0.0.1'
-
-COUCHBASE_SERVER_PORT="8091"
-
-COUCHBASE_SERVER_STATS_URI="pools/default"
-
-COUCHBASE_SERVER_USERNAME=None
-
-COUCHBASE_SERVER_PASSWORD=None
-
-REALM=None
-
-DEFAULT_TIMEOUT=30
-
-METRICS_UNITS = {'hdd.ram':'MB',"hdd.quotaTotal": "MB", "hdd.total": "MB","hdd.used": "MB","hdd.usedByData": "MB","ram.quotaTotalPerNode": "MB","ram.quotaUsed": "MB","ram.quotaUsedPerNode": "MB","ram.total":"MB","ram.used": "MB"}
-
-PYTHON_MAJOR_VERSION = sys.version_info[0]
-
-if PYTHON_MAJOR_VERSION == 3:
-    import urllib
-    import urllib.request as connector
-elif PYTHON_MAJOR_VERSION == 2:
-    import urllib2 as connector
-
-def metricCollector():
-	data = {}
-	
-	#defaults
-	data['plugin_version'] = PLUGIN_VERSION
-
-	data['heartbeat_required']=HEARTBEAT
-
-	data['units']=METRICS_UNITS
-
-	URL = "http://"+COUCHBASE_SERVER_HOST+":"+COUCHBASE_SERVER_PORT+"/"+COUCHBASE_SERVER_STATS_URI
-	
-	try:
-		
-		if COUCHBASE_SERVER_USERNAME and COUCHBASE_SERVER_PASSWORD:
-		   password_mgr = connector.HTTPPasswordMgrWithDefaultRealm()
-		   password_mgr.add_password(REALM, URL, COUCHBASE_SERVER_USERNAME, COUCHBASE_SERVER_PASSWORD)
-		   auth_handler = connector.HTTPBasicAuthHandler(password_mgr)
-		   opener = connector.build_opener(auth_handler)
-		   connector.install_opener(opener)
-		response = connector.urlopen(URL, timeout=10)
-		byte_responseData = response.read()
-		str_responseData = byte_responseData.decode('UTF-8')
-
-		couchserver_dict = json.loads(str_responseData)
-		data['hdd.total']=couchserver_dict['storageTotals']['hdd']['total']
-		data['hdd.quotaTotal']=couchserver_dict['storageTotals']['hdd']['quotaTotal']
-		data['hdd.usedByData']=couchserver_dict['storageTotals']['hdd']['usedByData']
-		data['hdd.used']=couchserver_dict['storageTotals']['hdd']['used']
-		
-		data['ram.used']=couchserver_dict['storageTotals']['ram']['used']
-		data['ram.quotaUsed']=couchserver_dict['storageTotals']['ram']['quotaUsed']
-		data['ram.quotaUsedPerNode']=couchserver_dict['storageTotals']['ram']['quotaUsedPerNode']
-		data['ram.quotaTotalPerNode']=couchserver_dict['storageTotals']['ram']['quotaTotalPerNode']
-		data['ram.total']=couchserver_dict['storageTotals']['ram']['total']
-		for item in data:
-			if '.' in item:
-				data[item]=convertBytesToMB(data[item])	
-		
-	except Exception as e:
-			data['status']=0
-			data['msg']=str(e)
-	
-	return data
-
-def convertBytesToMB(v):
+# -------------------------
+# Helper to convert Bytes to MB
+# -------------------------
+def bytes_to_mb(value):
     try:
-        byte_s=float(v)
-        kilobytes=byte_s/1024;
-        megabytes=kilobytes/1024;
-        v=round(megabytes,2)
+        return round(float(value)/1024/1024,2)
+    except:
+        return 0
+
+# -------------------------
+# Couchbase Metrics
+# -------------------------
+def collect_couchbase(host, port, user, password):
+    data = {}
+    url = f"http://{host}:{port}/pools/default"
+    try:
+        r = requests.get(url, auth=(user,password), timeout=10)
+        pool = r.json()
+        storage = pool.get('storageTotals',{})
+        hdd = storage.get('hdd',{})
+        ram = storage.get('ram',{})
+        data['hdd.total'] = bytes_to_mb(hdd.get('total',0))
+        data['hdd.quotaTotal'] = bytes_to_mb(hdd.get('quotaTotal',0))
+        data['hdd.used'] = bytes_to_mb(hdd.get('used',0))
+        data['hdd.usedByData'] = bytes_to_mb(hdd.get('usedByData',0))
+        data['ram.total'] = bytes_to_mb(ram.get('total',0))
+        data['ram.used'] = bytes_to_mb(ram.get('used',0))
+        data['ram.quotaUsed'] = bytes_to_mb(ram.get('quotaUsed',0))
+        data['ram.quotaUsedPerNode'] = bytes_to_mb(ram.get('quotaUsedPerNode',0))
+        data['ram.quotaTotalPerNode'] = bytes_to_mb(ram.get('quotaTotalPerNode',0))
     except Exception as e:
-        pass
-    return v 
+        data['msg'] = f"Couchbase Error: {str(e)}"
+    return data
+
+# -------------------------
+# Main
+# -------------------------
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--couchbase_host", default="127.0.0.1")
+    parser.add_argument("--couchbase_port", default="8091")
+    parser.add_argument("--couchbase_user", default="admin")
+    parser.add_argument("--couchbase_pass", default="password")
+    args = parser.parse_args()
+
+    output = {
+        "plugin_version": PLUGIN_VERSION,
+        "heartbeat_required": HEARTBEAT,
+        "units": UNITS
+    }
+
+    # Couchbase metrics
+    output.update(collect_couchbase(args.couchbase_host, args.couchbase_port, args.couchbase_user, args.couchbase_pass))
+
+    print(json.dumps(output, indent=4))
 
 if __name__ == "__main__":
-	print(json.dumps(metricCollector(), indent=4, sort_keys=True))
+    main()
