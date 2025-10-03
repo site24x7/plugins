@@ -182,9 +182,9 @@ class MySQLMonitor:
             row = self.cursor.fetchone()
             if row:
                 sessions = {
-                    "total_sessions": int(row.get('total_sessions', 0)),
-                    "active_sessions": int(row.get('active_sessions', 0)),
-                    "idle_sessions": int(row.get('idle_sessions', 0)),
+                    "total_sessions": int(row.get('total_sessions', 0)) if row.get('total_sessions') is not None else 0,
+                    "active_sessions": int(row.get('active_sessions', 0)) if row.get('active_sessions') is not None else 0,
+                    "idle_sessions": int(row.get('idle_sessions', 0)) if row.get('idle_sessions') is not None else 0,
                     "killed_sessions": int(row.get('killed_sessions', 0)) if row.get('killed_sessions') is not None else 0
                 }
         except Exception as e:
@@ -300,8 +300,9 @@ class MySQLMonitor:
             variables = {}
             
         try:
-            uptime_val = status.get("Uptime", "0")
+            
             try:
+                uptime_val = status.get("Uptime", "0")
                 self.maindata["Uptime"] = uptime_val
             except Exception as e:
                 if "msg" not in self.maindata:
@@ -398,9 +399,21 @@ class MySQLMonitor:
                 server_fetch_latency = -1
                 server_insert_latency = -1
 
-            questions = status.get('Questions', -1) if 'Questions' in status else -1
-
-            uptime = status.get('Uptime', -1) if 'Uptime' in status else -1 
+            try:
+                questions = status.get('Questions', -1) if 'Questions' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Questions retrieval error: {}; ".format(str(e))
+                questions = -1
+                
+            try:
+                uptime = status.get('Uptime', -1) if 'Uptime' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Uptime retrieval error: {}; ".format(str(e))
+                uptime = -1
 
             if questions != -1 and uptime != -1:
                 try:
@@ -422,11 +435,29 @@ class MySQLMonitor:
                 self.maindata["msg"] += "Version query error: {}; ".format(str(e))
                 version = "-"
                 
-            connections_attempted = status.get('Connections', -1) if 'Connections' in status else -1
+            try:
+                connections_attempted = status.get('Connections', -1) if 'Connections' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Connections retrieval error: {}; ".format(str(e))
+                connections_attempted = -1
                 
-            table_open_cache_hits = status.get('Table_open_cache_hits', -1) if 'Table_open_cache_hits' in status else -1
+            try:
+                table_open_cache_hits = status.get('Table_open_cache_hits', -1) if 'Table_open_cache_hits' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Table_open_cache_hits retrieval error: {}; ".format(str(e))
+                table_open_cache_hits = -1
                 
-            table_open_cache_misses = status.get('Table_open_cache_misses', -1) if 'Table_open_cache_misses' in status else -1
+            try:
+                table_open_cache_misses = status.get('Table_open_cache_misses', -1) if 'Table_open_cache_misses' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Table_open_cache_misses retrieval error: {}; ".format(str(e))
+                table_open_cache_misses = -1
                 
             if table_open_cache_hits != -1 and table_open_cache_misses != -1:
                 try:
@@ -437,9 +468,21 @@ class MySQLMonitor:
             else:
                 table_open_cache_hit_ratio = -1
                 
-            pages_data = status.get('Innodb_buffer_pool_pages_data', -1) if 'Innodb_buffer_pool_pages_data' in status else -1
+            try:
+                pages_data = status.get('Innodb_buffer_pool_pages_data', -1) if 'Innodb_buffer_pool_pages_data' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Innodb_buffer_pool_pages_data retrieval error: {}; ".format(str(e))
+                pages_data = -1
                 
-            pages_total = status.get('Innodb_buffer_pool_pages_total', -1) if 'Innodb_buffer_pool_pages_total' in status else -1
+            try:
+                pages_total = status.get('Innodb_buffer_pool_pages_total', -1) if 'Innodb_buffer_pool_pages_total' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Innodb_buffer_pool_pages_total retrieval error: {}; ".format(str(e))
+                pages_total = -1
                 
             if pages_data != -1 and pages_total != -1:
                 try:
