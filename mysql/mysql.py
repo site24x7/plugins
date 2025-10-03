@@ -16,151 +16,63 @@ MYSQL_DEFAULTS = {
 }
 METRICS_UNITS = {
     "Uptime": "seconds",
+    "Seconds_behind_master": "seconds",
     "Connection_usage": "%",
     "Open_files_usage": "%",
+    "Table_open_cache_hit_ratio": "%",
+    "Buffer_pool_utilization": "%",
     "Fetch_Latency_ms": "ms",
     "Insert_Latency_ms": "ms",
     "Throughput_qps": "queries/s",
-    "Table_open_cache_hit_ratio": "%",
-    "Buffer_pool_utilization": "%",
-    "Seconds_behind_master": "seconds",
+    "Bytes_received": "bytes",
+    "Bytes_sent": "bytes",
     "Relay_log_space": "bytes",
     "Database": {
         "Db_size_MB": "MB",
         "Index_MB": "MB",
-        "Fetch_Latency_ms": "ms",
-        "Insert_Latency_ms": "ms",
-        "Throughput_qps": "queries/s"
     }
 }
-METRICS_MAPPING = {
-    "Database": [
-        "name", "Db_size_MB", "Index_MB", "Number_of_Tables", "status", "Open_tables",
-        "Fetch_Latency_ms", "Insert_Latency_ms", "Throughput_qps", "Queries_executed", "Errors"
-    ],
-    "Threads": [
-        "Threads_running",
-        "Threads_connected",
-        "Threads_cached",
-        "Threads_created",
-        "Aborted_clients",
-        "Aborted_connects",
-        "Max_used_connections",
-        "Connections"
-    ],
-    "Handler": [
-        "Com_select",
-        "Com_insert",
-        "Com_update",
-        "Com_delete",
-        "Com_replace",
-        "Com_load",
-        "Handler_read_first",
-        "Handler_read_key",
-        "Handler_read_rnd",
-        "Handler_read_rnd_next",
-        "Handler_write",
-        "Handler_update",
-        "Handler_delete",
-        "Handler_commit",
-        "Handler_rollback",
-        "Com_delete_multi",
-        "Com_insert_select",
-        "Com_replace_select",
-        "Com_update_multi"
-    ],
-    "Query and Storage": [
-        "Queries",
-        "Questions",
-        "Slow_queries",
-        "Opened_tables",
-        "Opened_files",
-        "Binlog_cache_use",
-        "Binlog_cache_disk_use",
-        "Bytes_received",
-        "Bytes_sent",
-        "Com_commit",
-        "Com_rollback",
-        "Table_locks_waited",
-        "Table_locks_immediate",
-        "Created_tmp_files",
-        "Created_tmp_tables",
-        "Created_tmp_disk_tables",
-        "Max_used_connections",
-        "Connection_usage",
-        "Open_files_usage",
-        "Innodb_buffer_pool_pages_data",
-        "Innodb_buffer_pool_pages_dirty",
-        "Innodb_buffer_pool_pages_free",
-        "Innodb_rows_deleted",
-        "Innodb_rows_inserted",
-        "Innodb_rows_updated",
-        "Slave_running",
-        "Slave_sql_running",
-        "Slave_io_running",
-        "Seconds_behind_master",
-        "Relay_log_space",
-        "Master_host",
-        "Master_user",
-        "Master_retry_count",
-        "Skip_counter",
-        "open_files_limit",
-        "Open_files",
-        "Key_reads",
-        "Key_writes",
-        "Key_blocks_used",
-        "Key_blocks_unused",
-        "Key_blocks_not_flushed",
-        "Innodb_buffer_pool_pages_total",
-        "Innodb_pages_read",
-        "Innodb_pages_written",
-        "Innodb_log_writes",
-        "Innodb_log_waits",
-        "Innodb_buffer_pool_reads",
-        "Innodb_buffer_pool_write_requests",
-        "Innodb_data_reads",
-        "Innodb_data_writes",
-        "Innodb_pages_created",
-        "Innodb_row_lock_time_avg",
-        "Innodb_row_lock_time_max",
-        "Innodb_row_lock_waits",
-        "Innodb_buffer_pool_wait_free",
-        "Innodb_buffer_pool_pages_flushed",
-        "Innodb_buffer_pool_read_ahead_evicted",
-        "Innodb_buffer_pool_read_ahead",
-        "Innodb_buffer_pool_read_ahead_rnd",
-        "Innodb_buffer_pool_read_requests",
-        "Innodb_data_fsyncs",
-        "Innodb_data_pending_fsyncs",
-        "Innodb_data_pending_reads",
-        "Innodb_data_pending_writes",
-        "Innodb_log_write_requests",
-        "Innodb_os_log_fsyncs",
-        "Innodb_os_log_pending_fsyncs",
-        "Innodb_os_log_pending_writes",
-        "Innodb_os_log_written",
-        "Innodb_rows_read",
-        "Connection_errors_max_connections",
-        "max_connections",
-        "Select_full_join",
-        "Select_full_range_join",
-        "Select_range",
-        "Select_range_check",
-        "Select_scan",
-        "Max_execution_time_exceeded",
-        "Open_files",
-        "Table_open_cache_hits",
-        "Table_open_cache_misses",
-        "Table_open_cache_overflows",
-        "Prepared_stmt_count",
-        "Sort_merge_passes",
-        "Sort_range",
-        "Sort_rows",
-        "Sort_scan",
-        "Key_read_requests",
-        "Key_write_requests"
-    ]
-}
+METRICS_TO_COLLECT = [
+    "Threads_running", "Threads_connected", "Threads_cached", "Threads_created",
+    "Aborted_clients", "Aborted_connects", "Max_used_connections", "Connections",
+    
+    "Com_select", "Com_insert", "Com_update", "Com_delete", "Com_replace", "Com_load",
+    "Handler_read_first", "Handler_read_key", "Handler_read_rnd", "Handler_read_rnd_next",
+    "Handler_write", "Handler_update", "Handler_delete", "Handler_commit", "Handler_rollback",
+    "Com_delete_multi", "Com_insert_select", "Com_replace_select", "Com_update_multi",
+    
+    "Queries", "Questions", "Slow_queries", "Opened_tables", "Opened_files",
+    "Binlog_cache_use", "Binlog_cache_disk_use", "Bytes_received", "Bytes_sent",
+    "Com_commit", "Com_rollback", "Table_locks_waited", "Table_locks_immediate",
+    "Created_tmp_files", "Created_tmp_tables", "Created_tmp_disk_tables",
+    "Connection_usage", "Open_files_usage", "Fetch_Latency_ms", "Insert_Latency_ms",
+    "Throughput_qps", "Queries_executed",
+    
+    "Innodb_buffer_pool_pages_data", "Innodb_buffer_pool_pages_dirty", "Innodb_buffer_pool_pages_free",
+    "Innodb_rows_deleted", "Innodb_rows_inserted", "Innodb_rows_updated",
+    "Innodb_buffer_pool_pages_total", "Innodb_pages_read", "Innodb_pages_written",
+    "Innodb_log_writes", "Innodb_log_waits", "Innodb_buffer_pool_reads",
+    "Innodb_buffer_pool_write_requests", "Innodb_data_reads", "Innodb_data_writes",
+    "Innodb_pages_created", "Innodb_row_lock_time_avg", "Innodb_row_lock_time_max",
+    "Innodb_row_lock_waits", "Innodb_buffer_pool_wait_free", "Innodb_buffer_pool_pages_flushed",
+    "Innodb_buffer_pool_read_ahead_evicted", "Innodb_buffer_pool_read_ahead",
+    "Innodb_buffer_pool_read_ahead_rnd", "Innodb_buffer_pool_read_requests",
+    "Innodb_data_fsyncs", "Innodb_data_pending_fsyncs", "Innodb_data_pending_reads",
+    "Innodb_data_pending_writes", "Innodb_log_write_requests", "Innodb_os_log_fsyncs",
+    "Innodb_os_log_pending_fsyncs", "Innodb_os_log_pending_writes", "Innodb_os_log_written",
+    "Innodb_rows_read",
+    
+    "Slave_running", "Slave_sql_running", "Slave_io_running", "Seconds_behind_master",
+    "Relay_log_space", "Master_host", "Master_user", "Master_retry_count", "Skip_counter",
+    
+    "open_files_limit", "Open_files", "Key_reads", "Key_writes", "Key_blocks_used",
+    "Key_blocks_unused", "Key_blocks_not_flushed", "Connection_errors_max_connections",
+    "max_connections", "Select_full_join", "Select_full_range_join", "Select_range",
+    "Select_range_check", "Select_scan", "Max_execution_time_exceeded",
+    "Table_open_cache_hits", "Table_open_cache_misses", "Table_open_cache_overflows",
+    "Prepared_stmt_count", "Sort_merge_passes", "Sort_range", "Sort_rows", "Sort_scan",
+    "Key_read_requests", "Key_write_requests"
+]
 
 
 class MySQLMonitor:
@@ -188,13 +100,6 @@ class MySQLMonitor:
         self.maindata['applog'] = applog
         self.connection = None
         self.cursor = None
-        
-    def to_str(self, val):
-        try:
-            f = float(val)
-            return "{:.2f}".format(f)
-        except Exception:
-            return str(val)
         
     def connect(self):
         try:
@@ -242,188 +147,13 @@ class MySQLMonitor:
                 self.maindata["msg"] = ""
             self.maindata["msg"] += "Database size query error: {}; ".format(str(e))
             db_size_info = {}
-        
-        fetch_latency = 0.0
-        try:
-            self.cursor.execute("""
-                SELECT ROUND(IFNULL(AVG_TIMER_WAIT/1000000000, 0)*1000, 2) AS avg_fetch_latency_ms
-                FROM performance_schema.events_statements_summary_by_digest
-                WHERE digest_text LIKE 'select%%' AND SCHEMA_NAME IS NOT NULL
-                LIMIT 1
-            """)
-            r = self.cursor.fetchone()
-            if r and "avg_fetch_latency_ms" in r:
-                fetch_latency = float(r["avg_fetch_latency_ms"])
-        except Exception as e:
-            if "msg" not in self.maindata:
-                self.maindata["msg"] = ""
-            self.maindata["msg"] += "Fetch latency query error: {}; ".format(str(e))
-            fetch_latency = -1
 
-        insert_latency = 0.0
-        try:
-            self.cursor.execute("""
-                SELECT ROUND(IFNULL(AVG_TIMER_WAIT/1000000000, 0)*1000, 2) AS avg_insert_latency_ms
-                FROM performance_schema.events_statements_summary_by_digest
-                WHERE digest_text LIKE 'insert%%' AND SCHEMA_NAME IS NOT NULL
-                LIMIT 1
-            """)
-            r = self.cursor.fetchone()
-            if r and "avg_insert_latency_ms" in r:
-                insert_latency = float(r["avg_insert_latency_ms"])
-        except Exception as e:
-            if "msg" not in self.maindata:
-                self.maindata["msg"] = ""
-            self.maindata["msg"] += "Insert latency query error: {}; ".format(str(e))
-            insert_latency = -1
-
-        questions = 0
-        try:
-            self.cursor.execute("SHOW GLOBAL STATUS LIKE 'Questions'")
-            questions_row = self.cursor.fetchone()
-            questions = int(questions_row['Value']) if questions_row else 0
-        except Exception as e:
-            if "msg" not in self.maindata:
-                self.maindata["msg"] = ""
-            self.maindata["msg"] += "Questions query error: {}; ".format(str(e))
-            questions = -1
-
-        uptime = 1
-        try:
-            self.cursor.execute("SHOW GLOBAL STATUS LIKE 'Uptime'")
-            uptime_row = self.cursor.fetchone()
-            uptime = int(uptime_row['Value']) if uptime_row else 1
-        except Exception as e:
-            if "msg" not in self.maindata:
-                self.maindata["msg"] = ""
-            self.maindata["msg"] += "Uptime query error: {}; ".format(str(e))
-            uptime = -1 
-
-        throughput_qps = 0.0
-        if questions > 0 and uptime > 0:
-            throughput_qps = round(questions / uptime, 2)
-        elif questions == -1 or uptime == -1:
-            throughput_qps = -1
-        queries_executed = questions
-        
-        errors = 0
-        try:
-            self.cursor.execute("SHOW GLOBAL STATUS LIKE 'Errors'")
-            errors_row = self.cursor.fetchone()
-            errors = int(errors_row['Value']) if errors_row else 0
-        except Exception as e:
-            if "msg" not in self.maindata:
-                self.maindata["msg"] = ""
-            self.maindata["msg"] += "Errors query error: {}; ".format(str(e))
-            errors = -1
-            
-        version = ""
-        try:
-            self.cursor.execute("SELECT VERSION() AS version")
-            version_row = self.cursor.fetchone()
-            version = version_row.get("version", "") if version_row else ""
-        except Exception as e:
-            if "msg" not in self.maindata:
-                self.maindata["msg"] = ""
-            self.maindata["msg"] += "Version query error: {}; ".format(str(e))
-            version = "-"
-            
-        connections_attempted = 0
-        try:
-            self.cursor.execute("SHOW GLOBAL STATUS LIKE 'Connections'")
-            connections_attempted_row = self.cursor.fetchone()
-            connections_attempted = int(connections_attempted_row['Value']) if connections_attempted_row else 0
-        except Exception as e:
-            if "msg" not in self.maindata:
-                self.maindata["msg"] = ""
-            self.maindata["msg"] += "Connections query error: {}; ".format(str(e))
-            connections_attempted = -1
-            
-        threads_connected = 0
-        try:
-            self.cursor.execute("SHOW GLOBAL STATUS LIKE 'Threads_connected'")
-            threads_connected_row = self.cursor.fetchone()
-            threads_connected = int(threads_connected_row['Value']) if threads_connected_row else 0
-        except Exception as e:
-            if "msg" not in self.maindata:
-                self.maindata["msg"] = ""
-            self.maindata["msg"] += "Threads_connected query error: {}; ".format(str(e))
-            threads_connected = -1
-            
-        table_open_cache_hits = 0
-        try:
-            self.cursor.execute("SHOW GLOBAL STATUS LIKE 'Table_open_cache_hits'")
-            table_open_cache_hits_row = self.cursor.fetchone()
-            table_open_cache_hits = int(table_open_cache_hits_row['Value']) if table_open_cache_hits_row else 0
-        except Exception as e:
-            if "msg" not in self.maindata:
-                self.maindata["msg"] = ""
-            self.maindata["msg"] += "Table_open_cache_hits query error: {}; ".format(str(e))
-            table_open_cache_hits = -1
-            
-        table_open_cache_misses = 0
-        try:
-            self.cursor.execute("SHOW GLOBAL STATUS LIKE 'Table_open_cache_misses'")
-            table_open_cache_misses_row = self.cursor.fetchone()
-            table_open_cache_misses = int(table_open_cache_misses_row['Value']) if table_open_cache_misses_row else 0
-        except Exception as e:
-            if "msg" not in self.maindata:
-                self.maindata["msg"] = ""
-            self.maindata["msg"] += "Table_open_cache_misses query error: {}; ".format(str(e))
-            table_open_cache_misses = -1
-            
-        table_open_cache_hit_ratio = 0.0
-        if table_open_cache_hits >= 0 and table_open_cache_misses >= 0:
-            total = table_open_cache_hits + table_open_cache_misses
-            if total > 0:
-                table_open_cache_hit_ratio = round((table_open_cache_hits / total) * 100, 2)
-        else:
-            table_open_cache_hit_ratio = -1
-            
-        pages_data = 0
-        try:
-            self.cursor.execute("SHOW GLOBAL STATUS LIKE 'Innodb_buffer_pool_pages_data'")
-            pages_data_row = self.cursor.fetchone()
-            pages_data = int(pages_data_row['Value']) if pages_data_row else 0
-        except Exception as e:
-            if "msg" not in self.maindata:
-                self.maindata["msg"] = ""
-            self.maindata["msg"] += "Innodb_buffer_pool_pages_data query error: {}; ".format(str(e))
-            pages_data = -1
-            
-        pages_total = 0
-        try:
-            self.cursor.execute("SHOW GLOBAL STATUS LIKE 'Innodb_buffer_pool_pages_total'")
-            pages_total_row = self.cursor.fetchone()
-            pages_total = int(pages_total_row['Value']) if pages_total_row else 0
-        except Exception as e:
-            if "msg" not in self.maindata:
-                self.maindata["msg"] = ""
-            self.maindata["msg"] += "Innodb_buffer_pool_pages_total query error: {}; ".format(str(e))
-            pages_total = -1
-            
-        buffer_pool_utilization = 0.0
-        if pages_data >= 0 and pages_total > 0:
-            buffer_pool_utilization = round((pages_data / pages_total) * 100, 2)
-        elif pages_data == -1 or pages_total == -1:
-            buffer_pool_utilization = -1
         for dbname, dbdata in db_size_info.items():
             rec = {
                 "name": dbname,
-                "Db_size_MB": self.to_str(dbdata.get("Db_size_MB", 0)),
-                "Index_MB": self.to_str(dbdata.get("Index_MB", 0)),
-                "Number_of_Tables": self.to_str(dbdata.get("Number_of_Tables", 0)),
-                "Fetch_Latency_ms": self.to_str(fetch_latency),
-                "Insert_Latency_ms": self.to_str(insert_latency),
-                "Throughput_qps": self.to_str(throughput_qps),
-                "Queries_executed": str(queries_executed) if queries_executed != -1 else "-1",
-                "Errors": str(errors) if errors != -1 else "-1",
-                
-                # "Version": version,
-                # "Connections_attempted": str(connections_attempted),
-                # "Threads_connected": str(threads_connected),
-                # "Table_open_cache_hit_ratio": str(table_open_cache_hit_ratio),
-                # "Buffer_pool_utilization": str(buffer_pool_utilization)
+                "Db_size_MB": str(dbdata.get("Db_size_MB", 0)),
+                "Index_MB": str(dbdata.get("Index_MB", 0)),
+                "Number_of_Tables": str(dbdata.get("Number_of_Tables", 0)),
             }
             dbs.append(rec)
         return dbs
@@ -452,9 +182,9 @@ class MySQLMonitor:
             row = self.cursor.fetchone()
             if row:
                 sessions = {
-                    "total_sessions": int(row.get('total_sessions', 0)),
-                    "active_sessions": int(row.get('active_sessions', 0)),
-                    "idle_sessions": int(row.get('idle_sessions', 0)),
+                    "total_sessions": int(row.get('total_sessions', 0)) if row.get('total_sessions') is not None else 0,
+                    "active_sessions": int(row.get('active_sessions', 0)) if row.get('active_sessions') is not None else 0,
+                    "idle_sessions": int(row.get('idle_sessions', 0)) if row.get('idle_sessions') is not None else 0,
                     "killed_sessions": int(row.get('killed_sessions', 0)) if row.get('killed_sessions') is not None else 0
                 }
         except Exception as e:
@@ -501,37 +231,34 @@ class MySQLMonitor:
                         if value is not None:
                             if metric_name in ["Slave_running", "Slave_sql_running", "Slave_io_running"]:
                                 if str(value).upper() == "YES":
-                                    replication_data[metric_name] = "1"  # True
+                                    replication_data[metric_name] = "1" 
                                 elif str(value).upper() == "NO":
-                                    replication_data[metric_name] = "0"  # False
+                                    replication_data[metric_name] = "0"  
                                 else:
                                     replication_data[metric_name] = str(value)
                             else:
-                                replication_data[metric_name] = self.to_str(value)
+                                replication_data[metric_name] = value
                         else:
-                            # Return appropriate default based on metric type
                             if metric_name in ["Master_host", "Master_user"]:
-                                replication_data[metric_name] = "-"  # String metrics
+                                replication_data[metric_name] = "-" 
                             else:
-                                replication_data[metric_name] = "-1"  # Numeric metrics
+                                replication_data[metric_name] = "-1"  
                     except Exception as e:
                         if "msg" not in self.maindata:
                             self.maindata["msg"] = ""
                         self.maindata["msg"] += "Replication metric {} error: {}; ".format(metric_name, str(e))
-                        # Return appropriate error value based on metric type
                         if metric_name in ["Master_host", "Master_user"]:
-                            replication_data[metric_name] = "-"  # String metrics
+                            replication_data[metric_name] = "-"  
                         else:
-                            replication_data[metric_name] = "-1"  # Numeric metrics
+                            replication_data[metric_name] = "-1"
             else:
                 for metric_name in ["Slave_running", "Slave_sql_running", "Slave_io_running", 
                                   "Seconds_behind_master", "Relay_log_space", "Master_host", 
                                   "Master_user", "Master_retry_count", "Skip_counter"]:
-                    # Return appropriate default based on metric type
                     if metric_name in ["Master_host", "Master_user"]:
-                        replication_data[metric_name] = "-"  # String metrics
+                        replication_data[metric_name] = "-"  
                     else:
-                        replication_data[metric_name] = "-1"  # Numeric metrics
+                        replication_data[metric_name] = "-1"
                     
         except Exception as e:
             if "msg" not in self.maindata:
@@ -540,11 +267,10 @@ class MySQLMonitor:
             for metric_name in ["Slave_running", "Slave_sql_running", "Slave_io_running", 
                               "Seconds_behind_master", "Relay_log_space", "Master_host", 
                               "Master_user", "Master_retry_count", "Skip_counter"]:
-                # Return appropriate error value based on metric type
                 if metric_name in ["Master_host", "Master_user"]:
-                    replication_data[metric_name] = "-"  # String metrics
+                    replication_data[metric_name] = "-"  
                 else:
-                    replication_data[metric_name] = "-1"  # Numeric metrics
+                    replication_data[metric_name] = "-1"  
         
         return replication_data
 
@@ -574,9 +300,10 @@ class MySQLMonitor:
             variables = {}
             
         try:
-            uptime_val = status.get("Uptime", "0")
+            
             try:
-                self.maindata["Uptime"] = self.to_str(uptime_val)
+                uptime_val = status.get("Uptime", "0")
+                self.maindata["Uptime"] = uptime_val
             except Exception as e:
                 if "msg" not in self.maindata:
                     self.maindata["msg"] = ""
@@ -591,38 +318,31 @@ class MySQLMonitor:
                 self.maindata["msg"] += "Replication data collection error: {}; ".format(str(e))
                 replication_data = {}
             
-            replication_metrics = {
-                "Slave_running", "Slave_sql_running", "Slave_io_running", 
-                "Seconds_behind_master", "Relay_log_space", "Master_host", 
-                "Master_user", "Master_retry_count", "Skip_counter"
-            }
-            
-            for tab_name in ["Threads", "Handler", "Query and Storage"]:
-                for metric in METRICS_MAPPING[tab_name]:
-                    try:
-                        if metric in replication_metrics:
-                            val = replication_data.get(metric, "-")
-                            display_name = metric.replace("Com_", "Command_") if metric.startswith("Com_") else metric
-                            self.maindata[display_name] = val
-                        else:
-                            val = status.get(metric) or variables.get(metric)
-                            if val is not None:
-                                display_name = metric.replace("Com_", "Command_") if metric.startswith("Com_") else metric
-                                self.maindata[display_name] = self.to_str(val)
-                            else:
-                                display_name = metric.replace("Com_", "Command_") if metric.startswith("Com_") else metric
-                                # Most metrics are numeric, return -1 for missing values
-                                self.maindata[display_name] = "-1"
-                    except Exception as e:
-                        if "msg" not in self.maindata:
-                            self.maindata["msg"] = ""
-                        self.maindata["msg"] += "Metric {} collection error: {}; ".format(metric, str(e))
+            for metric in METRICS_TO_COLLECT:
+                try:
+                    val = None
+                    if metric in replication_data:
+                        val = replication_data[metric]
+                    elif metric in status:
+                        val = status[metric]
+                    elif metric in variables:
+                        val = variables[metric]
+                    
+                    if val is not None:
                         display_name = metric.replace("Com_", "Command_") if metric.startswith("Com_") else metric
-                        # Most metrics are numeric, return -1 for errors
+                        self.maindata[display_name] = val
+                    else:
+                        display_name = metric.replace("Com_", "Command_") if metric.startswith("Com_") else metric
                         self.maindata[display_name] = "-1"
+                except Exception as e:
+                    if "msg" not in self.maindata:
+                        self.maindata["msg"] = ""
+                    self.maindata["msg"] += "Metric {} collection error: {}; ".format(metric, str(e))
+                    display_name = metric.replace("Com_", "Command_") if metric.startswith("Com_") else metric
+                    self.maindata[display_name] = "-1"
             try:
                 max_used = status.get("Max_used_connections")
-                self.maindata["Max_used_connections"] = self.to_str(int(max_used)) if max_used else "0.00"
+                self.maindata["Max_used_connections"] = max_used if max_used else "0"
             except Exception as e:
                 if "msg" not in self.maindata:
                     self.maindata["msg"] = ""
@@ -631,7 +351,7 @@ class MySQLMonitor:
             try:
                 max_conn = int(variables.get("max_connections", "0"))
                 threads = int(status.get("Threads_running", "0"))
-                self.maindata["Connection_usage"] = self.to_str(round(threads / max_conn * 100, 2)) if max_conn else "0.00"
+                self.maindata["Connection_usage"] = "{:.2f}".format(round(threads / max_conn * 100, 2)) if max_conn else "0.00"
             except Exception as e:
                 if "msg" not in self.maindata:
                     self.maindata["msg"] = ""
@@ -641,7 +361,7 @@ class MySQLMonitor:
             try:
                 open_files = int(status.get("Open_files", "0"))
                 open_files_limit = int(variables.get("open_files_limit", "0"))
-                self.maindata["Open_files_usage"] = self.to_str(round(open_files / open_files_limit * 100, 2)) if open_files_limit else "0.00"
+                self.maindata["Open_files_usage"] = "{:.2f}".format(round(open_files / open_files_limit * 100, 2)) if open_files_limit else "0.00"
             except Exception as e:
                 if "msg" not in self.maindata:
                     self.maindata["msg"] = ""
@@ -654,6 +374,133 @@ class MySQLMonitor:
                     self.maindata["msg"] = ""
                 self.maindata["msg"] += "Database collection error: {}; ".format(str(e))
                 self.maindata["Database"] = []
+
+            server_fetch_latency = 0.0
+            server_insert_latency = 0.0
+            try:
+                self.cursor.execute("""
+                    SELECT 
+                        ROUND(IFNULL(AVG(CASE WHEN digest_text LIKE 'select%%' THEN AVG_TIMER_WAIT/1000000000 END), 0)*1000, 2) AS avg_fetch_latency_ms,
+                        ROUND(IFNULL(AVG(CASE WHEN digest_text LIKE 'insert%%' THEN AVG_TIMER_WAIT/1000000000 END), 0)*1000, 2) AS avg_insert_latency_ms
+                    FROM performance_schema.events_statements_summary_by_digest
+                    WHERE (digest_text LIKE 'select%%' OR digest_text LIKE 'insert%%') 
+                    AND SCHEMA_NAME IS NOT NULL
+                """)
+                r = self.cursor.fetchone()
+                if r:
+                    if "avg_fetch_latency_ms" in r and r["avg_fetch_latency_ms"] is not None:
+                        server_fetch_latency = float(r["avg_fetch_latency_ms"])
+                    if "avg_insert_latency_ms" in r and r["avg_insert_latency_ms"] is not None:
+                        server_insert_latency = float(r["avg_insert_latency_ms"])
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Server latency query error: {}; ".format(str(e))
+                server_fetch_latency = -1
+                server_insert_latency = -1
+
+            try:
+                questions = status.get('Questions', -1) if 'Questions' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Questions retrieval error: {}; ".format(str(e))
+                questions = -1
+                
+            try:
+                uptime = status.get('Uptime', -1) if 'Uptime' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Uptime retrieval error: {}; ".format(str(e))
+                uptime = -1
+
+            if questions != -1 and uptime != -1:
+                try:
+                    throughput_qps = round(float(questions) / float(uptime), 2)
+                except:
+                    throughput_qps = -1
+            else:
+                throughput_qps = -1
+            queries_executed = questions
+                
+            version = ""
+            try:
+                self.cursor.execute("SELECT VERSION() AS version")
+                version_row = self.cursor.fetchone()
+                version = version_row.get("version", "") if version_row else ""
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Version query error: {}; ".format(str(e))
+                version = "-"
+                
+            try:
+                connections_attempted = status.get('Connections', -1) if 'Connections' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Connections retrieval error: {}; ".format(str(e))
+                connections_attempted = -1
+                
+            try:
+                table_open_cache_hits = status.get('Table_open_cache_hits', -1) if 'Table_open_cache_hits' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Table_open_cache_hits retrieval error: {}; ".format(str(e))
+                table_open_cache_hits = -1
+                
+            try:
+                table_open_cache_misses = status.get('Table_open_cache_misses', -1) if 'Table_open_cache_misses' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Table_open_cache_misses retrieval error: {}; ".format(str(e))
+                table_open_cache_misses = -1
+                
+            if table_open_cache_hits != -1 and table_open_cache_misses != -1:
+                try:
+                    total = float(table_open_cache_hits) + float(table_open_cache_misses)
+                    table_open_cache_hit_ratio = round((float(table_open_cache_hits) / total) * 100, 2)
+                except:
+                    table_open_cache_hit_ratio = -1
+            else:
+                table_open_cache_hit_ratio = -1
+                
+            try:
+                pages_data = status.get('Innodb_buffer_pool_pages_data', -1) if 'Innodb_buffer_pool_pages_data' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Innodb_buffer_pool_pages_data retrieval error: {}; ".format(str(e))
+                pages_data = -1
+                
+            try:
+                pages_total = status.get('Innodb_buffer_pool_pages_total', -1) if 'Innodb_buffer_pool_pages_total' in status else -1
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Innodb_buffer_pool_pages_total retrieval error: {}; ".format(str(e))
+                pages_total = -1
+                
+            if pages_data != -1 and pages_total != -1:
+                try:
+                    buffer_pool_utilization = round((float(pages_data) / float(pages_total)) * 100, 2)
+                except:
+                    buffer_pool_utilization = -1
+            else:
+                buffer_pool_utilization = -1
+
+            self.maindata["Fetch_Latency_ms"] = server_fetch_latency if server_fetch_latency != -1 else -1
+            self.maindata["Insert_Latency_ms"] = server_insert_latency if server_insert_latency != -1 else -1
+            self.maindata["Throughput_qps"] = throughput_qps if throughput_qps != -1 else -1
+            self.maindata["Queries_executed"] = queries_executed if queries_executed != -1 else -1
+            
+            self.maindata["MySQL_Version"] = version if version != "-" else "-"
+            self.maindata["Connections_attempted"] = connections_attempted if connections_attempted != -1 else -1
+            self.maindata["Table_open_cache_hit_ratio"] = table_open_cache_hit_ratio if table_open_cache_hit_ratio != -1 else -1
+            self.maindata["Buffer_pool_utilization"] = buffer_pool_utilization if buffer_pool_utilization != -1 else -1
                 
             try:
                 session_stats = self.collect_sessions()
@@ -726,6 +573,10 @@ class MySQLMonitor:
                         "Created_tmp_disk_tables",
                         "Connection_usage",
                         "Open_files_usage",
+                        "Fetch_Latency_ms",
+                        "Insert_Latency_ms",
+                        "Throughput_qps", 
+                        "Queries_executed",
                         "Innodb_buffer_pool_pages_data",
                         "Innodb_buffer_pool_pages_dirty",
                         "Innodb_buffer_pool_pages_free",
