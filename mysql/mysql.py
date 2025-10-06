@@ -274,30 +274,34 @@ class MySQLMonitor:
         
         return replication_data
 
-    def collect_metrics(self):
-        if not self.connect():
-            return self.maindata
-            
-        status = {}
-        variables = {}
-        
+    def get_mysql_status(self):
         try:
             self.cursor.execute("SHOW GLOBAL STATUS")
             status = {row["Variable_name"]: row["Value"] for row in self.cursor.fetchall()}
+            return status
         except Exception as e:
             if "msg" not in self.maindata:
                 self.maindata["msg"] = ""
             self.maindata["msg"] += "SHOW GLOBAL STATUS error: {}; ".format(str(e))
-            status = {}
-            
+            return {}
+
+    def get_mysql_variables(self):
         try:
             self.cursor.execute("SHOW GLOBAL VARIABLES")
             variables = {row["Variable_name"]: row["Value"] for row in self.cursor.fetchall()}
+            return variables
         except Exception as e:
             if "msg" not in self.maindata:
                 self.maindata["msg"] = ""
             self.maindata["msg"] += "SHOW GLOBAL VARIABLES error: {}; ".format(str(e))
-            variables = {}
+            return {}
+
+    def collect_metrics(self):
+        if not self.connect():
+            return self.maindata
+            
+        status = self.get_mysql_status()
+        variables = self.get_mysql_variables()
             
         try:
             
@@ -492,15 +496,15 @@ class MySQLMonitor:
             else:
                 buffer_pool_utilization = -1
 
-            self.maindata["Fetch_Latency_ms"] = server_fetch_latency if server_fetch_latency != -1 else -1
-            self.maindata["Insert_Latency_ms"] = server_insert_latency if server_insert_latency != -1 else -1
-            self.maindata["Throughput_qps"] = throughput_qps if throughput_qps != -1 else -1
-            self.maindata["Queries_executed"] = queries_executed if queries_executed != -1 else -1
+            self.maindata["Fetch_Latency_ms"] = server_fetch_latency
+            self.maindata["Insert_Latency_ms"] = server_insert_latency
+            self.maindata["Throughput_qps"] = throughput_qps
+            self.maindata["Queries_executed"] = queries_executed
             
-            self.maindata["MySQL_Version"] = version if version != "-" else "-"
-            self.maindata["Connections_attempted"] = connections_attempted if connections_attempted != -1 else -1
-            self.maindata["Table_open_cache_hit_ratio"] = table_open_cache_hit_ratio if table_open_cache_hit_ratio != -1 else -1
-            self.maindata["Buffer_pool_utilization"] = buffer_pool_utilization if buffer_pool_utilization != -1 else -1
+            self.maindata["MySQL_Version"] = version
+            self.maindata["Connections_attempted"] = connections_attempted
+            self.maindata["Table_open_cache_hit_ratio"] = table_open_cache_hit_ratio
+            self.maindata["Buffer_pool_utilization"] = buffer_pool_utilization
                 
             try:
                 session_stats = self.collect_sessions()
