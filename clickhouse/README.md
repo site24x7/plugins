@@ -1,17 +1,33 @@
 # clickhouse monitoring
 
-## Standard Installation
-
-If you're not using Linux servers or want to install the plugin manually, follow the steps below.
-
 ### Prerequisites
-- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) on the server where you plan to run the plugin.
-- Python 3.7 or higher must be installed.
+- Download and install the latest version of the Site24x7 agent on the server where you plan to run the plugin.
+- Python 3 must be installed.
 - Install the **clickhouse-driver** module for Python:
 
 ```bash
 pip install clickhouse-driver
 ```
+
+### Create a Dedicated User for Monitoring
+
+#### Steps to Create and Grant Permissions
+
+Log in to ClickHouse as an admin or a user with sufficient privileges:
+
+   ```bash
+   clickhouse-client -u default --password
+```
+Run the following SQL commands to create a new user and grant the required privileges:
+
+```sql
+-- Create a new user for monitoring
+CREATE USER <username> IDENTIFIED BY 'your_password';
+
+-- Grant SELECT privileges on system tables (read-only access)
+GRANT SELECT ON system.* TO <username>;
+```
+
 ## Installation
 
 - Create a directory named `clickhouse`:
@@ -22,29 +38,31 @@ cd clickhouse/
 ```
 ### Download Plugin Script
 
-Download the plugin `clickhouse.py` and place it under the `clickhouse` directory:
+Download the plugin `clickhouse.py`, `clickhouse.cfg` and place it under the `clickhouse` directory:
 
 ```bash
-wget https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/Clickhouse Monitoring/clickhouse.py
+wget https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/clickhouse/clickhouse.py
 sed -i "1s|^.*|#! $(which python3)|" clickhouse.py
+
+wget https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/clickhouse/clickhouse.cfg
 ```
 ### Execute Plugin
 
 Run the below command with appropriate arguments to check for valid JSON output:
 
 ```bash
-python3 clickhouse.py --hostname "localhost" --port "9000" --username "default" --password "" --database "default"
+python3 clickhouse.py --host "localhost" --port "9000" --username "default" --password "" --database "default"
 ```
 ### Move Plugin to Agent Directory
 
-#### Linux
+#### For Linux:
 
 Place the `clickhouse` folder under the Site24x7 Linux Agent plugin directory:
 
 ```bash
 mv clickhouse /opt/site24x7/monagent/plugins
 ```
-#### Windows
+#### For Windows:
 
 Since it’s a Python plugin, follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers) to run Python plugins on Windows. 
 
@@ -54,31 +72,7 @@ Move the `clickhouse` folder into the Site24x7 Windows Agent plugin directory:
 C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
 ```
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-### Create a Dedicated User for Monitoring
 
-For security and controlled access, it is recommended to create a dedicated **read-only user** in ClickHouse for Site24x7 monitoring.
-
-#### Steps to Create and Grant Permissions
-
-1. **Log in to ClickHouse** as an admin or a user with sufficient privileges:
-
-   ```bash
-   clickhouse-client -u default --password
-Run the following SQL commands to create a new user and grant the required privileges:
-
-```sql
--- Create a new user for monitoring
-CREATE USER <username> IDENTIFIED BY 'your_password';
-
--- Grant SELECT privileges on system tables (read-only access)
-GRANT SELECT ON system.* TO <username>;
-
-
-Use this user’s credentials when running the plugin:
-
-```bash
-python3 clickhouse.py --hostname "localhost" --port "9000" --username "USERNAME" --password "your_password" --database "default"
-```
 ## Metrics Captured
 
 Name                                | Description
