@@ -129,7 +129,7 @@ def main():
         parser.add_argument("--host", default="localhost")
         parser.add_argument("--port", type=int, default=9000)
         parser.add_argument("--user", default="default")
-        parser.add_argument("--password", default="Manish@123")
+        parser.add_argument("--password", default="default")
         parser.add_argument("--database", default="CUSTOM")
         args = parser.parse_args()
 
