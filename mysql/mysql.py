@@ -132,6 +132,8 @@ class MySQLMonitor:
             pass
 
     def collect_database(self):
+        self.maindata["Database"] = []
+        
         dbs = []
         db_size_info = {}
         
@@ -161,15 +163,15 @@ class MySQLMonitor:
                 "Number_of_Tables": str(dbdata.get("Number_of_Tables", 0)),
             }
             dbs.append(rec)
-        return dbs
+        
+        self.maindata["Database"] = dbs
     
     def collect_sessions(self):
-        sessions = {
-            "total_sessions": -1,
-            "active_sessions": -1,
-            "idle_sessions": -1,
-            "killed_sessions": -1
-        }
+
+        self.maindata["total_sessions"] = -1
+        self.maindata["active_sessions"] = -1
+        self.maindata["idle_sessions"] = -1
+        self.maindata["killed_sessions"] = -1
         
         try:
             self.cursor.execute("""
@@ -186,18 +188,14 @@ class MySQLMonitor:
             """)
             row = self.cursor.fetchone()
             if row:
-                sessions = {
-                    "total_sessions": int(row.get('total_sessions', 0)) if row.get('total_sessions') is not None else 0,
-                    "active_sessions": int(row.get('active_sessions', 0)) if row.get('active_sessions') is not None else 0,
-                    "idle_sessions": int(row.get('idle_sessions', 0)) if row.get('idle_sessions') is not None else 0,
-                    "killed_sessions": int(row.get('killed_sessions', 0)) if row.get('killed_sessions') is not None else 0
-                }
+                self.maindata["total_sessions"] = int(row.get('total_sessions', 0)) if row.get('total_sessions') is not None else 0
+                self.maindata["active_sessions"] = int(row.get('active_sessions', 0)) if row.get('active_sessions') is not None else 0
+                self.maindata["idle_sessions"] = int(row.get('idle_sessions', 0)) if row.get('idle_sessions') is not None else 0
+                self.maindata["killed_sessions"] = int(row.get('killed_sessions', 0)) if row.get('killed_sessions') is not None else 0
         except Exception as e:
             if "msg" not in self.maindata:
                 self.maindata["msg"] = ""
             self.maindata["msg"] += "Session collection error: {}; ".format(str(e))
-            
-        return sessions
 
     def collect_replication_status(self):
         try:
@@ -560,12 +558,11 @@ class MySQLMonitor:
                     self.maindata["msg"] = ""
                 self.maindata["msg"] += "Calculated metrics collection error: {}; ".format(str(e))
             try:
-                self.maindata["Database"] = self.collect_database()
+                self.collect_database()
             except Exception as e:
                 if "msg" not in self.maindata:
                     self.maindata["msg"] = ""
                 self.maindata["msg"] += "Database collection error: {}; ".format(str(e))
-                self.maindata["Database"] = []
 
             try:
                 self.collect_latency_metrics()
@@ -582,25 +579,12 @@ class MySQLMonitor:
                 self.maindata["msg"] += "Version collection error: {}; ".format(str(e))
                 
             try:
-                session_stats = self.collect_sessions()
-                if session_stats: 
-                    self.maindata["total_sessions"] = session_stats["total_sessions"]
-                    self.maindata["active_sessions"] = session_stats["active_sessions"]
-                    self.maindata["idle_sessions"] = session_stats["idle_sessions"]
-                    self.maindata["killed_sessions"] = session_stats["killed_sessions"]
-                else:
-                    self.maindata["total_sessions"] = -1
-                    self.maindata["active_sessions"] = -1
-                    self.maindata["idle_sessions"] = -1
-                    self.maindata["killed_sessions"] = -1
+                self.collect_sessions()
             except Exception as e:
                 if "msg" not in self.maindata:
                     self.maindata["msg"] = ""
                 self.maindata["msg"] += "Session stats collection error: {}; ".format(str(e))
-                self.maindata["total_sessions"] = -1
-                self.maindata["active_sessions"] = -1
-                self.maindata["idle_sessions"] = -1
-                self.maindata["killed_sessions"] = -1
+
             self.maindata["s247config"] = {
                 "childdiscovery": ["Database"]
             }
