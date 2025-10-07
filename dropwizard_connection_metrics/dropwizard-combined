@@ -1,0 +1,366 @@
+#!/usr/bin/env python3
+"""
+Dropwizard plugin for Site24x7
+
+Behavior changes in this version:
+- Any output key that starts with 'jvm' (case-insensitive) will be placed into the JVM tab.
+- Any output key that appears Jetty-related (contains 'jetty', 'org_eclipse', or is Active_Connections_*) will be placed into the Jetty tab.
+- Other tabs remain Connection, Events, Memory; Health metrics still emitted at top-level (appear in Summary).
+- Plugin version kept here (bump to notify monitor of structure changes).
+"""
+
+import urllib.request
+import json
+import argparse
+import time
+import configparser
+import os
+import re
+
+# --- CONFIG / VERSION ---
+PLUGIN_VERSION = 8
+HEARTBEAT = True
+
+DEFAULT_PROTOCOL = "http"
+DEFAULT_HOST = "localhost"
+DEFAULT_PORT = "8081"
+DEFAULT_TIMEOUT = 10
+
+# --- MAPPINGS (core) ---
+TIMERS_MAP = {
+    "io.dropwizard.jetty.MutableServletContextHandler.requests": "total_requests_",
+    "io.dropwizard.jetty.MutableServletContextHandler.get-requests": "get_",
+    "io.dropwizard.jetty.MutableServletContextHandler.post-requests": "post_",
+    "io.dropwizard.jetty.MutableServletContextHandler.put-requests": "put_",
+    "io.dropwizard.jetty.MutableServletContextHandler.delete-requests": "delete_",
+    "org.eclipse.jetty.server.HttpConnectionFactory.8080.connections": "Active_Connections_8080",
+    "org.eclipse.jetty.server.HttpConnectionFactory.8081.connections": "Active_Connections_8081",
+    "org.eclipse.jetty.server.HttpConnectionFactory.8443.connections": "Active_Connections_8443",
+    "org.eclipse.jetty.server.HttpConnectionFactory.8444.connections": "Active_Connections_8444",
+}
+
+METERS_MAP = {
+    "ch.qos.logback.core.Appender.all": "log_count",
+    "ch.qos.logback.core.Appender.debug": "debug_",
+    "ch.qos.logback.core.Appender.error": "error_",
+    "ch.qos.logback.core.Appender.info": "info_",
+    "ch.qos.logback.core.Appender.trace": "trace_",
+    "ch.qos.logback.core.Appender.warn": "warn_",
+    "io.dropwizard.jetty.MutableServletContextHandler.1xx-responses": "_1xx_",
+    "io.dropwizard.jetty.MutableServletContextHandler.2xx-responses": "_2xx_",
+    "io.dropwizard.jetty.MutableServletContextHandler.3xx-responses": "_3xx_",
+    "io.dropwizard.jetty.MutableServletContextHandler.4xx-responses": "_4xx_",
+    "io.dropwizard.jetty.MutableServletContextHandler.5xx-responses": "_5xx_",
+    # Health meters
+    "TimeBoundHealthCheck-pool.created": "hc_pool_created",
+    "TimeBoundHealthCheck-pool.terminated": "hc_pool_terminated",
+}
+
+GAUGES_MAP = {
+    # JVM basics
+    "jvm.attribute.uptime": "uptime",
+    "jvm.threads.count": "threads_count",
+    "jvm.threads.runnable.count": "threads_runnable_count",
+    "jvm.classloader.loaded": "classloader_loaded",
+    "jvm.classloader.unloaded": "classloader_unloaded",
+    "jvm.filedescriptor": "file_descriptor",
+    # Memory
+    "jvm.memory.heap.used": "heap_used",
+    "jvm.memory.heap.max": "heap_max",
+    "jvm.memory.non-heap.used": "nonheap_used",
+    "jvm.memory.non-heap.max": "non_heap_max",
+    "jvm.memory.total.max": "max_memory",
+    "jvm.memory.total.used": "used_memory",
+    "jvm.memory.total.committed": "memory_total_committed",
+    "jvm.memory.pools.Metaspace.used": "metaspace_used",
+    "jvm.memory.pools.Compressed-Class-Space.used": "compressedclassspace_used",
+    "jvm.memory.pools.Code-Cache.used": "jvm_pool_codecache_used",
+    # Jetty gauges
+    "org.eclipse.jetty.util.thread.QueuedThreadPool.dw.size": "jetty_qtp_dw_size",
+    "org.eclipse.jetty.util.thread.QueuedThreadPool.dw.utilization": "jetty_qtp_dw_utilization",
+    "org.eclipse.jetty.util.thread.QueuedThreadPool.dw.utilization-max": "jetty_qtp_dw_utilization_max",
+    "org.eclipse.jetty.util.thread.QueuedThreadPool.dw.jobs": "jetty_qtp_dw_jobs",
+    "org.eclipse.jetty.util.thread.QueuedThreadPool.dw.jobs-queue-utilization": "jetty_qtp_dw_jobs_queue_utilization",
+    "org.eclipse.jetty.util.thread.QueuedThreadPool.dw-admin.size": "jetty_qtp_dwadmin_size",
+    "org.eclipse.jetty.util.thread.QueuedThreadPool.dw-admin.utilization": "jetty_qtp_dwadmin_utilization",
+    "org.eclipse.jetty.util.thread.QueuedThreadPool.dw-admin.utilization-max": "jetty_qtp_dwadmin_utilization_max",
+    "org.eclipse.jetty.util.thread.QueuedThreadPool.dw-admin.jobs": "jetty_qtp_dwadmin_jobs",
+    "org.eclipse.jetty.util.thread.QueuedThreadPool.dw-admin.jobs-queue-utilization": "jetty_qtp_dwadmin_jobs_queue_utilization",
+    # Health context
+    "io.dropwizard.jetty.MutableServletContextHandler.active-requests": "active_requests",
+    "io.dropwizard.jetty.MutableServletContextHandler.active-dispatches": "active_dispatches",
+    "io.dropwizard.jetty.MutableServletContextHandler.active-suspended": "active_suspended",
+}
+
+# --- UNITS ---
+METRIC_UNITS = {
+    "total_requests_": "count",
+    "get_": "count",
+    "post_": "count",
+    "put_": "count",
+    "delete_": "count",
+    "Active_Connections_8080": "connections",
+    "Active_Connections_8081": "connections",
+    "Active_Connections_8443": "connections",
+    "Active_Connections_8444": "connections",
+    "log_count": "count",
+    "debug_": "count",
+    "error_": "count",
+    "info_": "count",
+    "trace_": "count",
+    "warn_": "count",
+    "_1xx_": "count",
+    "_2xx_": "count",
+    "_3xx_": "count",
+    "_4xx_": "count",
+    "_5xx_": "count",
+    "uptime": "ms",
+    "threads_count": "units",
+    "threads_runnable_count": "units",
+    "classloader_loaded": "count",
+    "classloader_unloaded": "count",
+    "file_descriptor": "ratio",
+    "heap_used": "MB",
+    "heap_max": "MB",
+    "nonheap_used": "MB",
+    "non_heap_max": "MB",
+    "max_memory": "MB",
+    "used_memory": "MB",
+    "memory_total_committed": "MB",
+    "metaspace_used": "MB",
+    "compressedclassspace_used": "MB",
+    "jvm_pool_codecache_used": "MB",
+    "jetty_qtp_dw_size": "units",
+    "jetty_qtp_dw_utilization": "ratio",
+    "jetty_qtp_dw_utilization_max": "ratio",
+    "jetty_qtp_dw_jobs": "count",
+    "jetty_qtp_dw_jobs_queue_utilization": "ratio",
+    "jetty_qtp_dwadmin_size": "units",
+    "jetty_qtp_dwadmin_utilization": "ratio",
+    "jetty_qtp_dwadmin_utilization_max": "ratio",
+    "jetty_qtp_dwadmin_jobs": "count",
+    "jetty_qtp_dwadmin_jobs_queue_utilization": "ratio",
+    "hc_pool_created": "count",
+    "hc_pool_terminated": "count",
+    "active_requests": "count",
+    "active_dispatches": "count",
+    "active_suspended": "count",
+}
+
+# --- Helpers ---
+def to_mb(v):
+    try:
+        return round(float(v) / (1024.0 * 1024.0), 2)
+    except Exception:
+        return v
+
+def shorten_key(k: str) -> str:
+    s = k.replace("'", "").replace('"', "")
+    subs = [
+        (r"org\.eclipse\.jetty\.server\.HttpConnectionFactory\.", "jetty_conn_"),
+        (r"org\.eclipse\.jetty\.util\.thread\.QueuedThreadPool\.", "jetty_qtp_"),
+        (r"jvm\.memory\.pools\.", "jvm_pool_"),
+        (r"\.", "_"), (r"-", "_"), (r"\s+", "_"),
+    ]
+    for pat, rep in subs:
+        s = re.sub(pat, rep, s)
+    return re.sub(r"_+", "_", s).strip("_").lower()
+
+def load_config(cfg_path="dropwiz.cfg"):
+    cfg = {}
+    parser = configparser.ConfigParser()
+    if os.path.exists(cfg_path):
+        parser.read(cfg_path)
+        if "dw" in parser:
+            sec = parser["dw"]
+            cfg["protocol"] = sec.get("protocol", DEFAULT_PROTOCOL)
+            cfg["host"] = sec.get("host", DEFAULT_HOST)
+            cfg["port"] = sec.get("port", DEFAULT_PORT)
+            cfg["timeout"] = sec.getint("timeout", DEFAULT_TIMEOUT)
+    return cfg
+
+def fetch_metrics(url, timeout):
+    req = urllib.request.Request(url)
+    with urllib.request.urlopen(req, timeout=timeout) as res:
+        return json.loads(res.read().decode())
+
+# --- Main plugin class ---
+class DropwizardPlugin:
+    def __init__(self, protocol, host, port, timeout):
+        self.url = f"{protocol}://{host}:{port}/metrics"
+        self.timeout = timeout
+
+    def collect(self):
+        out = {
+            "plugin_version": PLUGIN_VERSION,
+            "heartbeat_required": HEARTBEAT,
+            "units": METRIC_UNITS,
+            "collected_at": int(time.time()),
+        }
+
+        try:
+            payload = fetch_metrics(self.url, self.timeout)
+        except Exception as e:
+            out["error"] = f"Failed to fetch metrics: {e}"
+            out["error_details"] = repr(e)
+            return out
+
+        # Timers: counts; keep p95 for total_requests only
+        timers = payload.get("timers", {}) if isinstance(payload, dict) else {}
+        for src, name in TIMERS_MAP.items():
+            if src in timers:
+                t = timers[src]
+                out[name] = t.get("count", 0)
+                if name == "total_requests_":
+                    out["total_requests_p95"] = t.get("p95", 0.0)
+            else:
+                out[name] = 0
+                if name == "total_requests_":
+                    out["total_requests_p95"] = 0.0
+
+        # Meters
+        meters = payload.get("meters", {}) if isinstance(payload, dict) else {}
+        for src, name in METERS_MAP.items():
+            out[name] = meters.get(src, {}).get("count", 0)
+
+        # Gauges
+        gauges = payload.get("gauges", {}) if isinstance(payload, dict) else {}
+        for src, name in GAUGES_MAP.items():
+            val = gauges.get(src, {}).get("value")
+            if METRIC_UNITS.get(name) == "MB":
+                val = to_mb(val)
+            # keep None as None for missing non-numeric gauges
+            out[name] = val if val is not None else 0
+
+        # Dynamic: emit GC count/time and memory pool gauges (shortened keys)
+        for key, g in gauges.items():
+            if key.startswith("jvm.gc."):
+                base = key.rsplit(".", 1)[0]
+                last = key.rsplit(".", 1)[1]
+                short = shorten_key(base)
+                if last == "count":
+                    out[f"{short}_count"] = g.get("value")
+                elif last == "time":
+                    out[f"{short}_time"] = g.get("value")
+            elif key.startswith("jvm.memory.pools."):
+                short = shorten_key(key)
+                val = g.get("value")
+                out[short] = to_mb(val) if isinstance(val, (int, float)) and val > 1000 else val
+
+        # Add dynamic meters/gauges that look like db/cache/pool to root (sanitized)
+        dynamic_keywords = ("db", "datasource", "connection", "pool", "cache", "jdbc")
+        for mk, mv in meters.items():
+            if any(k in mk.lower() for k in dynamic_keywords):
+                out[shorten_key(mk)] = mv.get("count", 0)
+        for gk, gv in gauges.items():
+            if any(k in gk.lower() for k in dynamic_keywords):
+                key = shorten_key(gk)
+                val = gv.get("value")
+                out[key] = to_mb(val) if isinstance(val, (int, float)) and val > 1000 else val
+
+        # Build tabs dynamically:
+        # - Connection and Events and Memory have predefined core lists
+        # - For JVM: include every top-level key that starts with 'jvm' (case-insensitive)
+        # - For Jetty: include keys that contain 'jetty' or 'org_eclipse' or are Active_Connections_*
+        connection_tab = [
+            "total_requests_", "get_", "post_", "put_", "delete_",
+            "Active_Connections_8080", "Active_Connections_8081",
+            "Active_Connections_8443", "Active_Connections_8444"
+        ]
+        events_tab = [
+            "log_count", "debug_", "error_", "info_", "trace_", "warn_",
+            "_1xx_", "_2xx_", "_3xx_", "_4xx_", "_5xx_"
+        ]
+        memory_tab_core = [
+            "heap_used", "heap_max", "nonheap_used", "non_heap_max",
+            "max_memory", "used_memory", "memory_total_committed",
+            "metaspace_used", "compressedclassspace_used", "jvm_pool_codecache_used"
+        ]
+
+        jvm_keys = []
+        jetty_keys = []
+
+        # Scan all collected keys and classify
+        for key in list(out.keys()):
+            if key in ("plugin_version", "heartbeat_required", "units", "collected_at", "error", "error_details", "tabs"):
+                continue
+            # skip the tabs building keys themselves
+            low = key.lower()
+            # Already explicitly put in Connection or Events or Memory core - we'll not duplicate
+            if key in connection_tab or key in events_tab or key in memory_tab_core:
+                continue
+            # identify jvm keys: startwith jvm_ or key startswith 'jvm'
+            if low.startswith("jvm") or low.startswith("jvm_"):
+                if key not in jvm_keys:
+                    jvm_keys.append(key)
+                continue
+            # identify jetty: contains 'jetty' or 'org_eclipse' or key starts with 'active_connections' or 'active_connections_' or key starts with 'jetty_'
+            if ("jetty" in low) or ("org_eclipse" in low) or low.startswith("active_connections_") or low.startswith("active_connections") or low.startswith("jetty_"):
+                if key not in jetty_keys:
+                    jetty_keys.append(key)
+                continue
+            # Some metrics from Dropwizard context are named dw_ctx_* or similar; they are app/jetty context related
+            if low.startswith("dw_") or low.startswith("dwctx") or "queuedthreadpool" in low:
+                if key not in jetty_keys:
+                    jetty_keys.append(key)
+                continue
+            # anything else that looks like a memory pool (jvm.memory.pools shortened) would have jvm prefix due to shortening above
+            # otherwise skip
+
+        # Make deterministic order: keep core lists first, then sorted dynamic keys
+        jvm_tablist = sorted(set(jvm_keys), key=lambda k: (not k.startswith("jvm"), k))
+        jetty_tablist = sorted(set(jetty_keys))
+
+        # Final tablists - ensure no duplicates across tabs
+        def dedupe_preserve_order(seq):
+            seen = set()
+            out_list = []
+            for s in seq:
+                if s not in seen:
+                    seen.add(s)
+                    out_list.append(s)
+            return out_list
+
+        connection_tab = dedupe_preserve_order(connection_tab)
+        events_tab = dedupe_preserve_order(events_tab)
+        memory_tab = dedupe_preserve_order(memory_tab_core)
+        jvm_tab = dedupe_preserve_order(jvm_tablist)
+        jetty_tab = dedupe_preserve_order(jetty_tablist)
+
+        # Attach computed tabs (JVM includes jvm_tab keys + also keep some important JVM keys in the tab)
+        out["tabs"] = {
+            "Connection": {"order": 1, "tablist": connection_tab},
+            "Events": {"order": 2, "tablist": events_tab},
+            "JVM": {"order": 3, "tablist": dedupe_preserve_order([
+                # prefer some stable JVM keys first
+                "uptime", "threads_count", "threads_runnable_count",
+                "classloader_loaded", "classloader_unloaded", "file_descriptor"
+            ] + jvm_tab)},
+            "Memory": {"order": 4, "tablist": memory_tab},
+            "Jetty": {"order": 5, "tablist": jetty_tab}
+        }
+
+        return out
+
+# --- CLI ---
+def parse_args():
+    p = argparse.ArgumentParser()
+    p.add_argument("--protocol", default=None)
+    p.add_argument("--host", default=None)
+    p.add_argument("--port", default=None)
+    p.add_argument("--timeout", type=int, default=None)
+    return p.parse_args()
+
+def main():
+    cfg = load_config()
+    args = parse_args()
+    protocol = args.protocol or cfg.get("protocol") or DEFAULT_PROTOCOL
+    host = args.host or cfg.get("host") or DEFAULT_HOST
+    port = args.port or cfg.get("port") or DEFAULT_PORT
+    timeout = args.timeout or cfg.get("timeout") or DEFAULT_TIMEOUT
+    plugin = DropwizardPlugin(protocol, host, port, timeout)
+    print(json.dumps(plugin.collect(), indent=2, sort_keys=False, default=str))
+
+
+if __name__ == "__main__":
+    main()
