@@ -10,7 +10,7 @@ To quickly test the plugin against a local Dropwizard app:
 
 ```bash
 
-python3 dropwiz.py –host localhost –port 8081
+python3 dropwizard.py –host localhost –port 8081
 
 ```
 
