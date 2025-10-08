@@ -220,9 +220,5 @@ Below are the metrics grouped exactly as the plugin uses them. Each table uses t
 | Active Dispatches | Active dispatch handlers in the servlet context (count) |
 | Active Suspended | Active suspended (async) requests (count) |
 
-
-
-* **Timers**: measure duration distributions — in this explicit-mapping plugin we collect timer counts; percentiles are not emitted except if you extend mappings.
-
 ---
 
