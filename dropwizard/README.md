@@ -220,35 +220,7 @@ Below are the metrics grouped exactly as the plugin uses them. Each table uses t
 | Active Dispatches | Active dispatch handlers in the servlet context (count) |
 | Active Suspended | Active suspended (async) requests (count) |
 
-## **Units mapping (as used in the plugin)**
 
-| Name | Unit |
-| ----- | ----- |
-| Connections at 8080 / 8081 / 8443 / 8444 | connections |
-| JVM Uptime | ms |
-| Threads Count / Threads Runnable Count | units |
-| File Descriptor Ratio | ratio |
-| Heap Used / Heap Max / Non-Heap Used / Non-Heap Max / Max Memory / Used Memory / Memory Total Committed / Metaspace Used / Compressed Class Space Used / Code Cache Used / G1 pool metrics | MB |
-
-## **Why these metrics matter (short)**
-
-* **Total Requests & per-method counts** — measure throughput and traffic composition; useful to detect traffic spikes or drops.
-
-* **Active Connections** — indicates current client concurrency on Jetty connectors; helps spot connection saturation.
-
-* **Log counts & response codes** — detect errors and client issues quickly (rising 4xx/5xx or ERROR logs).
-
-* **JVM / Memory / GC** — detect memory leaks, GC pressure, increased pause times, OOM risk.
-
-* **Jetty threadpool & queue** — detect thread starvation or queue buildup (slow downstream, blocked requests).
-
----
-
-## **Gauges vs Meters vs Timers (concise)**
-
-* **Gauges**: instantaneous values (e.g., heap used, thread counts).
-
-* **Meters**: measures of throughput/rate (e.g., counts that imply a rate).
 
 * **Timers**: measure duration distributions — in this explicit-mapping plugin we collect timer counts; percentiles are not emitted except if you extend mappings.
 
