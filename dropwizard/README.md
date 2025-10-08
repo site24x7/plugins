@@ -4,23 +4,6 @@
 - Download and install the latest version of the Site24x7 agent on the server where you plan to run the plugin.
 - Python 3 must be installed.
 
-## Quick installation
-
-To quickly test the plugin against a local Dropwizard app:
-
-```bash
-
-python3 dropwizard.py –host localhost –port 8081
-
-```
-
-To test the raw metrics endpoint from the agent host:
-
-```bash
-
-curl \-sS http://localhost:8081/metrics | head \-n 2
-
-```
 
 ## Standard Installation
 If you're not using Linux servers or want to install the plugin manually, follow the steps below.
@@ -34,24 +17,39 @@ If you're not using Linux servers or want to install the plugin manually, follow
  	cd dropwizard/
  	```
 ### Download Plugin Script
- - Download the below files [dropwizard.cfg](https://github.com/site24x7/plugins/blob/master/dropwizard/dropwizard.cfg) and [dropwizard.py](https://github.com/site24x7/plugins/blob/master/dropwizard/dropwizard.py) place it under the `dropwizard` directory.
+ - Download the below files and place it under the `dropwizard` directory.
 
 	```bash
-	wget https://raw.githubusercontent.com/Deepak-Bhuvaneswaran/plugins/refs/heads/deepakbhuvaneswaran/dropwizard/dropwizard.py
-	wget https://raw.githubusercontent.com/Deepak-Bhuvaneswaran/plugins/refs/heads/deepakbhuvaneswaran/dropwizard/dropwizard.cfg
+    wget https://raw.githubusercontent.com/site24x7/plugins/master/dropwizard/dropwizard.py && sed -i "1s|^.*|#! $(which python3)|" dropwizard.py
+    wget https://raw.githubusercontent.com/site24x7/plugins/master/dropwizard/dropwizard.cfg
 	```
 ### Execute the plugin
  
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 	```bash
-	 python3 /opt/site24x7/monagent/plugins/dropwiz/dropwiz.py –host \<DROPWIZ_HOST\> –port \<DROPWIZ_PORT\>
+	 python3 dropwizard.py –-host "localhost" -–port "8080"
 	 ```
+---
+
+## **Configuration (dropwizard.cfg)**
+
+```bash
+
+[dropwizard]
+protocol = http
+host = localhost
+port = 8080
+timeout = 30
+
+```
+---
+
 ### Move Plugin to Agent Directory
  
  #### Linux
 
-- Place the `dropwizard` under the Site24x7 Linux Agent plugin directory:
+- Place the `dropwizard` folder under the Site24x7 Linux Agent plugins directory:
   
 	```bash
  	mv dropwizard /opt/site24x7/monagent/plugins
@@ -63,71 +61,16 @@ If you're not using Linux servers or want to install the plugin manually, follow
 
 -  Further, move the folder `dropwizard` into the  Site24x7 Windows Agent plugin directory:
 
-        C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\dropwizard
+        C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
 
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ---
 
-
-## **Configuration (dropwizard.cfg)**
-
-Put dropwizard.cfg beside dropwizard.py (or edit values via CLI).
-```bash
-
-[dropwizard]
-
-protocol = http
-host = localhost
-port = 8081
-timeout = 30
-
-```
-
-* protocol — http or https.
-
-* host — hostname or IP for the Dropwizard app.
-
-* port — port where /metrics is served.
-
-* timeout — seconds to wait for the /metrics response before failing.
-
-CLI overrides config file: \--host, \--port, \--protocol, \--timeout.
-
----
-
-## **How to install (Linux agent)**
-
-1. Create plugin directory on the agent host (if not present) and copy files:
-
-```bash
-
-sudo mkdir \-p /opt/site24x7/monagent/plugins/dropwizard
-
-sudo cp dropwizard.py dropwizard.cfg /opt/site24x7/monagent/plugins/dropwizard/
-
-sudo chmod \+x /opt/site24x7/monagent/plugins/dropwizard/dropwizard.py
-
-```
-
-2. Test locally:
-
-```bash
-
-python3 /opt/site24x7/monagent/plugins/dropwizard/dropwizard.py –host \<DROPWIZARD\_HOST\> –port \<DROPWIZARD\_PORT\>
-
-```
-
-3. The Site24x7 agent will pick up the plugin output automatically (typically within 5 minutes). If not, check agent logs and file permissions.
-
----
-
 ## Supported Metrics 
 
-Below are the metrics grouped exactly as the plugin uses them. Each table uses the Name | Description format so you can copy/paste into the repo.
-
-### **Summary tab**
+### **Summary**
 
 | Name | Description |
 | ----- | ----- |
@@ -135,7 +78,7 @@ Below are the metrics grouped exactly as the plugin uses them. Each table uses t
 | HealthCheck Pool Terminated | Health check thread-pool ‘terminated’ events (count) |
 | collected_at | The UNIX timestamp (in seconds) indicating when the Dropwizard metrics were collected by the plugin. It helps correlate data collection time and detect delays in polling or transmission | 
 
-### **Connection tab**
+### **Connection**
 
 | Name | Description |
 | ----- | ----- |
@@ -149,7 +92,7 @@ Below are the metrics grouped exactly as the plugin uses them. Each table uses t
 | Connections at 8443 | Active Jetty connections on port 8443 (connections) |
 | Connections at 8444 | Active Jetty connections on port 8444 (connections) |
 
-### **Events tab**
+### **Events**
 
 | Name | Description |
 | ----- | ----- |
@@ -165,7 +108,7 @@ Below are the metrics grouped exactly as the plugin uses them. Each table uses t
 | 4xx Responses | Count of 4xx client error HTTP responses |
 | 5xx Responses | Count of 5xx server error HTTP responses |
 
-### **JVM tab**
+### **JVM**
 
 | Name | Description |
 | ----- | ----- |
@@ -184,7 +127,7 @@ Below are the metrics grouped exactly as the plugin uses them. Each table uses t
 
 ---
 
-### **Memory tab**
+### **Memory**
 
 | Name | Description |
 | ----- | ----- |
@@ -202,7 +145,7 @@ Below are the metrics grouped exactly as the plugin uses them. Each table uses t
 | G1 Old Gen Used | G1 Old Gen pool used (MB) |
 | G1 Survivor Space Used | G1 Survivor pool used (MB) |
 
-### **Jetty tab**
+### **Jetty**
 
 | Name | Description |
 | ----- | ----- |
@@ -221,4 +164,9 @@ Below are the metrics grouped exactly as the plugin uses them. Each table uses t
 | Active Suspended | Active suspended (async) requests (count) |
 
 ---
+
+### Sample Image 
+<img width="1438" height="820" alt="Screenshot 2025-10-08 at 5 49 32 PM" src="https://github.com/user-attachments/assets/c5b42635-fe0e-4eb8-9b5c-65a6c58f8618" />
+
+
 
