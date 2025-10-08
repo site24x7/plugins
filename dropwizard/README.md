@@ -37,8 +37,8 @@ If you're not using Linux servers or want to install the plugin manually, follow
  - Download the below files [oracle.cfg](https://github.com/site24x7/plugins/blob/master/oracle/oracle.cfg) and [oracle.py](https://github.com/site24x7/plugins/blob/master/oracle/oracle.py) place it under the `oracle` directory.
 
 	```bash
-	wget 
-	wget 
+	wget https://raw.githubusercontent.com/Deepak-Bhuvaneswaran/plugins/refs/heads/deepakbhuvaneswaran/dropwizard/dropwizard.py
+	wget https://raw.githubusercontent.com/Deepak-Bhuvaneswaran/plugins/refs/heads/deepakbhuvaneswaran/dropwizard/dropwizard.cfg
 	```
 ### Execute the plugin
  
