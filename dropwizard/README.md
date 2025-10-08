@@ -33,7 +33,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
  	mkdir dropwizard
  	cd dropwizard/
  	```
-
+### Download Plugin Script
  - Download the below files [dropwizard.cfg](https://github.com/site24x7/plugins/blob/master/dropwizard/dropwizard.cfg) and [dropwizard.py](https://github.com/site24x7/plugins/blob/master/dropwizard/dropwizard.py) place it under the `dropwizard` directory.
 
 	```bash
