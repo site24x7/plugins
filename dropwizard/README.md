@@ -34,7 +34,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
  	cd dropwizard/
  	```
 
- - Download the below files [oracle.cfg](https://github.com/site24x7/plugins/blob/master/oracle/oracle.cfg) and [oracle.py](https://github.com/site24x7/plugins/blob/master/oracle/oracle.py) place it under the `oracle` directory.
+ - Download the below files [dropwizard.cfg](https://github.com/site24x7/plugins/blob/master/dropwizard/dropwizard.cfg) and [dropwizard.py](https://github.com/site24x7/plugins/blob/master/dropwizard/dropwizard.py) place it under the `dropwizard` directory.
 
 	```bash
 	wget https://raw.githubusercontent.com/Deepak-Bhuvaneswaran/plugins/refs/heads/deepakbhuvaneswaran/dropwizard/dropwizard.py
