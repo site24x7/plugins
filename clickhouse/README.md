@@ -18,7 +18,7 @@ Log in to ClickHouse as an admin or a user with sufficient privileges:
    ```bash
    clickhouse-client -u default --password
 ```
-Run the following SQL commands to create a new user and grant the required privileges:
+Run the following SQL query to create a new user and grant the required privileges:
 
 ```sql
 -- Create a new user for monitoring
@@ -168,3 +168,9 @@ CPU wait                               | Time threads wait for CPU availability.
 Read from disk                          | Number of reads from disk. Tracks disk I/O activity.
 Read from filesystem                     | Number of reads from the filesystem cache. Indicates cached read efficiency.
 clickhouse_rss_bytes                     | Resident Set Size in bytes for ClickHouse. Shows memory currently used in RAM.
+
+## Sample Image:
+
+<img width="1636" height="861" alt="image" src="https://github.com/user-attachments/assets/a7676e43-569a-434c-8fbb-6fcc30df5f38" />
+
+
