@@ -71,8 +71,6 @@ You should see database information (read access works).
   
 #### Linux
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the couchdb.py script.
-
 - Place the "couchdb" folder under Site24x7 Linux Agent plugin directory : 
 
 		Linux             ->   /opt/site24x7/monagent/plugins
