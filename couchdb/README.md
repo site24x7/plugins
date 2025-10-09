@@ -1,5 +1,5 @@
 Plugin for CouchDB Monitoring
-===========
+==========
 
 Apache CouchDB is open source database software which has a document-oriented NoSQL architecture. Install and use our CouchDB monitoring tool and get detailed insights into database activity and health.
 
