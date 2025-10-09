@@ -15,7 +15,6 @@ Learn more https://www.site24x7.com/plugins/couchdb-monitoring.html
 
 ## Create a Dedicated User for Monitoring
 
-For security and controlled access, it is recommended to create a dedicated read-only user in CouchDB for Site24x7 monitoring.
 
 ### Steps to Create and Grant Permissions
 
@@ -66,7 +65,7 @@ You should see database information (read access works).
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/couchdb/couchdb.py
   		wget https://raw.githubusercontent.com/site24x7/plugins/master/couchdb/couchdb.cfg
 
-- Edit the couchdb.py file with appropriate arguments and Execute the below command to check for the valid JSON output:
+- Execute the below command with appropriate arguments to check for the valid JSON output:
 
 		python3 couchdb.py --host 127.0.0.1 --port 5984 --user your_username --password your_password
   
