@@ -4,10 +4,6 @@
 - Download and install the latest version of the Site24x7 agent on the server where you plan to run the plugin.
 - Python 3 must be installed.
 
-
-## Standard Installation
-If you're not using Linux servers or want to install the plugin manually, follow the steps below.
-
 ### **Installation**  
 
 - Create a directory named `dropwizard`.
@@ -28,7 +24,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 	```bash
-	 python3 dropwizard.py –-host "localhost" -–port "8081"
+	 python3 dropwizard.py –-host "localhost" -–port "8081" --protocol "http" --timeout "30"
 	 ```
 ---
 
