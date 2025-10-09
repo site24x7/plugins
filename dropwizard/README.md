@@ -28,7 +28,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 	```bash
-	 python3 dropwizard.py –-host "localhost" -–port "8080"
+	 python3 dropwizard.py –-host "localhost" -–port "8081"
 	 ```
 ---
 
@@ -39,7 +39,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 [dropwizard]
 protocol = http
 host = localhost
-port = 8080
+port = 8081
 timeout = 30
 
 ```
