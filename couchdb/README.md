@@ -62,7 +62,7 @@ You should see database information (read access works).
 
 - Download the below files and place it under the "couchdb" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/couchdb/couchdb.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/couchdb/couchdb.py && sed -i "1s|^.*|#! $(which python3)|" couchdb.py
   		wget https://raw.githubusercontent.com/site24x7/plugins/master/couchdb/couchdb.cfg
 
 - Execute the below command with appropriate arguments to check for the valid JSON output:
