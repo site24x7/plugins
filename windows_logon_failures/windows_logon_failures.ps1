@@ -9,6 +9,7 @@ Function Get-Data($count)
 
 $outdata=@{}
   
+try{
 $startTime = (Get-Date).AddMinutes(-6)
 $Events=Get-EventLog -LogName Security -Source "Microsoft-Windows-Security-Auditing" -InstanceId 4625 -EntryType FailureAudit -After $startTime -EA silentlycontinue
 $Log=[System.Collections.ArrayList]@()
@@ -28,7 +29,7 @@ foreach($Event in $Events){
     $ClientNameFrom=$Event.ReplacementStrings[13] 
     $ClientIPFrom=$Event.ReplacementStrings[19]
 
-    $msg1="`nLogin failure at $TimeStamp : User '$UserTried' from domain '$DomainNameFrom' attempted to log in from IP address $ClientIPFrom failed due to bad password." -replace '[^a-zA-Z0-9.,:/\s]' , ""
+    $msg1="`nLogin failure at $TimeStamp : User '$UserTried' from domain '$DomainTried' attempted to log in from IP address $ClientIPFrom failed due to bad password." -replace '[^a-zA-Z0-9.,:/\s]' , ""
     if ($msg_count -le 5){
         $global:msg+=$msg1
     }
@@ -36,6 +37,11 @@ foreach($Event in $Events){
 }  
 $global:status=0
 
+}
+}
+catch{
+$outdata.Add("failed_logon_count",-1)
+$outdata.Add("msg", $Error[0].ToString())
 }
 
 $outdata
@@ -56,10 +62,8 @@ try{
 
 }
 catch{
-
-  $output.add("Status",0)
+  $output.add("failed_logon_count",-1)
   $output.add("msg", $Error[0])
-  $output
 }
 $output.Add("plugin_version", $version)
 $output | ConvertTo-Json
