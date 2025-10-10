@@ -15,46 +15,37 @@ Learn more https://www.site24x7.com/plugins/couchdb-monitoring.html
 
 ## Create a Dedicated User for Monitoring
 
-
 ### Steps to Create and Grant Permissions
 
 1. Log in to CouchDB as an admin or a user with sufficient privileges.
 
-2. Run the following commands to create a new user and grant read-only access:
+2. Run the following commands to create a new user :
 
    ```bash
-   # Create a new user for monitoring
-   curl -X PUT http://USERNAME:PASSWORDd@localhost:5984/_users/org.couchdb.user:USERNAME \
+   curl -X PUT http://USERNAME:PASSWORD@127.0.0.1:5984/_users/org.couchdb.user:your_username \
    -H "Content-Type: application/json" \
-   -d '{"name": "your_username", "password": "your_password", "roles": [], "type": "user"}'
-   
-## Set Read-Only Access for the User
+   -d '{
+     "name": "your_username",
+     "password": "your_password",
+     "roles": [],
+     "type": "user"
+   }'
+## Give the new user system-wide admin privileges
 
-After creating the `your_username`, you need to give it read-only access to the databases the plugin will monitor.  
-This is done by updating the `_security` object of each database (for example, `mydb`):
+Run the following command to make `your_username` a CouchDB admin:
 
 ```bash
-curl -X PUT http://USERNAME:PASSWORD@localhost:5984/mydb/_security \
+curl -X PUT -u USERNAME:PASSWORD http://127.0.0.1:5984/_node/_local/_config/admins/your_username \
 -H "Content-Type: application/json" \
--d '{
-  "admins": {
-    "names": [],
-    "roles": []
-  },
-  "members": {
-    "names": ["your_username"],
-    "roles": []
-  }
-}'
+-d '"your_username"'
 ```
-## Verify Permissions
-
-To confirm that the `your_username` has read-only access, log in using the user credentials:
+## Verify the user has admin privileges
+Run the following command to check the user's privileges:
 
 ```bash
-curl -u your_username:your_password http://localhost:5984/mydb
+curl -u your_username:your_password http://127.0.0.1:5984/_users/_security
 ```
-You should see database information (read access works).
+- You should see `your_username` listed under "admins"
 
 ### Plugin Installation  
 
