@@ -24,14 +24,14 @@ Monitoring Microsoft MSMQ entails providing thorough outage management and preem
 #### Configurations
 
 - If you want to monitor all the queues present in the server the plugin will do it automatically.
-- For filtering the queues to monitor, Eg:
-	- If you only need to monitor the queues with "otp" on their queue name Provide "otp" in msmq_monitoring.cfg file.
  
 	```
-	[msmq]
-	queueName="otp"
+	[global_configurations]
+	redirect_output="1"
+	
+	[Queues]
+	queueName="*"
 	```
-	- Now all the queues with "otp" in their name will be monitored.
 - Move the folder into the  Site24x7 Windows Agent plugin directory: 
 
 		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
@@ -42,18 +42,39 @@ Monitoring Microsoft MSMQ entails providing thorough outage management and preem
 		
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
-## Supported Metrics
+## MSMQ Monitoring Metrics
 
-The metrics that are captured by the MSMQ plugin are:
+| **Name** | **Description** |
+|-----------|-----------------|
+| **Bytes In Queue in average** | The average number of message bytes in the queue across all monitored queues. |
+| **Message Count in average** | The average number of messages in the queue across all monitored queues. |
+| **Total No of queues** | The total number of queues discovered and monitored by the plugin. |
 
- Name		        	| 	Description
----         			|   	---
-Bytes in Journal		|	The number of message bytes in the journal of the destination queue.
-Bytes in Queue			|	The number of message bytes in the destination queue.
-Bytes In Queue [average]	|	Average of the Bytes in Queue of all queues.
-Message Count			|	The message count for the specified queue on the host computer.
-Message Count [average]		|	The Average of all the message count of the queues.
-Max Journal Size		|	The maximum journal size.
-Max Queue Size			|	The maximum queue size.
-Transactional			|	The insight on whether the queue is transactional or not.
+### Queues
 
+| **Name** | **Description** |
+|-----------|-----------------|
+| **Bytes_In_Queue** | The number of message bytes currently stored in the destination queue. |
+| **Bytes_In_Journal** | The number of message bytes in the journal of the destination queue. |
+| **Message_Count** | The total number of messages in the specified queue. |
+| **Message_Journal_Size_MB** | The maximum size (in MB) of the journal associated with the queue. |
+| **Message_Queue_Size_MB** | The maximum size (in MB) allocated for the queue. |
+| **Is_Transactional** | Indicates whether the queue is transactional (`1`) or non-transactional (`0`). |
+
+### Service
+
+| **Name** | **Description** |
+|-----------|-----------------|
+| **Incoming_Messages_PerSec** | The rate (messages per second) of incoming messages being processed by MSMQ. |
+| **Outgoing_Messages_PerSec** | The rate (messages per second) of outgoing messages being processed by MSMQ. |
+| **MSMQ_Incoming_Messages** | The total number of incoming messages handled by MSMQ since startup. |
+| **MSMQ_Outgoing_Messages** | The total number of outgoing messages handled by MSMQ since startup. |
+| **Sessions** | The number of active MSMQ sessions currently established. |
+| **IP_Sessions** | The number of MSMQ sessions that are using IP-based connections. |
+| **Total_Bytes_All_Queues** | The total number of message bytes across all monitored queues. |
+| **Total_Messages_All_Queues** | The total number of messages across all monitored queues. |
+
+
+## Sample Image
+
+<img width="400" height="168" alt="image" src="https://github.com/user-attachments/assets/b4966d9b-5d6e-4d78-88df-caa93058bd74" />
