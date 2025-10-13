@@ -77,4 +77,5 @@ The agent will automatically execute the plugin within five minutes and send per
 
 ## Sample Image
 
-<img width="400" height="168" alt="image" src="https://github.com/user-attachments/assets/b4966d9b-5d6e-4d78-88df-caa93058bd74" />
+<img width="1637" height="689" alt="image" src="https://github.com/user-attachments/assets/da02198b-eba1-4b4c-97ad-095dd4b7ae58" />
+
