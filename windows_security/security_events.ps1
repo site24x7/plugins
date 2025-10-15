@@ -122,6 +122,20 @@ function Get-SecurityEventLogs {
                     }
                 }
                 
+                if ($rdpConnections.Count -eq 0) {
+                    $defaultRDPConnection = @{
+                        "name" = "-"
+                        "RDPLocalAddress" = "-"
+                        "RDPLocalPort" = -1
+                        "RDPRemoteAddress" = "-"
+                        "RDPRemotePort" = -1
+                        "RDPState" = "-"
+                        "RDPAppliedSettings" = "-"
+                        "RDPOwningProcess" = -1
+                    }
+                    $rdpConnections += $defaultRDPConnection
+                }
+                
                 return ,$rdpConnections
                 
             } catch {
@@ -182,6 +196,20 @@ function Get-SecurityEventLogs {
                         } catch {
                         }
                     }
+                }
+                
+                if ($remoteConnections.Count -eq 0) {
+                    $defaultRemoteConnection = @{
+                        "name" = "-"
+                        "RemoteAddress" = "-"
+                        "RemotePort" = -1
+                        "LocalAddress" = "-"
+                        "LocalPort" = -1
+                        "State" = "-"
+                        "ProcessName" = "-"
+                        "PID" = -1
+                    }
+                    $remoteConnections += $defaultRemoteConnection
                 }
                 
                 return ,$remoteConnections
