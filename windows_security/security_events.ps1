@@ -150,7 +150,7 @@ function Get-SecurityEventLogs {
                         $_.State -eq 'Established'
                     } |
                     Group-Object -Property RemoteAddress |
-                    Select-Object -First 25
+                    Select-Object -First 15
                 
                 if ($connections) {
                     foreach ($group in $connections) {
