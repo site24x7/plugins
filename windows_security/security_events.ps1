@@ -85,6 +85,125 @@ function Get-SecurityEventLogs {
             }
         }
 
+        function Get-RDPConnections {
+            try {
+                $rdpConnections = @()
+                
+                try {
+                    $rdpPort = (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -ErrorAction SilentlyContinue).PortNumber
+                    if (-not $rdpPort -or $rdpPort -eq $null) {
+                        $rdpPort = 3389 
+                    }
+                } catch {
+                    $rdpPort = 3389  
+                }
+                
+                $connections = Get-NetTCPConnection -LocalPort $rdpPort -ErrorAction SilentlyContinue
+                
+                if ($connections) {
+                    foreach ($conn in $connections) {
+                        if ($conn.RemoteAddress -notmatch "::" -and 
+                            $conn.RemoteAddress -ne "0.0.0.0" -and
+                            $conn.RemoteAddress -ne "127.0.0.1") {
+                            
+                            $connectionInfo = @{
+                                "name" = "IP_$($conn.RemoteAddress)"
+                                "RDPLocalAddress" = $conn.LocalAddress
+                                "RDPLocalPort" = $conn.LocalPort 
+                                "RDPRemoteAddress" = $conn.RemoteAddress
+                                "RDPRemotePort" = $conn.RemotePort
+                                "RDPState" = $conn.State
+                                "RDPAppliedSettings" = if ($conn.AppliedSetting) { $conn.AppliedSetting } else { "-" }
+                                "RDPOwningProcess" = $conn.OwningProcess
+                            }
+                            
+                            $rdpConnections += $connectionInfo
+                        }
+                    }
+                }
+                
+                return ,$rdpConnections
+                
+            } catch {
+                $errorConnection = @{
+                    "name" = "-"
+                    "RDPLocalAddress" = "-"
+                    "RDPLocalPort" = -1
+                    "RDPRemoteAddress" = "-"
+                    "RDPRemotePort" = -1
+                    "RDPState" = "-"
+                    "RDPAppliedSettings" = "-"
+                    "RDPOwningProcess" = -1
+                }
+                return ,@($errorConnection)
+            }
+        }
+
+        function Get-RemoteConnectionsWithProcessDetails {
+            try {
+                $remoteConnections = @()
+                
+                $connections = Get-NetTCPConnection -ErrorAction SilentlyContinue |
+                    Where-Object {
+                        $_.RemoteAddress -and
+                        $_.RemoteAddress -notin @('0.0.0.0', '::', '127.0.0.1', '::1') -and
+                        $_.State -eq 'Established'
+                    } |
+                    Group-Object -Property RemoteAddress |
+                    Select-Object -First 25
+                
+                if ($connections) {
+                    foreach ($group in $connections) {
+                        try {
+                            $conn = $group.Group[0]
+                            
+                            $processName = "-"
+                            try {
+                                $proc = Get-Process -Id $conn.OwningProcess -ErrorAction SilentlyContinue
+                                if ($proc) {
+                                    $processName = $proc.ProcessName
+                                }
+                            } catch {
+                                $processName = "-"
+                            }
+                            
+                            $connectionInfo = @{
+                                "name" = "IP_$($conn.RemoteAddress)"
+                                "RemoteAddress" = $conn.RemoteAddress
+                                "RemotePort" = $conn.RemotePort
+                                "LocalAddress" = $conn.LocalAddress
+                                "LocalPort" = $conn.LocalPort
+                                "State" = $conn.State
+                                "ProcessName" = $processName
+                                "PID" = $conn.OwningProcess
+                            }
+                            
+                            $remoteConnections += $connectionInfo
+                        } catch {
+                        }
+                    }
+                }
+                
+                return ,$remoteConnections
+                
+            } catch {
+                $errorConnection = @{
+                    "name" = "-"
+                    "RemoteAddress" = "-"
+                    "RemotePort" = -1
+                    "LocalAddress" = "-"
+                    "LocalPort" = -1
+                    "State" = "-"
+                    "ProcessName" = "-"
+                    "PID" = -1
+                }
+                return ,@($errorConnection)
+            }
+        }
+
+
+
+        
         
         $output = @{
             "plugin_version"       = 1
@@ -98,15 +217,27 @@ function Get-SecurityEventLogs {
             "Failed Login Attempts" = $eventCounts["Failed Login Attempts"]
             "Account Lockouts"    = $eventCounts["Account Lockouts"]
             "Malware Remediation Failed" = $eventCounts["Malware Remediation Failed"]
+            "RDP_Connections"     = Get-RDPConnections
+            "Remote_Connections" = Get-RemoteConnectionsWithProcessDetails
             "applog"             = @{
             "logs_enabled"    = $true
             "log_file_path"  = "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\windows_security\logs*.txt"
             "log_type_name"  = "WinSecurityLog"
         }
+            "tabs" = @{
+                "RDP Connections" = @{
+                    "order" = 1
+                    "tablist" = @("RDP_Connections")
+                }
+                "Remote Connections Process details" = @{
+                    "order" = 2
+                    "tablist" = @("Remote_Connections")
+                }
+            }
         }
 
 
-        $output | ConvertTo-Json -Compress
+        $output | ConvertTo-Json -Compress -Depth 10
 
     } catch {
         
