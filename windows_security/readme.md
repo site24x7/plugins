@@ -39,5 +39,34 @@ Track the following metrics with the plugin:
 | `Threat Detected Quarantined` | Represents the number of threats that were successfully identified and quarantined by security software.|
 | `Malware Action Failed`       | Tracks the number of failed actions attempted by security software to respond to malware threats.                      |
 
-![image](https://github.com/user-attachments/assets/745889f9-3418-4277-ac1f-2fd6ca0a2ea6)
+
+### RDP Connections
+
+| Name         | Description                                                               |
+|-------------------------|---------------------------------------------------------------------------------|
+| `RDPLocalAddress`   | Local IP address on which the RDP session is established.                      |
+| `RDPLocalPort`        | Local port used for the RDP connection.                       |
+| `RDPRemoteAddress`    | Remote client IP address connected to the system.                              |
+| `RDPRemotePort`       | Remote port used by the client.                                                |
+| `RDPState`          | Current connection state.                            |
+| `RDPAppliedSettings`  | Applied network settings or configuration used by the RDP session.              |
+| `RDPOwningProcess`    | Process ID (PID) that owns the RDP connection.                                 |
+
+---
+
+### Remote Connections
+
+| Name      | Description                                                                 |
+|----------------------|---------------------------------------------------------------------------------|
+| `RemoteAddress`    | IP address of the remote system the machine is connected to.                   |
+| `RemotePort`       | Port number on the remote system.                                              |
+| `LocalAddress`     | Local IP address of the monitored system.                                      |
+| `LocalPort`        | Local port used for the connection.                                            |
+| `State`            | Connection state.                                    |
+| `ProcessName`      | Name of the process owning the connection.         |
+| `PID`              | Process ID of the owning process.                                              |
+
+
+<img width="1626" height="944" alt="image" src="https://github.com/user-attachments/assets/398f4c6b-cf10-4993-94d9-232f4715a78e" />
+
 
