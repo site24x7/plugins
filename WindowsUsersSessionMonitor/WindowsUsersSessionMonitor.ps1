@@ -77,8 +77,7 @@ Function Get-Data {
                 $userDetails += [PSCustomObject]@{
                     name = $updated_user
                     idletime = (Convert-IdleTimeToMinutes $_.'IDLE TIME' ([ref]$errorMsg))
-                    user_status = if ($status -eq "Active") { 1 } else { 0 }
-                    user_status_text = $status
+                    user_status = $status
                     "logon_logout" = $logonFlag
                     last_logon_time = $_.'LOGON TIME'
                 }
@@ -93,8 +92,7 @@ Function Get-Data {
                 $userDetails += [PSCustomObject]@{
                     name = $activeUser[$user].Name
                     idletime = 0
-                    user_status = 0
-                    user_status_text = "DisConnected"
+                    user_status = "DisConnected"
                     logon_logout = 0
                     last_logon_time = $date
                 }
@@ -105,8 +103,7 @@ Function Get-Data {
             $userDetails += [PSCustomObject]@{
                 name = "-"
                 idletime = -1
-                user_status = -1
-                user_status_text = "-"
+                user_status = "-"
                 logon_logout = -1
                 last_logon_time = "-"
             }
@@ -118,9 +115,7 @@ Function Get-Data {
             active_user = $active
             User_Details = $userDetails
             units = @{
-                User_Details = @{
-                    "idletime" = "mins"
-                }
+                "idletime" = "mins"
             }
         }
 
@@ -142,16 +137,13 @@ Function Get-Data {
                 [PSCustomObject]@{
                     name = "-"
                     idletime = -1
-                    user_status = -1
-                    user_status_text = "-"
+                    user_status = "-"
                     logon_logout = -1
                     last_logon_time = "-"
                 }
             )
             units = @{
-                User_Details = @{
-                    "idletime" = "mins"
-                }
+                "idletime" = "mins"
             }
             msg = $finalErrorMsg
         }
