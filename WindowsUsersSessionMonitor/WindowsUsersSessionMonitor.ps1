@@ -77,7 +77,8 @@ Function Get-Data {
                 $userDetails += [PSCustomObject]@{
                     name = $updated_user
                     idletime = (Convert-IdleTimeToMinutes $_.'IDLE TIME' ([ref]$errorMsg))
-                    user_status = $status
+                    user_status = if ($status -eq "Active") { 1 } else { 0 }
+                    user_status_text = $status
                     "logon_logout" = $logonFlag
                     last_logon_time = $_.'LOGON TIME'
                 }
@@ -92,7 +93,8 @@ Function Get-Data {
                 $userDetails += [PSCustomObject]@{
                     name = $activeUser[$user].Name
                     idletime = 0
-                    user_status = "DisConnected"
+                    user_status = 0
+                    user_status_text = "DisConnected"
                     logon_logout = 0
                     last_logon_time = $date
                 }
@@ -103,7 +105,8 @@ Function Get-Data {
             $userDetails += [PSCustomObject]@{
                 name = "-"
                 idletime = -1
-                user_status = "-"
+                user_status = -1
+                user_status_text = "-"
                 logon_logout = -1
                 last_logon_time = "-"
             }
@@ -139,7 +142,8 @@ Function Get-Data {
                 [PSCustomObject]@{
                     name = "-"
                     idletime = -1
-                    user_status = "-"
+                    user_status = -1
+                    user_status_text = "-"
                     logon_logout = -1
                     last_logon_time = "-"
                 }
