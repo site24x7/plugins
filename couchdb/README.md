@@ -118,6 +118,12 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 | bulk_requests | Number of bulk document write requests received |
 | temporary_view_reads | Number of temporary (ad-hoc) view reads |
 | clients_requesting_changes | Number of clients currently requesting change feeds |
+| lru_skips | Number of times the Least Recently Used (LRU) cache was skipped due to full capacity |
+| emits | Number of key-value pairs emitted during map function execution |
+| vdu_rejects | Number of document updates rejected by the validate_doc_update function |
+| view_timeouts | Number of view requests that timed out |
+| map_doc | Number of documents processed by map functions |
+
 ## Performance
 | **Metric Name** | **Description** |
 |------------------|------------------|
