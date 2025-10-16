@@ -74,7 +74,7 @@ TABS = {
             'view_reads',
             'bulk_requests',
             'temporary_view_reads',
-            'clients_requesting_changes'
+            'clients_requesting_changes','lru_skips','vdu_rejects','map_docs','emits','view_timeouts'
         ]
     },
     "Performance": {
@@ -222,7 +222,7 @@ def collect_couchdb(host, port, user, password):
         # -------- HTTP Other Metrics --------
         httpd = stats.get('httpd')
         if httpd:
-            for key in ['view_reads','bulk_requests','temporary_view_reads','clients_requesting_changes']:
+            for key in ['view_reads','bulk_requests','temporary_view_reads','clients_requesting_changes','lru_skips','vdu_rejects','map_doc','emits','view_timeouts']:
                 if key in httpd:
                     data[key] = httpd[key].get('value', 0)
                 else:
