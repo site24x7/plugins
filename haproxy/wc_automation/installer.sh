@@ -59,9 +59,9 @@ fi
 
 echo "Found plugin configuration file: $CFG_FILE"
 
-USERNAME=$(grep "^username" "$CFG_FILE" | sed 's/^username[[:space:]]*=[[:space:]]*//' | tr -d '"')
-PASSWORD=$(grep "^password" "$CFG_FILE" | sed 's/^password[[:space:]]*=[[:space:]]*//' | tr -d '"')
-URL=$(grep "^url" "$CFG_FILE" | sed 's/^url[[:space:]]*=[[:space:]]*//' | tr -d '"')
+USERNAME=$(grep "^username" "$CFG_FILE" | sed 's/^username[[:space:]]*=[[:space:]]*//' | tr -d '"'"'"'')
+PASSWORD=$(grep "^password" "$CFG_FILE" | sed 's/^password[[:space:]]*=[[:space:]]*//' | tr -d '"'"'"'')
+URL=$(grep "^url" "$CFG_FILE" | sed 's/^url[[:space:]]*=[[:space:]]*//' | tr -d '"'"'"'')
 
 PORT="8404"
 STATS_PATH="/stats"
