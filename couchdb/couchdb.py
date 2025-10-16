@@ -74,7 +74,7 @@ TABS = {
             'view_reads',
             'bulk_requests',
             'temporary_view_reads',
-            'clients_requesting_changes','lru_skips','vdu_rejects','map_docs','emits','view_timeouts'
+            'clients_requesting_changes','lru_skips','vdu_rejects','map_doc','emits','view_timeouts'
         ]
     },
     "Performance": {
