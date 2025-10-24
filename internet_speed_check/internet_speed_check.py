@@ -27,7 +27,7 @@ try:
         import zipimport
         importer = zipimport.zipimporter(plugin_script_path + "/speedtest-cli.pyz")
         speedtest = importer.load_module("speedtest")
-    except Exception as e:
+    except:
         plugin_rs['status'] = 0
         plugin_rs['msg'] = 'speedtest module not installed'
         print(json.dumps(plugin_rs))
