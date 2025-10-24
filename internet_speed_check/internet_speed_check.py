@@ -29,7 +29,7 @@ try:
         speedtest = importer.load_module("speedtest")
     except Exception as e:
         plugin_rs['status'] = 0
-        plugin_rs['msg'] = 'speedtest module not installed: {0}'.format(e)
+        plugin_rs['msg'] = 'speedtest module not installed'
         print(json.dumps(plugin_rs))
         sys.exit(1)
 
