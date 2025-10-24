@@ -1,4 +1,4 @@
-﻿$msg= ""
+$msg= ""
 try
 {
     $domainControlerName = (Get-ADDomainController).HostName
@@ -6,8 +6,8 @@ try
     $replicationfailure = Get-ADReplicationFailure -Target $domainControlerName | select Server,@{n="Partner";e={(Resolve-DnsName $_.PartnerAddress).NameHost}},FailureCount,FailureType,FirstFailureTime,LastError # | Where-Object { $_.Partner -eq 'win-76qkdkpe00a.mylocal.com'}
     $InboundData = $replicationPartners | Where-Object {$_.PartnerType -eq 'Inbound'}
     $OutboundData = $replicationPartners | Where-Object {$_.PartnerType -eq 'Outbound'}
-    $InboundPartners = $InboundData.Partner -join ','
-    $OutboundPartners = $OutboundData.Partner -join ','
+    $InboundPartners = if($InboundData.Partner) { $InboundData.Partner -join ',' } else { "-" }
+    $OutboundPartners = if($OutboundData.Partner) { $OutboundData.Partner -join ',' } else { "-" }
 }
 catch
 {
@@ -19,7 +19,7 @@ if($InboundData.Count -gt 0)
 }
 else
 {
-    $InboundLastAttempt = ""
+    $InboundLastAttempt = "-"
 }
 if($InboundData.Count -gt 0)
 {
@@ -27,7 +27,7 @@ if($InboundData.Count -gt 0)
 }
 else
 {
-    $InboundLastAttemptPartner = ""
+    $InboundLastAttemptPartner = "-"
 }
 if($InboundData.Count -gt 0)
 {
@@ -35,7 +35,7 @@ if($InboundData.Count -gt 0)
 }
 else
 {
-    $InboundLastSuccess = ""
+    $InboundLastSuccess = "-"
 }
 if($InboundData.Count -gt 0)
 {
@@ -43,7 +43,7 @@ if($InboundData.Count -gt 0)
 }
 else
 {
-    $InboundLastSuccessPartner = ""
+    $InboundLastSuccessPartner = "-"
 }
 if($InboundData.Count -gt 0)
 {
@@ -59,7 +59,7 @@ if($OutboundData.Count -gt 0)
 }
 else
 {
-    $OutboundLastAttempt = ""
+    $OutboundLastAttempt = "-"
 }
 if($OutboundData.Count -gt 0)
 {
@@ -67,7 +67,7 @@ if($OutboundData.Count -gt 0)
 }
 else
 {
-    $OutboundLastAttemptPartner = ""
+    $OutboundLastAttemptPartner = "-"
 }
 if($OutboundData.Count -gt 0)
 {
@@ -75,7 +75,7 @@ if($OutboundData.Count -gt 0)
 }
 else
 {
-    $OutboundLastSuccess = ""
+    $OutboundLastSuccess = "-"
 }
 if($OutboundData.Count -gt 0)
 {
@@ -83,7 +83,7 @@ if($OutboundData.Count -gt 0)
 }
 else
 {
-    $OutboundLastSuccessPartner = ""
+    $OutboundLastSuccessPartner = "-"
 }
 if($OutboundData.Count -gt 0)
 {
@@ -94,11 +94,11 @@ else
     $OutboundLastResult = -1
 }
 $FailureCount = 0
-$FailureType = ""
-$FirstFailureTime = 0
-$LastError = 0
-$ErrorPartner = ""
-$ErrorServer = ""
+$FailureType = "-"
+$FirstFailureTime = "-"
+$LastError = -1
+$ErrorPartner = "-"
+$ErrorServer = "-"
 $Status = 1
 if($replicationfailure -ne $null)
 {
@@ -128,23 +128,23 @@ if($replicationfailure -ne $null)
     }
     if($FailureType -eq $null)
     {
-        $FailureType = ""
+        $FailureType = "-"
     }
     if($FirstFailureTime -eq $null)
     {
-        $FirstFailureTime = ""
+        $FirstFailureTime = "-"
     }
     if($LastError -eq $null)
     {
-        $LastError = ""
+        $LastError = -1
     }
     if($ErrorPartner -eq $null)
     {
-        $ErrorPartner = ""
+        $ErrorPartner = "-"
     }
     if($ErrorServer -eq $null)
     {
-        $ErrorServer = ""
+        $ErrorServer = "-"
     }
     $replicationfailure | ForEach-Object {
     
