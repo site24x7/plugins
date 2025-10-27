@@ -19,7 +19,9 @@ Plugin Installation
 
 2. **Download the required files**:
     ```
-    wget https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/internet_speed_check.py
+    wget https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/internet_speed_check.py && sed -i "1s|^.*|#! $(which python3)|" internet_speed_check.py
+
+
     wget https://raw.githubusercontent.com/site24x7/plugins/master/internet_speed_check/speedtest-cli.pyz
     ```
 
