@@ -86,15 +86,15 @@ The agent will automatically execute the plugin within five minutes and user can
 | upload         | Upload speed of your internet connection |
 | download       | Download speed of your internet connection  |
 | ping           | Reaction time of your internet connection   |
-| latency        | Latency to the selected server             |
-| packet_loss    | Packet loss during the speed test           |
-| bytes_sent     | Total bytes sent during the test            |
-| bytes_received | Total bytes received during the test       |
-| server_name    | Name of the server used for the speed      |
-| server_country | Country of the server used for the speed test   |
-| isp            | Internet Service Provider of the client         |
-| client_ip      | IP address of the client performing the test    |
-| timestamp      | Time when the speed test was performed|
+| Latency        | Latency to the selected server             |
+| Packet Loss    | Packet loss during the speed test           |
+| Bytes Sent     | Total bytes sent during the test            |
+| Bytes Received | Total bytes received during the test       |
+| Location    | Name of the server used for the speed      |
+| Country | Country of the server used for the speed test   |
+| ISP            | Internet Service Provider of the client         |
+| Client IP      | IP address of the client performing the test    |
+| Timestamp      | Time when the speed test was performed|
 
 ### Sample Image
-<img width="1619" height="919" alt="image" src="https://github.com/user-attachments/assets/1b9a9c98-0282-4b1b-b12c-df686ddaa136" />
+<img width="1635" height="859" alt="image" src="https://github.com/user-attachments/assets/71db3866-9fea-4dd8-a2e4-cb405de0285a" />
