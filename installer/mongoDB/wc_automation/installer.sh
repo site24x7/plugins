@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-PACKAGE_REQUIRED=("pymongo")
-
 for version in python python3; do
     if command -v "$version" ; then
         PYTHON_CMD=$(command -v "$version")
@@ -28,91 +26,93 @@ if [ ! -f "$TARGET_PY_FILE" ]; then
     exit 1
 fi
 
-SHEBANG_PYTHON_PATH=""
-
-for package in "${PACKAGE_REQUIRED[@]}"; do
-    if $PYTHON_CMD -c "import $package" ; then
-        echo "Package '$package' is already installed globally."
-        SHEBANG_PYTHON_PATH=$(command -v "$PYTHON_CMD")
-    else
-        echo "Info: Package '$package' is not installed globally. Attempting global installation..."
-        
-        set +e
-        output=$($PYTHON_CMD -m pip install "$package" 2>&1)
-        exit_status=$?
-        set -e
-        
-        echo "$output" | head -n 4
-        
-        if [ $exit_status -eq 0 ]; then
-            echo "Package '$package' installed successfully globally."
-            if $PYTHON_CMD -c "import $package" ; then
-                echo "Package '$package' verified successfully globally."
-                SHEBANG_PYTHON_PATH=$(command -v "$PYTHON_CMD")
-            else
-                echo "Error: Package '$package' installation verification failed globally."
-                exit 1
-            fi
-        else
-            echo "Global installation failed with exit status $exit_status"
-            echo "Warning: Failed to install the package '$package' globally. Will try in virtual environment."
-            VENV_DIR=$(dirname "$(dirname "$CURRENT_DIR_NAME")")/.plugin-venv
-            VENV_RELATIVE_PATH=".plugin-venv"
-            if [ ! -d "$VENV_DIR" ]; then
-                echo "Attempting to create virtual environment: $VENV_RELATIVE_PATH"
-                if $PYTHON_CMD -c "import venv"; then
-                    if $PYTHON_CMD -m venv "$VENV_DIR"; then
-                        echo "Virtual environment created successfully using built-in venv."
-                    else
-                        echo "Error: Failed to create virtual environment with built-in venv."
-                        exit 1
-                    fi
-                elif command -v virtualenv && python3 -c "import virtualenv"; then
-                    if virtualenv "$VENV_DIR"; then
-                        echo "Virtual environment created successfully using virtualenv."
-                    else
-                        echo "Error: Failed to create virtual environment with virtualenv."
-                        exit 1
-                    fi
-                else
-                    echo "Error: Neither 'venv' module nor 'virtualenv' is available."
-                    exit 1
-                fi
-            fi
-            VENV_PYTHON="$VENV_DIR/bin/python"
-            VENV_PIP="$VENV_DIR/bin/pip"
-            if [ -f "$VENV_PYTHON" ] && [ -f "$VENV_PIP" ]; then
-                set +e
-                output=$("$VENV_PIP" install "$package" 2>&1)
-                exit_status=$?
-                set -e
-                
-                echo "$output" | head -n 4
-                
-                if [ $exit_status -ne 0 ]; then
-                    echo "Virtual environment installation failed with exit status $exit_status"
-                    exit 1
-                else
-                    echo "Package '$package' installed successfully in virtual environment."
-                    if "$VENV_PYTHON" -c "import $package" ; then
-                        echo "Package '$package' verified successfully in virtual environment."
-                        SHEBANG_PYTHON_PATH="$VENV_PYTHON"
-                    else
-                        echo "Error: Package '$package' installation verification failed in virtual environment."
-                        exit 1
-                    fi
-                fi
-            else
-                echo "Error: Virtual environment Python/pip not found."
-                exit 1
-            fi
-        fi
-    fi
-done
+SHEBANG_PYTHON_PATH="$PYTHON_CMD"
 
 if [ -n "$SHEBANG_PYTHON_PATH" ]; then
     sed -i "1s|^.*$|#!$SHEBANG_PYTHON_PATH|" "$TARGET_PY_FILE"
     echo "Updated shebang in plugin to use: $SHEBANG_PYTHON_PATH"
 else
     echo "Warning: Could not determine Python path for shebang update."
+    exit 1
 fi
+
+check_value(){
+    value=$1
+    
+    execution_pattern='\$\([^)]*\)|`[^`]*`|<\([^)]*\)|>\([^)]*\)|;\([^)]*\)|\|\|\([^)]*\)|&&\([^)]*\)'
+    if [[ "$value" =~ $execution_pattern ]]; then
+        echo "ERROR: Command execution pattern detected in value: '$value'"
+        exit 1
+    fi
+}
+
+declare -A config
+
+# Always check for configuration file
+CONFIG_FILE="${CURRENT_DIR_NAME}/$monitorName.cfg"
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Error: Configuration file '$CONFIG_FILE' not found."
+    exit 1
+fi
+
+while IFS='=' read -r key value || [ -n "$key" ]; do
+    key="${key#"${key%%[![:space:]]*}"}"   
+    key="${key%"${key##*[![:space:]]}"}"   
+    value="${value#"${value%%[![:space:]]*}"}"   
+    value="${value%"${value##*[![:space:]]}"}" 
+    
+    [[ "$key" =~ ^#.*$ || -z "$key" || "$key" == \[*\] ]] && continue
+    
+    if [[ "$value" =~ ^\".*\"$ ]]; then
+        value="${value#\"}"   
+        value="${value%\"}"   
+    elif [[ "$value" =~ ^\'.*\'$ ]]; then
+        value="${value#\'}"
+        value="${value%\'}"   
+    fi
+    
+    check_value "$value"
+    
+    config["$key"]="$value"
+done < "$CONFIG_FILE"
+
+declare -a CMD_ARGS_ARRAY
+
+for key in "${!config[@]}"; do
+    value="${config[$key]}"
+    CMD_ARGS_ARRAY+=("--$key")
+    CMD_ARGS_ARRAY+=("$value")
+done
+
+echo "Executing monitoring script..."
+
+DISPLAY_CMD="$SHEBANG_PYTHON_PATH \"$TARGET_PY_FILE\""
+for ((i=0; i<${#CMD_ARGS_ARRAY[@]}; i+=2)); do
+    key="${CMD_ARGS_ARRAY[i]}"
+    value="${CMD_ARGS_ARRAY[i+1]}"
+    DISPLAY_CMD="$DISPLAY_CMD $key '$value'"
+done
+
+# echo "Command: $DISPLAY_CMD"
+
+if [ ${#CMD_ARGS_ARRAY[@]} -gt 0 ]; then
+    OUTPUT=$("$SHEBANG_PYTHON_PATH" "$TARGET_PY_FILE" "${CMD_ARGS_ARRAY[@]}")
+fi
+
+# echo "$OUTPUT"
+
+if [ -z "$OUTPUT" ]; then
+    echo "Execution failed: Output is empty"
+    exit 1
+fi
+
+if echo "$OUTPUT" | grep -q '"status": 0'; then
+    ERROR_MSG=$(echo "$OUTPUT" | grep -o '"msg": *"[^"]*"' | sed 's/"msg": *"\([^"]*\)"/\1/')
+    
+    echo "Execution failed: $ERROR_MSG"
+    exit 1
+else
+    echo "Executed successfully"
+fi
+
+echo "Monitoring script execution completed."
