@@ -533,9 +533,9 @@ class MongoDB(object):
 
 
 
-        except Exception:
+        except Exception as e:
             data['status']=0
-            data['msg']=traceback.format_exc()
+            data['msg']=str(e)
 
         data['units']=METRICS_UNITS
         data['tabs']=METRICS_TABS
