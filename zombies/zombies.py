@@ -6,6 +6,51 @@ PLUGIN_VERSION = "1"
 HEARTBEAT = "true"
 error_msg = ""
 
+def convert_elapsed_time(elapsed_str):
+    global error_msg
+    try:
+        if not elapsed_str or elapsed_str == "-":
+            return "-"
+        
+        if "-" in elapsed_str:
+            parts = elapsed_str.split("-")
+            days = int(parts[0])
+            time_part = parts[1]
+        else:
+            days = 0
+            time_part = elapsed_str
+        
+        time_components = time_part.split(":")
+        
+        if len(time_components) == 3: 
+            hours, minutes, seconds = map(int, time_components)
+        elif len(time_components) == 2: 
+            hours = 0
+            minutes, seconds = map(int, time_components)
+        else:
+            return "-"
+        
+        result_parts = []
+        if days > 0:
+            result_parts.append("{} day{}".format(days, "s" if days != 1 else ""))
+        if hours > 0:
+            result_parts.append("{} hr{}".format(hours, "s" if hours != 1 else ""))
+        if minutes > 0:
+            result_parts.append("{} min".format(minutes))
+        if seconds > 0:
+            result_parts.append("{} sec".format(seconds))
+        
+        if not result_parts:
+            return "0 sec"
+        
+        return ", ".join(result_parts)
+        
+    except Exception as e:
+        if error_msg:
+            error_msg += "; "
+        error_msg += "Error converting elapsed time '{}': {}".format(elapsed_str, str(e))
+        return "-"
+
 def run_command(cmd):
     global error_msg
     try:
@@ -37,7 +82,7 @@ def get_zombie_details():
                 "PID": pid or -1,
                 "PPID": ppid or -1,
                 "User": user or "-",
-                "Elapsed": etime or "-",
+                "Elapsed": convert_elapsed_time(etime) if etime else "-",
                 "State": stat or "-",
                 "name": comm or "-",                
                 "Zombie_Command": cmd or "-",       
@@ -83,7 +128,19 @@ def metricCollector():
             parent_cmds = [z['Parent_Command'] for z in zombies]
             data['Unique Users with Zombies'] = len(set(users))
             data['Unique Parent Commands'] = len(set(parent_cmds))
-            data['Longest Running Zombie (Elapsed)'] = max([z['Elapsed'] for z in zombies])
+            
+            longest_elapsed = "-"
+            try:
+                ps_output = run_command("ps -eo pid,etime | grep -E '^\\s*({})\\s+' | head -1".format('|'.join([z['PID'] for z in zombies if str(z['PID']).isdigit()])))
+                if ps_output:
+                    original_elapsed = ps_output.split()[1] if len(ps_output.split()) > 1 else "-"
+                    longest_elapsed = convert_elapsed_time(original_elapsed)
+                else:
+                    longest_elapsed = zombies[0]['Elapsed']
+            except:
+                longest_elapsed = zombies[0]['Elapsed'] if zombies else "-"
+            
+            data['Longest Running Zombie (Elapsed)'] = longest_elapsed
             data['zombie_process_details'] = zombies
 
     except Exception as e:
