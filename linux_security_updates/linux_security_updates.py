@@ -75,6 +75,41 @@ class security_update_check:
             return ""
         return updates_output
             
+    def package_table(self, packages):
+        # List to store dictionaries of processed package information
+        processed_packages=[]
+        pack_dict={}
+        name_dict={
+            "Package":"Package",
+            "Name":"Package",
+            "Version":"Version",
+            "Installed-Size":"Size",
+            "Size":"Size",
+            "Description":"Description"
+        }
+        try:
+            count=0
+            reset_count=0
+
+            for pack in packages:
+                temp_pack=pack.split(":")
+                pack_dict[name_dict[temp_pack[0].strip()]]=temp_pack[1][1:]
+                reset_count+=1
+
+                # Grouping package attributes: each package has 4 attributes (Package, Version, Installed-Size, Description)
+                if reset_count>=4:
+                    pack_dict["name"]="Package"+str(count)
+                    pack_dict["state"]=1
+                    count+=1
+                    reset_count=0
+                    processed_packages.append(pack_dict)
+                    pack_dict={}
+                if count >= 10:
+                    break
+        except:
+            pass
+        if len(processed_packages)!=0:
+            self.maindata["pack"]=processed_packages
 
     
     def log_creator(self, updates_output, reboot_required_packages):
@@ -101,6 +136,7 @@ class security_update_check:
             log_details_raw=updates_output.split("\n")
             log_details_raw.remove('')
             log_details=""
+            self.package_table(log_details_raw)
 
             if os.path.exists("{}/config.json".format(self.plugin_script_path)):
                 with open("{}/config.json".format(self.plugin_script_path), "r") as f:
@@ -387,6 +423,7 @@ def run(param={}):
 if __name__ == "__main__":
 
     parser=argparse.ArgumentParser()
+    parser.add_argument('--host',help="Host Name",nargs='?', default="localhost")
     parser.add_argument('--timeout',help="Host Name",nargs='?', default=timeout)
     args=parser.parse_args()
     obj = security_update_check(args.timeout)
