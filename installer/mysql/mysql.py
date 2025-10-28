@@ -721,12 +721,26 @@ class MySQLMonitor:
         finally:
             self.close()
         return self.maindata
+
+def clean_quotes(value):
+    if not value:
+        return value
+    
+    value_str = str(value)
+    
+    if value_str.startswith('"') and value_str.endswith('"'):
+        return value_str[1:-1]
+    
+    elif value_str.startswith("'") and value_str.endswith("'"):
+        return value_str[1:-1]
+    
+    return value_str
     
 def run(param={}):
     mysql_params = {**MYSQL_DEFAULTS, **param}
     mysql_params = {
-    k: (v.strip('\'"') if isinstance(v, str) else v)
-    for k, v in mysql_params.items()
+        k: (clean_quotes(v) if isinstance(v, str) else v)
+        for k, v in mysql_params.items()
     }
     monitor = MySQLMonitor(**mysql_params)
     result = monitor.collect_metrics()

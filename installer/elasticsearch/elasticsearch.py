@@ -533,16 +533,30 @@ class esk:
         return self.maindata
 
 
+def clean_quotes(value):
+    if not value:
+        return value
+    
+    value_str = str(value)
+    
+    if value_str.startswith('"') and value_str.endswith('"'):
+        return value_str[1:-1]
+    
+    elif value_str.startswith("'") and value_str.endswith("'"):
+        return value_str[1:-1]
+    
+    return value_str
+
 def run(param):
-    host = str(param.get("host")).strip('"') if param and param.get("host") else "localhost"
-    port = str(param.get("port")).strip('"') if param and param.get("port") else "9200"
-    username = str(param.get("username")).strip('"') if param and param.get("username") else "None"
-    password = str(param.get("password")).strip('"') if param and param.get("password") else "None"
-    ssl_option = str(param.get("ssl_option")).strip('"') if param and param.get("ssl_option") else "false"
-    cafile = str(param.get("cafile")).strip('"') if param and param.get("cafile") else "None"
-    logs_enabled = str(param.get("logs_enabled")).strip('"') if param and param.get("logs_enabled") else "True"
-    log_type_name = str(param.get("log_type_name")).strip('"') if param and param.get("log_type_name") else "Elasticsearch Slow Log"
-    log_file_path = str(param.get("log_file_path")).strip('"') if param and param.get("log_file_path") else "/var/log/elasticsearch/*_index_indexing_slowlog*.log"
+    host = clean_quotes(param.get("host")) if param and param.get("host") else "localhost"
+    port = clean_quotes(param.get("port")) if param and param.get("port") else "9200"
+    username = clean_quotes(param.get("username")) if param and param.get("username") else "None"
+    password = clean_quotes(param.get("password")) if param and param.get("password") else "None"
+    ssl_option = clean_quotes(param.get("ssl_option")) if param and param.get("ssl_option") else "false"
+    cafile = clean_quotes(param.get("cafile")) if param and param.get("cafile") else "None"
+    logs_enabled = clean_quotes(param.get("logs_enabled")) if param and param.get("logs_enabled") else "True"
+    log_type_name = clean_quotes(param.get("log_type_name")) if param and param.get("log_type_name") else "Elasticsearch Slow Log"
+    log_file_path = clean_quotes(param.get("log_file_path")) if param and param.get("log_file_path") else "/var/log/elasticsearch/*_index_indexing_slowlog*.log"
     
     class Args:
         def __init__(self, host, port, username, password, ssl_option, cafile, logs_enabled, log_type_name, log_file_path):

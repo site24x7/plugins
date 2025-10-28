@@ -262,13 +262,26 @@ class pgsql():
             ]
         }
 
+def clean_quotes(value):
+    if not value:
+        return value
+    
+    value_str = str(value)
+    
+    if value_str.startswith('"') and value_str.endswith('"'):
+        return value_str[1:-1]
+    
+    elif value_str.startswith("'") and value_str.endswith("'"):
+        return value_str[1:-1]
+    
+    return value_str
         
 def run(param):
-    host_name = str(param.get("host")).strip('"') if param else "localhost"
-    port = str(param.get("port")).strip('"') if param else "5432"  
-    username = str(param.get("username")).strip('"') if param else "postgres"  
-    password = str(param.get("password")).strip('"') if param else "postgres" 
-    db = str(param.get("db")).strip('"') if param else "postgres"
+    host_name = clean_quotes(param.get("host")) if param and param.get("host") else "localhost"
+    port = clean_quotes(param.get("port")) if param and param.get("port") else "5432"  
+    username = clean_quotes(param.get("username")) if param and param.get("username") else "postgres"  
+    password = clean_quotes(param.get("password")) if param and param.get("password") else "postgres" 
+    db = clean_quotes(param.get("db")) if param and param.get("db") else "postgres"
 
     psql_instance = pgsql(host_name, port, username, password, db)
     result = psql_instance.main()
