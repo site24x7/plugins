@@ -357,18 +357,31 @@ class glassfish:
             applog["logs_enabled"] = False
         self.maindata["applog"] = applog
         return self.maindata
+
+def clean_quotes(value):
+    if not value:
+        return value
     
+    value_str = str(value)
+    
+    if value_str.startswith('"') and value_str.endswith('"'):
+        return value_str[1:-1]
+    
+    elif value_str.startswith("'") and value_str.endswith("'"):
+        return value_str[1:-1]
+    
+    return value_str
 
 def run(param):
-    host = str(param.get("host")).strip('"') if param else "localhost"
-    port = str(param.get("port")).strip('"') if param else "4848"
-    ssl = str(param.get("ssl")).strip('"') if param else "false"
-    insecure = str(param.get("insecure")).strip('"') if param else "false"
-    username = str(param.get("username")).strip('"') if param else "None"
-    password = str(param.get("password")).strip('"') if param else "None"
-    logs_enabled = str(param.get("logs_enabled")).strip('"') if param else "False"
-    log_type_name = str(param.get("log_type_name")).strip('"') if param else "None"
-    log_file_path = str(param.get("log_file_path")).strip('"') if param else "None"
+    host = clean_quotes(param.get("host")) if param and param.get("host") else "localhost"
+    port = clean_quotes(param.get("port")) if param and param.get("port") else "4848"
+    ssl = clean_quotes(param.get("ssl")) if param and param.get("ssl") else "false"
+    insecure = clean_quotes(param.get("insecure")) if param and param.get("insecure") else "false"
+    username = clean_quotes(param.get("username")) if param and param.get("username") else "None"
+    password = clean_quotes(param.get("password")) if param and param.get("password") else "None"
+    logs_enabled = clean_quotes(param.get("logs_enabled")) if param and param.get("logs_enabled") else "False"
+    log_type_name = clean_quotes(param.get("log_type_name")) if param and param.get("log_type_name") else "None"
+    log_file_path = clean_quotes(param.get("log_file_path")) if param and param.get("log_file_path") else "None"
     
     class Args:
         def __init__(self, host, port, ssl, insecure, username, password, logs_enabled, log_type_name, log_file_path):
