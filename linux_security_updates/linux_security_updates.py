@@ -110,6 +110,16 @@ class security_update_check:
             pass
         if len(processed_packages)!=0:
             self.maindata["pack"]=processed_packages
+        else:
+            self.maindata["pack"]=[  {
+                                "Package": "example",
+                                "Version": "0",
+                                "Size": "0 k",
+                                "Description": "No updates available",
+                                "name": "Package0",
+                                "state": 1
+                                }
+                            ]
 
     
     def log_creator(self, updates_output, reboot_required_packages):
