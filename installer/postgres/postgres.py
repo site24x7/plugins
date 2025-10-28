@@ -19,7 +19,7 @@ HOSTNAME = 'localhost'            #Change this value if it is a remote host
 PORT = 5432                       #Change the port number (5432 by default)
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
-PLUGIN_VERSION = "1"
+PLUGIN_VERSION = 1
 
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT=True
@@ -169,11 +169,11 @@ class pgsql():
         self._results = {}
         self._msg=""
         self._db = db
-    def main(self,plugin_version,heartbeat):
+    def main(self):
         global VERSION
         try: 
-            self._results.setdefault('plugin_version' , str(plugin_version))
-            self._results.setdefault('heartbeat_required' , str(heartbeat))
+            self._results.setdefault('plugin_version' , PLUGIN_VERSION)
+            self._results.setdefault('heartbeat_required' , HEARTBEAT)
             import psycopg2
             self._conn = psycopg2.connect( dbname = self._db, user = self._uname , password = self._pwd, host = self._hostname, port = self._port )
             VERSION = self._conn.server_version
@@ -195,7 +195,7 @@ class pgsql():
             self._results["units"]=units
             if self._msg != "":
                 self._results["msg"]=self._msg
-            print((json.dumps(self._results)))
+            return self._results
 
     def metricCollector(self):
         dictResults = {}
@@ -263,7 +263,16 @@ class pgsql():
         }
 
         
+def run(param):
+    host_name = str(param.get("host")).strip('"') if param else "localhost"
+    port = str(param.get("port")).strip('"') if param else "5432"  
+    username = str(param.get("username")).strip('"') if param else "postgres"  
+    password = str(param.get("password")).strip('"') if param else "postgres" 
+    db = str(param.get("db")).strip('"') if param else "postgres"
 
+    psql_instance = pgsql(host_name, port, username, password, db)
+    result = psql_instance.main()
+    return result
     
 if __name__ == '__main__':
     import argparse
@@ -272,8 +281,6 @@ if __name__ == '__main__':
     parser.add_argument('--port', help='port number', type=int,  nargs='?', default=PORT)
     parser.add_argument('--username', help='user name', nargs='?', default=USERNAME)
     parser.add_argument('--password', help='password', nargs='?', default=PASSWORD)
-    parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=PLUGIN_VERSION)
-    parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=HEARTBEAT)
     parser.add_argument('--db', help='database name', nargs='?', default=DB)
     args = parser.parse_args()
         
@@ -281,9 +288,8 @@ if __name__ == '__main__':
     port=str(args.port)
     username=args.username
     password=args.password
-    plugin_version=args.plugin_version
     db=args.db
-    heartbeat=args.heartbeat
         
     psql = pgsql(host_name,port,username,password,db)
-    psql.main(plugin_version,heartbeat)
+    results=psql.main()
+    print(json.dumps(results))
