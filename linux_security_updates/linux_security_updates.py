@@ -113,7 +113,7 @@ class security_update_check:
         else:
             self.maindata["pack"]=[  {
                                 "Package": "example",
-                                "Version": "0",
+                                "Version": "0.0",
                                 "Size": "0 k",
                                 "Description": "No updates available",
                                 "name": "Package0",
