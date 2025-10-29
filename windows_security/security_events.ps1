@@ -101,13 +101,17 @@ function Get-SecurityEventLogs {
                 $connections = Get-NetTCPConnection -LocalPort $rdpPort -ErrorAction SilentlyContinue
                 
                 if ($connections) {
+                    $rdpConnectionCounter = 1
                     foreach ($conn in $connections) {
+                        if ($rdpConnectionCounter -gt 10) {
+                            break
+                        }
                         if ($conn.RemoteAddress -notmatch "::" -and 
                             $conn.RemoteAddress -ne "0.0.0.0" -and
                             $conn.RemoteAddress -ne "127.0.0.1") {
                             
                             $connectionInfo = @{
-                                "name" = "IP_$($conn.RemoteAddress)"
+                                "name" = "Connection$rdpConnectionCounter"
                                 "RDPLocalAddress" = $conn.LocalAddress
                                 "RDPLocalPort" = $conn.LocalPort 
                                 "RDPRemoteAddress" = $conn.RemoteAddress
@@ -118,6 +122,7 @@ function Get-SecurityEventLogs {
                             }
                             
                             $rdpConnections += $connectionInfo
+                            $rdpConnectionCounter++
                         }
                     }
                 }
@@ -164,9 +169,10 @@ function Get-SecurityEventLogs {
                         $_.State -eq 'Established'
                     } |
                     Group-Object -Property RemoteAddress |
-                    Select-Object -First 15
+                    Select-Object -First 10
                 
                 if ($connections) {
+                    $connectionCounter = 1
                     foreach ($group in $connections) {
                         try {
                             $conn = $group.Group[0]
@@ -182,7 +188,7 @@ function Get-SecurityEventLogs {
                             }
                             
                             $connectionInfo = @{
-                                "name" = "IP_$($conn.RemoteAddress)"
+                                "name" = "Connection$connectionCounter"
                                 "RemoteAddress" = $conn.RemoteAddress
                                 "RemotePort" = $conn.RemotePort
                                 "LocalAddress" = $conn.LocalAddress
@@ -193,6 +199,7 @@ function Get-SecurityEventLogs {
                             }
                             
                             $remoteConnections += $connectionInfo
+                            $connectionCounter++
                         } catch {
                         }
                     }
