@@ -98,7 +98,7 @@ class security_update_check:
 
                 # Grouping package attributes: each package has 4 attributes (Package, Version, Installed-Size, Description)
                 if reset_count>=4:
-                    pack_dict["name"]="Package"+str(count)
+                    pack_dict["name"]="Package"+str(count+1)
                     pack_dict["state"]=1
                     count+=1
                     reset_count=0
@@ -109,14 +109,14 @@ class security_update_check:
         except:
             pass
         if len(processed_packages)!=0:
-            self.maindata["pack"]=processed_packages
+            self.maindata["Pending_Packages"]=processed_packages
         else:
-            self.maindata["pack"]=[  {
-                                "Package": "example",
-                                "Version": "0.0",
-                                "Size": "0 k",
-                                "Description": "No updates available",
-                                "name": "Package0",
+            self.maindata["Pending_Packages"]=[  {
+                                "Package": "-",
+                                "Version": "-",
+                                "Size": "-",
+                                "Description": "-",
+                                "name": "Package1",
                                 "state": 1
                                 }
                             ]
