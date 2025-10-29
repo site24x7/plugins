@@ -1,5 +1,6 @@
 $heartbeat = "true" 
 $version = 1
+$maxUsers = 10
 
 Function Convert-IdleTimeToMinutes {
     param($idleTime, [ref]$errorMsg)
@@ -37,10 +38,12 @@ Function Convert-IdleTimeToMinutes {
     }
 }
 
-Function Get-Data {
+Function Get-Data {      
     try {
-        $activeUser = Get-LocalUser | Select *
+        $TotalUsers = Get-LocalUser | Select *
         $active = 0
+        $disconnected = 0
+        $idle = 0
         $userName = @()
         $userDetails = @()
         $errorMsg = ""
@@ -56,16 +59,21 @@ Function Get-Data {
                 $updated_user = $_.USERNAME -replace ">", ""
                 
                 $status = ""
-                $logonFlag = 0
-                
+                $logonFlag = 0                
                 if ($_.STATE -eq "Disc") {
                     $status = "Disconnected"
                     $logonFlag = 0
+                    $disconnected += 1
                 }
                 elseif ($_.STATE -eq "Active") {
                     $status = "Active"
                     $active += 1
                     $logonFlag = 1
+                }
+                elseif ($_.STATE -eq "Idle") {
+                    $status = "Idle"
+                    $idle += 1
+                    $logonFlag = 0
                 }
                 else {
                     $status = $_.STATE
@@ -73,29 +81,31 @@ Function Get-Data {
                 }
 
                 $userName += $updated_user
-                
                 $userDetails += [PSCustomObject]@{
                     name = $updated_user
                     idletime = (Convert-IdleTimeToMinutes $_.'IDLE TIME' ([ref]$errorMsg))
                     user_status = $status
+                    status = if ($status -eq "Active") { 1 } else { 0 }
                     "logon_logout" = $logonFlag
                     last_logon_time = $_.'LOGON TIME'
                 }
             }
-        }
-
-        for ($user = 1; $user -lt $activeUser.Count; $user = $user + 1) {
-            $date = $activeUser[$user].LastLogon
+        }        
+            
+        for ($user = 1; $user -lt $TotalUsers.Count; $user = $user + 1) {
+            $date = $TotalUsers[$user].LastLogon
             $date = $date -replace '[a-z]', ''
             
-            if ($userName -notcontains ($activeUser[$user].Name)) {
+              if ($userName -notcontains ($TotalUsers[$user].Name)) {
                 $userDetails += [PSCustomObject]@{
-                    name = $activeUser[$user].Name
+                    name = $TotalUsers[$user].Name
                     idletime = 0
                     user_status = "DisConnected"
+                    status = 0
                     logon_logout = 0
                     last_logon_time = $date
                 }
+                $disconnected += 1
             }
         }
 
@@ -104,16 +114,27 @@ Function Get-Data {
                 name = "-"
                 idletime = -1
                 user_status = "-"
+                status = 0
                 logon_logout = -1
                 last_logon_time = "-"
             }
+        }       
+        $total = $userDetails.Count
+
+        $limitedUserDetails = if ($userDetails.Count -gt $maxUsers) {
+            $userDetails[0..($maxUsers-1)]
+        } else {
+            $userDetails
         }
 
         $dataObj = @{
             plugin_version = $version
             heartbeat_required = $heartbeat
             active_user = $active
-            User_Details = $userDetails
+            disconnected_users = $disconnected
+            idle_users = $idle
+            total_users = $total
+            User_Details = $limitedUserDetails
             units = @{
                 "idletime" = "mins"
             }
@@ -128,16 +149,19 @@ Function Get-Data {
     } catch {
         $catchError = $_.Exception.Message
         $finalErrorMsg = if ($errorMsg) { "$errorMsg; $catchError" } else { $catchError }
-        
-        $errorObj = @{
+          $errorObj = @{
             plugin_version = $version
             heartbeat_required = $heartbeat
-            active_user = 0
+            active_user = -1
+            disconnected_users = -1
+            idle_users = -1
+            total_users = -1
             User_Details = @(
                 [PSCustomObject]@{
                     name = "-"
                     idletime = -1
                     user_status = "-"
+                    status = 0
                     logon_logout = -1
                     last_logon_time = "-"
                 }
