@@ -3,6 +3,11 @@
 ## Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent/Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- You must have starlink-grpc-tools installed and 'starlink_grpc' binary available.
+  ```bash
+	pip3 install grpcio grpcio-tools
+  ```
+- https://github.com/sparky8512/starlink-grpc-tools
 
 ### Plugin Installation  
 
