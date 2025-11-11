@@ -1,4 +1,6 @@
 # Starlink dish Monitoring
+
+This plugin monitors Starlink metrics from a server that is connected to the internet using the Starlink service.
                                                                                               
 ## Prerequisites
 
