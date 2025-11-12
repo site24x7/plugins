@@ -8,30 +8,65 @@ RabbitMQ is a message broker tool that routes messages between producers and con
 
 Create a dedicated monitoring user with restricted permissions for RabbitMQ monitoring.
 
-User Tag: monitoring
+**User Tag:** monitoring
 
-VHost Permissions: Read-only access for all virtual hosts
+**VHost Permissions:** Read-only access for all virtual hosts
+
+### Linux/Unix
 
 1. **Create User with Monitoring Tag:**
    ```bash
-   curl -u admin:password -X PUT http://localhost:15672/api/users/monitoring_user \
+   curl -u admin:password -X PUT http://localhost:15672/api/users/site24x7 \
      -H "content-type:application/json" \
      -d '{"password":"monitoring_password","tags":"monitoring"}'
-	    ```
-2. **Grant Read-Only Permissions to All VHosts:**
-	# For default vhost "/"
-	```bash
-	curl -u admin:password -X PUT http://localhost:15672/api/permissions/%2F/monitoring_user \
-	-H "content-type:application/json" \
-	-d '{"configure":"^$","write":"^$","read":".*"}'
-	```
+   ```
 
-	# For custom vhosts (repeat for each vhost)
-	```bash
-	curl -u admin:password -X PUT http://localhost:15672/api/permissions/vhost_name/monitoring_user \
-	-H "content-type:application/json" \
-	-d '{"configure":"^$","write":"^$","read":".*"}'
-	```
+2. **Grant Read-Only Permissions to All VHosts:**
+   
+   For default vhost "/"
+   ```bash
+   curl -u admin:password -X PUT http://localhost:15672/api/permissions/%2F/site24x7 \
+     -H "content-type:application/json" \
+     -d '{"configure":"^$","write":"^$","read":".*"}'
+   ```
+
+   For custom vhosts (repeat for each vhost)
+   ```bash
+   curl -u admin:password -X PUT http://localhost:15672/api/permissions/vhost_name/site24x7 \
+     -H "content-type:application/json" \
+     -d '{"configure":"^$","write":"^$","read":".*"}'
+   ```
+
+### Windows (PowerShell)
+
+1. **Create User with Monitoring Tag:**
+   ```powershell
+   Invoke-WebRequest -Uri "http://localhost:15672/api/users/site24x7" `
+     -Method PUT `
+     -Headers @{"Content-Type"="application/json"} `
+     -Body '{"password":"monitoring_password","tags":"monitoring"}' `
+     -Credential (New-Object System.Management.Automation.PSCredential("admin", (ConvertTo-SecureString "password" -AsPlainText -Force)))
+   ```
+
+2. **Grant Read-Only Permissions to All VHosts:**
+   
+   For default vhost "/"
+   ```powershell
+   Invoke-WebRequest -Uri "http://localhost:15672/api/permissions/%2F/site24x7" `
+     -Method PUT `
+     -Headers @{"Content-Type"="application/json"} `
+     -Body '{"configure":"^$","write":"^$","read":".*"}' `
+     -Credential (New-Object System.Management.Automation.PSCredential("admin", (ConvertTo-SecureString "password" -AsPlainText -Force)))
+   ```
+
+   For custom vhosts (repeat for each vhost)
+   ```powershell
+   Invoke-WebRequest -Uri "http://localhost:15672/api/permissions/vhost_name/site24x7" `
+     -Method PUT `
+     -Headers @{"Content-Type"="application/json"} `
+     -Body '{"configure":"^$","write":"^$","read":".*"}' `
+     -Credential (New-Object System.Management.Automation.PSCredential("admin", (ConvertTo-SecureString "password" -AsPlainText -Force)))
+   ```
 
 ### Automated User Creation:
 
