@@ -118,13 +118,13 @@ The agent will automatically execute the plugin within five minutes and user can
 
 Name		        			| 	Description
 ---         					|   	---
-Node Name					|	Unique identifier for the RabbitMQ node in the cluster (e.g., rabbit@nodecheck4)
+Node Name					|	Unique identifier for the RabbitMQ node in the cluster 
 Node Uptime					|	Time in minutes since this RabbitMQ node was started
-Rates Mode					|	Rate calculation mode - basic (default 5s window), detailed (multiple time windows), or none (no rates)
-Partitions					|	Number of network partitions detected - should always be 0 for healthy cluster
+Rates Mode					|	Rate calculation mode - basic, detailed, or none
+Partitions					|	Number of network partitions detected
 Total Connections				|	Number of currently active connections on this node
 Total Channels					|	Number of currently active AMQP channels on this node
-Total Exchanges					|	Total number of exchanges in the entire cluster (shared across all nodes)
+Total Exchanges					|	Total number of exchanges in the entire cluster
 Total Consumers					|	Number of active message consumers currently connected to queues on this node
 Total Messages					|	Total number of messages in all queues on this node
 Total Messages Ready				|	Number of messages ready for delivery to consumers on this node
@@ -151,16 +151,16 @@ Total Queues					|	Total number of queues currently hosted on this specific node
 
 Name		        			| 	Description
 ---         					|   	---
-IO Read Avg Time				|	Average time in milliseconds for each RabbitMQ disk read operation - lower is better
+IO Read Avg Time				|	Average time for each RabbitMQ disk read operation - lower is better
 IO Read Bytes					|	Total bytes read from disk by RabbitMQ process on this node since startup
 IO Read Count					|	Number of disk read operations performed by RabbitMQ process on this node since startup
-IO Sync Avg Time				|	Average time in milliseconds for RabbitMQ disk sync operations - can be high due to disk flushing
+IO Sync Avg Time				|	Average time for RabbitMQ disk sync operations - can be high due to disk flushing
 IO Sync Count					|	Number of forced disk synchronization operations by RabbitMQ process since startup
-IO Write Avg Time				|	Average time in milliseconds for each RabbitMQ disk write operation - lower is better
+IO Write Avg Time				|	Average time for each RabbitMQ disk write operation - lower is better
 IO Write Bytes					|	Total bytes written to disk by RabbitMQ process on this node since startup
 IO Write Count					|	Number of disk write operations performed by RabbitMQ process on this node since startup
 IO Seek Count					|	Number of disk seek operations performed by RabbitMQ process since startup
-IO Seek Avg Time				|	Average time in milliseconds for each RabbitMQ disk seek operation - indicates disk performance
+IO Seek Avg Time				|	Average time for each RabbitMQ disk seek operation - indicates disk performance
 IO Reopen Count					|	Number of file reopen operations performed by RabbitMQ process since startup
 
 ### Storage Operations
@@ -235,7 +235,7 @@ Messages_Rate					|	Rate of message operations (publish/deliver) per second for 
 Messages_Ready_Rate				|	Rate at which messages become ready in this queue per second
 Messages_Unacknowledged_Rate			|	Rate at which messages are delivered but remain unacked from this queue per second
 
-## Sample Image
+## Sample Images
 
 <img width="1640" height="906" alt="image" src="https://github.com/user-attachments/assets/1845456d-5ca6-4a8b-993e-4c3e38946ed7" />
 
