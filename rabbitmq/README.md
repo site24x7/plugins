@@ -125,6 +125,10 @@ This script will create a monitoring user and provide read-only permissions to a
 - Download the files [rabbitmq.py](https://raw.githubusercontent.com/site24x7/plugins/master/rabbitmq/rabbitmq.py), [rabbitmq.cfg](https://raw.githubusercontent.com/site24x7/plugins/master/rabbitmq/rabbitmq.cfg) and place it under the `rabbitmq` directory.
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers).
+
+- Install the required Python packages:
+		
+		pip install requests urllib3
   
 - Execute the below command with appropriate arguments in cmd to check for the valid json output:
 
