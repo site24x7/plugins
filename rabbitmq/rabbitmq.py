@@ -451,4 +451,4 @@ if __name__ == "__main__":
     RABBITMQ_SERVER = f"{protocol}://{RABBITMQ_HOST}:{RABBITMQ_PORT}"
     RABBITMQ_SSL_VERIFY = not insecure
 
-    print(json.dumps(metricCollector(), indent=4, sort_keys=True))
+    print(json.dumps(metricCollector()))
