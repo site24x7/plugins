@@ -37,6 +37,20 @@ Create a dedicated monitoring user with restricted permissions for RabbitMQ moni
      -d '{"configure":"^$","write":"^$","read":".*"}'
    ```
 
+### Automated User Creation:
+
+Download and run the user setup script:
+
+	```bash
+	wget https://github.com/site24x7/plugins/raw/refs/heads/master/rabbitmq/prerequisites/prerequisites.sh
+
+	chmod +x prerequisites.sh
+
+	./prerequisites.sh
+	```
+
+This script will create a monitoring user and provide read-only permissions to all virtual hosts automatically.
+
 ### Windows (PowerShell)
 
 1. **Create User with Monitoring Tag:**
@@ -67,20 +81,6 @@ Create a dedicated monitoring user with restricted permissions for RabbitMQ moni
      -Body '{"configure":"^$","write":"^$","read":".*"}' `
      -Credential (New-Object System.Management.Automation.PSCredential("admin", (ConvertTo-SecureString "password" -AsPlainText -Force)))
    ```
-
-### Automated User Creation:
-
-Download and run the user setup script:
-
-	```bash
-	wget https://github.com/site24x7/plugins/raw/refs/heads/master/rabbitmq/prerequisites/prerequisites.sh
-
-	chmod +x prerequisites.sh
-
-	./prerequisites.sh
-	```
-
-This script will create a monitoring user and provide read-only permissions to all virtual hosts automatically.
 
 ## Plugin Installation  
 
