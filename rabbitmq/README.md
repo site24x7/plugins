@@ -107,7 +107,7 @@ This script will create a monitoring user and provide read-only permissions to a
 
 		[rabbitmq]
 		host = "localhost"
-		port = "15675"
+		port = "15672"
 		username = "guest"
 		password = "guest"
 		ssl = "false"
@@ -138,7 +138,7 @@ This script will create a monitoring user and provide read-only permissions to a
 
 		[rabbitmq]
 		host = "localhost"
-		port = "15675"
+		port = "15672"
 		username = "guest"
 		password = "guest"
 		ssl = "false"
