@@ -13,10 +13,6 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/installer/S
 
 - Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
-- Execute the following command in your server to install Redis: 
-
-		pip install redis
-
 ## Plugin Installation  
 - Create a directory named `redis`.
   
@@ -28,7 +24,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/installer/S
 - Download all the files under the `redis` directory.
 
 	```bash
-	wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/redis.py
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/redis.py && sed -i "1s|^.*|#! $(which python3)|" redis.py
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/redis.cfg
 	```
 
