@@ -26,11 +26,5 @@ if [ ! -f "$TARGET_PY_FILE" ]; then
     exit 1
 fi
 
-SHEBANG_PYTHON_PATH="$PYTHON_CMD"
-
-if [ -n "$SHEBANG_PYTHON_PATH" ]; then
-    sed -i "1s|^.*$|#!$SHEBANG_PYTHON_PATH|" "$TARGET_PY_FILE"
-    echo "Updated shebang in plugin to use: $SHEBANG_PYTHON_PATH"
-else
-    echo "Warning: Could not determine Python path for shebang update."
-fi
+sed -i "1s|^.*$|#!$PYTHON_CMD|" "$TARGET_PY_FILE"
+echo "Updated shebang in plugin to use: $PYTHON_CMD"
