@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-for version in python python3; do
+for version in python3 python; do
     if command -v "$version" ; then
         PYTHON_CMD=$(command -v "$version")
         break
