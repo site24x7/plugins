@@ -237,22 +237,22 @@ class Redis(object):
         data['plugin_version'] = PLUGIN_VERSION
         data['heartbeat_required']=HEARTBEAT
         try:
-            sys.path = [path for path in sys.path if path not in ['.', os.path.dirname(os.path.realpath(__file__))]]
-            redis = importlib.import_module('redis')
+            import zipimport, os
+            plugin_script_path=os.path.dirname(os.path.realpath(__file__))
+            importer = zipimport.zipimporter(os.path.join(plugin_script_path, "redis_module.pyz"))
+            redis = importer.load_module("redis")
 
         except Exception as e:
             data['status']=0
-            if "No module named" in str(e):
-                data['msg']="Redis Module Not Installed\nDependency missing:'redis' Python client library\nInstall with command,\n\n pip3 install redis\n"
-            else:
-                data['msg']=str(e)
+            data['msg']=str(e)
             return data 
         stats = None
         try:
             redis_connection = redis.StrictRedis(
                     host=self.host,
                     port=self.port,
-                    password=self.password
+                    password=self.password,
+                    decode_responses=True
             )
             stats = redis_connection.info()
             max_clients=redis_connection.config_get('maxclients')
