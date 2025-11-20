@@ -17,17 +17,6 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/installer
 ### Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
- - Execute the following command in your server to install pymongo or download the pymongo.pyz from the github: 
-
-		pip install pymongo
- - Create a user with **clusterMonitor** role.
-		
- Note: Please install the compatibility version of pymongo for your existing Python version
-| Python Version | Reference link contains list of compatible pymongo versions                  |
-| -------------- | ---------------------------------------------------------------------------- |
-| Python 3       | https://www.mongodb.com/docs/drivers/pymongo/#python-3-compatibility         |
-| Python 2       | https://www.mongodb.com/docs/drivers/pymongo/#python-2-compatibility         |
----
 
 ### Plugin Installation  
 
@@ -67,14 +56,24 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/mongoDB/installer
 	tlsallowinvalidcertificates="True"
 	```
 
+#### Linux
 
-		
-		
-- Once above execution was given valid output, then copy the mongoDB directory to Site24x7 Linux Agent plugin directory:
+- Place the `mongoDB` under the Site24x7 Linux Agent plugin directory:
+  
+	```bash
+ 	mv mongoDB /opt/site24x7/monagent/plugins
+ 	```
+ 
+#### Windows
 
-  	```bash
- 	mv mongoDB /opt/site24x7/monagent/plugins/
-	```
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
+
+-  Further, move the folder `mongoDB` into the  Site24x7 Windows Agent plugin directory:
+
+        C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+
+
+The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
   
 ### Performace Metrics
 
