@@ -239,7 +239,7 @@ class Redis(object):
         try:
             import zipimport, os
             plugin_script_path=os.path.dirname(os.path.realpath(__file__))
-            importer = zipimport.zipimporter(os.path.join(plugin_script_path, "redis_module.pyz"))
+            importer = zipimport.zipimporter(os.path.join(plugin_script_path, "remote_dictionary_server_module.pyz"))
             redis = importer.load_module("redis")
 
         except Exception as e:
