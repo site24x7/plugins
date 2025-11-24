@@ -333,7 +333,7 @@ class MongoDB(object):
 
             #Version
             try:
-                data['version'] = output['version']
+                data['MongoDB Version'] = output['version']
             except KeyError as ex:
                 pass
  
