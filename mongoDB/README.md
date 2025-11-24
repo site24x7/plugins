@@ -128,7 +128,7 @@ Name		        			| Description
 **Total no of dbs**				| The total number of databases on the system.
 **Total Page Faults**				| The total number of page faults that need disk operations.
 **Uptime**					| The total uptime of the database or system.
-**version**					| The version of the MongoDB database.
+**MongoDB Version**					| The version of the MongoDB database.
 **Health**					|  Indicates the health status of the MongoDB server (1 for healthy).
 **ID**						| The identifier for the MongoDB server.
 **Opcounters Repl Command per sec**		| Operations count for replicated commands per second.
