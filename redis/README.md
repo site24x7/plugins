@@ -26,7 +26,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/installer/S
 	```bash
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/redis.py && sed -i "1s|^.*|#! $(which python3)|" redis.py
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/redis.cfg
-    wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/remote_dictionary_server_module.pyz
+    wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/remote_module.pyz
 	```
 
 - Execute the below command with appropriate arguments to check for the valid JSON output:
