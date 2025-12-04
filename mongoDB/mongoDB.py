@@ -292,9 +292,9 @@ class MongoDB(object):
                 mongo_uri = 'mongodb://' + self.mongod_server
 
                 if self.tls:
-                    self.connection = pymongo.MongoClient(mongo_uri, serverSelectionTimeoutMS=10000,tls=self.tls,tlscertificatekeyfile=self.tlscertificatekeyfile,tlscertificatekeyfilepassword=self.tlscertificatekeyfilepassword,tlsallowinvalidcertificates=self.tlsallowinvalidcertificates)
+                    self.connection = pymongo.MongoClient(mongo_uri, serverSelectionTimeoutMS=10000,tls=self.tls,tlscertificatekeyfile=self.tlscertificatekeyfile,tlscertificatekeyfilepassword=self.tlscertificatekeyfilepassword,tlsallowinvalidcertificates=self.tlsallowinvalidcertificates,directConnection=True)
                 else:
-                    self.connection = pymongo.MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
+                    self.connection = pymongo.MongoClient(mongo_uri, serverSelectionTimeoutMS=10000, directConnection=True)
 
 
 
@@ -507,26 +507,33 @@ class MongoDB(object):
             #Repl Set
             try:
                 optime=None
-                data['Voting Members Count']=replication_data["votingMembersCount"]
+                primary_optime=None
+                
+                if 'votingMembersCount' in replication_data:
+                    data['Voting Members Count']=replication_data["votingMembersCount"]
+                
                 for member in replication_data["members"]:
-
-                    host_id=[self.host]
-                    if self.host=="127.0.0.1":
-                        host_id.append("localhost")
-                    elif self.host=="localhost":
-                        host_id.append("127.0.0.1")
-                    for i in host_id:
-                        if member["name"]==i+":"+str(self.port):
-                            data["Health"]=int(member["health"])
-                            #data["State"]=member["state"]
-                            data["State Str"]=member["stateStr"]
-                            data["ID"]=str(member["_id"])
-                            optime=member["optimeDate"]
-                            
                     if member["stateStr"]=="PRIMARY":
                         primary_optime=member["optimeDate"]
-
-                data["Replication Lag"]=(primary_optime-optime).total_seconds()
+                        break
+                
+                current_member = None
+                for member in replication_data["members"]:
+                    if member.get("self", False):
+                        current_member = member
+                        break
+                
+                if current_member:
+                    data["Health"]=int(current_member["health"])
+                    data["State Str"]=current_member["stateStr"]
+                    data["State"]=current_member["state"] 
+                    data["ID"]=str(current_member["_id"])
+                    optime=current_member["optimeDate"]
+                    
+                    if primary_optime and optime:
+                        data["Replication Lag"]=(primary_optime-optime).total_seconds()
+                    else:
+                        data["Replication Lag"]=0.0
 
             except Exception as ex:
                 pass
