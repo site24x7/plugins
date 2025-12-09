@@ -2,6 +2,30 @@
                                                                                               
 ## Prerequisites
 
+- To enable Kafka Broker JMX port
+
+    Find the following code block in the kafka-server-start.sh script.
+
+
+        if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
+            export KAFKA_HEAP_OPTS="-Xmx1G -Xms1G"
+        fi
+
+
+    Paste the following lines below the above code block.
+
+        
+        export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9999"
+        export JMX_PORT=9999
+        
+- Restart the kafka broker after the above changes.
+
+
+- Install the jmxquery module for Python3.
+  ```
+  pip install jmxquery
+  ```
+
 - Download and install the latest version of the [Site24x7 Linux agent/Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 ## Quick installation
