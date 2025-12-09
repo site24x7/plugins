@@ -67,3 +67,7 @@ mv kafka_topics /opt/site24x7/monagent/plugins/
 C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 ```
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+### Sample Image
+
+<img width="1645" height="859" alt="image" src="https://github.com/user-attachments/assets/d8b5d8a2-2a60-4a7c-8ada-22e7a71afe84" />
