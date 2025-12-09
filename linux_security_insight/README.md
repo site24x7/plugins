@@ -104,5 +104,8 @@ Details of other remote connections:
   ]
 }
 
+```
+
 ## Sample Image
 
+<img width="1629" height="953" alt="image" src="https://github.com/user-attachments/assets/3c6c029a-953d-4e21-b6c2-7e745d4a45bd" />
