@@ -87,7 +87,7 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 ## Supported Metrics
 The following metrics are captured by the Kafka monitoring plugin:
 
-### Traffic Metrics
+### Traffic
 
 | Metric Name                                      | Description                                                                                           |
 |--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
@@ -98,7 +98,7 @@ The following metrics are captured by the Kafka monitoring plugin:
 | Failed Fetch Requests Per Sec                    | Rate of fetch requests that failed per second.                                                        |
 | Failed Produce Requests Per Sec                  | Rate of produce requests that failed per second.                                                      |
 
-### Replication Metrics
+### Replication
 
 | Metric Name                                      | Description                                                                                           |
 |--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
@@ -111,7 +111,7 @@ The following metrics are captured by the Kafka monitoring plugin:
 | Replicas Ineligible To Delete Count              | Number of replicas not eligible for deletion.                                                         |
 | Replicas To Delete Count                         | Number of replicas pending deletion.                                                                  |
 
-### ISR (In-Sync Replica) Metrics
+### ISR (In-Sync Replica)
 
 | Metric Name                                      | Description                                                                                           |
 |--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
@@ -122,7 +122,7 @@ The following metrics are captured by the Kafka monitoring plugin:
 | Leader Count                                     | Number of leaders managed by the replication manager.                                                 |
 | Producer Id Count                                | Number of active producer IDs.                                                                        |
 
-### Controller Metrics
+### Controller
 
 | Metric Name                                      | Description                                                                                           |
 |--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
@@ -134,7 +134,7 @@ The following metrics are captured by the Kafka monitoring plugin:
 | Topics Ineligible To Delete Count                | Number of topics not eligible for deletion.                                                           |
 | Topics To Delete Count                           | Number of topics pending deletion.                                                                    |
 
-### Purgatory Metrics
+### Purgatory
 
 | Metric Name                                      | Description                                                                                           |
 |--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
@@ -142,6 +142,14 @@ The following metrics are captured by the Kafka monitoring plugin:
 | Purgatory Size Fetch                             | Number of fetch requests in purgatory.                                                                |
 | ZooKeeper Disconnects Per Sec                    | Rate of ZooKeeper disconnections per second.                                                          |
 
+### Topics
+
+| Metric Name                                      | Description                                                                                           |
+|--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| Partition_Count                                  | Number of partitions for the topic.                                                                   |
+| Bytes_In_Per_Sec                                 | Rate of bytes written to the topic per second.                                                        |
+| Bytes_Out_Per_Sec                                | Rate of bytes read from the topic per second.                                                         |
+| Messages_In_Per_Sec                              | Rate of messages written to the topic per second.                                                     |
 
 | Metric Name                                      | Description                                                                                           |
 |--------------------------------------------------|-------------------------------------------------------------------------------------------------------|

@@ -35,7 +35,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/kafka/
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 ```bash
-python kafka_topics.py --kafka_host "localhost" --kafka_jmx_port "9999" --kafka_server_port "9092" --kafka_topic_name "quickstart-events" --kafka_home "/home/users/kafka"
+python kafka_topics.py --kafka_host "localhost" --kafka_jmx_port "9999" --kafka_topic_name "quickstart-events"
 ```
 
 - Provide your Kafka topics configurations in kafka_topics.cfg file.
@@ -44,9 +44,7 @@ python kafka_topics.py --kafka_host "localhost" --kafka_jmx_port "9999" --kafka_
 [kafka_instance]
 kafka_host="localhost"
 kafka_jmx_port=9999
-kafka_server_port=9092
 kafka_topic_name="quickstart-events"
-kafka_home="/home/users/kafka"
 ```
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
