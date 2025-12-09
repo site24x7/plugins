@@ -2,6 +2,27 @@
 
 This Site24x7 plugin monitors the security insight of your server's firewall, active firewall rules, listening ports, user sessions, and remote connections. It provides a comprehensive overview of your server's security and connectivity status, making it easier to detect unauthorized access or configuration issues.
 
+## Plugin Installation
+---
+##### Linux 
+
+- Execute below command to download the `linux_security_insight` plugin.
+  
+	```bash
+ 	mkdir linux_security_insight
+  cd linux_security_insight
+  wget https://raw.githubusercontent.com/site24x7/plugins/master/linux_security_insight/linux_security_insight.py
+  wget https://raw.githubusercontent.com/site24x7/plugins/master/linux_security_insight/linux_security_insight.cfg
+	```
+
+- Move the directory `linux_security_insight` into the Site24x7 Linux Agent plugin directory.
+
+	```
+	mv linux_security_insight /opt/site24x7/monagent/plugins/
+	```
+
+  The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
+
 ## Metrics Collected
 
 ### 1. Firewall Status
@@ -82,3 +103,6 @@ Details of other remote connections:
     {"Protocol_remote": "tcp", "Port_remote": "-", "Process_remote": "-", "IPAddress": "-", "name": "Remote1"}
   ]
 }
+
+## Sample Image
+
