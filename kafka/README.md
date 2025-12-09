@@ -163,3 +163,7 @@ The following metrics are captured by the Kafka monitoring plugin:
 | Reassigning Partitions                           | Number of partitions currently being reassigned.                                                      |
 | Current Control ID                               | Current control ID of the Kafka controller.                                                           |
 | Request Handler Avg Idle Percent                 | Average idle percentage of request handlers.                                                          |
+
+### Sample Image
+
+<img width="1651" height="948" alt="image" src="https://github.com/user-attachments/assets/ab140252-5812-422f-88e9-166845b84126" />
