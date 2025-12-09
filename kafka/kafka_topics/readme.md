@@ -68,6 +68,32 @@ C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 ```
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
+## Supported Metrics
+
+The following metrics are captured by the Kafka Topics monitoring plugin:
+
+### Topics
+
+| Metric Name                                      | Description                                                                                           |
+|--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| Partition Count                                  | Total number of partitions for the topic.                                                             |
+| Bytes In Per Sec                                 | Rate of bytes written to the topic per second.                                                        |
+| Bytes Out Per Sec                                | Rate of bytes read from the topic per second.                                                         |
+| Messages In Per Sec                              | Rate of messages written to the topic per second.                                                     |
+
+### Partitions
+
+The plugin automatically monitors each partition of the topic and collects the following metrics:
+
+| Metric Name                                      | Description                                                                                           |
+|--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| InSyncReplicasCount                              | Number of in-sync replicas for the partition.                                                         |
+| LastStableOffsetLag                              | Lag between the last stable offset and the high watermark.                                            |
+| ReplicasCount                                    | Total number of replicas configured for the partition.                                                |
+| UnderReplicated                                  | Indicates if the partition is under-replicated (1 = yes, 0 = no).                                    |
+| UnderMinIsr                                      | Indicates if the partition is below minimum in-sync replicas (1 = yes, 0 = no).                      |
+
+
 ### Sample Image
 
 <img width="1645" height="859" alt="image" src="https://github.com/user-attachments/assets/d8b5d8a2-2a60-4a7c-8ada-22e7a71afe84" />
