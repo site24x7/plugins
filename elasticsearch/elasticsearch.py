@@ -99,7 +99,9 @@ cluster_health_node_availability_metrics={
     "Unassigned shards":("unassigned_shards"),
     "Active primary shards":("active_primary_shards"),
     "Relocating shards":("relocating_shards"),
-    "Delayed unassigned shards":('delayed_unassigned_shards')
+    "Delayed unassigned shards":('delayed_unassigned_shards'),
+    "Active shards":("active_shards"),
+    "Active shards percent":("active_shards_percent_as_number")
     
 }
 
@@ -474,6 +476,8 @@ class esk:
                 data_key = datapath[key1]
                 if data_key in cluster_data:
                     self.maindata[key1] = cluster_data[data_key]
+                else:
+                    self.maindata[key1] = -1
             return True
         except Exception as e:
             self.maindata['msg']=str(e)
