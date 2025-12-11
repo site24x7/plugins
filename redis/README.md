@@ -131,3 +131,7 @@ expires_percent			|	Percentage of total keys with an expiration in a db.
 keys				|	The total number of keys in a db.
 persist				|	The number of keys persisted in a db (db.keys - db.expires).
 persist_percent			|	Percentage of total keys that are persisted in a db.
+
+## Sample Image
+
+<img width="1630" height="883" alt="image" src="https://github.com/user-attachments/assets/975e0a50-60f7-4f35-99b0-2e77571a6014" />
