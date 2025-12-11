@@ -134,6 +134,8 @@ The agent will automatically execute the plugin within five minutes and user can
 | Active primary shards                            | Number of active primary shards in the cluster.                              |
 | Relocating shards                                | Count of shards that are currently being moved between nodes.                |
 | Delayed unassigned shards                        | Number of shards delayed from being assigned due to allocation delays.       |
+| Active shards                                    | Total number of active shards in the cluster (primary + replicas).           |
+| Active shards percent                            | Percentage of shards that are active in the cluster.                         |
 | JVM garbage collector old generation count       | Number of old generation garbage collection events.                          |
 | JVM garbage collector old generation time        | Time spent in old generation garbage collection (in ms).                     |
 | Average JVM memory usage in garbage collector(%) | Average percentage of memory used during garbage collection.                 |

@@ -20,7 +20,8 @@ METRICS_UNITS = { 'JVM garbage collector old generation time':'ms',
                   'Time spent on fetches':'ms',
                   "Time spent on queries":'ms',
                   "Total time on GET requests where the document was missing":'ms',
-                  "JVM heap memory committed":'bytes'
+                  "JVM heap memory committed":'bytes',
+                  "Active shards percent":'%'
 
                 }
 
@@ -99,7 +100,9 @@ cluster_health_node_availability_metrics={
     "Unassigned shards":("unassigned_shards"),
     "Active primary shards":("active_primary_shards"),
     "Relocating shards":("relocating_shards"),
-    "Delayed unassigned shards":('delayed_unassigned_shards')
+    "Delayed unassigned shards":('delayed_unassigned_shards'),
+    "Active shards":("active_shards"),
+    "Active shards percent":("active_shards_percent_as_number")
     
 }
 
@@ -474,6 +477,8 @@ class esk:
                 data_key = datapath[key1]
                 if data_key in cluster_data:
                     self.maindata[key1] = cluster_data[data_key]
+                else:
+                    self.maindata[key1] = -1
             return True
         except Exception as e:
             self.maindata['msg']=str(e)

@@ -279,6 +279,8 @@ class Redis(object):
                     
                     data[METRICS[name]] = value
                 if type(value)==dict and "db" in name and "rdb" not in name:
+                    if 'keys' not in value or 'expires' not in value:
+                        continue
                     db_data=value
                     del db_data['avg_ttl']
                     db_data['name']=name
@@ -310,6 +312,11 @@ class Redis(object):
         data['units']=METRICS_UNITS
         data['db']=db
         data["applog"]=self.applog
+        data['s247config']={
+            "childdiscovery":[
+                'db'
+            ]
+        }
         data.update(tabs)
 
         return data
