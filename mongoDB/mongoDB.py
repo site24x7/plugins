@@ -93,13 +93,7 @@ METRICS_UNITS = {
 	         "State": "state",
 	         "TTL Deleted Documents per sec": "documents",
 	         "TTL Passes per sec": "operations",
-	         "Voting Members Count": "members",
-             "Database":{
-                 "Data_Size":'MB',
-                 "Storage_Size":'MB',
-                 "Total_Size":'MB',
-                 "Index_Size":'MB'
-             }
+	         "Voting Members Count": "members"
 
 
                  }
@@ -119,8 +113,7 @@ METRICS_TABS = {
                     "Document Returned per sec",
                     "Document Updated per sec",
                     "TTL Deleted Documents per sec",
-                    "TTL Passes per sec",
-                    "Database"
+                    "TTL Passes per sec"
                 ]},
                 "Performance":{
                 "order":2,
@@ -282,10 +275,6 @@ class MongoDB(object):
             diff = output[root][doc][node][node1][metric] - cache_data[root][doc][node][node1][metric]
             ps = int(diff / elapsed_time)
             return ps
-        
-        def bytes_to_mb(value):
-            return round(value / (1024*1024), 2) if value != -1 else -1
-        
         try:
             import zipimport
             importer=zipimport.zipimporter(plugin_script_path+"/pymongo.pyz")
@@ -318,39 +307,6 @@ class MongoDB(object):
                 data['Uptime']=output['uptime']
                 data['Total no of dbs']=len(self.connection.list_database_names())
                 stats=db.command('dbstats')
-                
-                # Collect all database information
-                try:
-                    all_databases = []
-                    db_names = self.connection.list_database_names()
-                    for db_name in db_names:
-                        try:
-                            db_stats = self.connection[db_name].command('dbstats')
-                            all_databases.append({
-                                "name": db_name,
-                                "Data_Size": bytes_to_mb(db_stats.get('dataSize', -1)),
-                                "Storage_Size": bytes_to_mb(db_stats.get('storageSize', -1)),
-                                "Total_Size": bytes_to_mb(db_stats.get('totalSize', -1)),
-                                "Index_Size": bytes_to_mb(db_stats.get('indexSize', -1))
-                            })
-                        except Exception as db_err:
-                            error_msg = f"Error getting stats for database '{db_name}': {str(db_err)}"
-                            if 'msg' in data:
-                                data['msg'] += "; " + error_msg
-                            else:
-                                data['msg'] = error_msg
-                    
-                    if not all_databases:
-                        data['Database'] = [{"name": "-", "Data_Size": -1, "Storage_Size": -1, "Total_Size": -1, "Index_Size": -1}]
-                    else:
-                        data['Database'] = all_databases
-                except Exception as db_ex:
-                    data['Database'] = [{"name": "-", "Data_Size": -1, "Storage_Size": -1, "Total_Size": -1, "Index_Size": -1}]
-                    error_msg = f"Error listing databases: {str(db_ex)}"
-                    if 'msg' in data:
-                        data['msg'] += "; " + error_msg
-                    else:
-                        data['msg'] = error_msg
                 
                 try:
                     replication_data = db_admin.command({'replSetGetStatus'  :1})
@@ -590,12 +546,6 @@ class MongoDB(object):
 
         data['units']=METRICS_UNITS
         data['tabs']=METRICS_TABS
-
-        data['s247config']={
-            "childdiscovery":[
-                "Database"
-            ]
-        }
 
         return data
 
