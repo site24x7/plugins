@@ -302,6 +302,17 @@ If you're not using Linux servers or want to install the plugin manually, follow
 		13.Seconds behind master-Seconds Behind Master is the difference in seconds between the slave’s clock time and the timestamp of the query, when it was recorded in the master’s binary log.
 		14.Skip counter-Skip Counter denotes the number of events from the source that a replica server should skip.
 
+#### Observability metrics
+
+
+		1.Average wait time-Avg Wait Time (ms) tracks the average wait time across all wait events in MySQL, measured in milliseconds. This helps identify I/O bottlenecks, lock contention problems, and overall database performance health.
+		2.Total errors-Total Errors provides the cumulative count of SQL errors across all executed queries. This metric is critical for monitoring application health, detecting syntax errors or permission issues, and tracking database error trends over time.
+		3.Total warnings-Total Warnings displays the cumulative count of SQL warnings across all executed queries. This tracks non-critical issues that don't stop query execution but may indicate potential problems like data type mismatches, deprecated SQL syntax usage, or data truncation issues.
+		4.Total sequential scans-Total Sequential Scans shows the total count of all sequential (full table) scans across all user tables. Higher values indicate more unindexed queries and help monitor overall index usage efficiency.
+		5.Total index scans-Total Index Scans displays the total count of all index-based scans across all user tables. This indicates queries using indexes for data retrieval and helps measure index utilization effectiveness.
+		6.Sequential percentage-Sequential Percentage shows the percentage of table reads that are sequential scans without indexes. Lower values are better, with < 10% being excellent, 10-30% good, and > 50% indicating poor optimization requiring immediate attention.
+		7.Index percentage-Index Percentage displays the percentage of table reads that use indexes. Higher values are better, with > 90% being excellent, 70-90% good, and < 50% indicating poor optimization requiring improvement.
+		8.Top tables by sequential scans-Top Tables Sequential Scans lists the top 10 tables with the most sequential (full table) scans, showing actual table names (database.table format), scan counts, and total wait time in seconds. This helps identify which tables need indexes most urgently for query optimization.
 
 _The pymysql source can be found [here](https://github.com/PyMySQL/PyMySQL/tree/main)._
 
