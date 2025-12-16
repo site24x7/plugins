@@ -161,19 +161,6 @@ Name		        			| Description
 **TTL Passes per sec**				| Number of background process removing documents from collections with a ttl index per second.
 **Voting Members Count**			| Count of voting members in the replica set.
 
-### Database Metrics
-
-Name		        			| Description
----         					|   ---
-**Data_Size**					| Uncompressed size of all documents in the database (in MB).
-**Storage_Size**				| Physical disk space used for compressed data (in MB).
-**Total_Size**					| Complete database footprint (in MB). Sum of Storage_Size and Index_Size, showing total space occupied by the database.
-**Index_Size**					| Disk space used by all indexes in the database (in MB). Includes default _id index and custom indexes.
-
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7. 
 
 To see the mongoDb monitor in the Site24x7's web client, login Site24x7 with your account, navigate to Server tab -> Plugin Integration -> list of plugin monitors -> user can check the mongoDB monitor.
-
-## Sample Image
-
-<img width="1633" height="954" alt="image" src="https://github.com/user-attachments/assets/cb52ee67-2853-4f72-9d8a-30bc7de94172" />
