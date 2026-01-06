@@ -171,3 +171,5 @@ The agent will automatically execute the plugin within five minutes and user can
 
 
 ## Sample Image
+
+<img width="1641" height="960" alt="image" src="https://github.com/user-attachments/assets/dcd66979-d022-42f7-bb04-a12dbf9317f9" />
