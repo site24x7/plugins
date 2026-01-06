@@ -5,6 +5,9 @@
 - Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
 ## Plugin Installation  
+
+## Linux
+
 - Create a directory named `pacemaker`.
   
 	```bash
@@ -15,6 +18,7 @@
 - Download all the files under the `pacemaker` directory.
 
 	```bash
+	wget https://raw.githubusercontent.com/site24x7/plugins/master/pacemaker/pacemaker.cfg
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/pacemaker/pacemaker.py
 	```
 
@@ -29,32 +33,72 @@
 	```bash
 	mv pacemaker /opt/site24x7/monagent/plugins/
 	```
- 
+
+The plugin will be using Site24x7 Linux agent Python.
+
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ## Metrics Captured
 
+### Cluster Summary
+
 Name		        	             | 	Description
 ---         			             |   	---
-Cluster Name                   |  The Name of the Cluster
+Cluster Name                   |  The name of the cluster
 Stack                          |  Shows the underlying cluster software components
-Nodes Configured               |  Total number of nodes in the cluster
-Online Nodes                   |  No of nodes that are online
-offline Nodes                  |  No of nodes that are offline
-Resource Instances Configured  |  Total number of managed resources
-Resource Status                |  Current operational state of each resource
-Service Metrics                |  Current state of the services
+Current DC                     |  Current Designated Coordinator node with version and partition status
+Last Updated                   |  Timestamp when the cluster status was last refreshed
+Last Change                    |  Timestamp of the last cluster configuration change
+Nodes Configured               |  Total number of nodes configured in the cluster
+Online Nodes                   |  Number of nodes that are currently online
+Offline Nodes                  |  Number of nodes that are currently offline
+Resource Instances Configured  |  Total number of managed resources configured
+
+### Daemon Status
+
+Name                           | 	Description
+---         			       |   	---
+Corosync                       |  Status of Corosync service
+Pacemaker                      |  Status of Pacemaker service
+Pacemaker_Remote               |  Status of Pacemaker Remote service
+Pcsd                           |  Status of PCS daemon service
+
+### Quorum Information
+
+Name		        	       | 	Description
+---         			       |   	---
 Expected Votes                 |  Total number of votes possible in the cluster
 Highest Expected               |  Maximum possible votes in current configuration
 Total Votes                    |  Current total voting power
 Quorum                         |  Minimum votes needed for cluster operation
-Flag                           | Configuration of the cluster
-Node Status                    |  Shows the current state of each node.
+Flags                          |  Quorum status flags
+
+### Nodes Table
+
+Displays individual node information in a tabular format:
+
+Field                          | 	Description
+---         			       |   	---
+Name                           |  Name of the cluster node
+Status                         |  Current status of the node
+
+### Resources Table
+
+Displays individual resource information in a tabular format:
+
+Field                          | 	Description
+---         			       |   	---
+Name                           |  Name of the resource
+State                          |  Current operational state of the resource
 
 #### Sample Images:
 
-![image](https://github.com/user-attachments/assets/2c222708-bd12-441f-8216-a18b96367646)
-![image](https://github.com/user-attachments/assets/57e01ce4-a0ad-43e8-a5f0-363b76527601)
-![image](https://github.com/user-attachments/assets/e85ba0fd-0cd0-4d95-a4ac-957a5293523b)
+<img width="1641" height="960" alt="image" src="https://github.com/user-attachments/assets/3d5ed01e-3e79-43ff-9124-b2d316946c72" />
+
+<img width="1639" height="184" alt="image" src="https://github.com/user-attachments/assets/9e0fcfed-8ec2-401a-b2c1-b086fc00eac2" />
+
+<img width="1648" height="607" alt="image" src="https://github.com/user-attachments/assets/a64d2659-08e1-4720-8b26-dc6b3e420f71" />
+
+<img width="1646" height="178" alt="image" src="https://github.com/user-attachments/assets/37b21562-4234-47f2-b509-3337fc586dc7" />
 
 
