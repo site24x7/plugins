@@ -103,7 +103,7 @@ The agent will automatically execute the plugin within five minutes and user can
 |-----------------------------|------------------------------------------------------------------------|
 | Memory_State                | Current state of the memory module                                     |
 | Memory_Status               | Health status of the memory module                                     |
-| Memory_Type                 | Type of memory module (1=other, 2=unknown, 3=DRAM, 4=EDRAM, 5=VRAM, 6=SRAM, 7=RAM, 8=ROM, 9=FLASH, 10=EEPROM, 11=FEPROM, 12=EPROM, 13=CDRAM, 14=3DRAM, 15=SDRAM, 16=SGRAM, 17=RDRAM, 18=DDR, 19=DDR-2, 20=DDR2-FB-DIMM, 24=DDR-3, 25=FBD2, 26=DDR4) |
+| Memory_Type                 | Type of memory module |
 | Memory_Size                 | Size of the memory module (KB)                                         |
 | Memory_Speed                | Operating speed of the memory module (MHz)                             |
 
@@ -114,7 +114,7 @@ The agent will automatically execute the plugin within five minutes and user can
 | PDisk_State                 | Current state of the physical disk                                     |
 | PDisk_Status                | Health status of the physical disk                                     |
 | PDisk_Size                  | Total capacity of the physical disk (MB)                               |
-| PDisk_Type                  | Type of physical disk (1=unknown, 2=parallel-SCSI, 3=SAS, 4=SATA, 5=FC) |
+| PDisk_Type                  | Type of physical disk |
 | PDisk_Used_Space            | Amount of used space on the disk (MB)                                  |
 | PDisk_Free_Space            | Amount of free space available on the disk (MB)                        |
 | PDisk_Security_Status       | Security and encryption status of the disk                             |
@@ -127,7 +127,7 @@ The agent will automatically execute the plugin within five minutes and user can
 | VDisk_State                 | Current state of the virtual disk                                      |
 | VDisk_Status                | Health status of the virtual disk                                      |
 | VDisk_Size                  | Total capacity of the virtual disk (MB)                                |
-| VDisk_Type                  | RAID type or configuration of the virtual disk (1=other, 2=RAID-0, 3=RAID-1, 4=RAID-5, 5=RAID-6, 6=RAID-10, 7=RAID-50, 8=RAID-60, 10=concat-RAID-1, 11=concat-RAID-5) |
+| VDisk_Type                  | RAID type or configuration of the virtual disk |
 | VDisk_Block_Size            | Block size used by the virtual disk (Bytes)                            |
 | VDisk_Secured               | Indicates if the virtual disk is encrypted/secured                     |
 | VDisk_Operational_State     | Current operational state of the virtual disk                          |
