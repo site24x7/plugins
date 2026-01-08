@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import json
 import time
 import os
@@ -515,9 +516,10 @@ class esk:
             return self.maindata
         cluster_data=json.loads(cluster_data)
         cluster_status=cluster_data.get('status', '').lower()
-        if cluster_status != 'green':
-            self.maindata["status"] = 0
-            self.maindata["msg"] = f"Cluster status is currently '{cluster_data.get('status', 'unknown')}'"
+        
+        status_map = {'green': 0, 'yellow': 1, 'red': 2}
+        self.maindata["Cluster State"] = status_map.get(cluster_status, -1)
+        self.maindata["msg"] = f"Cluster status is currently '{cluster_data.get('status', 'unknown')}'"
 
 
         if not self.ClusterHealthMetrics(cluster_data, cluster_health_node_availability_metrics):
