@@ -66,7 +66,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 	```bash
-	python3 elasticsearch.py --host "host" --port "port no" --username "elasticsearch username" --password "elasticsearch password" --ssl_option "YES/NO"
+	python3 elasticsearch.py --host "host" --port "port no" --username "elasticsearch username" --password "elasticsearch password" --ssl_option "true/false"
 	```
  
 #### Configurations
@@ -127,6 +127,7 @@ The agent will automatically execute the plugin within five minutes and user can
 |--------------------------------------------------|------------------------------------------------------------------------------|
 | Cluster Name                                     | Name of the Elasticsearch cluster.                                           |
 | Cluster status                                   | Health status of the cluster (`green`, `yellow`, or `red`).                  |
+| Cluster State                                    | Numeric representation of cluster health (0 = green, 1 = yellow, 2 = red).   |
 | Number of Nodes                                  | Total number of nodes in the cluster.                                        |
 | Number of data nodes                             | Number of nodes that store data in the cluster.                              |
 | Initializing shards                              | Count of shards currently in the initializing state.                         |
