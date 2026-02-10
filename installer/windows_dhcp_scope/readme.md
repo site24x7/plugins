@@ -68,3 +68,4 @@ Track the following metrics with the plugin:
 |Lease Duration in Hours   | Duration of IP address leases in hours (numeric value for easy monitoring)    |
 
 ## Sample Image:
+<img width="1654" height="961" alt="image" src="https://github.com/user-attachments/assets/46eb77ae-a821-4429-a52f-5626570fec25" />
