@@ -223,3 +223,5 @@ The following metrics are captured in the Cassandra monitoring plugin:
 | CMS garbage collections (time)            | Total time spent in old-generation garbage collections in milliseconds |
 
 ## Sample Image
+
+<img width="1654" height="961" alt="image" src="https://github.com/user-attachments/assets/d4185e0c-1c60-4fda-884e-4e1bf5a03d6b" />
