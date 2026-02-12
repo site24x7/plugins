@@ -890,7 +890,7 @@ class MySQLMonitor:
                         "Key_write_requests"
                     ]
                 },
-                "Observability": {
+                "Insights": {
                     "order": 5,
                     "tablist": [
                         "Avg_Wait_Time_ms",
