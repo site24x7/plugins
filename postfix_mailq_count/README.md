@@ -5,9 +5,13 @@ Plugin for Monitoring the Postfix Mail Queue Count
 
 - Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/help/admin/adding-a-monitor/linux-server-monitoring.html#add-linux-server-monitor) in the server where you plan to run the plugin.
 
-- Download and install Python version 3 or higher.
+Plugin Uses the following Postfix and system commands:
+- "mailq" - Get total message count and message sizes
+- "qshape" - Get counts for each queue type (deferred, active, hold, incoming, bounce, corrupt, maildrop)
+- "postconf" - Query Postfix configuration (queue directory path)
+- "du" - Calculate disk space used by queue directories
+- "ps" - Monitor Postfix process CPU usage, memory usage, and process count
 
-- Plugin Uses "mailq" command to get the count in mailq and "qshape" to get the counts of each queue names.
 
 ### Plugin installation
 ---
@@ -15,12 +19,11 @@ Plugin for Monitoring the Postfix Mail Queue Count
 
 - Create a directory "postfix_mailq_count".
 
-- Download the file "postfix_mailq_count.py" and place it under the "postfix_mailq_count" directory
+- Download the file "postfix_mailq_count.py", "postfix_mailq_count.cfg" and place it under the "postfix_mailq_count" directory
 
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/postfix_mailq_count/postfix_mailq_count.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/postfix_mailq_count/postfix_mailq_count.cfg
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the postfix_mailq_count.py script.
-		
 - Move the directory "postfix_mailq_count" under Site24x7 Linux Agent plugin directory
 
 		 /opt/site24x7/monagent/plugins/
@@ -30,11 +33,24 @@ The agent will automatically execute the plugin within five minutes and user can
 
 ### Metrics Captured
 ---
-  
-  mailq_count       - Total Number of messages present in mailq
-	deferred_count    - Total Number of deferred messages present in postfix
-	active_count      - Total Number of active messages present in postfix
-	hold_count        - Total Number of hold messages present in postfix
-	incoming_count    - Total Number of incoming messages present in postfix
-	bounce_count      - Total Number of bounce messages present in postfix
-	corrupt_count     - Total Number of corrupted messages present in postfix
+
+Name		        			| 	Description
+---         					|   	---
+Total Messages in Queue					|	Total number of messages across all queues
+Total Message Size					|	Sum of all message sizes in the queue (KB)
+Messages in Deferred Queue				|	Number of messages that failed delivery and are waiting for retry
+Messages in Active Queue				|	Number of messages currently being delivered
+Messages in Hold Queue					|	Number of messages administratively held from delivery
+Messages in Incoming Queue				|	Number of messages being received from network
+Messages in Bounce Queue				|	Number of bounce notifications being generated
+Messages in Corrupt Queue				|	Number of damaged or unreadable message files
+Messages in Maildrop Queue				|	Number of messages in maildrop (injected via sendmail)
+Total Queue Size					|	Total disk space used by all queue directories (MB)
+Postfix CPU Usage					|	Total CPU usage by all Postfix processes (%)
+Postfix Memory Usage					|	Total memory usage by all Postfix processes (%)
+Postfix Process Count					|	Number of running Postfix processes
+Average Message Size in Queue				|	Average size per message in the queue (KB)
+
+### Sample Image
+
+<img width="1636" height="953" alt="image" src="https://github.com/user-attachments/assets/94278ece-fc11-4ace-9372-54f520a48326" />

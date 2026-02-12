@@ -53,8 +53,8 @@ curl -u your_username:your_password http://127.0.0.1:5984/_users/_security
 
 - Download the below files and place it under the "couchdb" directory.
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/couchdb/couchdb.py && sed -i "1s|^.*|#! $(which python3)|" couchdb.py
-  		wget https://raw.githubusercontent.com/site24x7/plugins/master/couchdb/couchdb.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/couchdb/couchdb.py
+  	wget https://raw.githubusercontent.com/site24x7/plugins/master/couchdb/couchdb.cfg
 
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
@@ -62,11 +62,34 @@ curl -u your_username:your_password http://127.0.0.1:5984/_users/_security
   
 #### Linux
 
+- Configure the couchdb.cfg file with the following parameters:
+
+  ```
+  [global_configurations]
+  use_agent_python=1
+
+  [couchdb_config]
+  host = "127.0.0.1"
+  port = "5984"
+  user = "USERNAME"
+  password = "PASSWORD"
+  ```
+
 - Place the "couchdb" folder under Site24x7 Linux Agent plugin directory : 
 
 		Linux             ->   /opt/site24x7/monagent/plugins
 
 #### Windows 
+
+- Configure the couchdb.cfg file with the following parameters:
+
+  ```
+  [couchdb_config]
+  host = "127.0.0.1"
+  port = "5984"
+  user = "USERNAME"
+  password = "PASSWORD"
+  ```
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
 https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
@@ -74,6 +97,8 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 - Move the folder "couchdb" under Site24x7 Windows Agent plugin directory: 
 
 		Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
+
+
   ## Metrics Captured
 | **Metric Name** | **Description** |
 |------------------|-----------------|
