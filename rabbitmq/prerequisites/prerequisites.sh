@@ -23,6 +23,10 @@ echo "=========================================="
 echo "RabbitMQ Monitoring User Setup"
 echo "=========================================="
 echo ""
+echo "A dedicated RabbitMQ monitoring user with the following read-only permissions will be created:"
+echo "  Tag: monitoring"
+echo "  Permissions: Read-only access to all vhosts"
+echo ""
 
 read -p "Enter RabbitMQ Management URL (e.g., http://localhost:15672): " RABBITMQ_URL
 
@@ -200,19 +204,19 @@ elif [ "$TEST_RESULT" = "401" ]; then
         print_info "Please verify credentials manually:"
         echo "  curl -k -u $MONITOR_USER:PASSWORD $RABBITMQ_URL/api/overview"
         echo ""
-        print_error "Setup failed! User cannot authenticate."
+        print_error "User setup failed! User cannot authenticate."
         exit 1
     fi
 else
     print_error " Monitoring user cannot access the Management API (HTTP $TEST_RESULT)"
     echo ""
-    print_error "Setup failed! Unexpected error."
+    print_error "User setup failed! Unexpected error."
     exit 1
 fi
 echo ""
 
 echo "=========================================="
-print_info "Setup completed successfully!"
+print_info "User setup completed successfully!"
 echo "=========================================="
 echo ""
 echo "User Details:"

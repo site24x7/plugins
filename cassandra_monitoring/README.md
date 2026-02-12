@@ -112,100 +112,116 @@ The agent will automatically execute the plugin within five minutes and user can
 ### Supported Metrics
 The following metrics are captured in the Cassandra monitoring plugin:
 
-- **Total Latency (Read)**
+### Summary
 
-    Read response time, in microseconds.
+| **Metric Name**             | **Description**                                                        |
+|-----------------------------|------------------------------------------------------------------------|
+| Load                        | Total data size on the node in bytes                                   |
+| Throughput (Read)           | Number of read requests per second                                     |
+| Throughput (Writes)         | Number of write requests per second                                    |
 
-- **Total Latency (Write)**
+### Latency
 
-    Write response time, in microseconds.
+| **Metric Name**                           | **Description**                                                        |
+|-------------------------------------------|------------------------------------------------------------------------|
+| Read Latency 75th Percentile              | 75th percentile of read request latency in microseconds                |
+| Read Latency 95th Percentile              | 95th percentile of read request latency in microseconds                |
+| Read Latency 99th Percentile              | 99th percentile of read request latency in microseconds                |
+| Write Latency 75th Percentile             | 75th percentile of write request latency in microseconds               |
+| Write Latency 95th Percentile             | 95th percentile of write request latency in microseconds               |
+| Write Latency 99th Percentile             | 99th percentile of write request latency in microseconds               |
+| Read Requests One Minute Rate             | Rate of read requests over the last minute                             |
+| Write Requests One Minute Rate            | Rate of write requests over the last minute                            |
+| Total Latency (Read)                      | Total read response time in microseconds                               |
+| Total Latency (Write)                     | Total write response time in microseconds                              |
+| Cross Node Latency                        | Time from when a node sends a message until current node receives it   |
+| CAS Commit Latency 75th Percentile        | 75th percentile of CAS commit operation latency in microseconds        |
+| CAS Commit Latency 95th Percentile        | 95th percentile of CAS commit operation latency in microseconds        |
+| CAS Commit One Minute Rate                | Rate of CAS commit operations over the last minute                     |
+| CAS Prepare Latency 75th Percentile       | 75th percentile of CAS prepare operation latency in microseconds       |
+| CAS Prepare Latency 95th Percentile       | 95th percentile of CAS prepare operation latency in microseconds       |
+| CAS Prepare One Minute Rate               | Rate of CAS prepare operations over the last minute                    |
+| CAS Propose Latency 75th Percentile       | 75th percentile of CAS propose operation latency in microseconds       |
+| CAS Propose Latency 95th Percentile       | 95th percentile of CAS propose operation latency in microseconds       |
+| CAS Propose One Minute Rate               | Rate of CAS propose operations over the last minute                    |
+| View Lock Acquire Time 75th Percentile    | 75th percentile time to acquire view locks in microseconds             |
+| View Lock Acquire Time 95th Percentile    | 95th percentile time to acquire view locks in microseconds             |
+| View Lock Acquire One Minute Rate         | Rate of view lock acquisitions over the last minute                    |
+| View Read Time 75th Percentile            | 75th percentile of view read operation time in microseconds            |
+| View Read Time 95th Percentile            | 95th percentile of view read operation time in microseconds            |
+| View Read One Minute Rate                 | Rate of view read operations over the last minute                      |
+| Col Update Time Delta 75th Percentile     | 75th percentile of column update time delta in microseconds            |
+| Col Update Time Delta 95th Percentile     | 95th percentile of column update time delta in microseconds            |
+| Col Update Time Delta Min                 | Minimum column update time delta in microseconds                       |
 
-- **Cross Node Latency**
+### Storage
 
-    The time period starts when a node sends a message and ends when the current node receives it.
+| **Metric Name**                           | **Description**                                                        |
+|-------------------------------------------|------------------------------------------------------------------------|
+| Live Disk Space Used                      | Disk space used by live SSTables in bytes                              |
+| Total Disk Space Used                     | Total disk space used including snapshots in bytes                     |
+| Live SSTable Count                        | Number of live SSTables on disk                                        |
+| Compression Ratio                         | Compression ratio of data on disk                                      |
+| Total Commit Log Size                     | Total size of commit log in bytes                                      |
+| Snapshots Size                            | Total size of all snapshots in bytes                                   |
+| Compaction Bytes Written                  | Total bytes written by compaction operations                           |
+| Bytes Flushed                             | Total bytes flushed from memtables to disk                             |
+| Completed Compaction Tasks                | Number of completed compaction tasks                                   |
+| Pending Compaction Tasks                  | Number of compaction tasks waiting in queue                            |
+| Max Partition Size                        | Maximum partition size in bytes                                        |
+| Mean Partition Size                       | Average partition size in bytes                                        |
+| Max Row Size                              | Maximum row size in bytes                                              |
+| Mean Row Size                             | Average row size in bytes                                              |
+| SSTables Per Read 75th Percentile         | 75th percentile of SSTables accessed per read                          |
+| SSTables Per Read 95th Percentile         | 95th percentile of SSTables accessed per read                          |
+| Tombstone Scanned 75th Percentile         | 75th percentile of tombstones scanned per query                        |
+| Tombstone Scanned 95th Percentile         | 95th percentile of tombstones scanned per query                        |
+| Bloom Filter False Ratio                  | Ratio of false positives from bloom filters                            |
 
-- **Total Hints**
+### Cache
 
-    Number of hint messages written to this node since [re]start. This includes one hint per host.
+| **Metric Name**                           | **Description**                                                        |
+|-------------------------------------------|------------------------------------------------------------------------|
+| Key Cache Hit Rate                        | Rate of key cache hits for read requests                               |
+| Row Cache Hits                            | Total number of row cache hits                                         |
+| Row Cache Misses                          | Total number of row cache misses                                       |
+| Row Cache Hit Out Of Range                | Number of row cache hits for out-of-range queries                      |
 
-- **Throughtput (Writes)**
+### Threads
 
-    Write requests per second.
+| **Metric Name**                           | **Description**                                                        |
+|-------------------------------------------|------------------------------------------------------------------------|
+| Active Tasks                              | Number of currently executing tasks in native transport thread pool    |
+| Completed Tasks                           | Total number of completed tasks in native transport thread pool        |
+| Pending Tasks                             | Number of tasks waiting in queue for native transport thread pool      |
+| Currently Blocked Tasks (Transport)       | Number of currently blocked tasks in native transport thread pool      |
+| Currently Blocked Tasks                   | Number of currently blocked tasks in memtable flush thread pool        |
+| Total Blocked Tasks                       | Total count of blocked tasks in native transport thread pool           |
+| Max Pool Size                             | Maximum number of threads in native transport thread pool              |
+| Max Tasks Queued                          | Maximum number of tasks that can be queued                             |
+| Oldest Task Queue Time                    | Time the oldest task has been waiting in queue in milliseconds         |
+| Blocked On Allocation                     | Number of threads blocked waiting for memtable allocation              |
+| Dropped Mutations                         | Number of dropped mutation requests                                    |
+| Pending Flushes                           | Number of memtable flush operations pending                            |
+| Total Hints                               | Number of hint messages written since node start                       |
 
-- **Throughtput (Read)**
+### Errors
 
-    Read requests per second.
+| **Metric Name**                           | **Description**                                                        |
+|-------------------------------------------|------------------------------------------------------------------------|
+| Exceptions                                | Total number of requests that encountered errors                       |
+| Timeout Exceptions (Read)                 | Number of read requests that timed out                                 |
+| Timeout Exceptions (Write)                | Number of write requests that timed out                                |
+| Unavailable Exceptions (Read)             | Number of read requests with insufficient replicas available           |
+| Unavailable Exceptions (Write)            | Number of write requests with insufficient replicas available          |
+| Timeout One Minute Rate (Read)            | Rate of read timeouts over the last minute                             |
+| Timeout One Minute Rate (Write)           | Rate of write timeouts over the last minute                            |
+| Dropped One Minute Rate                   | Rate of dropped mutation messages over the last minute                 |
+| ParNew garbage collections (count)        | Number of young-generation garbage collections                         |
+| ParNew garbage collections (time)         | Total time spent in young-generation garbage collections in milliseconds|
+| CMS garbage collections (count)           | Number of old-generation garbage collections                           |
+| CMS garbage collections (time)            | Total time spent in old-generation garbage collections in milliseconds |
 
-- **Key cache hit rate**
+## Sample Image
 
-    Rate of read requests for keys present in the cache.
-
-- **Disk Used**
-
-    Disk space used on a node, in bytes.
-
-- **Completed compaction tasks**
-
-    Total compaction tasks completed.
-
-- **Pending compaction tasks**
-
-    Total compaction tasks in queue.
-
-- **ParNew garbage collections (count)**
-
-    Number of young-generation collections
-
-- **ParNew garbage collections (time)**
-
-    Elapsed time of young-generation collections, in milliseconds.
-
-
-- **CMS garbage collections (count)**
-
-     Number of old-generation collections
-
-- **CMS garbage collections (time)**
-
-    Elapsed time of old-generation collections, in milliseconds
-
-- **Exceptions**
-
-    Requests for which Cassandra encountered an error
-
-- **Timeout exceptions (write)**
-
-    Requests not acknowledged within configurable timeout window during write
-
-- **Timeout exception (read)**
-
-    Requests not acknowledged within configurable timeout window during read
-
-- **Unavailable exceptions (write)**
-
-    Requests for which the required number of nodes was unavailable during writing
-
-- **Unavailable exceptions (read)**
-
-    Requests for which the required number of nodes was unavailable during reading
-
-- **Pending tasks**
-
-    Tasks in a queue awaiting a thread for processing
-
-- **Dropped Mutations**
-
-    Number of dropped mutations on this table.
-
-- **Pending Flushes**
-
-    Estimated number of flush tasks pending for this table.
-
-- **Blocked On Allocation**
-
-    Number threads are blocked by memtable allocation
-
-- **Currently Blocked Tasks**
-
-    Number of tasks that are currently blocked due to queue saturation but on retry will become unblocked
-
+<img width="1654" height="961" alt="image" src="https://github.com/user-attachments/assets/d4185e0c-1c60-4fda-884e-4e1bf5a03d6b" />

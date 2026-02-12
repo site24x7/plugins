@@ -18,6 +18,8 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq_monitoring
 
 - Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 
+- Ensure IBM MQ is installed on the server, as it is a prerequisite for the pymqi module.
+
 - Install pymqi module for python
 	```
  	pip install pymqi
@@ -120,7 +122,7 @@ Bytes Sent			|	The number of bytes sent.
 Bytes Received			|	The number of bytes received.
 Buffers Sent			|	The number of buffers sent.
 Buffers Received		|	The number of buffers received.
-Channel Substate		|	The current action being performed by the channel. Refer [here](https://github.com/site24x7/plugins/blob/TharunRajTR-patch-9/ibm_mq_monitoring/README.md#values-for-channel-sub-state).
+Channel Substate		|	The current action being performed by the channel. Refer [here](https://github.com/site24x7/plugins/blob/master/ibm_mq_monitoring/README.md#values-for-channel-sub-state).
 
 
 #### Values for Channel Statuses 

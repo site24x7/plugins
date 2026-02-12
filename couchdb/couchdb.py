@@ -116,7 +116,19 @@ def get_databases_details(host, port, user, password, data):
     databases_details = []
     try:
         r = requests.get(f"http://{host}:{port}/_all_dbs", auth=(user,password), timeout=10)
-        db_list = r.json()  # List of database names
+        
+        if r.status_code == 401:
+            data['status'] = 0
+            data['msg'] = "Authentication failed while fetching databases"
+            return databases_details
+        
+        response_json = r.json()
+        if 'error' in response_json:
+            data['status'] = 0
+            data['msg'] = f"CouchDB Error: {response_json.get('reason', 'Unknown error')}"
+            return databases_details
+        
+        db_list = response_json  
         for db_name in db_list:
             r_db = requests.get(f"http://{host}:{port}/{db_name}", auth=(user,password), timeout=10)
             db_info = r_db.json()
@@ -137,7 +149,25 @@ def collect_couchdb(host, port, user, password):
     url = f"http://{host}:{port}/_node/_local/_stats"
     try:
         r = requests.get(url, auth=(user, password), timeout=10)
-        stats = r.json().get('couchdb', {})
+        
+        # Check for HTTP errors
+        if r.status_code == 401:
+            data['status'] = 0
+            data['msg'] = "Authentication failed: Invalid username or password"
+            return data
+        elif r.status_code != 200:
+            data['status'] = 0
+            data['msg'] = f"HTTP Error: {r.status_code} - {r.text}"
+            return data
+        
+        # Check for error in response JSON
+        response_json = r.json()
+        if 'error' in response_json:
+            data['status'] = 0
+            data['msg'] = f"CouchDB Error: {response_json.get('error', 'Unknown')} - {response_json.get('reason', 'No reason provided')}"
+            return data
+        
+        stats = response_json.get('couchdb', {})
 
         # -------- Request Time --------
         if 'request_time' in stats:
@@ -287,6 +317,51 @@ def collect_couchdb(host, port, user, password):
     except Exception as e:
         data['msg'] = f"CouchDB Error: {str(e)}"
     return data
+
+def clean_quotes(value):
+    if not value:
+        return value
+    
+    value_str = str(value)
+    
+    if value_str.startswith('"') and value_str.endswith('"'):
+        return value_str[1:-1]
+    
+    elif value_str.startswith("'") and value_str.endswith("'"):
+        return value_str[1:-1]
+    
+    return value_str
+
+def run(param):
+    host = clean_quotes(param.get("host")) if param and param.get("host") else "127.0.0.1"
+    port = clean_quotes(param.get("port")) if param and param.get("port") else "5984"
+    user = clean_quotes(param.get("user")) if param and param.get("user") else "admin"
+    password = clean_quotes(param.get("password")) if param and param.get("password") else "admin"
+    
+    output = {
+        "plugin_version": PLUGIN_VERSION,
+        "heartbeat_required": HEARTBEAT
+    }
+    
+    metrics = collect_couchdb(host, port, user, password)
+    
+    # Check for errors
+    if 'status' in metrics and metrics['status'] == 0:
+        output['status'] = 0
+        output['msg'] = metrics['msg']
+        return output
+    
+    output["units"] = UNITS
+    output.update(metrics)
+    output["tabs"] = TABS
+    output["s247config"] = {
+        "childdiscovery": [
+            "Databases_Details"
+        ]
+    }
+    
+    return output
+
 # -------------------------
 # Main
 # -------------------------
@@ -300,15 +375,27 @@ def main():
 
     output = {
         "plugin_version": PLUGIN_VERSION,
-        "heartbeat_required": HEARTBEAT,
-        "units": UNITS
+        "heartbeat_required": HEARTBEAT
     }
 
     # CouchDB metrics
-    output.update(collect_couchdb(args.host, args.port, args.user, args.password))
-
-    # Tabs at the end
+    metrics = collect_couchdb(args.host, args.port, args.user, args.password)
+    
+    # Check for errors
+    if 'status' in metrics and metrics['status'] == 0:
+        output['status'] = 0
+        output['msg'] = metrics['msg']
+        print(json.dumps(output, indent=4))
+        return
+    
+    output["units"] = UNITS
+    output.update(metrics)
     output["tabs"] = TABS
+    output["s247config"] = {
+        "childdiscovery": [
+            "Databases_Details"
+        ]
+    }
 
     print(json.dumps(output, indent=4))
 
