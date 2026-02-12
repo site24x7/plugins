@@ -52,3 +52,5 @@ Postfix Process Count					|	Number of running Postfix processes
 Average Message Size in Queue				|	Average size per message in the queue (KB)
 
 ### Sample Image
+
+<img width="1636" height="953" alt="image" src="https://github.com/user-attachments/assets/94278ece-fc11-4ace-9372-54f520a48326" />
