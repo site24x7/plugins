@@ -302,7 +302,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 		13.Seconds behind master-Seconds Behind Master is the difference in seconds between the slave’s clock time and the timestamp of the query, when it was recorded in the master’s binary log.
 		14.Skip counter-Skip Counter denotes the number of events from the source that a replica server should skip.
 
-#### Observability metrics
+#### Insights metrics
 
 
 		1.Average wait time-Avg Wait Time (ms) tracks the average wait time across all wait events in MySQL, measured in milliseconds. This helps identify I/O bottlenecks, lock contention problems, and overall database performance health.
