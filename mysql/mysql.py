@@ -672,6 +672,19 @@ class MySQLMonitor:
             self.maindata["msg"] += "Version query error: {}; ".format(str(e))
             self.maindata["MySQL_Version"] = "-"
 
+    def collect_cluster_info(self):
+        try:
+            self.cursor.execute('SHOW VARIABLES LIKE "wsrep_cluster_name"')
+            cluster = self.cursor.fetchall()
+            if cluster and len(cluster) > 0:
+                cluster_name = cluster[0].get("Value", "")
+                if cluster_name:
+                    self.maindata["tags"] = "MYSQL_CLUSTER:{},MYSQL_NODE:{}".format(cluster_name, self.host)
+        except Exception as e:
+            if "msg" not in self.maindata:
+                self.maindata["msg"] = ""
+            self.maindata["msg"] += "Cluster info query error: {}; ".format(str(e))
+
     def collect_metrics(self):
         if not self.connect():
             return self.maindata
@@ -755,6 +768,13 @@ class MySQLMonitor:
                 if "msg" not in self.maindata:
                     self.maindata["msg"] = ""
                 self.maindata["msg"] += "Version collection error: {}; ".format(str(e))
+                
+            try:
+                self.collect_cluster_info()
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Cluster info collection error: {}; ".format(str(e))
                 
             try:
                 self.collect_sessions()
