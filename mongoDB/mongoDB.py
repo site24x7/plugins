@@ -538,6 +538,16 @@ class MongoDB(object):
             except Exception as ex:
                 pass
 
+            try:
+                if 'sharding' in output:
+                    config_conn_string = output['sharding'].get('configsvrConnectionString', '')
+                    
+                    cluster_name = config_conn_string.split('/')[0] if '/' in config_conn_string else 'unknown'
+                    
+                    data["tags"] = "MONGODB_CLUSTER:{},MONGODB_NODE:{}".format(cluster_name, self.host)
+            except KeyError as ex:
+                pass
+
 
 
         except Exception as e:
