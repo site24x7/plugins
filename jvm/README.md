@@ -5,27 +5,57 @@ This plugin can be used to monitor the JVM through JMX Monitoring.
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Linux agent] (https://www.site24x7.com/help/admin/adding-a-monitor/linux-server-monitoring.html#add-linux-server-monitor) in the server where you plan to run the plugin. 
-- Plugin uses JDK to communicate with JMX MBean to get the metrics for monitoring.
+- Download and install the latest version of the Site24x7 agent in the server where you plan to run the plugin. 
+
+-  Install the jmxquery module for python.
+	```
+	pip install jmxquery
+	```
 
 ### Plugin installation
 ---
-##### Linux 
 
 - Create a directory "jvm".
 
 - Download all the files in "jvm" folder and place it under the "jvm" directory
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/jvm/jvm.sh
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/jvm/JVMMonitoring.java
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/jvm/jvm.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/jvm/jvm.py
         
-- Configure the java home path in the jvm.sh and the host, port of the application which is using Java path mentioned in jvm.sh file.
+-  Execute the below command with appropriate arguments to check for a valid json output:
 
-- Execute the below command to check for the valid json output.
-
-		sh jvm.sh
+    ```
+     python3 jvm.py --jvm_host "localhost" --jvm_jmx_port "7199"
+    ```
 		
-- Move the directory "jvm" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
+#### Configurations
+
+
+-  Provide your JVM configurations in the jvm.cfg file.
+  
+```
+[jvm]
+jvm_host="localhost"
+jvm_jmx_port=7199
+
+```
+
+#### Linux
+
+- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the jvm.py script.
+
+- Place the "jvm" under the Site24x7 Linux Agent plugin directory:
+
+        Linux    ->   /opt/site24x7/monagent/plugins/
+
+#### Windows
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
+https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers
+
+-  Further move the folder "jvm" into the  Site24x7 Windows Agent plugin directory:
+    ```
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
+    ```
 
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
@@ -75,6 +105,39 @@ The agent will automatically execute the plugin within five minutes and user can
 | G1 Survivor Space Committed           | The committed memory for G1 Survivor space (bytes).         |
 | G1 Survivor Space Max                 | The maximum memory allocated for G1 Survivor space (bytes). |
 | G1 Survivor Space Used                | The memory used in G1 Survivor space (bytes).               |
+| PS Eden Space Committed               | The committed memory for Parallel Scavenge Eden space (bytes). |
+| PS Eden Space Max                     | The maximum memory allocated for PS Eden space (bytes).     |
+| PS Eden Space Used                    | The memory used in PS Eden space (bytes).                   |
+| PS Old Gen Committed                  | The committed memory for Parallel Scavenge Old Generation (bytes). |
+| PS Old Gen Max                        | The maximum memory allocated for PS Old Generation (bytes). |
+| PS Old Gen Used                       | The memory used in PS Old Generation (bytes).               |
+| PS Survivor Space Committed           | The committed memory for PS Survivor space (bytes).         |
+| PS Survivor Space Max                 | The maximum memory allocated for PS Survivor space (bytes). |
+| PS Survivor Space Used                | The memory used in PS Survivor space (bytes).               |
+| Par Eden Space Committed              | The committed memory for ParNew Eden space (bytes).         |
+| Par Eden Space Max                    | The maximum memory allocated for ParNew Eden space (bytes). |
+| Par Eden Space Used                   | The memory used in ParNew Eden space (bytes).               |
+| Par Survivor Space Committed          | The committed memory for ParNew Survivor space (bytes).     |
+| Par Survivor Space Max                | The maximum memory allocated for ParNew Survivor space (bytes). |
+| Par Survivor Space Used               | The memory used in ParNew Survivor space (bytes).           |
+| CMS Old Gen Committed                 | The committed memory for CMS Old Generation (bytes).        |
+| CMS Old Gen Max                       | The maximum memory allocated for CMS Old Generation (bytes).|
+| CMS Old Gen Used                      | The memory used in CMS Old Generation (bytes).              |
+| Copy Collections Count                | The number of collections performed by Copy garbage collector. |
+| Copy Time Spent                       | The total time spent in Copy garbage collection (milliseconds). |
+| MarkSweepCompact Collections Count    | The number of collections performed by MarkSweepCompact GC. |
+| MarkSweepCompact Time Spent           | The total time spent in MarkSweepCompact GC (milliseconds). |
+| ParNew Collections Count              | The number of collections performed by ParNew garbage collector. |
+| ParNew Time Spent                     | The total time spent in ParNew garbage collection (milliseconds). |
+| ConcurrentMarkSweep Collections Count | The number of collections performed by CMS garbage collector. |
+| ConcurrentMarkSweep Time Spent        | The total time spent in CMS garbage collection (milliseconds). |
+| PSScavenge Collections Count          | The number of collections performed by Parallel Scavenge GC. |
+| PSScavenge Time Spent                 | The total time spent in Parallel Scavenge GC (milliseconds). |
+| PSMarkSweep Collections Count         | The number of collections performed by PSMarkSweep GC.      |
+| PSMarkSweep Time Spent                | The total time spent in PSMarkSweep GC (milliseconds).      |
+| G1 Young Generation Collections Count | The number of collections performed by G1 Young Generation GC. |
+| G1 Young Generation Time Spent        | The total time spent in G1 Young Generation GC (milliseconds). |
+| G1 Old Generation Collections Count   | The number of collections performed by G1 Old Generation GC. |
+| G1 Old Generation Time Spent          | The total time spent in G1 Old Generation GC (milliseconds). |
 
-
-![image](https://github.com/user-attachments/assets/7eb65352-5281-4f78-a95b-16426180dfa2)
+### Sample Image
