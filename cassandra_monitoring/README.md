@@ -94,7 +94,7 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
 
 - Place the "cassandra_monitoring" under the Site24x7 Linux Agent plugin directory:
 
-        Linux    ->   /opt/site24x7/monagent/plugins/cassandra_monitoring
+        Linux    ->   /opt/site24x7/monagent/plugins/
 
 #### Windows
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in the below link. The remaining configuration steps are the same.
@@ -102,7 +102,7 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 
 -  Further move the folder "cassandra_monitoring" into the  Site24x7 Windows Agent plugin directory:
     ```
-        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\cassandra_monitoring
+        Windows          ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
     ```
     
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.

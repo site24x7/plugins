@@ -7,9 +7,9 @@
 
 ## **Plugin installation**
 
-1. Create a folder `dhcp_scope`.
+1. Create a folder `windows_dhcp_scope`.
 
-2. Download the files [dhcp_scope.ps1](https://github.com/site24x7/plugins/blob/master/dhcp_scope/dhcp_scope.ps1), [dhcp_scope.cfg](https://github.com/site24x7/plugins/blob/master/dhcp_scope/dhcp_scope.cfg) and place it under the `dhcp_scope` folder.
+2. Download the files [windows_dhcp_scope.ps1](https://github.com/site24x7/plugins/blob/master/windows_dhcp_scope/windows_dhcp_scope.ps1), [windows_dhcp_scope.cfg](https://github.com/site24x7/plugins/blob/master/windows_dhcp_scope/windows_dhcp_scope.cfg) and place it under the `windows_dhcp_scope` folder.
 
 
 3. Modify the dhcp_scope.cfg file with the scope id to monitor the particular DHCP scope.
@@ -21,9 +21,9 @@
     Scope_ID="192.168.255.0"
     ```
 
-4. To manually verify if the plugin is functioning correctly, navigate to the `dhcp_scope` folder in terminal (Command Prompt) and run the following command:
+4. To manually verify if the plugin is functioning correctly, navigate to the `windows_dhcp_scope` folder in terminal (Command Prompt) and run the following command:
     ```
-    powershell .\dhcp_scope.ps1 -Scope_ID '192.168.255.0'
+    powershell .\windows_dhcp_scope.ps1 -Scope_ID '192.168.255.0'
     ```
    Replace `192.168.255.0` with your specific scope id.
 
@@ -39,7 +39,7 @@
     Scope_ID="192.168.50.0"
     ```
 
-6. Further move the folder `dhcp_scope` into the  Site24x7 Windows Agent plugin folder:
+6. Further move the folder `windows_dhcp_scope` into the  Site24x7 Windows Agent plugin folder:
 
     ```
     C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
