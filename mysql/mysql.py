@@ -833,8 +833,6 @@ class MySQLMonitor:
                         "Opened_files",
                         "Binlog_cache_use",
                         "Binlog_cache_disk_use",
-                        "Network_traffic_received",
-                        "Network_traffic_sent",
                         "Table_locks_waited",
                         "Table_locks_immediate",
                         "Created_tmp_files",
