@@ -25,9 +25,10 @@ METRICS_UNITS = {
     "Insert_Latency_ms": "ms",
     "Avg_Wait_Time_ms": "ms",
     "Throughput_qps": "queries/s",
-    "Bytes_received": "bytes",
-    "Bytes_sent": "bytes",
+    "Network_traffic_received": "MB",
+    "Network_traffic_sent": "MB",
     "Relay_log_space": "bytes",
+    "Total_storage_used": "GB",
     "Sequential_Percentage": "%",
     "Index_Percentage": "%",
     "Top_Tables_Sequential_Scans": {
@@ -139,9 +140,24 @@ class MySQLMonitor:
 
     def collect_database(self):
         self.maindata["Database"] = []
+        self.maindata["Total_storage_used"] = 0.0
         
         dbs = []
         db_size_info = {}
+        
+        try:
+            self.cursor.execute("""
+                SELECT 
+                    ROUND(SUM(data_length + index_length) / 1024 / 1024 / 1024, 2) AS total_size_gb
+                FROM information_schema.tables
+            """)
+            result = self.cursor.fetchone()
+            if result and result.get("total_size_gb") is not None:
+                self.maindata["Total_storage_used"] = float(result["total_size_gb"])
+        except Exception as e:
+            if "msg" not in self.maindata:
+                self.maindata["msg"] = ""
+            self.maindata["msg"] += "Total storage query error: {}; ".format(str(e))
         
         try:
             self.cursor.execute("""
@@ -290,9 +306,20 @@ class MySQLMonitor:
                 try:
                     if metric in status:
                         display_name = metric.replace("Com_", "Command_") if metric.startswith("Com_") else metric
-                        self.maindata[display_name] = status[metric]
+                        if metric == "Bytes_received":
+                            display_name = "Network_traffic_received"
+                            self.maindata[display_name] = bytes_to_mb(status[metric])
+                        elif metric == "Bytes_sent":
+                            display_name = "Network_traffic_sent"
+                            self.maindata[display_name] = bytes_to_mb(status[metric])
+                        else:
+                            self.maindata[display_name] = status[metric]
                     else:
                         display_name = metric.replace("Com_", "Command_") if metric.startswith("Com_") else metric
+                        if metric == "Bytes_received":
+                            display_name = "Network_traffic_received"
+                        elif metric == "Bytes_sent":
+                            display_name = "Network_traffic_sent"
                         self.maindata[display_name] = "-1"
                 except Exception as e:
                     if "msg" not in self.maindata:
@@ -798,6 +825,7 @@ class MySQLMonitor:
                 "Query and Storage": {
                     "order": 4,
                     "tablist": [
+                        "Total_storage_used",
                         "Queries",
                         "Questions",
                         "Slow_queries",
@@ -805,8 +833,6 @@ class MySQLMonitor:
                         "Opened_files",
                         "Binlog_cache_use",
                         "Binlog_cache_disk_use",
-                        "Bytes_received",
-                        "Bytes_sent",
                         "Table_locks_waited",
                         "Table_locks_immediate",
                         "Created_tmp_files",
@@ -912,6 +938,17 @@ class MySQLMonitor:
         finally:
             self.close()
         return self.maindata
+
+def bytes_to_mb(bytes_value):
+    """Convert bytes to megabytes"""
+    if bytes_value is None or bytes_value == 0:
+        return 0.0
+    
+    try:
+        mb = float(bytes_value) / (1024 * 1024)
+        return round(mb, 2)
+    except (ValueError, TypeError):
+        return 0.0
 
 def nanoseconds_to_seconds(nanoseconds):
     """Convert nanoseconds to seconds"""
