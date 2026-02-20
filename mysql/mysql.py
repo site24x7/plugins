@@ -353,7 +353,10 @@ class MySQLMonitor:
             for metric in VARIABLE_METRICS:
                 try:
                     if metric in variables:
-                        self.maindata[metric] = variables[metric]
+                        if metric == "max_connections":
+                            self.maindata[metric] = "{} connections configured".format(variables[metric])
+                        else:
+                            self.maindata[metric] = variables[metric]
                     else:
                         self.maindata[metric] = "-1"
                 except Exception as e:
@@ -896,7 +899,6 @@ class MySQLMonitor:
                         "Innodb_os_log_written",
                         "Innodb_rows_read",
                         "Connection_errors_max_connections",
-                        "max_connections",
                         "Select_full_join",
                         "Select_full_range_join",
                         "Select_range",
