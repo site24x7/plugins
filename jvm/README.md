@@ -141,3 +141,6 @@ The agent will automatically execute the plugin within five minutes and user can
 | G1 Old Generation Time Spent          | The total time spent in G1 Old Generation GC (milliseconds). |
 
 ### Sample Image
+
+<img width="1640" height="966" alt="image" src="https://github.com/user-attachments/assets/7222c319-5773-491b-b290-0cdcab58ec75" />
+
