@@ -5,6 +5,7 @@ Site24x7 Tomcat Plugin
 import argparse
 import sys
 import socket
+import ssl
 import xml.etree.ElementTree as ET
 import json
 import urllib.request as urlconnection
@@ -19,8 +20,10 @@ HEARTBEAT = "true"
 # Config Section:
 TOMCAT_HOST = 'localhost'
 TOMCAT_PORT = '8080'
+TOMCAT_PROTOCOL = 'http'
 TOMCAT_USERNAME = 'user'
 TOMCAT_PASSWORD = 'user'
+TOMCAT_VERIFY_SSL = 'true'
 TOMCAT_URL = '/manager'
 TOMCAT_CONNECTOR = 'http-nio-8080'
 TOMCAT_TIMEOUT = '5'
@@ -61,8 +64,10 @@ class Tomcat(object):
         self.configurations = config
         self.host = self.configurations.get('host', TOMCAT_HOST)
         self.port = int(self.configurations.get('port', TOMCAT_PORT))
+        self.protocol = self.configurations.get('protocol', TOMCAT_PROTOCOL)
         self.username = self.configurations.get('username', TOMCAT_USERNAME)
         self.password = self.configurations.get('password', TOMCAT_PASSWORD)
+        self.verify_ssl = self.configurations.get('verify_ssl', TOMCAT_VERIFY_SSL).lower() == 'true'
         self.plugin_version = self.configurations.get('plugin_version', PLUGIN_VERSION)
         self.connector = self.configurations.get('connector', TOMCAT_CONNECTOR)
         self.url = self.configurations.get('url', TOMCAT_URL)
@@ -83,12 +88,22 @@ class Tomcat(object):
 
     def readUrl(self, host, port, url, user, password):
         error = False
-        tomcatUrl = "http://" + host + ":" + str(port) + url
+        tomcatUrl = self.protocol + "://" + host + ":" + str(port) + url
         try:
             pwdManager = urlconnection.HTTPPasswordMgrWithDefaultRealm()
             pwdManager.add_password(None, tomcatUrl, user, password)
             authHandler = urlconnection.HTTPBasicAuthHandler(pwdManager)
-            opener = urlconnection.build_opener(authHandler)
+            
+            # Handle SSL verification
+            if self.protocol == 'https' and not self.verify_ssl:
+                ssl_context = ssl.create_default_context()
+                ssl_context.check_hostname = False
+                ssl_context.verify_mode = ssl.CERT_NONE
+                https_handler = urlconnection.HTTPSHandler(context=ssl_context)
+                opener = urlconnection.build_opener(authHandler, https_handler)
+            else:
+                opener = urlconnection.build_opener(authHandler)
+            
             urlconnection.install_opener(opener)
             req = urlconnection.Request(tomcatUrl)
             handle = urlconnection.urlopen(req, None)
@@ -242,8 +257,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', help="Host Name", nargs='?', default=TOMCAT_HOST)
     parser.add_argument('--port', help="Port", nargs='?', default=TOMCAT_PORT)
+    parser.add_argument('--protocol', help="Protocol (http or https)", default=TOMCAT_PROTOCOL)
     parser.add_argument('--username', help="Username", default=TOMCAT_USERNAME)
     parser.add_argument('--password', help="Password", default=TOMCAT_PASSWORD)
+    parser.add_argument('--verify_ssl', help="Verify SSL Certificate (true or false)", default=TOMCAT_VERIFY_SSL)
     parser.add_argument('--plugin_version', help="plugin_version", default=PLUGIN_VERSION)
     parser.add_argument('--connector', help="Connector Name", default=TOMCAT_CONNECTOR)
     parser.add_argument('--url', help="URL", default=TOMCAT_URL)
@@ -257,8 +274,10 @@ if __name__ == "__main__":
     configurations = {
         'host': args.host,
         'port': args.port,
+        'protocol': args.protocol,
         'username': args.username,
         'password': args.password,
+        'verify_ssl': args.verify_ssl,
         'connector': args.connector,
         'url': args.url,
         'timeout': args.timeout,

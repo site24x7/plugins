@@ -67,7 +67,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/tomcat/tomcat.cfg
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 ```bash
-python tomcat.py --host "hostname" --port "port" --username "username" --password "password"
+python tomcat.py --host "hostname" --port "port" --username "username" --password "password" --protocol "http" --verify_ssl "false"
 ```
 
 - Provide your Tomcat configurations in tomcat.cfg file.
@@ -78,7 +78,8 @@ host = "localhost"
 port = "8080"
 username = "admin"
 password = "admin"
-plugin_version = "1"
+protocol = "http"
+verify_ssl = "false"
 logs_enabled = "true"
 log_type_name = "Tomcat Access Logs"
 log_file_path = "/opt/*tomcat*/logs/*access*.txt"
