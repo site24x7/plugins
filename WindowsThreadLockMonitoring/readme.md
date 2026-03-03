@@ -72,8 +72,8 @@ Reports the top 5 processes sorted by CPU usage (lifetime CPU seconds).
 
 | **Field** | **Description** | **Unit** |
 |---|---|---|
-| `name` | Generic identifier (`Process1` through `Process5`). | \Uffffffff |
-| `Process Name` | Name of the process. | \Uffffffff |
+| `name` | Generic identifier (`Process1` through `Process5`). |  |
+| `Process Name` | Name of the process. |  |
 | `Thread Count` | Number of threads in the process. | threads |
 | `Memory` | Working set memory usage of the process. | MB |
 
