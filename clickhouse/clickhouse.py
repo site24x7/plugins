@@ -18,7 +18,7 @@ units = {
             "jemalloc.allocated": "bytes", "jemalloc.arenas.all.dirty_purged": "bytes","jemalloc.resident": "bytes",
             "jemalloc.retained": "bytes","CompressedReadBufferBytes": "bytes",
             "DiskReadElapsedMicroseconds": "microseconds","DiskWriteElapsedMicroseconds": "microseconds","InsertedBytes": "bytes",
-            "MergesTimeMilliseconds": "milliseconds",
+            "MergeTotalMilliseconds": "milliseconds",
             "NetworkReceiveElapsedMicroseconds": "microseconds",
             "NetworkSendElapsedMicroseconds": "microseconds",
             "RWLockReadersWaitMilliseconds": "milliseconds",
@@ -26,9 +26,12 @@ units = {
             "Selected bytes/second": "bytes",
             "Memory (tracked)": "bytes",
             "OS CPU Usage (userspace)": "seconds", "OS CPU Usage (kernel)": "seconds",
-            "CPU usage (cores)": "%", "IO wait": "seconds", "CPU wait": "seconds",
-            "Read from disk": "bytes",
-            "clickhouse_rss_bytes": "bytes","DiskAvailable_default": "bytes","DiskUsed_default": "bytes"
+            "IO wait": "seconds",
+            "BlockReadBytes": "bytes", "BlockWriteBytes": "bytes",
+            "clickhouse_rss_bytes": "bytes","DiskAvailable_default": "bytes","DiskUsed_default": "bytes",
+            "DATABASES_INFO":{
+                "Size":"MB"
+            }
 }
 
 # ==== Metrics Tabs ====
@@ -56,17 +59,16 @@ METRICS_TABS = {
         "ZooKeeperSession", "ZooKeeperRequest", "DelayedInserts",
         "ContextLockWait", "StorageBufferRows", "RWLockWaitingReaders",
         "RWLockWaitingWriters", "OS CPU Usage (userspace)",
-        "OS CPU Usage (kernel)", "CPU usage (cores)", "IO wait",
-        "CPU wait", "Read from disk", "Read from filesystem", "clickhouse_rss_bytes","DiskAvailable_default","DiskUsed_default"]}
+        "OS CPU Usage (kernel)", "IO wait",
+        "clickhouse_rss_bytes","DiskAvailable_default","DiskUsed_default"]}
 }
 
 # ==== Metrics to collect ====
 ASYNC_METRICS = [
-    "CompiledExpressionCacheCount", "MarkCacheBytes", "MarkCacheFiles",
     "MemoryResident", "MemoryShared", "MemoryVirtual",
     "ReplicasMaxAbsoluteDelay", "ReplicasMaxInsertsInQueue", "ReplicasMaxMergesInQueue",
     "ReplicasMaxQueueSize", "ReplicasMaxRelativeDelay", "ReplicasSumInsertsInQueue",
-    "ReplicasSumMergesInQueue", "ReplicasSumQueueSize", "UncompressedCacheBytes",
+    "ReplicasSumMergesInQueue", "ReplicasSumQueueSize",
     "Uptime", "jemalloc.allocated", "jemalloc.arenas.all.dirty_purged",
     "jemalloc.background_thread.num_threads", "jemalloc.resident", "jemalloc.retained"
 ]
@@ -75,50 +77,54 @@ EVENT_METRICS = [
     "CompressedReadBufferBlocks", "CompressedReadBufferBytes", "ContextLock",
     "DiskReadElapsedMicroseconds", "DiskWriteElapsedMicroseconds", "FailedQuery",
     "FailedSelectQuery", "FileOpen", "InsertedBytes", "Merge",
-    "MergesTimeMilliseconds", "NetworkReceiveElapsedMicroseconds",
+    "MergeTotalMilliseconds", "NetworkReceiveElapsedMicroseconds",
     "NetworkSendElapsedMicroseconds", "Query", "RWLockAcquiredReadLocks",
-    "RWLockReadersWaitMilliseconds", "ReadCompressedBytes", "SelectQuery", "SoftPageFaults","BlockReadBytes","BlockWriteBytes"
+    "RWLockReadersWaitMilliseconds", "ReadCompressedBytes", "SelectQuery", "SoftPageFaults"
 ]
 
 SYSTEM_METRICS = [
     "ReplicatedFetch", "ReplicatedSend", "ReplicatedChecks",
     "MySQLConnection", "OpenFileForRead", "OpenFileForWrite", "PostgreSQLConnection",
-    "Query", "RWLockWaitingReaders", "RWLockWaitingWriters", "Read",
+    "RWLockWaitingReaders", "RWLockWaitingWriters", "Read",
     "ReadonlyReplica", "StorageBufferRows", "Write", "ZooKeeperRequest",
     "ZooKeeperSession", "ContextLockWait", "DelayedInserts",
-    "OS CPU Usage (userspace)", "OS CPU Usage (kernel)", "CPU usage (cores)",
-    "IO wait", "CPU wait", "Read from disk", "Read from filesystem", "clickhouse_rss_bytes","DiskAvailable_default","DiskUsed_default"
+    "CompiledExpressionCacheCount", "MarkCacheBytes", "MarkCacheFiles", "UncompressedCacheBytes"
 ]
 
+# Metrics resolved from already-fetched cached dictionaries (no extra queries)
+# Format: output_key -> (source: "async"|"event"|"system", metric_name)
+CACHED_METRICS = {
+    "Queries/second": ("system", "Query"),
+    "Inserted rows": ("event", "InsertedRows"),
+    "Merges running": ("system", "Merge"),
+    "Selected bytes/second": ("event", "SelectedBytes"),
+    "Memory (tracked)": ("system", "MemoryTracking"),
+    "OS CPU Usage (userspace)": ("async", "OSUserTime"),
+    "OS CPU Usage (kernel)": ("async", "OSSystemTime"),
+    "IO wait": ("async", "OSIOWaitTime"),
+    "clickhouse_rss_bytes": ("async", "MemoryResident"),
+    "BlockReadBytes": ("event", "OSReadBytes"),
+    "BlockWriteBytes": ("event", "OSWriteBytes")
+}
+
+# Queries that need actual DB calls (system.parts, system.disks)
 CUSTOM_QUERIES = {
-    "Queries/second": "SELECT value FROM system.metrics WHERE metric='Query'",
-    "Queries running": "SELECT value FROM system.metrics WHERE metric='QueryActive'",
-    "Inserted rows": "SELECT value FROM system.events WHERE event='InsertedRows'",
-    "Merges running": "SELECT value FROM system.metrics WHERE metric='Merge'",
-    "Selected bytes/second": "SELECT value FROM system.events WHERE event='SelectedBytes'",
     "Total MergeTree parts": "SELECT count() FROM system.parts",
     "Max parts for partition": "SELECT max(active) FROM system.parts",
-    "Memory (tracked)": "SELECT value FROM system.metrics WHERE metric='MemoryTracking'",
-    "OS CPU Usage (userspace)": "SELECT value FROM system.metrics WHERE metric='OSUserTime'",
-    "OS CPU Usage (kernel)": "SELECT value FROM system.metrics WHERE metric='OSSystemTime'",
-    "CPU usage (cores)": "SELECT value FROM system.metrics WHERE metric='CPUUsage'",
-    "IO wait": "SELECT value FROM system.metrics WHERE metric='IOWaitTime'",
-    "CPU wait": "SELECT value FROM system.metrics WHERE metric='WaitThreads'",
-    "Read from disk": "SELECT value FROM system.events WHERE event='DiskReadBytes'",
-    "Read from filesystem": "SELECT value FROM system.events WHERE event='FileOpen'",
-    "clickhouse_rss_bytes": "SELECT value FROM system.metrics WHERE metric='RSS'",
     "DiskAvailable_default": "SELECT free_space FROM system.disks WHERE name='default'",
-    "DiskUsed_default": "SELECT total_space - free_space FROM system.disks WHERE name='default'",
-    "BlockReadBytes": "SELECT sum(value) FROM system.events WHERE event='ReadBytes'",
-    "BlockWriteBytes": "SELECT sum(value) FROM system.events WHERE event='WrittenBytes'"
+    "DiskUsed_default": "SELECT total_space - free_space FROM system.disks WHERE name='default'"
 }
 
 # ==== Functions ====
-def fetch_metric(client, query):
+def fetch_metric(client, query, data):
     try:
         result = client.execute(query)
         return result[0][0] if result and len(result[0]) > 0 else 0
-    except:
+    except Exception as e:
+        if "msg" in data:
+            data["msg"] += "; " + str(e)
+        else:
+            data["msg"] = str(e)
         return 0
 
 # ==== Main ====
@@ -140,52 +146,84 @@ def main():
             host=args.host,
             port=args.port,
             user=args.user,
-            password=args.password,
-            connect_timeout=10
+            password=args.password
         )
-        data["units"]=units
-        # ==== Fetch Metrics ===
-        # Fetch all metric data at once
-        async_metrics_data = dict(client.execute("SELECT metric, value FROM system.asynchronous_metrics"))
-        event_metrics_data = dict(client.execute("SELECT event, value FROM system.events"))
-        system_metrics_data = dict(client.execute("SELECT metric, value FROM system.metrics"))
+        try:
+            data["units"]=units
+            # ==== Fetch Metrics ===
+            # Fetch all metric data at once
+            async_metrics_data = dict(client.execute("SELECT metric, value FROM system.asynchronous_metrics"))
+            event_metrics_data = dict(client.execute("SELECT event, value FROM system.events"))
+            system_metrics_data = dict(client.execute("SELECT metric, value FROM system.metrics"))
 
-        # Fill ASYNC_METRICS using cached dictionary
-        for metric in ASYNC_METRICS:
-            data[metric] = async_metrics_data.get(metric, 0)
+            # Fill ASYNC_METRICS using cached dictionary
+            for metric in ASYNC_METRICS:
+                data[metric] = async_metrics_data.get(metric, 0)
 
-        # Fill EVENT_METRICS using cached dictionary
-        for metric in EVENT_METRICS:
-            data[metric] = event_metrics_data.get(metric, 0)
+            # Fill EVENT_METRICS using cached dictionary
+            for metric in EVENT_METRICS:
+                data[metric] = event_metrics_data.get(metric, 0)
 
-        # Number of databases and tables
-        data["NumberOfDatabases"] = fetch_metric(client, "SELECT count() FROM system.databases")
-        data["DiskAvailable_default"] = fetch_metric(client, "SELECT free_space FROM system.disks WHERE name='default'")
-        data["DiskUsed_default"] = fetch_metric(client, "SELECT total_space - free_space FROM system.disks WHERE name='default'")
-        data["BlockReadBytes"] = fetch_metric(client, "SELECT sum(read_bytes) FROM system.parts")
-        data["BlockWriteBytes"] = fetch_metric(client, "SELECT sum(bytes_on_disk) FROM system.parts")
-        # Fill SYSTEM_METRICS using cached dictionary
-        for metric in SYSTEM_METRICS:
-            data[metric] = system_metrics_data.get(metric, 0)
+            # Number of databases and tables
+            data["NumberOfDatabases"] = fetch_metric(client, "SELECT count() FROM system.databases", data)
+            data["NumberOfTables"] = fetch_metric(client, "SELECT count() FROM system.tables", data)
+            # Fill SYSTEM_METRICS using cached dictionary
+            for metric in SYSTEM_METRICS:
+                data[metric] = system_metrics_data.get(metric, 0)
 
 
-        for key, query in CUSTOM_QUERIES.items():
-            data[key] = fetch_metric(client, query)
+            # Fill CACHED_METRICS from already-fetched dictionaries (no extra queries)
+            source_map = {"async": async_metrics_data, "event": event_metrics_data, "system": system_metrics_data}
+            for key, (source, metric_name) in CACHED_METRICS.items():
+                data[key] = source_map[source].get(metric_name, 0)
 
-        # ==== DATABASES_INFO ====
-        db_table_counts = client.execute("""
-            SELECT d.name, count(t.name) AS table_count
-            FROM system.databases d
-            LEFT JOIN system.tables t ON d.name = t.database
-            GROUP BY d.name
-            ORDER BY d.name
-        """)
-        data["DATABASES_INFO"] = [{"name": db, "Table_Count": table_count} for db, table_count in db_table_counts]
+            # Run only queries that need actual DB calls
+            for key, query in CUSTOM_QUERIES.items():
+                data[key] = fetch_metric(client, query, data)
 
-        
-        data["tabs"] = METRICS_TABS
+            # ==== DATABASES_INFO ====
+            try:
+                db_table_counts = client.execute("""
+                    SELECT 
+                        d.name,
+                        d.engine,
+                        count(DISTINCT nullIf(t.name, '')) AS table_count,
+                        coalesce(ps.total_size_bytes, 0) AS total_size_bytes,
+                        coalesce(ps.total_rows, 0) AS total_rows
+                    FROM system.databases d
+                    LEFT JOIN system.tables t ON d.name = t.database
+                    LEFT JOIN (
+                        SELECT database, sum(bytes_on_disk) AS total_size_bytes, sum(rows) AS total_rows
+                        FROM system.parts
+                        WHERE active = 1
+                        GROUP BY database
+                    ) ps ON d.name = ps.database
+                    GROUP BY d.name, d.engine, ps.total_size_bytes, ps.total_rows
+                    ORDER BY d.name
+                """)
+                data["DATABASES_INFO"] = [
+                    {
+                        "name": db,
+                        "Engine": engine,
+                        "Table_Count": table_count,
+                        "Size": round(size_bytes / (1024 * 1024), 4) if size_bytes else 0,
+                        "Total_Rows": total_rows
+                    }
+                    for db, engine, table_count, size_bytes, total_rows in db_table_counts
+                ]
+            except Exception as e:
+                if "msg" in data:
+                    data["msg"] += "; " + str(e)
+                else:
+                    data["msg"] = str(e)
+                data["DATABASES_INFO"] = [{"name": "-", "Engine": "-", "Table_Count": -1, "Size": -1, "Total_Rows": -1}]
 
-        print(json.dumps(data, indent=4))
+            
+            data["tabs"] = METRICS_TABS
+
+            print(json.dumps(data, indent=4))
+        finally:
+            client.disconnect()
 
     except Exception as e:
         print(json.dumps({
