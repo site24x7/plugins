@@ -41,38 +41,22 @@ METRICS_UNITS = {
     'Percent Used Memory': '%',
     'Total Memory': 'MB',
     'Used Memory': 'MB',
-    'Init G1_Eden_Space': 'MB',
     'Committed G1_Eden_Space': 'MB',
     'Used G1_Eden_Space': 'MB',
-    'Max G1_Eden_Space': 'MB',
-    'Init G1_Old_Gen': 'MB',
     'Committed G1_Old_Gen': 'MB',
     'Used G1_Old_Gen': 'MB',
-    'Max G1_Old_Gen': 'MB',
-    'Init G1_Survivor_Space': 'MB',
     'Committed G1_Survivor_Space': 'MB',
     'Used G1_Survivor_Space': 'MB',
-    'Max G1_Survivor_Space': 'MB',
-    "Init CodeHeap_'non-nmethods'": 'MB',
     "Committed CodeHeap_'non-nmethods'": 'MB',
     "Used CodeHeap_'non-nmethods'": 'MB',
-    "Max CodeHeap_'non-nmethods'": 'MB',
-    "Init CodeHeap_'non-profiled_nmethods'": 'MB',
     "Committed CodeHeap_'non-profiled_nmethods'": 'MB',
     "Used CodeHeap_'non-profiled_nmethods'": 'MB',
-    "Max CodeHeap_'non-profiled_nmethods'": 'MB',
-    "Init CodeHeap_'profiled_nmethods'": 'MB',
     "Committed CodeHeap_'profiled_nmethods'": 'MB',
     "Used CodeHeap_'profiled_nmethods'": 'MB',
-    "Max CodeHeap_'profiled_nmethods'": 'MB',
-    'Init Compressed_Class_Space': 'MB',
     'Committed Compressed_Class_Space': 'MB',
     'Used Compressed_Class_Space': 'MB',
-    'Max Compressed_Class_Space': 'MB',
-    'Init Metaspace': 'MB',
     'Committed Metaspace': 'MB',
-    'Used Metaspace': 'MB',
-    'Max Metaspace': 'MB'
+    'Used Metaspace': 'MB'
 }
 
 def convertBytesToMB(v):
@@ -103,6 +87,9 @@ class Tomcat(object):
         self.verify_ssl = self.configurations.get('verify_ssl', TOMCAT_VERIFY_SSL).lower() == 'true'
         self.plugin_version = self.configurations.get('plugin_version', PLUGIN_VERSION)
         self.url = self.configurations.get('url', TOMCAT_URL)
+        self.logs_enabled = self.configurations.get('logs_enabled', LOGS_ENABLED)
+        self.log_type_name = self.configurations.get('log_type_name', LOG_TYPE_NAME)
+        self.log_file_path = self.configurations.get('log_file_path', LOG_FILE_PATH)
 
     def readXmlFromUrl(self, host, port, url, user, password):
         xmlUrl = url + "/status?XML=true"
@@ -216,9 +203,9 @@ class Tomcat(object):
                         request = connector.find('./requestInfo')
                         connector_data = {
                             'name': name,
-                            'Thread Count': int(thread.get('currentThreadCount')),
-                            'Thread Busy': int(thread.get('currentThreadsBusy')),
-                            'Thread Allowed': float(thread.get('maxThreads')),
+                            'Current Thread Count': int(thread.get('currentThreadCount')),
+                            'Busy Thread Count': int(thread.get('currentThreadsBusy')),
+                            'Max Thread Count': str(int(thread.get('maxThreads'))) + ' threads',
                             'Bytes Received': convertBytesToMB(float(request.get('bytesReceived'))),
                             'Bytes Sent': convertBytesToMB(float(request.get('bytesSent'))),
                             'Error Count': float(request.get('errorCount')),
@@ -243,9 +230,9 @@ class Tomcat(object):
                         if usageMaxRaw == -1:
                             usageMax = 'Unlimited'
                         else:
-                            usageMax = convertBytesToMB(usageMaxRaw)
+                            usageMax = str(convertBytesToMB(usageMaxRaw)) + ' MB'
                         
-                        memorypool_data[f'Init {name}'] = usageInit
+                        memorypool_data[f'Init {name}'] = str(usageInit) + ' MB'
                         memorypool_data[f'Committed {name}'] = usageCommitted
                         memorypool_data[f'Max {name}'] = usageMax
                         memorypool_data[f'Used {name}'] = usageUsed
@@ -279,39 +266,27 @@ class Tomcat(object):
                         'JVM CodeHeap Usage': {
                             'order': 2,
                             'tablist': [
-                                "Init CodeHeap_'non-nmethods'",
                                 "Committed CodeHeap_'non-nmethods'",
-                                "Max CodeHeap_'non-nmethods'",
                                 "Used CodeHeap_'non-nmethods'",
-                                "Init CodeHeap_'non-profiled_nmethods'",
                                 "Committed CodeHeap_'non-profiled_nmethods'",
-                                "Max CodeHeap_'non-profiled_nmethods'",
                                 "Used CodeHeap_'non-profiled_nmethods'",
-                                "Init CodeHeap_'profiled_nmethods'",
                                 "Committed CodeHeap_'profiled_nmethods'",
-                                "Max CodeHeap_'profiled_nmethods'",
                                 "Used CodeHeap_'profiled_nmethods'"
                             ]
                         },
                         'JVM Memory Pool Usage': {
                             'order': 3,
                             'tablist': [
-                                "Init Compressed_Class_Space",
                                 "Committed Compressed_Class_Space",
-                                "Max Compressed_Class_Space",
                                 "Used Compressed_Class_Space",
-                                "Init G1_Eden_Space",
-                                "Max G1_Eden_Space",
+                                "Committed G1_Eden_Space",
                                 "Used G1_Eden_Space",
-                                "Init G1_Old_Gen",
                                 "Committed G1_Old_Gen",
-                                "Max G1_Old_Gen",
-                                "Init G1_Survivor_Space",
+                                "Used G1_Old_Gen",
                                 "Committed G1_Survivor_Space",
-                                "Max G1_Survivor_Space",
                                 "Used G1_Survivor_Space",
-                                "Init Metaspace",
-                                "Committed Metaspace"
+                                "Committed Metaspace",
+                                "Used Metaspace"
                             ]
                         }
                     }
@@ -320,6 +295,15 @@ class Tomcat(object):
         else:
             data['msg'] = serverinfoData
             data['status'] = 0
+
+        applog = {}
+        if self.logs_enabled in ['True', 'true', '1']:
+            applog["logs_enabled"] = True
+            applog["log_type_name"] = self.log_type_name
+            applog["log_file_path"] = self.log_file_path
+        else:
+            applog["logs_enabled"] = False
+        data['applog'] = applog
 
         data['units'] = METRICS_UNITS
         return data
@@ -348,7 +332,10 @@ if __name__ == "__main__":
         'password': args.password,
         'verify_ssl': args.verify_ssl,
         'url': args.url,
-        'plugin_version' : args.plugin_version
+        'plugin_version': args.plugin_version,
+        'logs_enabled': args.logs_enabled,
+        'log_type_name': args.log_type_name,
+        'log_file_path': args.log_file_path
     }
 
     tomcat_plugins = Tomcat(configurations)
