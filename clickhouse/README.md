@@ -99,6 +99,7 @@ SelectQuery                              | Total number of SELECT queries execut
 Selected bytes/second                     | Number of bytes read per second during queries. Indicates data read throughput.
 Total MergeTree parts                     | Total parts present in all MergeTree tables. Reflects table storage fragmentation.
 UncompressedCacheBytes                    | Memory used by uncompressed cache. Helps speed up data access without decompressing repeatedly.
+jemalloc.background_thread.num_threads    | Number of jemalloc background threads.
 
 ## Database
 Name                                | Description
@@ -124,7 +125,6 @@ Memory (tracked)                         | Memory tracked internally by ClickHou
 jemalloc.allocated                       | Memory allocated by jemalloc allocator. Helps monitor memory usage by ClickHouse processes.
 jemalloc.retained                        | Memory retained by jemalloc but not currently used. Shows potential memory overhead.
 jemalloc.resident                        | Resident memory managed by jemalloc. Reflects physical memory actually in use.
-jemalloc.background_thread.num_threads   | Number of jemalloc background threads running. Indicates memory management activity.
 jemalloc.arenas.all.dirty_purged         | Total memory purged from dirty jemalloc arenas. Helps reclaim unused memory.
 Uptime                                   | Total uptime of ClickHouse server in seconds. Useful for monitoring server stability and availability.
 

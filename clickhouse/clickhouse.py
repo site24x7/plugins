@@ -45,7 +45,7 @@ METRICS_TABS = {
     "Memory": {"order": 2, "tablist": [
         "MemoryResident", "MemoryVirtual", "MemoryShared",
         "Memory (tracked)", "jemalloc.allocated", "jemalloc.retained",
-        "jemalloc.resident", "jemalloc.background_thread.num_threads",
+        "jemalloc.resident",
         "jemalloc.arenas.all.dirty_purged", "Uptime"]},
     "Events": {"order": 3, "tablist": [
         "CompressedReadBufferBlocks", "CompressedReadBufferBytes",
@@ -70,7 +70,7 @@ ASYNC_METRICS = [
     "ReplicasMaxQueueSize", "ReplicasMaxRelativeDelay", "ReplicasSumInsertsInQueue",
     "ReplicasSumMergesInQueue", "ReplicasSumQueueSize",
     "Uptime", "jemalloc.allocated", "jemalloc.arenas.all.dirty_purged",
-    "jemalloc.background_thread.num_threads", "jemalloc.resident", "jemalloc.retained"
+    "jemalloc.resident", "jemalloc.retained"
 ]
 
 EVENT_METRICS = [
@@ -159,6 +159,10 @@ def main():
             # Fill ASYNC_METRICS using cached dictionary
             for metric in ASYNC_METRICS:
                 data[metric] = async_metrics_data.get(metric, 0)
+
+            # Static config metric — output as string
+            jemalloc_threads = int(async_metrics_data.get("jemalloc.background_thread.num_threads", 0))
+            data["jemalloc.background_thread.num_threads"] = f"{jemalloc_threads} Thread{'s' if jemalloc_threads != 1 else ''}"
 
             # Fill EVENT_METRICS using cached dictionary
             for metric in EVENT_METRICS:
