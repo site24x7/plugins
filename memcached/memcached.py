@@ -8,7 +8,6 @@ HEARTBEAT = True
 METRICS_UNITS = {
     'Network Read': 'MB',
     'Network Written': 'MB',
-    'Max Memory Limit': 'MB',
     'Cache Memory Used': 'MB',
     'User CPU Time': 'minutes',
     'System CPU Time': 'minutes',
@@ -67,11 +66,11 @@ KEYS = {
     "cmd_flush": "FLUSH Commands",
     "accepting_conns": "Accepting Connections",
     "touch_hits": "TOUCH Hits",
-    "threads": "Threads",
+    "threads": "Worker Threads",
     "pointer_size": "Architecture Bits",
     "cmd_set": "SET Commands",
     "libevent": "Libevent Version",
-    "cas_badval": "CAS Value Mismatch",
+    "cas_badval": "CAS Value Mismatches",
     "hash_bytes": "Hash Table Memory",
     "curr_connections": "Current Connections",
     "total_connections": "Total Connections",
@@ -138,7 +137,7 @@ class MemcachedMonitor:
                         'DECREMENT Misses',
                         'CAS Hits',
                         'CAS Misses',
-                        'CAS Value Mismatch',
+                        'CAS Value Mismatches',
                         'TOUCH Hits',
                         'TOUCH Misses',
                         'Total Items',
@@ -181,7 +180,6 @@ class MemcachedMonitor:
                     'order': 5,
                     'tablist': [
                         'Total Connections',
-                        'Max Connections',
                         'Rejected Connections',
                         'Connection Structures',
                         'Connection Yields',
@@ -252,6 +250,16 @@ class MemcachedMonitor:
                 for sec_key in ['User CPU Time', 'System CPU Time', 'Uptime']:
                     if sec_key in self.maindata:
                         self.maindata[sec_key] = round(self.maindata[sec_key] / 60, 2)
+
+                # Convert configuration values to descriptive strings
+                if 'Max Memory Limit' in self.maindata:
+                    self.maindata['Max Memory Limit'] = str(self.maindata['Max Memory Limit']) + ' MB'
+                if 'Max Connections' in self.maindata:
+                    self.maindata['Max Connections'] = str(self.maindata['Max Connections']) + ' Connections'
+                if 'Architecture Bits' in self.maindata:
+                    self.maindata['Architecture Bits'] = str(self.maindata['Architecture Bits']) + ' bits'
+                if 'Worker Threads' in self.maindata:
+                    self.maindata['Worker Threads'] = str(self.maindata['Worker Threads']) + ' Threads'
 
                 # Computed metrics
                 try:

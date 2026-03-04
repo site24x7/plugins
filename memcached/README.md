@@ -86,7 +86,7 @@ The agent will automatically execute the plugin within five minutes and user can
 | Memcached Version           | The version of Memcached currently running on the server.              |
 | PID                         | Process ID of the Memcached server.                                    |
 | Architecture Bits            | Architecture of the server in bits (32 or 64).                         |
-| Threads                     | Number of worker threads requested.                                    |
+| Worker Threads               | Number of worker threads requested.                                    |
 | Libevent Version             | Version of the libevent library being used.                            |
 | Network Read                 | Total data read from the network (in MB).                              |
 | Network Written              | Total data sent over the network (in MB).                              |
@@ -141,7 +141,7 @@ The agent will automatically execute the plugin within five minutes and user can
 | DECREMENT Misses             | Number of failed DECREMENT operations (key not found).                 |
 | CAS Hits                     | Number of successful CAS (Check-And-Set) operations.                   |
 | CAS Misses                   | Number of CAS operations where the key was not found.                  |
-| CAS Value Mismatch           | Number of CAS operations where the value did not match.                |
+| CAS Value Mismatches          | Number of CAS operations where the value did not match.                |
 | TOUCH Hits                   | Number of successful TOUCH operations.                                 |
 | TOUCH Misses                 | Number of TOUCH requests for keys not found.                           |
 | Total Items                  | Total number of items stored since the server started.                 |
