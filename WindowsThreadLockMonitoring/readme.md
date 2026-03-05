@@ -52,7 +52,7 @@ The agent will automatically execute the plugin within five minutes and user can
 | `Dotnet Locks Queue Length Peak Global` | Peak number of threads that waited to acquire a managed lock since the application started. | peak_waiting_threads |
 | `Dotnet Locks Current Logical Threads` | Number of current managed thread objects in the CLR, including both running and stopped threads. | threads |
 | `Dotnet Locks Current Physical Threads` | Number of native OS threads created and owned by the CLR to act as underlying threads for managed thread objects. | threads |
-| `Dotnet Locks Rate Recognized Threads Per Sec` | Rate at which the CLR recognizes previously unmanaged threads entering the managed runtime, per second. | threads/sec |
+| `Dotnet Locks Recognized Threads Rate Per Sec` | Rate at which the CLR recognizes previously unmanaged threads entering the managed runtime, per second. | threads/sec |
 | `Dotnet Locks Current Recognized Threads` | Number of currently recognized threads that have an associated managed thread object. | threads |
 | `Dotnet Locks Total Recognized Threads` | Total number of threads that have been recognized by the CLR since the application started (cumulative). | threads |
 
@@ -61,7 +61,7 @@ The agent will automatically execute the plugin within five minutes and user can
 | **Metric** | **Description** | **Unit** |
 |---|---|---|
 | `System Processor Queue Length` | Number of threads waiting in the processor queue. A sustained value above 2 per CPU may indicate CPU pressure. | waiting_threads |
-| `Cpu Total Usage Percent` | Total processor time across all cores as a percentage. | percent |
+| `CPU Total Usage Percent` | Total processor time across all cores as a percentage. | percent |
 | `Process Thread Count` | Total number of threads across all processes on the system. | threads |
 | `System Context Switches Per Sec` | Rate at which the processor switches from one thread to another, per second. High values may indicate excessive lock contention. | switches/sec |
 | `System Threads` | Total number of threads in the system at the time of data collection. | threads |
@@ -72,8 +72,8 @@ Reports the top 5 processes sorted by CPU usage (lifetime CPU seconds).
 
 | **Field** | **Description** | **Unit** |
 |---|---|---|
-| `name` | Generic identifier (`Process1` through `Process5`). |  |
-| `Process Name` | Name of the process. |  |
+| `name` | Generic identifier (`Process1` through `Process5`). | \Uffffffff |
+| `Process Name` | Name of the process. | \Uffffffff |
 | `Thread Count` | Number of threads in the process. | threads |
 | `Memory` | Working set memory usage of the process. | MB |
 

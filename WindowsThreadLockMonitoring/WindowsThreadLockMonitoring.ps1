@@ -14,7 +14,7 @@ $DotnetLocksQueueLengthPerSecGlobal = 0
 $DotnetLocksQueueLengthPeakGlobal = 0
 $DotnetLocksCurrentLogicalThreads = 0
 $DotnetLocksCurrentPhysicalThreads = 0
-$DotnetLocksRateRecognizedThreadsPerSec = 0
+$DotnetLocksRecognizedThreadsRatePerSec = 0
 $DotnetLocksCurrentRecognizedThreads = 0
 $DotnetLocksTotalRecognizedThreads = 0
 
@@ -82,10 +82,10 @@ try {
 
 try {
     $v = (Get-Counter -Counter '\.NET CLR LocksAndThreads(_Global_)\Rate of recognized threads / sec' -ErrorAction Stop).CounterSamples[0].CookedValue
-    $DotnetLocksRateRecognizedThreadsPerSec = if ($null -eq $v) { 0 } else { [math]::Round($v, 2) }
+    $DotnetLocksRecognizedThreadsRatePerSec = if ($null -eq $v) { 0 } else { [math]::Round($v, 2) }
 } catch {
     $msg += "$($_.Exception.Message) "
-    $DotnetLocksRateRecognizedThreadsPerSec = -1
+    $DotnetLocksRecognizedThreadsRatePerSec = -1
 }
 
 try {
@@ -197,11 +197,11 @@ $mainJson = @{
         "Dotnet Locks Queue Length Peak Global"        = "peak_waiting_threads"
         "Dotnet Locks Current Logical Threads"         = "threads"
         "Dotnet Locks Current Physical Threads"        = "threads"
-        "Dotnet Locks Rate Recognized Threads Per Sec" = "threads/sec"
+        "Dotnet Locks Recognized Threads Rate Per Sec" = "threads/sec"
         "Dotnet Locks Current Recognized Threads"      = "threads"        
         "Dotnet Locks Total Recognized Threads"        = "threads"
         "System Processor Queue Length"                = "waiting_threads"
-        "Cpu Total Usage Percent"                      = "percent"
+        "CPU Total Usage Percent"                      = "percent"
         "Process Thread Count"                         = "threads"
         "System Context Switches Per Sec"              = "switches/sec"
         "System Threads"                               = "threads"
@@ -218,11 +218,11 @@ $mainJson = @{
     "Dotnet Locks Queue Length Peak Global" = $DotnetLocksQueueLengthPeakGlobal
     "Dotnet Locks Current Logical Threads" = $DotnetLocksCurrentLogicalThreads
     "Dotnet Locks Current Physical Threads" = $DotnetLocksCurrentPhysicalThreads
-    "Dotnet Locks Rate Recognized Threads Per Sec" = $DotnetLocksRateRecognizedThreadsPerSec
+    "Dotnet Locks Recognized Threads Rate Per Sec" = $DotnetLocksRecognizedThreadsRatePerSec
     "Dotnet Locks Current Recognized Threads" = $DotnetLocksCurrentRecognizedThreads    
     "Dotnet Locks Total Recognized Threads" = $DotnetLocksTotalRecognizedThreads
     "System Processor Queue Length" = $SystemProcessorQueueLength
-    "Cpu Total Usage Percent" = $CpuTotalUsagePercent
+    "CPU Total Usage Percent" = $CpuTotalUsagePercent
     "Process Thread Count" = $ProcessThreadCount
     "System Context Switches Per Sec" = $SystemContextSwitchesPerSec
     "System Threads" = $SystemThreads
