@@ -163,3 +163,6 @@ The agent will automatically execute the plugin within five minutes and user can
 | Usage G1 Old Gen                 | The amount of memory used in the G1 Old Generation region.                      |
 | Usage G1 Survivor Space          | The amount of memory used in the G1 Survivor space region.                      |
 | Usage Metaspace                  | The amount of memory used in the JVM's metaspace.                               |
+
+#### Sample Image
+<img width="3292" height="1746" alt="image" src="https://github.com/user-attachments/assets/92f11c64-73e4-4e7f-8f4e-381fa6e7c505" />
