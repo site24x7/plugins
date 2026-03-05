@@ -44,27 +44,27 @@ The agent will automatically execute the plugin within five minutes and user can
 
 | **Metric** | **Description** | **Unit** |
 |---|---|---|
-| `Dotnet Locks Total Contentions` | Total number of times threads in the CLR have attempted to acquire a managed lock unsuccessfully (cumulative). | contentions |
-| `Dotnet Locks Total Contentions Delta` | Number of new lock contentions since the last polling interval. Computed from the state file. | contentions |
-| `Dotnet Locks Contention Rate Per Sec Global` | Rate at which threads in the CLR attempt to acquire a managed lock unsuccessfully, per second. | contentions/sec |
-| `Dotnet Locks Current Queue Length Global` | Number of threads currently waiting to acquire a managed lock. | waiting_threads |
-| `Dotnet Locks Queue Length Per Sec Global` | Number of threads per second waiting to acquire a lock. Represents queue arrival rate, not an instantaneous count. | queue_events/sec |
-| `Dotnet Locks Queue Length Peak Global` | Peak number of threads that waited to acquire a managed lock since the application started. | peak_waiting_threads |
-| `Dotnet Locks Current Logical Threads` | Number of current managed thread objects in the CLR, including both running and stopped threads. | threads |
-| `Dotnet Locks Current Physical Threads` | Number of native OS threads created and owned by the CLR to act as underlying threads for managed thread objects. | threads |
-| `Dotnet Locks Recognized Threads Rate Per Sec` | Rate at which the CLR recognizes previously unmanaged threads entering the managed runtime, per second. | threads/sec |
-| `Dotnet Locks Current Recognized Threads` | Number of currently recognized threads that have an associated managed thread object. | threads |
-| `Dotnet Locks Total Recognized Threads` | Total number of threads that have been recognized by the CLR since the application started (cumulative). | threads |
+| `Dotnet Locks Total Contentions` | Cumulative number of times threads in the CLR have attempted to acquire a managed lock unsuccessfully since the process started. This counter only increases and resets to zero when the .NET process restarts. | contentions |
+| `Dotnet Locks Total Contentions Delta` | Number of new lock contentions that occurred since the last polling interval. Calculated by subtracting the previous `Total Contentions` value (stored in `locks_state.json`) from the current value. | contentions |
+| `Dotnet Locks Contention Rate Per Sec Global` | Rate at which threads in the CLR attempt to acquire a managed lock unsuccessfully, measured per second. A rising value indicates increasing lock contention in real time. | contentions/sec |
+| `Dotnet Locks Current Queue Length Global` | Number of threads that are currently waiting to acquire a managed lock. A value greater than zero means threads are actively blocked waiting for a lock to be released. | waiting_threads |
+| `Dotnet Locks Queue Length Per Sec Global` | Rate at which threads are added to the lock wait queue, measured per second. This represents the queue arrival rate, not the current queue depth. | queue_events/sec |
+| `Dotnet Locks Queue Length Peak Global` | Highest number of threads that were simultaneously waiting to acquire a managed lock since the .NET process started. This value only increases and resets to zero on process restart. | peak_waiting_threads |
+| `Dotnet Locks Current Logical Threads` | Number of current managed thread objects in the CLR. This includes all threads that have been started and not yet garbage collected, whether running, suspended, or stopped. | threads |
+| `Dotnet Locks Current Physical Threads` | Number of native OS threads that the CLR has created to serve as underlying threads for managed thread objects. These are the actual operating system threads backing the managed threads. | threads |
+| `Dotnet Locks Recognized Threads Rate Per Sec` | Rate at which previously unmanaged threads (threads created outside the CLR, such as COM interop or native code threads) are recognized by the CLR as they enter managed code, measured per second. | threads/sec |
+| `Dotnet Locks Current Recognized Threads` | Number of threads that were originally created outside the CLR but have since entered managed code and are currently recognized by the runtime. | threads |
+| `Dotnet Locks Total Recognized Threads` | Cumulative number of threads that have been recognized by the CLR since the process started. This value only increases and resets to zero on process restart. On stable systems, this value may stop changing once all external threads have been recognized. | threads |
 
 ### System Metrics
 
 | **Metric** | **Description** | **Unit** |
 |---|---|---|
-| `System Processor Queue Length` | Number of threads waiting in the processor queue. A sustained value above 2 per CPU may indicate CPU pressure. | waiting_threads |
-| `CPU Total Usage Percent` | Total processor time across all cores as a percentage. | percent |
-| `Process Thread Count` | Total number of threads across all processes on the system. | threads |
-| `System Context Switches Per Sec` | Rate at which the processor switches from one thread to another, per second. High values may indicate excessive lock contention. | switches/sec |
-| `System Threads` | Total number of threads in the system at the time of data collection. | threads |
+| `System Processor Queue Length` | Number of threads that are ready to execute but waiting for a CPU core to become available. A sustained value above 2 per CPU core may indicate CPU pressure. | waiting_threads |
+| `CPU Total Usage Percent` | Percentage of total processor time being used across all CPU cores. A value of 100 means all cores are fully utilized. | percent |
+| `Process Thread Count` | Sum of thread counts from all user-mode processes on the system. This includes application processes, system services (`svchost`, `lsass`), and OS processes (`csrss`, `System`). | threads |
+| `System Context Switches Per Sec` | Rate at which the processor switches execution from one thread to another, per second. High values may indicate excessive lock contention or too many threads competing for CPU time. | switches/sec |
+| `System Threads` | Total number of threads managed by the OS kernel scheduler. This includes all user-mode process threads plus kernel-only threads such as driver worker threads and deferred procedure call (DPC) threads that do not belong to any user-mode process. | threads |
 
 ### Top Processes (Table)
 
@@ -72,8 +72,8 @@ Reports the top 5 processes sorted by CPU usage (lifetime CPU seconds).
 
 | **Field** | **Description** | **Unit** |
 |---|---|---|
-| `name` | Generic identifier (`Process1` through `Process5`). | \Uffffffff |
-| `Process Name` | Name of the process. | \Uffffffff |
-| `Thread Count` | Number of threads in the process. | threads |
-| `Memory` | Working set memory usage of the process. | MB |
+| `name` | Generic identifier for the process entry (`Process1` through `Process5`), used as the row key in Site24x7. | \Uffffffff |
+| `Process Name` | Actual name of the process as reported by the operating system. | \Uffffffff |
+| `Thread Count` | Number of active threads currently running within the process. | threads |
+| `Memory` | Working set memory of the process, which is the amount of physical RAM currently in use by the process. | MB |
 
