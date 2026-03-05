@@ -77,3 +77,6 @@ Reports the top 5 processes sorted by CPU usage (lifetime CPU seconds).
 | `Thread Count` | Number of active threads currently running within the process. | threads |
 | `Memory` | Working set memory of the process, which is the amount of physical RAM currently in use by the process. | MB |
 
+## Sample Image
+
+<img width="3292" height="1746" alt="image" src="https://github.com/user-attachments/assets/efba961a-c109-45f4-9580-23948b6b3597" />
