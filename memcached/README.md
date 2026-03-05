@@ -191,3 +191,7 @@ The agent will automatically execute the plugin within five minutes and user can
 | Accepting Connections        | Whether the server is currently accepting new connections.             |
 | Reserved File Descriptors    | Number of file descriptors reserved for internal use.                  |
 | Listener Disabled Count      | Number of times the listener was disabled due to connection limit.     |
+
+## Sample Image
+
+<img width="3292" height="1746" alt="image" src="https://github.com/user-attachments/assets/27c0cdf3-9907-43d5-a72c-fdbcda40938e" />
