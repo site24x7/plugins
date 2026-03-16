@@ -288,6 +288,42 @@ class oracle:
         return queried_data
 
 
+    def collect_cluster_info(self):
+        try:
+            cluster_name = ""
+
+            self.c.execute("SELECT value FROM v$parameter WHERE name = 'cluster_database'")
+            row = self.c.fetchone()
+            is_rac = bool(row and str(row[0]).strip().upper() in ["TRUE", "YES", "1"])
+
+            if not is_rac:
+                return
+
+            try:
+                self.c.execute("SELECT value FROM v$parameter WHERE name = 'db_unique_name'")
+                row = self.c.fetchone()
+                if row and row[0]:
+                    cluster_name = str(row[0]).strip()
+            except Exception:
+                pass
+
+            if not cluster_name:
+                try:
+                    self.c.execute("SELECT name FROM v$database")
+                    row = self.c.fetchone()
+                    if row and row[0]:
+                        cluster_name = str(row[0]).strip()
+                except Exception:
+                    pass
+
+            if cluster_name:
+                self.maindata["tags"] = "ORACLE_CLUSTER:{},ORACLE_NODE:{}".format(cluster_name, self.hostname)
+        except Exception as e:
+            if "msg" not in self.maindata:
+                self.maindata["msg"] = ""
+            self.maindata["msg"] += "Cluster info query error: {}; ".format(str(e))
+
+
 
     def metriccollector(self):
         self.metric_queries={
@@ -389,6 +425,8 @@ class oracle:
         if 'status' in self.maindata and self.maindata['status']==0:
             self.close_connection()
             return self.maindata
+
+        self.collect_cluster_info()
 
         self.maindata['tabs']={
             "Tablespace and PDB":{
