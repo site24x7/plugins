@@ -68,6 +68,9 @@ while IFS='=' read -r key value || [ -n "$key" ]; do
         value="${value%\'}"   
     fi
     
+    # replacing for single quotes
+    value="${value//\'\\\'\'/\'}"
+    
     check_value "$value"
     
     config["$key"]="$value"
