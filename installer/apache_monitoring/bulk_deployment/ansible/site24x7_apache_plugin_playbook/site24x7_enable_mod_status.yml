@@ -1,0 +1,94 @@
+---
+- name: "Apache mod status enable"
+  hosts: all
+  become: yes
+  vars:
+
+    # The content will be added after the given Regex or Statement for both RedHat and Debian
+
+    # for RedHat 
+    httpd_path: "/etc/httpd/conf/"  # Path to conf file
+    httpd_conf: "httpd.conf"        # Name of the conf file
+    regex_httpd: EOF                # Regex or Statement or EOF 
+
+    # for Debian
+    apache_path: "/etc/apache2/mods-available"   # Path to conf file
+    apache_conf: "status.conf"                   # Name of the conf file
+    regex_apache: "<IfModule mod_status.c>"      # Regex or Statement or EOF 
+    
+    # Edit the configurations as per your Requirements. This content will be added after the given regex or statement.
+    add_content: |
+     <Location "/server-status">
+        SetHandler server-status
+     </Location>
+
+
+  tasks:
+
+    - name: "httpd conf path check."
+      stat:
+        path: "{{ httpd_path }}/{{ httpd_conf }}"
+      register: httpd_path_check
+
+    - name: "apache2 conf path check."
+      stat:
+        path: "{{ apache_path }}/{{ apache_conf }}"
+      register: apache_path_check
+
+    - name: "Hosts with conf files not found in Debian"
+      debug:
+        msg: "Conf file not found: {{apache_path_check.stat}}" 
+      when: "not apache_path_check.stat.exists and ansible_facts['os_family'] == 'Debian'"
+
+    - name: "Hosts with conf files not found RedHat"
+      debug:
+        msg: "Conf file not found: {{httpd_path_check.stat}}" 
+      when: "not httpd_path_check.stat.exists and ansible_facts['os_family'] == 'RedHat'"
+
+    - name: Backup httpd conf file
+      copy:
+        backup: yes
+        src: "{{ httpd_path }}/{{ httpd_conf }}"
+        dest: "{{ httpd_path }}/{{ httpd_conf }}.bak_{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+        remote_src: yes
+
+      when: "httpd_path_check.stat.exists  and  ansible_facts['os_family'] == 'RedHat'"
+
+    - name: Backup apache conf file
+      copy:
+        backup: yes
+        src: "{{ apache_path }}/{{ apache_conf }}"
+        dest: "{{ apache_path }}/{{ apache_conf }}.bak_{{ ansible_date_time.date }}_{{ ansible_date_time.time }}"
+        remote_src: yes
+
+      when: "apache_path_check.stat.exists  and ansible_facts['os_family'] == 'Debian'"
+
+    - name: "Add content in httpd conf"
+      blockinfile:
+        insertafter: "{{regex_httpd}}"
+        dest: "{{ httpd_path }}/{{ httpd_conf }}"
+        block: "{{add_content}}"
+
+      when: "httpd_path_check.stat.exists  and  ansible_facts['os_family'] == 'RedHat'"
+
+    - name: "Restart httpd service"
+      service:
+        name: "httpd"
+        state: restarted
+      register: httpd_restart
+      when: "httpd_path_check.stat.exists  and  ansible_facts['os_family'] == 'RedHat'"
+
+    - name: "Add content in apache conf"
+      blockinfile:
+        insertafter: "{{regex_apache}}"
+        dest: "{{ apache_path }}/{{ apache_conf }}"
+        block: "{{add_content}}"
+
+      when: "apache_path_check.stat.exists  and  ansible_facts['os_family'] == 'Debian'"
+
+    - name: "Restart apache service"
+      service:
+        name: "apache2"
+        state: restarted
+      register: apache_restart
+      when: "apache_path_check.stat.exists  and  ansible_facts['os_family'] == 'Debian'"
