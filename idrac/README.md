@@ -29,7 +29,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/idrac/idrac.cfg
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 ```bash
-python3 idrac_test.py --hostname "ip-address" --snmp_version "2c" --snmp_community_str "public"
+python3 idrac.py --hostname "ip-address" --snmp_version "2c" --snmp_community_str "public"
 ```
 
 - Provide your idrac configurations in idrac.cfg file.
