@@ -1,8 +1,27 @@
 #!/usr/bin/python
 
+import os
 import sys
 import re
 import json
+
+UNITS = {
+    "Avg Request Time": "ms",
+    "Avg Upstream Response Time": "ms",
+    "Traffic Throughput": "MB",
+}
+
+TABS = {
+    "HTTP Responses": {
+        "order": 1,
+        "tablist": [
+            "HTTP Status 2xx",
+            "HTTP Status 3xx",
+            "HTTP Status 4xx",
+            "HTTP Status 5xx",
+        ]
+    },
+}
 
 class NginxServerMonitoring():
     def __init__(self, config_data) :
@@ -22,6 +41,9 @@ class NginxServerMonitoring():
         try:
             url = self._config_data_['url']
 
+            import ssl
+            ctx = ssl._create_unverified_context()
+
             if self._config_data_['username'] and self._config_data_['password']:
                 password_mgr = urlconnection.HTTPPasswordMgrWithDefaultRealm()
                 password_mgr.add_password(None, url, self._config_data_['username'], self._config_data_['password'])
@@ -30,15 +52,13 @@ class NginxServerMonitoring():
                 opener = urlconnection.build_opener(auth_handler, proxy_support)
                 urlconnection.install_opener(opener)
 
-            response = urlconnection.urlopen(url, timeout=self._config_data_['timeout'])
+            response = urlconnection.urlopen(url, timeout=self._config_data_['timeout'], context=ctx)
             return response.read()
         except Exception as e:
             self.data['status'] = 0
             #self.data['msg'] = str(e.code) + " " + str(e.reason)
             self.data['msg'] = str(e)
-                
-
-                
+               
     def _collect_metrics_(self):
         output = self._get_request_data_()
         if output == None : return self.data
@@ -68,6 +88,75 @@ class NginxServerMonitoring():
             self.data['Count of client requests'] = requests
             self.data['Count of successful client connections']= handled
             self.data['Count of dropped connections '] = (conn - handled)
+
+        log_path = r"C:\nginx-1.30.4\logs\access.log"
+        if os.path.exists(log_path):
+            status_2xx = status_3xx = status_4xx = status_5xx = 0
+            cache_hit = cache_miss = cache_bypass = cache_expired = 0
+            request_times = []
+            upstream_times = []
+            total_bytes = 0
+
+            # Exact matching patterns for your advanced_text format layout
+            STATUS_REGEX = re.compile(r']\s+"[^"\\]*(?:\\.[^"\\]*)*"\s+([1-5]\d{2})')
+            BYTES_REGEX = re.compile(r']\s+"[^"\\]*(?:\\.[^"\\]*)*"\s+[1-5]\d{2}\s+(\d+)')
+            RT_REGEX = re.compile(r'\brt=([0-9.]+|-)灯?')
+            URT_REGEX = re.compile(r'\burt=([0-9., -]+)')
+            CS_REGEX = re.compile(r'\bcs=([A-Za-z_-]+|-)')
+
+            with open(log_path, "r", errors="ignore") as f:
+                for line in f:
+                    clean_line = line.strip()
+                    if not clean_line: continue
+
+                    # 1. Parse Status Codes
+                    st_m = STATUS_REGEX.search(clean_line)
+                    if st_m:
+                        code = st_m.group(1)
+                        if code.startswith('2'): status_2xx += 1
+                        elif code.startswith('3'): status_3xx += 1
+                        elif code.startswith('4'): status_4xx += 1
+                        elif code.startswith('5'): status_5xx += 1
+
+                    # 2. Parse Throughput Bandwidth
+                    by_m = BYTES_REGEX.search(clean_line)
+                    if by_m: total_bytes += int(by_m.group(1))
+
+                    # 3. Parse End-to-End Request Time
+                    rt_m = RT_REGEX.search(clean_line)
+                    if rt_m and rt_m.group(1) != '-':
+                        request_times.append(float(rt_m.group(1)))
+
+                    # 4. Parse Backend Upstream Time
+                    urt_m = URT_REGEX.search(clean_line)
+                    if urt_m and urt_m.group(1).strip() != '-':
+                        for val in urt_m.group(1).replace(" ", "").split(','):
+                            try: upstream_times.append(float(val))
+                            except ValueError: pass
+
+                    # 5. Parse Cache Status
+                    cs_m = CS_REGEX.search(clean_line)
+                    if cs_m:
+                        state = cs_m.group(1).upper()
+                        if 'HIT' in state: cache_hit += 1
+                        elif 'MISS' in state: cache_miss += 1
+                        elif 'BYPASS' in state: cache_bypass += 1
+                        elif 'EXPIRED' in state: cache_expired += 1
+
+            # Populate metrics to JSON structure
+            self.data['HTTP Status 2xx'] = status_2xx
+            self.data['HTTP Status 3xx'] = status_3xx
+            self.data['HTTP Status 4xx'] = status_4xx
+            self.data['HTTP Status 5xx'] = status_5xx
+            self.data['Traffic Throughput'] = round(total_bytes/(1024*1024),2)
+            self.data['Cache Hit Count'] = cache_hit
+            self.data['Cache Miss Count'] = cache_miss
+            self.data['Cache Bypass Count'] = cache_bypass
+            self.data['Cache Expired Count'] = cache_expired
+            self.data['Avg Request Time'] = round((sum(request_times)/len(request_times))*1000, 2) if request_times else 0.0
+            self.data['Avg Upstream Response Time'] = round((sum(upstream_times)/len(upstream_times))*1000, 2) if upstream_times else 0.0
+            self.data['units'] = UNITS
+            self.data['tabs']=TABS
         
         return self.data
 
