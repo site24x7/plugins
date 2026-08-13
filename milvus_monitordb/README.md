@@ -1,202 +1,212 @@
-# Milvus Monitoring
+Here is your structured `README.md` content ready for copy-pasting:
 
-Milvus is an open-source vector database built to power AI applications, vector search, and Retrieval-Augmented Generation (RAG). It exposes Prometheus-style metrics that this plugin uses to report on cluster topology, collection segments, storage usage, search latency, and request throughput.
+```markdown
+# Milvus Database Monitoring
 
-## Prerequisites
+## Quick Installation
 
-- Download and install the latest version of the [Site24x7 Server Monitoring agent](https://www.site24x7.com/help/admin/adding-a-monitor/linux-server-monitoring.html#add-linux-server-monitor) on the server where you plan to run the plugin.
-- Milvus must be running and exposing its metrics endpoint (default port `9091`).
+If you're using Linux servers, use the Milvus plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
+
+Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
+
+```bash
+wget [https://raw.githubusercontent.com/site24x7/plugins/master/milvus/installer/Site24x7MilvusPluginInstaller.sh](https://raw.githubusercontent.com/site24x7/plugins/master/milvus/installer/Site24x7MilvusPluginInstaller.sh) && sudo bash Site24x7MilvusPluginInstaller.sh
+
+```
 
 ---
 
-# Plugin Installation
+## Standard Installation
 
-## Linux
+If you're not using Linux servers or want to install the plugin manually, follow the steps below.
 
-### Step 1
+### Prerequisites
 
-Create a directory named `milvus_monitordb`.
+* Download and install the latest version of the Site24x7 Linux agent in the server where you plan to run the plugin.
+* Python 3.7 or higher version should be installed.
 
+### Installation
+
+1. Create a directory named `milvus`:
 ```bash
-mkdir milvus_monitordb
-cd milvus_monitordb/
+mkdir milvus
+cd milvus/
+
 ```
 
-### Step 2
 
-Place the following files under the `milvus_monitordb` directory:
-
-- `milvus_monitordb.py`
-- `milvus_monitordb.cfg`
-
-### Step 3
-
-Execute the below command with appropriate arguments to check for valid JSON output:
-
+2. Download the files `milvus.py` and `milvus.cfg` and place them under the `milvus` directory:
 ```bash
-python3 milvus_monitordb.py host='127.0.0.1' metrics_port='9091'
+wget [https://raw.githubusercontent.com/site24x7/plugins/master/milvus/milvus.py](https://raw.githubusercontent.com/site24x7/plugins/master/milvus/milvus.py) && sed -i "1s|^.*|#! $(which python3)|" milvus.py
+wget [https://raw.githubusercontent.com/site24x7/plugins/master/milvus/milvus.cfg](https://raw.githubusercontent.com/site24x7/plugins/master/milvus/milvus.cfg)
+
 ```
 
-### Step 4
 
-Provide your Milvus configurations in the `milvus_monitordb.cfg` file:
+3. Execute the below command with appropriate arguments to check for the valid JSON output:
+```bash
+python3 milvus.py --host "localhost" --port "9091"
 
+```
+
+
+4. After the command with parameters gives the expected output, please configure the relevant parameters in the `milvus.cfg` file:
 ```ini
-[milvus_monitordb]
+[milvus]
 host = "127.0.0.1"
-metrics_port = "9091"
+port = 9091
+
 ```
 
-### Step 5
 
-Move the directory `milvus_monitordb` under the Site24x7 Linux Agent plugin directory:
+
+#### Linux
+
+Place the `milvus` folder under the Site24x7 Linux Agent plugin directory:
 
 ```bash
-mv milvus_monitordb /opt/site24x7/monagent/plugins/
+mv milvus /opt/site24x7/monagent/plugins/
+
 ```
 
----
+#### Windows
 
-## Windows
+Since it's a Python plugin, to run the plugin in a Windows server please follow the standard Site24x7 Windows Python plugin execution steps.
 
-### Step 1
+Move the folder `milvus` into the Site24x7 Windows Agent plugin directory:
 
-Create a directory named `milvus_monitordb`.
+```cmd
+C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\milvus
 
-### Step 2
-
-Place the files:
-
-- `milvus_monitordb.py`
-- `milvus_monitordb.cfg`
-
-under the `milvus_monitordb` directory.
-
-### Step 3
-
-Create a PowerShell wrapper file `milvus_monitordb.ps1` in the same directory:
-
-```powershell
-& "python.exe" "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\milvus_monitordb\milvus_monitordb.py" $args
 ```
 
-### Step 4
-
-Execute the below command with appropriate arguments in PowerShell to check for valid JSON output:
-
-```powershell
-powershell.exe -ExecutionPolicy Bypass -File "C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\milvus_monitordb\milvus_monitordb.ps1" host="127.0.0.1" metrics_port="9091"
-```
-
-### Step 5
-
-Provide your Milvus configurations in the `milvus_monitordb.cfg` file:
-
-```ini
-[milvus_monitordb]
-host = "127.0.0.1"
-metrics_port = "9091"
-```
-
-### Step 6
-
-Move the folder `milvus_monitordb` under the Site24x7 Windows Agent plugin directory:
-
-```text
-C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
-```
-
-The agent will automatically execute the plugin within five minutes, and users can see the plugin monitor under **Site24x7 > Plugins > Plugin Integrations**.
+The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
 ---
 
-# Supported Metrics
+## Supported Metrics
 
-## Overview
+### System Health
 
-| Metric Name | Description | Impact on Milvus |
-|------------|-------------|------------------|
-| Response Time | Time taken to execute the metric collection request. | Higher values indicate latency in communicating with the Milvus metrics endpoint. |
-| CPU Percent | Process CPU utilization of the Milvus instance. | Sustained high CPU usage can lead to search latency spikes and ingestion bottlenecks. |
-| Memory Usage | Total resident memory consumed by the Milvus process. | High memory utilization can lead to host swapping or OOM (Out-Of-Memory) kills. |
-| Active Goroutines | Number of active Go routines in the runtime. | Unusually high counts can indicate thread leakage or high concurrency backlogs. |
-| OS Threads | Number of operating system threads allocated by Go runtime. | Reflects system context switching and thread resource allocation. |
-| Open File Descriptors | Number of file handles opened by Milvus. | Values approaching system limits (ulimit) can block file I/O and network sockets. |
+| Metric Name | Description |
+| --- | --- |
+| Response Time | Time taken in milliseconds to fetch metrics from the Milvus endpoint. |
+| Milvus Status | Current availability status of the Milvus instance (1 for up, 0 for down). |
+| Metrics Total | Total number of Prometheus metric series parsed from the endpoint. |
+| CPU Percent | CPU utilization or total CPU seconds used by the process. |
+| Memory Usage | Resident memory currently consumed by the process in MB. |
+| Active Goroutines | Number of active Go goroutines running concurrently. |
+| OS Threads | Number of operating system threads used by the Go runtime. |
+| Open File Descriptors | Current number of open file descriptors for the process. |
+| Process Max FDs | Maximum allowed file descriptors for the process. |
+| Resident Memory MB | Physical RAM consumed by the process (RSS) in MB. |
+| Virtual Memory MB | Total virtual memory allocated by the process in MB. |
+| Heap Usage MB | Heap memory currently in use by the Go runtime in MB. |
+| Heap Idle MB | Heap memory waiting to be used or returned to OS in MB. |
+| Heap Sys MB | Total heap memory obtained from the operating system in MB. |
+| MMap InUse MB | Memory space actively used for memory-mapped files in MB. |
+| Next GC Threshold MB | Target heap size for the next garbage collection cycle in MB. |
+| GC Duration Avg ms | Average duration of garbage collection pauses in milliseconds. |
+| GC Cycle Count | Total number of completed garbage collection cycles. |
+| Mallocs Count | Cumulative count of heap memory allocations. |
+| Write Blocks | Counter indicating forced write-denial or block states in RootCoord. |
 
----
+### Nodes
 
-## Nodes and Topology
+| Metric Name | Description |
+| --- | --- |
+| Total Nodes | Total number of active nodes across the Milvus cluster. |
+| Proxy Nodes | Number of active Proxy component nodes. |
+| Query Nodes | Number of active QueryNode component nodes. |
+| Data Nodes | Number of active DataNode component nodes. |
+| Index Nodes | Number of active IndexNode component nodes. |
+| Streaming Nodes | Number of active StreamingNode component nodes. |
+| gRPC Active Conns | Number of active gRPC connections. |
+| Proxy Active Conns | Number of active client connections handled by Proxies. |
+| DML Channels Count | Number of data manipulation language (DML) channels. |
+| Collections Loaded | Number of collections currently loaded into query memory. |
+| RootCoord Collections | Total collections registered in RootCoord. |
+| RootCoord Partitions | Total partitions registered in RootCoord. |
+| QN Entity Count | Total number of entities loaded or managed in QueryNodes. |
+| QN Entity Memory MB | Memory size consumed by entities in QueryNodes in MB. |
+| QN Flowgraph Count | Number of active processing flowgraphs in QueryNodes. |
+| QN DML Channel Count | Number of DML virtual channels assigned to QueryNodes. |
+| DN Flowgraph Count | Number of active processing flowgraphs in DataNodes. |
+| DN Consume Bytes | Total bytes consumed from message streams by DataNodes. |
+| DN Consume Msg Count | Total message count consumed by DataNodes. |
+| DN AutoFlush Op Count | Number of auto-flush operations executed by DataNodes. |
 
-| Metric Name | Description | Impact on Milvus |
-|------------|-------------|------------------|
-| Total Nodes | Total number of nodes participating in the Milvus cluster. | Tracks cluster scale and node membership availability. |
-| Proxy Nodes | Count of active Proxy coordinator nodes handling client requests. | Low proxy counts relative to traffic can bottleneck incoming API connections. |
-| Query Nodes | Count of active QueryNodes executing vector search tasks. | Lower QueryNode availability reduces search capacity and throughput. |
-| Data Nodes | Count of active DataNodes handling vector data ingestion and flush. | Unavailability degrades data persistence and binlog generation capabilities. |
-| Index Nodes | Count of active IndexNodes processing vector index building. | Fewer index nodes slow down vector index construction times. |
-| Streaming Nodes | Count of active StreamingNodes processing WAL/streaming requests. | Affects stream ingestion latency and real-time message stream routing. |
-| gRPC Active Conns | Current active gRPC connection count across cluster components. | High counts reflect heavy internal inter-node communication. |
-| Proxy Active Conns | Active client connections connected directly to Proxy nodes. | High active connections indicate heavy incoming SDK client traffic. |
+### Query & Search
 
----
+| Metric Name | Description |
+| --- | --- |
+| Query Requests | Total count of processed vector query requests. |
+| Query Latency ms | Average execution latency for vector queries in milliseconds. |
+| Query Queue Latency ms | Average time query requests spend waiting in queue in milliseconds. |
+| Query Reduce Latency ms | Average time spent reducing/merging query results in milliseconds. |
+| Query CoreSearch Latency ms | Core vector search operation execution latency in milliseconds. |
+| Search Requests | Total count of vector similarity search requests. |
+| Search Latency ms | Average execution latency for vector search requests in milliseconds. |
+| Search Queue Latency ms | Average time search requests spend waiting in queue in milliseconds. |
+| Search TopK Avg | Average Top-K value requested in vector searches. |
+| Search WaitResult Latency ms | Average time proxy waits for search result shards in milliseconds. |
+| Search DecodeResult Latency ms | Average time taken to decode search results in milliseconds. |
+| QN ReadTask Concurrency | Current concurrency level of read tasks in QueryNodes. |
+| QN ReadTask Ready Queue | Length of the ready queue for QueryNode read tasks. |
+| QN ReadTask Unsolved Queue | Length of the unsolved/pending queue for QueryNode read tasks. |
+| QN LoadSegment Concurrency | Concurrency level of segment loading tasks in QueryNodes. |
+| QN LoadSegment Latency ms | Average latency for loading segments into QueryNodes in milliseconds. |
+| QN MsgDispatcher Lag ms | Time lag of message dispatchers in QueryNodes in milliseconds. |
+| Search QPS Rate | Current rate of search queries per second (QPS). |
+| Insert QPS Rate | Current rate of insert requests per second (QPS). |
+| Searched Vector Count | Total number of individual vectors scanned during searches. |
 
-## Collections and Segments
+### Storage & Memory
 
-| Metric Name | Description | Impact on Milvus |
-|------------|-------------|------------------|
-| Data Collections | Total number of collections registered in DataCoord. | Indicates the logical schema scale managed by the cluster. |
-| Query Collections | Number of collections loaded into QueryCoord for searching. | Unloaded collections cannot serve search/query traffic. |
-| Query Replicas | Total number of loaded collection replicas across QueryNodes. | More replicas improve search concurrency and fault tolerance. |
-| Data Segments | Total count of segments managed by DataCoord. | Higher segment counts increase metadata coordination overhead. |
-| Loaded Segments | Total segments currently loaded in memory for query processing. | High counts consume QueryNode RAM; must fit within available memory. |
-| Growing Segments | Segments currently receiving new vector insertions in real time. | Large numbers of growing segments increase search latency before indexing. |
-| Sealed Segments | Segments closed for insertion and queued/ready for indexing. | Indicates segments awaiting background index building. |
-| Flushed Segments | Segments completely persisted to object storage/disk. | Assures durability and completion of data sync processes. |
+| Metric Name | Description |
+| --- | --- |
+| Data Collections | Number of collections managed by DataCoord. |
+| Query Collections | Number of collections managed by QueryCoord. |
+| Query Replicas | Total number of collection replicas loaded for queries. |
+| Data Segments | Total number of data segments managed by DataCoord. |
+| Loaded Segments | Total number of segments loaded into memory across QueryNodes. |
+| Growing Segments | Number of active, mutable segments currently accepting inserts. |
+| Sealed Segments | Number of sealed segments closed to further insertions. |
+| Flushed Segments | Number of flushed segments safely persisted to object storage. |
+| Total Indexed Rows | Total number of entity rows indexed across storage. |
+| Loaded Entities QN | Total entities loaded into QueryNode runtime memory. |
+| Binlog Size MB | Total size of generated binlog files in MB. |
+| Index Files Size MB | Total storage size consumed by vector index files in MB. |
+| Storage KV Size MB | Storage space utilized by Key-Value storage components in MB. |
+| Meta KV Size MB | Storage space utilized by metadata Key-Value stores in MB. |
+| Raw Data Size MB | Raw uncompressed size of ingested vector and scalar data in MB. |
+| QN CGO Memory MB | Memory allocated via CGO (C bindings) in QueryNodes in MB. |
+| Insert Size MB | Total data size received for insertions in MB. |
+| Insert Request Count | Total number of insert API requests processed. |
+| Delete Vectors Count | Total number of vector deletion entries processed. |
+| Flushed Rows Count | Total number of entity rows flushed to persistent storage. |
 
----
+### Runtime & Queues
 
-## Storage and Memory
-
-| Metric Name | Description | Impact on Milvus |
-|------------|-------------|------------------|
-| Total Indexed Rows | Total number of vector entity rows persisted in DataCoord storage. | Primary indicator of overall vector database size over time. |
-| Loaded Entities QN | Count of vector entities currently loaded into QueryNodes. | Tracks active search-ready entities loaded in memory. |
-| Binlog Size | Total size of raw unindexed insert binlogs on storage. | High binlog volume without indexing increases memory overhead. |
-| Index Files Size | Total disk space consumed by built vector index structures. | Directly influences disk capacity planning for index storage. |
-| Storage KV Size | Storage footprint consumed by key-value storage engine backend. | Reflects underlying KV metadata and system state disk footprint. |
-| Meta KV Size | Memory/disk space used for metadata KV state store. | Excessive meta size can slow down cluster coordination tasks. |
-| Raw Data Size | Total uncompressed raw vector data size across DataNodes. | Measures raw ingestion data scale before compaction and indexing. |
-| QN CGO Memory | Memory allocated by QueryNode C++ core via CGO for vector search engines. | Primary driver of QueryNode RAM utilization (Knowhere engine usage). |
-
----
-
-## Latency
-
-| Metric Name | Description | Impact on Milvus |
-|------------|-------------|------------------|
-| Search Query Latency | End-to-end vector search latency measured at the Proxy level. | Directly impacts end-user application query responsiveness. |
-| Core Search Latency | Time spent inside the execution C++ vector search engine (Knowhere). | Isolates vector index search speed from network/framework overhead. |
-| QN Search Latency | Time taken by QueryNode to process and return vector search results. | Higher values point to QueryNode compute or memory bottlenecks. |
-| Proxy Req Latency | Average latency for general proxy client request processing. | Measures overall frontend API gateway responsiveness. |
-| DataNode Flush Lat | Time taken for DataNode to flush segment memory buffers to disk. | Slow flushes can delay data durability and segment sealing. |
-| Index Build Latency | Duration taken by IndexNodes to generate vector index structures. | Longer durations delay search availability on newly inserted vectors. |
-| gRPC Request Latency | Average latency of inter-component gRPC communications. | Indicates internal network latency between proxy, coordinators, and worker nodes. |
-
----
-
-## Throughput and Queues
-
-| Metric Name | Description | Impact on Milvus |
-|------------|-------------|------------------|
-| Proxy Request Count | Total number of requests processed by Proxy nodes. | Reflects overall system traffic volume. |
-| Ingestion Volume | Total volume of vector data ingested through Proxy nodes. | Measures raw bandwidth and data ingestion throughput. |
-| Delete Vectors Count | Cumulative count of deleted vector entities processed. | High deletion rates trigger compaction tasks and tombstone overhead. |
-| Flush Request Count | Total segment flush requests issued across DataNodes. | Tracks segment lifecycle transition frequency. |
-| Flushed Rows Count | Total number of rows successfully written during flush operations. | Measures persistence throughput. |
-| Searched Vector Count | Total number of target search query vectors processed. | High values indicate heavy batch search workloads. |
-| Query Request Count | Cumulative scalar/entity query requests executed. | Measures non-vector scalar query workload. |
-| Insert Request Count | Cumulative vector insert API requests received by Proxy. | Reflects bulk ingestion request activity. |
-| Search QPS Rate | Current vector search Queries Per Second rate. | Core measure of search throughput. |
-| Insert QPS Rate | Current vector insert Queries Per Second rate. | Core measure of ingestion throughput. |
-| Proxy Queue Length | Number of search/query tasks waiting in Proxy execution queues. | Non-zero values indicate proxy worker pool saturation. |
-| QN Queue Length | Number of vector execution tasks queued inside QueryNodes. | Queue backlogs directly increase search latency. |
+| Metric Name | Description |
+| --- | --- |
+| Proxy Request Count | Total number of incoming requests handled by Proxy nodes. |
+| Ingestion Volume | Total volume of data ingested into the system in MB. |
+| Flush Request Count | Total number of data flush operations requested. |
+| Flushed Bytes MB | Total data size successfully flushed to storage in MB. |
+| Mutation Send Latency ms | Average latency for sending data mutations to message queues in milliseconds. |
+| DN EncodeBuffer Latency ms | Average buffer encoding latency in DataNodes in milliseconds. |
+| DN Save Latency ms | Average data persistence/save latency in DataNodes in milliseconds. |
+| Storage Op Count | Total count of storage read/write operations performed. |
+| Storage Request Latency ms | Average response latency for storage layer interactions in milliseconds. |
+| MQ Consumer Count | Number of active message queue consumers. |
+| MsgStream Op Count | Total operations processed through message streams. |
+| MsgStream Request Latency ms | Average message stream request processing latency in milliseconds. |
+| Proxy TT Lag ms | Time-Travel (TT) synchronization lag tracked by Proxies in milliseconds. |
+| Consumer Lag ms | Message consumption time lag in DataNodes in milliseconds. |
+| Proxy Queue Length | Current backlog item count inside Proxy request queues. |
+| QN Queue Length | Current backlog item count inside QueryNode execution queues. |
+| Index Build Latency ms | Average time taken to build vector indexes in IndexNodes in milliseconds. |
+| Index Save Latency ms | Average time taken to save built indexes to storage in milliseconds. |
+| Index Task Count | Total number of active or processed index tasks. |
+| Index TaskQueue Latency ms | Average time index tasks spend waiting in the queue before execution in milliseconds. |
