@@ -11,7 +11,7 @@ HTTP_TIMEOUT = 3.0
 socket.setdefaulttimeout(HTTP_TIMEOUT)
 
 # Version 41 - Fixed label parsing, optimized stream processing, and robust aggregation
-PLUGIN_VERSION = 44
+PLUGIN_VERSION = 1
 HEARTBEAT = "true"
 
 # Define 5 Professional Dashboard Tabs with short and understandable names
