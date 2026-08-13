@@ -1,28 +1,12 @@
-Here is your structured `README.md` content ready for copy-pasting:
 
-```markdown
 # Milvus Database Monitoring
 
-## Quick Installation
 
-If you're using Linux servers, use the Milvus plugin installer that checks the prerequisites and installs the plugin with a bash script. You don't need to manually set up the plugin if you're using the installer.
-
-Execute the command below in the terminal to run the installer and follow the instructions displayed on-screen:
-
-```bash
-wget [https://raw.githubusercontent.com/site24x7/plugins/master/milvus/installer/Site24x7MilvusPluginInstaller.sh](https://raw.githubusercontent.com/site24x7/plugins/master/milvus/installer/Site24x7MilvusPluginInstaller.sh) && sudo bash Site24x7MilvusPluginInstaller.sh
-
-```
-
----
-
-## Standard Installation
-
-If you're not using Linux servers or want to install the plugin manually, follow the steps below.
 
 ### Prerequisites
 
-* Download and install the latest version of the Site24x7 Linux agent in the server where you plan to run the plugin.
+* Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+
 * Python 3.7 or higher version should be installed.
 
 ### Installation
@@ -31,22 +15,19 @@ If you're not using Linux servers or want to install the plugin manually, follow
 ```bash
 mkdir milvus
 cd milvus/
-
 ```
 
 
 2. Download the files `milvus.py` and `milvus.cfg` and place them under the `milvus` directory:
 ```bash
-wget [https://raw.githubusercontent.com/site24x7/plugins/master/milvus/milvus.py](https://raw.githubusercontent.com/site24x7/plugins/master/milvus/milvus.py) && sed -i "1s|^.*|#! $(which python3)|" milvus.py
-wget [https://raw.githubusercontent.com/site24x7/plugins/master/milvus/milvus.cfg](https://raw.githubusercontent.com/site24x7/plugins/master/milvus/milvus.cfg)
-
+wget https://raw.githubusercontent.com/site24x7/plugins/master/milvus/milvus.py && sed -i "1s|^.*|#! $(which python3)|" milvus.py
+wget https://raw.githubusercontent.com/site24x7/plugins/master/milvus/milvus.cfg
 ```
 
 
 3. Execute the below command with appropriate arguments to check for the valid JSON output:
 ```bash
 python3 milvus.py --host "localhost" --port "9091"
-
 ```
 
 
@@ -55,29 +36,27 @@ python3 milvus.py --host "localhost" --port "9091"
 [milvus]
 host = "127.0.0.1"
 port = 9091
-
 ```
 
 
 
 #### Linux
 
-Place the `milvus` folder under the Site24x7 Linux Agent plugin directory:
+- Place the `milvus` folder under the Site24x7 Linux Agent plugin directory:
 
 ```bash
 mv milvus /opt/site24x7/monagent/plugins/
-
 ```
 
 #### Windows
 
-Since it's a Python plugin, to run the plugin in a Windows server please follow the standard Site24x7 Windows Python plugin execution steps.
+- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 
-Move the folder `milvus` into the Site24x7 Windows Agent plugin directory:
+
+- Move the folder `milvus` into the Site24x7 Windows Agent plugin directory:
 
 ```cmd
 C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\milvus
-
 ```
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.

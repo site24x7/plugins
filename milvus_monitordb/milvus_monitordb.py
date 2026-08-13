@@ -453,13 +453,7 @@ def metricCollector(host, port):
     out.update(res)
     return out
 
-def clean_param(val, default):
-    if not val or not isinstance(val, str):
-        return default
-    val = val.strip("\"'")
-    if len(val) > 20 and ("==" in val or "+" in val or "/" in val):
-        return default
-    return val
+
 
 if __name__ == "__main__":
     try:
