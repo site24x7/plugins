@@ -210,3 +210,10 @@ name					|	Shard identifier in the format `Collection / ShardID (NodeName)`
 Object_Count				|	Number of objects stored within this shard
 
 ---
+
+## Sample Images
+
+<img width="1646" height="977" alt="image" src="https://github.com/user-attachments/assets/7d6ec962-86ff-4e6c-bc87-8307f2033aa9" />
+
+<img width="1646" height="977" alt="image" src="https://github.com/user-attachments/assets/1bca6692-886c-4449-8c8a-af0ffa159019" />
+
