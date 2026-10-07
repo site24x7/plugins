@@ -72,6 +72,8 @@
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
+To see the mongodb_insights monitor in the Site24x7's web client, login Site24x7 with your account, navigate to Server tab -> Plugin Integration -> list of plugin monitors -> user can check the mongodb_insights monitor.
+
 ### Performance Metrics
 
 Name		        			| Description
@@ -126,6 +128,9 @@ Name		        				| Description
 **IXScan Docs Examined by DB**				| Bar chart of total documents examined, grouped by database, for index-scan queries.
 **IXScan Efficiency Top 10**				| Table of the top 10 index-scan queries by duration, with docs examined vs. docs returned.
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7.
+## Sample Images
+<img width="1646" height="977" alt="image" src="https://github.com/user-attachments/assets/f6fb5df9-dc2c-4597-b3f2-473cb791dfcb" />
 
-To see the mongodb_insights monitor in the Site24x7's web client, login Site24x7 with your account, navigate to Server tab -> Plugin Integration -> list of plugin monitors -> user can check the mongodb_insights monitor.
+<img width="1646" height="977" alt="image" src="https://github.com/user-attachments/assets/52816b3e-a913-4096-9a8b-e99181d33ca7" />
+
+
