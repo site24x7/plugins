@@ -265,8 +265,6 @@ def metricCollector():
     getNodes(data)
     getPrometheusMetrics(data)
 
-    data.pop("status", None)
-
     return data
 
 
