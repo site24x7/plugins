@@ -144,3 +144,10 @@ name					|	Combined `<index>_<namespace>` identifier for this row
 Index					|	Name of the index the namespace belongs to
 Namespace				|	Namespace name (`(default)` for the unnamed default namespace)
 Vector_Count				|	Number of vectors stored in this namespace
+
+## Sample Image
+
+<img width="3282" height="1689" alt="image" src="https://github.com/user-attachments/assets/f9ba5c86-cb3b-46cc-8c3d-d6a66c29086e" />
+
+<img width="3282" height="1689" alt="image" src="https://github.com/user-attachments/assets/72c2e48b-6400-499a-8edf-b86d9bd9b26d" />
+
