@@ -174,3 +174,9 @@ Per-component summary of the roles running on the Milvus node. One row per activ
 | name | Milvus component/role name as reported by Milvus (proxy, querynode, datanode, mixcoord, etc.) |
 | Instance Count | Number of active instances for the component |
 | State | Health status of the component |
+
+## Sample Images
+
+<img width="3282" height="1689" alt="image" src="https://github.com/user-attachments/assets/6694f773-226c-4ab7-bec7-b0cdcbabd2e1" />
+
+<img width="3282" height="1689" alt="image" src="https://github.com/user-attachments/assets/b45402b3-cc29-461c-a85e-bd4319b4076b" />
