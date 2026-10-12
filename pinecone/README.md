@@ -19,40 +19,39 @@
 
 ### Linux
 
-- Create a directory named `pinecone_monitoring`.
+- Create a directory named `pinecone`.
 
-		mkdir pinecone_monitoring
-		cd pinecone_monitoring/
+		mkdir pinecone
+		cd pinecone/
 
-- Download the plugin files into the `pinecone_monitoring` directory:
+- Download the plugin files into the `pinecone` directory:
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/pinecone_monitoring/pinecone_monitoring.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/pinecone_monitoring/pinecone_monitoring.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/pinecone/pinecone.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/pinecone/pinecone.cfg
 
 - Execute the below command with the appropriate arguments to confirm valid JSON output:
 
-		python3 pinecone_monitoring.py --api_key 'your-pinecone-api-key' --api_version '2025-10'
+		python3 pinecone.py --api_key 'your-pinecone-api-key' --api_version '2025-10'
 
-- Update your Pinecone configuration in the `pinecone_monitoring.cfg` file. On Linux, set `use_agent_python=1` so the Site24x7 agent runs the plugin with its own bundled Python interpreter (which already includes `requests`):
 
 		[global_configurations]
 		use_agent_python=1
 
-		[pinecone_monitoring]
+		[pinecone]
 		api_key = "your-pinecone-api-key"
 		api_version = "2025-10"
 
-- Move the `pinecone_monitoring` directory under the Site24x7 Linux Agent plugin directory:
+- Move the `pinecone` directory under the Site24x7 Linux Agent plugin directory:
 
-		mv pinecone_monitoring /opt/site24x7/monagent/plugins/
+		mv pinecone /opt/site24x7/monagent/plugins/
 
 ### Windows
 
 To run a Python-based plugin on a Windows server, follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers) to set up the required wrapper before continuing below.
 
-- Create a directory named `pinecone_monitoring`.
+- Create a directory named `pinecone`.
 
-- Place `pinecone_monitoring.py` and `pinecone_monitoring.cfg` under the `pinecone_monitoring` directory.
+- Place `pinecone.py` and `pinecone.cfg` under the `pinecone` directory.
 
 - Install the required Python package:
 
@@ -60,15 +59,15 @@ To run a Python-based plugin on a Windows server, follow the steps in [this arti
 
 - Execute the below command with the appropriate arguments in `cmd` or PowerShell to confirm valid JSON output:
 
-		python pinecone_monitoring.py --api_key "your-pinecone-api-key" --api_version "2025-10"
+		python pinecone.py --api_key "your-pinecone-api-key" --api_version "2025-10"
 
-- Update your Pinecone configuration in the `pinecone_monitoring.cfg` file. The `use_agent_python` option does **not** apply on Windows - the Windows agent has no bundled Python, so the system Python is used:
+- Update your Pinecone configuration in the `pinecone.cfg` file. The `use_agent_python` option does **not** apply on Windows - the Windows agent has no bundled Python, so the system Python is used:
 
-		[pinecone_monitoring]
+		[pinecone]
 		api_key = "your-pinecone-api-key"
 		api_version = "2025-10"
 
-- Move the `pinecone_monitoring` folder under the Site24x7 Windows Agent plugin directory:
+- Move the `pinecone` folder under the Site24x7 Windows Agent plugin directory:
 
 		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
 

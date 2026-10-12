@@ -61,26 +61,26 @@ If API key authentication is enabled, provide a key with **read-only** access.
 
 ### Linux
 
-1. Create a directory named `Weaviate_monitoring`:
+1. Create a directory named `Weaviate`:
 
-		mkdir Weaviate_monitoring
-		cd Weaviate_monitoring/
+		mkdir Weaviate
+		cd Weaviate/
 
 2. Download the plugin files:
 
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/weaviate/Weaviate_monitoring/Weaviate_monitoring.py
-		wget https://raw.githubusercontent.com/site24x7/plugins/master/weaviate/Weaviate_monitoring/Weaviate_monitoring.cfg
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/weaviate/Weaviate/Weaviate.py
+		wget https://raw.githubusercontent.com/site24x7/plugins/master/weaviate/Weaviate/Weaviate.cfg
 
 3. Run the plugin manually to verify the JSON output:
 
-		python3 Weaviate_monitoring.py --host 'localhost' --port '8080' --metrics_port '2112' --api_key '' --ssl 'false' --insecure 'false'
+		python3 Weaviate.py --host 'localhost' --port '8080' --metrics_port '2112' --api_key '' --ssl 'false' --insecure 'false'
 
-4. Provide your Weaviate connection details in `Weaviate_monitoring.cfg`:
+4. Provide your Weaviate connection details in `Weaviate.cfg`:
 
 		[global_configurations]
 		use_agent_python=1
 
-		[Weaviate_monitoring]
+		[Weaviate]
 		host = "localhost"
 		port = "8080"
 		metrics_port = "2112"
@@ -90,15 +90,15 @@ If API key authentication is enabled, provide a key with **read-only** access.
 
 5. Move the directory to the Site24x7 Linux agent plugin folder:
 
-		mv Weaviate_monitoring /opt/site24x7/monagent/plugins/
+		mv Weaviate /opt/site24x7/monagent/plugins/
 
 ---
 
 ### Windows
 
-1. Create a directory named `Weaviate_monitoring`.
+1. Create a directory named `Weaviate`.
 
-2. Download the files [Weaviate_monitoring.py](https://raw.githubusercontent.com/site24x7/plugins/master/weaviate/Weaviate_monitoring/Weaviate_monitoring.py) and [Weaviate_monitoring.cfg](https://raw.githubusercontent.com/site24x7/plugins/master/weaviate/Weaviate_monitoring/Weaviate_monitoring.cfg) and place them inside the `Weaviate_monitoring` directory.
+2. Download the files [Weaviate.py](https://raw.githubusercontent.com/site24x7/plugins/master/weaviate/Weaviate/Weaviate.py) and [Weaviate.cfg](https://raw.githubusercontent.com/site24x7/plugins/master/weaviate/Weaviate/Weaviate.cfg) and place them inside the `Weaviate` directory.
 
 3. Since this is a Python plugin, follow the steps in [this guide](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers) to configure Python plugins on Windows servers.
 
@@ -108,11 +108,11 @@ If API key authentication is enabled, provide a key with **read-only** access.
 
 5. Run the plugin manually in Command Prompt to verify the JSON output:
 
-		python Weaviate_monitoring.py --host "localhost" --port "8080" --metrics_port "2112" --api_key "" --ssl "false" --insecure "false"
+		python Weaviate.py --host "localhost" --port "8080" --metrics_port "2112" --api_key "" --ssl "false" --insecure "false"
 
-6. Provide your Weaviate connection details in `Weaviate_monitoring.cfg`:
+6. Provide your Weaviate connection details in `Weaviate.cfg`:
 
-		[Weaviate_monitoring]
+		[Weaviate]
 		host = "localhost"
 		port = "8080"
 		metrics_port = "2112"
@@ -120,9 +120,9 @@ If API key authentication is enabled, provide a key with **read-only** access.
 		ssl = "false"
 		insecure = "false"
 
-7. Move the `Weaviate_monitoring` folder to the Site24x7 Windows agent plugin directory:
+7. Move the `Weaviate` folder to the Site24x7 Windows agent plugin directory:
 
-		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\Weaviate_monitoring
+		C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\Weaviate
 
 The agent will automatically execute the plugin within five minutes and the monitor will appear under **Site24x7 > Plugins > Plugin Integrations**.
 
