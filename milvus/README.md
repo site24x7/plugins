@@ -18,26 +18,26 @@ Milvus exposes Prometheus metrics on port `9091` by default (path `/metrics`). T
 
 ## Installation
 
-1. Create a directory named `milvus_monitoring`:
+1. Create a directory named `milvus`:
    ```bash
-   mkdir milvus_monitoring
-   cd milvus_monitoring/
+   mkdir milvus
+   cd milvus/
    ```
 
-2. Download `milvus_monitoring.py` and `milvus_monitoring.cfg` into the directory:
+2. Download `milvus.py` and `milvus.cfg` into the directory:
    ```bash
-   wget https://raw.githubusercontent.com/site24x7/plugins/master/milvus_monitoring/milvus_monitoring.py 
-   wget https://raw.githubusercontent.com/site24x7/plugins/master/milvus_monitoring/milvus_monitoring.cfg
+   wget https://raw.githubusercontent.com/site24x7/plugins/master/milvus/milvus.py 
+   wget https://raw.githubusercontent.com/site24x7/plugins/master/milvus/milvus.cfg
    ```
 
 3. Run the plugin manually to confirm it returns valid JSON:
    ```bash
-   python3 milvus_monitoring.py --host "localhost" --metrics_port "9091" --ssl "false" --insecure "false"
+   python3 milvus.py --host "localhost" --metrics_port "9091" --ssl "false" --insecure "false"
    ```
 
-4. Once the manual run returns the expected output, set the connection parameters in `milvus_monitoring.cfg`:
+4. Once the manual run returns the expected output, set the connection parameters in `milvus.cfg`:
    ```ini
-   [milvus_monitoring]
+   [milvus]
    host = "localhost"
    metrics_port = "9091"
    ssl = "false"
@@ -46,18 +46,18 @@ Milvus exposes Prometheus metrics on port `9091` by default (path `/metrics`). T
 
 ### Linux
 
-* Place the `milvus_monitoring` folder under the Site24x7 Linux Agent plugin directory:
+* Place the `milvus` folder under the Site24x7 Linux Agent plugin directory:
   ```bash
-  mv milvus_monitoring /opt/site24x7/monagent/plugins/
+  mv milvus /opt/site24x7/monagent/plugins/
   ```
 
 ### Windows
 
 * Since this is a Python plugin, follow the steps in [this guide](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers) to run Python plugin scripts on a Windows server.
 
-* Move the `milvus_monitoring` folder into the Site24x7 Windows Agent plugin directory:
+* Move the `milvus` folder into the Site24x7 Windows Agent plugin directory:
   ```cmd
-  C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\milvus_monitoring
+  C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\milvus
   ```
 
 The agent automatically executes the plugin within five minutes and sends performance data to the Site24x7 data center.
