@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import collections
 import datetime
 import traceback
 import time
@@ -8,6 +7,8 @@ import json
 import urllib.parse
 import os
 import warnings
+import logging
+from logging.handlers import RotatingFileHandler
 warnings.filterwarnings("ignore")
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
@@ -15,6 +16,19 @@ PLUGIN_VERSION = "1"
 
 #Setting this to true will alert you when there is a communication problem while posting plugin data to server
 HEARTBEAT="true"
+
+
+script_directory = os.path.dirname(os.path.abspath(__file__))
+
+# --- plugin execution logging (separate from agent and mongodb log)
+log_path = os.path.join(script_directory, "mongodb_plugin.log")
+logger = logging.getLogger("mongodb_plugin")
+logger.setLevel(logging.INFO)
+if not logger.handlers:  # avoid duplicate handlers if run() is invoked more than once in-process
+    _handler = RotatingFileHandler(log_path, maxBytes=2_000_000, backupCount=3)
+    _handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
+    logger.addHandler(_handler)
+
 
 METRICS_UNITS = {
                  
@@ -197,16 +211,13 @@ class MongoDB(object):
             else:
                 self.tlsallowinvalidcertificates=False
                 
-            
-            
-     
         else:
             self.tls=False
 
         if(self.username!="None" and self.password!="None" and self.authdb!="None"):
-            self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username,urllib.parse.quote(self.password), self.host, self.port, self.authdb)
+            self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username, urllib.parse.quote(self.password), self.host, self.port, self.authdb)
         elif(self.username!="None" and self.password!="None"):
-            self.mongod_server = "{0}:{1}@{2}:{3}".format(self.username, self.password, self.host, self.port)
+            self.mongod_server = "{0}:{1}@{2}:{3}".format(self.username, urllib.parse.quote(self.password), self.host, self.port)
         elif(self.authdb!="None"):
             self.mongod_server = "{0}:{1}/{2}".format(self.host, self.port, self.authdb)
         else:
@@ -219,6 +230,10 @@ class MongoDB(object):
         data['plugin_version'] = PLUGIN_VERSION
         data['heartbeat_required']=HEARTBEAT
         plugin_script_path=os.path.dirname(os.path.realpath(__file__))
+        server_type = "standalone"
+        target = "{0}:{1}".format(self.host, self.port)
+
+        logger.info("[%s] Starting metric collection (tls=%s)", target, self.tls)
 
         def per_sec(doc,metric):
             diff = output[doc][metric] - cache_data[doc][metric]
@@ -258,6 +273,28 @@ class MongoDB(object):
             }
 
             return replication_info
+        
+        def collect_stats(db, server_type):
+            stats={}
+            elapsed_time=0
+            cache_data = {}
+            output = {}
+            try:
+                
+                cache_data = db.command('serverStatus', recordStats=0)
+                time.sleep(5)
+                output = db.command('serverStatus', recordStats=0)
+                elapsed_time=output['uptime']-cache_data['uptime']
+                data['Uptime']=output['uptime']
+                if server_type != "ARBITER":
+                    data['Total no of dbs']=len(self.connection.list_database_names())
+                    stats=db.command('dbstats')
+
+            except Exception:
+                logger.info("[%s] Error while fetching status metrics: %s", target, traceback.format_exc())
+
+            return stats, elapsed_time, output, cache_data
+            
 
         def per_sec_2(doc,metric):
             diff = output[doc][metric] - cache_data[doc][metric]
@@ -276,13 +313,24 @@ class MongoDB(object):
             ps = int(diff / elapsed_time)
             return ps
         try:
-            import zipimport
-            importer=zipimport.zipimporter(plugin_script_path+"/pymongo.pyz")
-            bson=importer.load_module("bson")
-            pymongo=importer.load_module("pymongo")
-        except:
+            try:
+                import pymongo
+                pymongo_installed=True
+                logger.info("[%s] System pymongo available. Using system pymongo version: %s", target, pymongo.__version__)
+
+            except ImportError:
+                pymongo_installed=False
+
+            if not pymongo_installed:
+                import zipimport
+                importer=zipimport.zipimporter(plugin_script_path+"/pymongo.pyz")
+                bson=importer.load_module("bson")
+                pymongo=importer.load_module("pymongo")
+                logger.info("[%s] System pymongo unavailable. Imported pymongo from zipimport version: %s", target, pymongo.__version__)
+        except Exception as e:
             data['status']=0
-            data['msg']='pymongo module not installed'
+            data['msg']=str(e)
+            logger.error("[%s] Failed to load pymongo/bson from pymongo.pyz: %s", target, e)
             return data
 
         
@@ -296,40 +344,32 @@ class MongoDB(object):
                 else:
                     self.connection = pymongo.MongoClient(mongo_uri, serverSelectionTimeoutMS=10000, directConnection=True)
 
-
-
                 db = self.connection[self.dbname]
                 db_admin = self.connection[self.authdb]
-                cache_data = db.command('serverStatus', recordStats=0)
-                time.sleep(5)
-                output = db.command('serverStatus', recordStats=0)
-                elapsed_time=output['uptime']-cache_data['uptime']
-                data['Uptime']=output['uptime']
-                data['Total no of dbs']=len(self.connection.list_database_names())
-                stats=db.command('dbstats')
-                
-                try:
-                    replication_data = db_admin.command({'replSetGetStatus'  :1})
-                    oplog=get_replication_info()
-                    self.connection.close()
-                except Exception as e:
-                    if 'not running with --replSet' in str(e):
-                        pass
-                    else:
-                        data['msg'] = str(e)
+                db.command("ping")
 
-            except pymongo.errors.ServerSelectionTimeoutError:
+                try:           
+                             
+                    replication_data = db_admin.command({'replSetGetStatus'  :1})
+                    data.update(self.process_repl_metrics(replication_data))
+                    server_type=data.get("State Str", "standalone")
+                    oplog=get_replication_info()
+                    
+                except Exception:
+                    logger.info("[%s] Error while fetching replication metrics: %s", target, traceback.format_exc())
+
+                stats, elapsed_time, output, cache_data = collect_stats(db, server_type)
+
+                logger.info("[%s] Connection succeeded, server_type=%s, fetched metrics", target, server_type)
+
+                self.connection.close()
+            
+            except Exception as e:
                 data['status']=0
-                data['msg']='No mongoDB server is available to connect'
+                data['msg']=str(e)
+                logger.warning("[%s] Error while connecting to server: %s", target, traceback.format_exc())
                 return data
-            except pymongo.errors.ConnectionFailure:
-                data['status']=0
-                data['msg']='Connection to database failed'
-                return data
-            except pymongo.errors.ExecutionTimeout:
-                data['status']=0
-                data['msg']='Execution of database command failed'
-                return data
+            
 
             #Version
             try:
@@ -504,50 +544,57 @@ class MongoDB(object):
             except KeyError as ex:
                 pass
 
-            #Repl Set
-            try:
-                optime=None
-                primary_optime=None
-                
-                if 'votingMembersCount' in replication_data:
-                    data['Voting Members Count']=replication_data["votingMembersCount"]
-                
-                for member in replication_data["members"]:
-                    if member["stateStr"]=="PRIMARY":
-                        primary_optime=member["optimeDate"]
-                        break
-                
-                current_member = None
-                for member in replication_data["members"]:
-                    if member.get("self", False):
-                        current_member = member
-                        break
-                
-                if current_member:
-                    data["Health"]=int(current_member["health"])
-                    data["State Str"]=current_member["stateStr"]
-                    data["State"]=current_member["state"] 
-                    data["ID"]=str(current_member["_id"])
-                    optime=current_member["optimeDate"]
-                    
-                    if primary_optime and optime:
-                        data["Replication Lag"]=(primary_optime-optime).total_seconds()
-                    else:
-                        data["Replication Lag"]=0.0
-
-            except Exception as ex:
-                pass
-
+            
 
 
         except Exception as e:
             data['status']=0
             data['msg']=str(e)
+            logger.error("[%s] Unexpected error during metric collection: %s", target, traceback.format_exc())
 
         data['units']=METRICS_UNITS
         data['tabs']=METRICS_TABS
 
         return data
+
+    def process_repl_metrics(self, replication_data):
+        #Repl Set
+        repl_data = {}
+        try:
+            optime=None
+            primary_optime=None
+            
+            if 'votingMembersCount' in replication_data:
+                repl_data['Voting Members Count']=replication_data["votingMembersCount"]
+            
+            for member in replication_data["members"]:
+                if member["stateStr"]=="PRIMARY":
+                    primary_optime=member["optimeDate"]
+                    break
+            
+            current_member = None
+            for member in replication_data["members"]:
+                if member.get("self", False):
+                    current_member = member
+                    break
+            
+            if current_member:
+                repl_data["Health"]=int(current_member["health"])
+                repl_data["State Str"]=current_member["stateStr"]
+                repl_data["State"]=current_member["state"] 
+                repl_data["ID"]=str(current_member["_id"])
+                optime=current_member["optimeDate"]
+                
+                if primary_optime and optime:
+                    repl_data["Replication Lag"]=(primary_optime-optime).total_seconds()
+                else:
+                    repl_data["Replication Lag"]=0.0
+
+        except Exception:
+            logger.info("[%s:%s] Error while parsing replication metrics: %s", self.host, self.port, traceback.format_exc())
+
+        return repl_data
+        
 
 if __name__ == "__main__":
 
