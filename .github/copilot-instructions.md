@@ -161,7 +161,7 @@ Reviewer checklist (apply when reviewing or generating a PR):
 
 ## Guidance for Copilot when editing this repo
 
-- Follow the nearest existing plugin (for example `nginx/`, `mysql/`, `milvus_monitoring/`) as the template; do not invent new structures.
+- Follow the nearest existing plugin (for example `nginx/`, `mysql/`, `milvus/`) as the template; do not invent new structures.
 - Keep changes minimal and scoped to the plugin being modified; do not reformat or refactor unrelated code.
 - When adding or removing a metric, update the script, `units`, README metrics table, and `plugin_version` together.
 - When adding a CLI argument, update the `.cfg`, the README example, and any installer that writes the `.cfg`.
