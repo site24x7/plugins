@@ -152,7 +152,7 @@ def getGraphQLResponseTime(data):
         start    = time.time()
         response = requests.post(
             url,
-            json={"query": "{ Get { } }"},
+            json={"query": "{ __typename }"},
             headers=headers,
             verify=WEAVIATE_SSL_VERIFY,
         )
