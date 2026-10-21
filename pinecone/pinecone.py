@@ -189,10 +189,12 @@ def getIndexes(data):
         vector_type    = idx.get("vector_type", "-") or "-"
         vector_count   = 0
         index_fullness = 0
+        stats_ok       = False
 
         if host:
             stats = getIndexStats(host, data)
             if stats is not None:
+                stats_ok       = True
                 vector_count   = stats.get("totalVectorCount", 0) or 0
                 dimension      = stats.get("dimension", dimension) or dimension
                 index_fullness = round((stats.get("indexFullness", 0) or 0) * 100, 4)
@@ -223,9 +225,10 @@ def getIndexes(data):
         total_vectors += vector_count
         if dimension:
             dimensions.append(dimension)
-        fullness_values.append(index_fullness)
-        if vector_count == 0:
-            zero_vector_count += 1
+        if stats_ok:
+            fullness_values.append(index_fullness)
+            if vector_count == 0:
+                zero_vector_count += 1
 
         index_details.append({
             "name"         : name,

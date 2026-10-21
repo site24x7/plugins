@@ -35,6 +35,17 @@ echo_success() {
     tput sgr0
 }
 
+# Escapes a value so it can be embedded in a JS double-quoted string literal
+json_escape() {
+    local s=$1
+    s=${s//\\/\\\\}
+    s=${s//\"/\\\"}
+    s=${s//$'\n'/\\n}
+    s=${s//$'\r'/\\r}
+    s=${s//$'\t'/\\t}
+    printf '%s' "$s"
+}
+
 while true; do
     read -rp "Which MongoDB client do you want to use? (mongosh/mongo): " MONGO_CLIENT
     MONGO_CLIENT=${MONGO_CLIENT,,} 
@@ -78,9 +89,9 @@ if [ -z "$PASSWORD" ]; then
     exit 1
 fi
 
-ROLES='[{"role": "clusterMonitor", "db": "'$ADMIN_AUTH_DB'"}, {"role": "readAnyDatabase", "db": "'$ADMIN_AUTH_DB'"}]'
+ROLES='[{"role": "clusterMonitor", "db": "admin"}, {"role": "readAnyDatabase", "db": "admin"}]'
 
-CHECK_USER_JS="db.getSiblingDB('$ADMIN_AUTH_DB').getUser('$USERNAME') != null"
+CHECK_USER_JS="db.getSiblingDB(\"$(json_escape "$ADMIN_AUTH_DB")\").getUser(\"$(json_escape "$USERNAME")\") != null"
 
 CHECK_RESULT=$($MONGO_CLIENT --host "$MONGO_HOST" --port "$MONGO_PORT" -u "$ADMIN_USER" -p "$ADMIN_PASS" --authenticationDatabase "$ADMIN_AUTH_DB" --quiet --eval "$CHECK_USER_JS" 2>&1)
 error_handler $? "$CHECK_RESULT"
@@ -89,7 +100,7 @@ query_error "$CHECK_RESULT"
 if [[ "$CHECK_RESULT" == "true" ]]; then
     echo "User '$USERNAME' exists. Updating roles..."
 
-    UPDATE_USER_JS="db.getSiblingDB('$ADMIN_AUTH_DB').updateUser('$USERNAME', {roles: $ROLES})"
+    UPDATE_USER_JS="db.getSiblingDB(\"$(json_escape "$ADMIN_AUTH_DB")\").updateUser(\"$(json_escape "$USERNAME")\", {roles: $ROLES})"
 
     UPDATE_RESULT=$($MONGO_CLIENT --host "$MONGO_HOST" --port "$MONGO_PORT" -u "$ADMIN_USER" -p "$ADMIN_PASS" --authenticationDatabase "$ADMIN_AUTH_DB" --quiet --eval "$UPDATE_USER_JS" 2>&1)
     error_handler $? "$UPDATE_RESULT"
@@ -99,7 +110,7 @@ if [[ "$CHECK_RESULT" == "true" ]]; then
 else
     echo "User '$USERNAME' does not exist. Creating user..."
 
-    CREATE_USER_JS="db.getSiblingDB('$ADMIN_AUTH_DB').createUser({user: '$USERNAME', pwd: '$PASSWORD', roles: $ROLES})"
+    CREATE_USER_JS="db.getSiblingDB(\"$(json_escape "$ADMIN_AUTH_DB")\").createUser({user: \"$(json_escape "$USERNAME")\", pwd: \"$(json_escape "$PASSWORD")\", roles: $ROLES})"
 
     CREATE_RESULT=$($MONGO_CLIENT --host "$MONGO_HOST" --port "$MONGO_PORT" -u "$ADMIN_USER" -p "$ADMIN_PASS" --authenticationDatabase "$ADMIN_AUTH_DB" --quiet --eval "$CREATE_USER_JS" 2>&1)
     error_handler $? "$CREATE_RESULT"

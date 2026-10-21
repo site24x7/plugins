@@ -80,9 +80,9 @@ class MongoDB(object):
             self.tls=False
 
         if(self.username!="None" and self.password!="None" and self.authdb!="None"):
-            self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(self.username,urllib.parse.quote(self.password), self.host, self.port, self.authdb)
+            self.mongod_server = "{0}:{1}@{2}:{3}/{4}".format(urllib.parse.quote(self.username, safe=''), urllib.parse.quote(self.password, safe=''), self.host, self.port, self.authdb)
         elif(self.username!="None" and self.password!="None"):
-            self.mongod_server = "{0}:{1}@{2}:{3}".format(self.username, self.password, self.host, self.port)
+            self.mongod_server = "{0}:{1}@{2}:{3}".format(urllib.parse.quote(self.username, safe=''), urllib.parse.quote(self.password, safe=''), self.host, self.port)
         elif(self.authdb!="None"):
             self.mongod_server = "{0}:{1}/{2}".format(self.host, self.port, self.authdb)
         else:
@@ -132,7 +132,12 @@ class MongoDB(object):
                 mongo_uri = 'mongodb://' + self.mongod_server
 
                 if self.tls:
-                    self.connection = pymongo.MongoClient(mongo_uri, serverSelectionTimeoutMS=10000,tls=self.tls,tlscertificatekeyfile=self.tlscertificatekeyfile,tlscertificatekeyfilepassword=self.tlscertificatekeyfilepassword,tlsallowinvalidcertificates=self.tlsallowinvalidcertificates,directConnection=True)
+                    tls_options = {'tls': True, 'tlsAllowInvalidCertificates': self.tlsallowinvalidcertificates}
+                    if self.tlscertificatekeyfile not in (None, '', 'None'):
+                        tls_options['tlsCertificateKeyFile'] = self.tlscertificatekeyfile
+                        if self.tlscertificatekeyfilepassword not in (None, '', 'None'):
+                            tls_options['tlsCertificateKeyFilePassword'] = self.tlscertificatekeyfilepassword
+                    self.connection = pymongo.MongoClient(mongo_uri, serverSelectionTimeoutMS=10000, directConnection=True, **tls_options)
                 else:
                     self.connection = pymongo.MongoClient(mongo_uri, serverSelectionTimeoutMS=10000, directConnection=True)
 
@@ -151,6 +156,7 @@ class MongoDB(object):
                 output = db.command('serverStatus', recordStats=0)
                 elapsed_time=output['uptime']-cache_data['uptime']
                 data['Total_no_of_dbs']=len(self.connection.list_database_names())
+                data['MongoDB_Version']=output.get('version', '-')
                 stats=db.command('dbstats')
 
             except pymongo.errors.ServerSelectionTimeoutError:
@@ -179,18 +185,26 @@ class MongoDB(object):
 
             # Latency
             try:
-                data['OpLatencies_Reads_Latency'] = output['opLatencies']['reads']['latency']
-                data['OpLatencies_Writes_Latency'] = output['opLatencies']['writes']['latency']
-                data['OpLatencies_Commands_Latency'] = output['opLatencies']['commands']['latency']
+                for operation, metric in (
+                    ('reads', 'OpLatencies_Reads_Latency'),
+                    ('writes', 'OpLatencies_Writes_Latency'),
+                    ('commands', 'OpLatencies_Commands_Latency'),
+                ):
+                    current = output['opLatencies'][operation]
+                    previous = cache_data['opLatencies'][operation]
+                    operations = current['ops'] - previous['ops']
+                    latency = current['latency'] - previous['latency']
+                    data[metric] = round(latency / operations / 1000, 3) if operations > 0 else 0
             except KeyError as ex:
                 pass
 
             # Query Efficiency & Index Insights
             try:
                 metrics_op = output['metrics']['operation']
-                total_docs_examined = metrics_op.get('totalDocsExamined', 0)
-                total_keys_examined = metrics_op.get('totalKeysExamined', 0)
-                nreturned = metrics_op.get('totalDocsReturned', 0)
+                query_executor = output['metrics'].get('queryExecutor', {})
+                total_docs_examined = query_executor.get('scannedObjects', 0)
+                total_keys_examined = query_executor.get('scanned', 0)
+                nreturned = output['metrics'].get('document', {}).get('returned', 0)
                 scan_and_order = metrics_op.get('scanAndOrder', 0)
 
                 # Scan & Order Ratio: totalDocsExamined / nreturned
@@ -242,9 +256,8 @@ class MongoDB(object):
                 data['Connections_Available'] = connections.get('available', 0)
 
                 # Network
-                network = output.get('network', {})
-                data['Network_Bytes_In']  = network.get('bytesIn', 0)
-                data['Network_Bytes_Out'] = network.get('bytesOut', 0)
+                data['Network_Bytes_In']  = per_sec('network', 'bytesIn')
+                data['Network_Bytes_Out'] = per_sec('network', 'bytesOut')
 
                 # Active Clients (from globalLock)
                 active_clients = output.get('globalLock', {}).get('activeClients', {})

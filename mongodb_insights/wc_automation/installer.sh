@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-for version in python python3; do
-    if command -v "$version" ; then
+for version in python3 python; do
+    if command -v "$version" >/dev/null 2>&1 && "$version" -c 'import sys; sys.exit(sys.version_info[0] != 3)'; then
         PYTHON_CMD=$(command -v "$version")
         break
     fi

@@ -57,7 +57,7 @@ Milvus exposes Prometheus metrics on port `9091` by default (path `/metrics`). T
 
 * Move the `milvus` folder into the Site24x7 Windows Agent plugin directory:
   ```cmd
-  C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\milvus
+  C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
   ```
 
 The agent automatically executes the plugin within five minutes and sends performance data to the Site24x7 data center.
@@ -173,7 +173,6 @@ Per-component summary of the roles running on the Milvus node. One row per activ
 | --- | --- |
 | name | Milvus component/role name as reported by Milvus (proxy, querynode, datanode, mixcoord, etc.) |
 | Instance Count | Number of active instances for the component |
-| State | Health status of the component |
 
 ## Sample Images
 

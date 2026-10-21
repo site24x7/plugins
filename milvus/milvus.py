@@ -210,6 +210,7 @@ def parsePrometheus(raw_text):
             sums[name[:-4]] = sums.get(name[:-4], 0.0) + value
         elif name.endswith("_count"):
             counts[name[:-6]] = counts.get(name[:-6], 0.0) + value
+            gauges[name] = gauges.get(name, 0.0) + value
         else:
             gauges[name] = gauges.get(name, 0.0) + value
 
@@ -459,11 +460,10 @@ def getComponentDetails(data, role_counts):
             component_details.append({
                 "name"          : role,
                 "Instance Count": count,
-                "State"         : "HEALTHY",
             })
 
     data["Component Details"] = component_details if component_details else \
-        [{"name": "-", "Instance Count": 0, "State": "-"}]
+        [{"name": "-", "Instance Count": 0}]
 
 
 def metricCollector():
