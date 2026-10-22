@@ -782,12 +782,12 @@ def run(param):
     url_time_out = (
         clean_quotes(param.get("url_time_out"))
         if param and param.get("url_time_out")
-        else "None"
+        else "10"
     )
     read_time_out = (
         clean_quotes(param.get("read_time_out"))
         if param and param.get("read_time_out")
-        else "None"
+        else "60"
     )
     logs_enabled = (
         clean_quotes(param.get("logs_enabled"))

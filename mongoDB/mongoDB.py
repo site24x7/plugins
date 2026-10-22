@@ -290,8 +290,10 @@ class MongoDB(object):
                     data['Total no of dbs']=len(self.connection.list_database_names())
                     stats=db.command('dbstats')
 
-            except Exception:
+            except Exception as e:
                 logger.info("[%s] Error while fetching status metrics: %s", target, traceback.format_exc())
+                data['status']=0
+                data['msg']=str(e)
 
             return stats, elapsed_time, output, cache_data
             
@@ -313,24 +315,25 @@ class MongoDB(object):
             ps = int(diff / elapsed_time)
             return ps
         try:
+            pymongo_installed=False
             try:
-                import pymongo
-                pymongo_installed=True
-                logger.info("[%s] System pymongo available. Using system pymongo version: %s", target, pymongo.__version__)
-
-            except ImportError:
-                pymongo_installed=False
-
-            if not pymongo_installed:
                 import zipimport
                 importer=zipimport.zipimporter(plugin_script_path+"/pymongo.pyz")
                 bson=importer.load_module("bson")
                 pymongo=importer.load_module("pymongo")
-                logger.info("[%s] System pymongo unavailable. Imported pymongo from zipimport version: %s", target, pymongo.__version__)
+                logger.info("[%s] Imported pymongo from zipimport version: %s", target, pymongo.__version__)
+                pymongo_installed=True
+            except Exception as e:
+                logger.error("[%s] Failed to load pymongo/bson from pymongo.pyz: %s", target, e)
+
+            if not pymongo_installed:
+                import pymongo
+                pymongo_installed=True
+                logger.info("[%s] System pymongo available. Using system pymongo version: %s", target, pymongo.__version__)
+            
         except Exception as e:
             data['status']=0
             data['msg']=str(e)
-            logger.error("[%s] Failed to load pymongo/bson from pymongo.pyz: %s", target, e)
             return data
 
         
@@ -347,6 +350,7 @@ class MongoDB(object):
                 db = self.connection[self.dbname]
                 db_admin = self.connection[self.authdb]
                 db.command("ping")
+                logger.info("[%s] Connection succeeded",target)
 
                 try:           
                              
@@ -360,7 +364,8 @@ class MongoDB(object):
 
                 stats, elapsed_time, output, cache_data = collect_stats(db, server_type)
 
-                logger.info("[%s] Connection succeeded, server_type=%s, fetched metrics", target, server_type)
+                if stats != {}:
+                    logger.info("[%s] server_type=%s, fetched metrics", target, server_type)
 
                 self.connection.close()
             
@@ -567,23 +572,19 @@ class MongoDB(object):
             if 'votingMembersCount' in replication_data:
                 repl_data['Voting Members Count']=replication_data["votingMembersCount"]
             
+            current_member = None
             for member in replication_data["members"]:
                 if member["stateStr"]=="PRIMARY":
                     primary_optime=member["optimeDate"]
-                    break
-            
-            current_member = None
-            for member in replication_data["members"]:
                 if member.get("self", False):
                     current_member = member
-                    break
             
             if current_member:
                 repl_data["Health"]=int(current_member["health"])
                 repl_data["State Str"]=current_member["stateStr"]
                 repl_data["State"]=current_member["state"] 
                 repl_data["ID"]=str(current_member["_id"])
-                optime=current_member["optimeDate"]
+                optime=current_member.get("optimeDate")
                 
                 if primary_optime and optime:
                     repl_data["Replication Lag"]=(primary_optime-optime).total_seconds()

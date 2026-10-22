@@ -75,7 +75,7 @@ try {
 try {
     $threatDetections = Get-MpThreatDetection
     if ($threatDetections) {
-        $pollWindowMinutes = 15   # match this to your Site24x7 check interval
+        $pollWindowMinutes = 5   # match this to your Site24x7 check interval
         $cutoff = (Get-Date).AddMinutes(-$pollWindowMinutes)
 
         $recentDetections = $threatDetections | Where-Object {
@@ -86,7 +86,6 @@ try {
             ($_.ThreatStatusID -eq 1) -or
             ($_.ActionSuccess -eq $false -and $_.ThreatStatusErrorCode -ne -2142207965)
         }
-        Write-Host $activeThreats.ThreatStatusID
         $threatDetected = @($activeThreats).Count
     } else {
         $threatDetected = 0
