@@ -162,10 +162,12 @@ if($replicationfailure -ne $null)
 ### These are approximations, not exact repadmin numbers: AD cmdlets don't
 ### expose repadmin's internal "total attempts" counter, only current link state.
 $DestLargestDeltaSeconds = -1
-$DestFailsTotal = "-"
+$destFailing = 0
+$destTotal = 0
 $DestSuccessRatePct = -1
 $SourceLargestDeltaSeconds = -1
-$SourceFailsTotal = "-"
+$sourceFailing = 0
+$sourceTotal = 0
 $SourceSuccessRatePct = -1
 
 if($InboundData -ne $null -and $InboundData.Count -gt 0)

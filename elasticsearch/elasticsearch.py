@@ -847,9 +847,7 @@ def run(param):
     )
     elasticsearch_instance = esk(args)
     result = elasticsearch_instance.metriccollector()
-    import traceback
 
-    traceback.print_exc()
     return result
 
 
