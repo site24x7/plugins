@@ -606,8 +606,8 @@ class esk:
                             "total_store_size": idx_data["total"]["store"][
                                 "size_in_bytes"
                             ],
-                            "docs_count": idx_data["total"]["docs"]["count"],
-                            "docs_deleted": idx_data["total"]["docs"]["deleted"],
+                            "docs_count": idx_data["primaries"]["docs"]["count"],
+                            "docs_deleted": idx_data["primaries"]["docs"]["deleted"],
                             "status": 1,
                         }
                     )
@@ -639,8 +639,8 @@ class esk:
                         "size_in_bytes"
                     ],
                     "total_store_size": idx_data["total"]["store"]["size_in_bytes"],
-                    "docs_count": idx_data["total"]["docs"]["count"],
-                    "docs_deleted": idx_data["total"]["docs"]["deleted"],
+                    "docs_count": idx_data["primaries"]["docs"]["count"],
+                    "docs_deleted": idx_data["primaries"]["docs"]["deleted"],
                     "status": 1,
                 }
                 if new_chunks and len(new_chunks[-1]) < chunk_size:
