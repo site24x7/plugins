@@ -6,7 +6,6 @@
 ### Language : Python
 ### Tested in Ubuntu
 
-import psycopg2
 import json
 
 # Cluster-level monitoring uses 'postgres' database (hardcoded for cluster scope)
@@ -119,7 +118,7 @@ units = {
     "Flush Lag": "s",
     "Replay Lag": "s",
     "Slot Lag": "MB",
-    "Receive Apply Lag": "s",
+    "Receive Apply Lag": "MB",
     "Replay Lag Time": "s",
     "Active Connections": "connections",
     "Connection Utilization Percent": "%",
@@ -154,6 +153,7 @@ class pgsql():
             self._results.setdefault('plugin_version', PLUGIN_VERSION)
             self._results.setdefault('heartbeat_required', HEARTBEAT)
 
+            import psycopg2
             self._conn = psycopg2.connect(
                 dbname=CLUSTER_DB,
                 user=self._uname,
@@ -351,7 +351,7 @@ class pgsql():
                     COALESCE(EXTRACT(EPOCH FROM MAX(replay_lag))::INT, 0) as max_replay_lag_s,
                     COALESCE(EXTRACT(EPOCH FROM MAX(write_lag))::INT, 0) as max_write_lag_s,
                     COALESCE(EXTRACT(EPOCH FROM MAX(flush_lag))::INT, 0) as max_flush_lag_s,
-                    COALESCE(MAX(CASE WHEN sync_state = 'sync' THEN 'Sync' ELSE 'Async' END), 'N/A') as sync_state
+                    COALESCE(MAX(CASE WHEN sync_state IN ('sync', 'quorum') THEN 'Sync' ELSE 'Async' END), 'N/A') as sync_state
                 FROM pg_stat_replication;
             """)
             result = cur.fetchone()
@@ -423,12 +423,14 @@ class pgsql():
 
         try:
             cur.execute("""
-                SELECT COALESCE(EXTRACT(EPOCH FROM (now() - latest_end_time))::BIGINT, 0)
-                FROM pg_stat_wal_receiver;
+                SELECT COALESCE(
+                    ROUND(pg_wal_lsn_diff(pg_last_wal_receive_lsn(), pg_last_wal_replay_lsn()) / 1024.0 / 1024.0, 2),
+                    0
+                );
             """)
             result = cur.fetchone()
             if result:
-                self._results["Receive Apply Lag"] = int(result[0]) if result[0] else 0
+                self._results["Receive Apply Lag"] = float(result[0]) if result[0] else 0.0
         except Exception as e:
             self._msg += f",Standby_ReceiveApplyLag:{str(e)}"
             self._conn.rollback()
@@ -713,7 +715,7 @@ Encoding legend:
 
                 state_val = 1 if state_str == "streaming" else 0
 
-                if sync_str == "sync":
+                if sync_str in ("sync", "quorum"):
                     sync_val = 2
                 elif sync_str == "async":
                     sync_val = 0
