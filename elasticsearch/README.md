@@ -173,7 +173,9 @@ The agent will automatically execute the plugin within five minutes and user can
 | Index refreshes                          | Total number of index refreshes.                                            |
 | Time spent on refreshing indices         | Time spent on index refresh operations (in ms).                             |
 | Index flushes to disk                    | Number of index flushes.                                                    |
-| Time spent on flushing indices to disk  | Time spent flushing index data to disk (in ms).                             |
+| Time spent on flushing indices to disk  | Time spent flushing index data to disk (in ms).                              |
+| Primaries store size                    | Total store size of the primary shards.                                      |
+| Total store size                        | Total store size of the primary and replica shards.                          |
 | Indices docs count                       | Total number of documents across all indices.                               |
 | Indices docs deleted                     | Number of documents deleted from indices.                                   |
 
