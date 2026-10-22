@@ -25,9 +25,12 @@ log_path = os.path.join(script_directory, "mongodb_plugin.log")
 logger = logging.getLogger("mongodb_plugin")
 logger.setLevel(logging.INFO)
 if not logger.handlers:  # avoid duplicate handlers if run() is invoked more than once in-process
-    _handler = RotatingFileHandler(log_path, maxBytes=2_000_000, backupCount=3)
-    _handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
-    logger.addHandler(_handler)
+    try:
+        _handler = RotatingFileHandler(log_path, maxBytes=2_000_000, backupCount=3)
+        _handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
+        logger.addHandler(_handler)
+    except OSError:
+         logger.addHandler(logging.NullHandler())
 
 
 METRICS_UNITS = {

@@ -39,12 +39,13 @@ counterFilePath = os.path.join(script_directory, "counter.json")
 log_path = os.path.join(script_directory, "elasticsearch_plugin.log")
 logger = logging.getLogger("elasticsearch_plugin")
 logger.setLevel(logging.INFO)
-if (
-    not logger.handlers
-):  # avoid duplicate handlers if run() is invoked more than once in-process
-    _handler = RotatingFileHandler(log_path, maxBytes=2_000_000, backupCount=3)
-    _handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
-    logger.addHandler(_handler)
+if not logger.handlers:  # avoid duplicate handlers if run() is invoked more than once in-process
+    try:
+        _handler = RotatingFileHandler(log_path, maxBytes=2_000_000, backupCount=3)
+        _handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
+        logger.addHandler(_handler)
+    except OSError:
+         logger.addHandler(logging.NullHandler())
 
 all_metrics = {
     "standard_metrics": {
