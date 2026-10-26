@@ -111,7 +111,7 @@ def fetch_query_metrics(host, port, user, password, bucket):
     query_port=8093
     url = f"http://{host}:{query_port}/query/service"
     query = f'SELECT COUNT(*) FROM `{bucket}`;'
-    payload = {"statement": query}
+    payload = {"statement": query, "metrics": True}
     metrics = {}
     try:
         r = requests.post(url, auth=(user, password), json=payload, timeout=10)
@@ -121,10 +121,15 @@ def fetch_query_metrics(host, port, user, password, bucket):
         # Convert elapsedTime, executionTime strings (like '12.5ms') to float ms
         def to_ms(t):
             try:
-                if isinstance(t, str) and t.endswith("ms"):
-                    return float(t[:-2])
+                if isinstance(t, str):
+                    t = t.strip()
+                    factors = [("ms", 1), ("µs", 0.001), ("μs", 0.001), ("us", 0.001),
+                               ("ns", 0.000001), ("s", 1000), ("m", 60000), ("h", 3600000)]
+                    for suffix, factor in factors:
+                        if t.endswith(suffix):
+                            return float(t[:-len(suffix)]) * factor
                 return float(t)
-            except:
+            except Exception:
                 return 0
         metrics['Query Elapsed Time'] = to_ms(m.get("elapsedTime"))
         metrics['Query Execution Time'] = to_ms(m.get("executionTime"))
@@ -132,6 +137,7 @@ def fetch_query_metrics(host, port, user, password, bucket):
         metrics['Query Result Size'] = m.get("resultSize", 0)
         metrics['Query Service Load'] = m.get("serviceLoad", 0)
     except Exception as e:
+        metrics['status'] = 0
         metrics['msg'] = f"Query metrics error for bucket {bucket}: {str(e)}"
     return metrics
 
@@ -143,6 +149,7 @@ def collect_couchbase(host, port, user, password):
     try:
         base_url = f"http://{host}:{port}/pools/default"
         r = requests.get(base_url, auth=(user, password), timeout=10)
+        r.raise_for_status()
         stats = r.json()
 
         # -------- Bucket Metrics --------
@@ -154,6 +161,7 @@ def collect_couchbase(host, port, user, password):
             if bucket_name:
                 bucket_url = f"{base_url}/buckets/{bucket_name}"
                 r_bucket = requests.get(bucket_url, auth=(user,password), timeout=10)
+                r_bucket.raise_for_status()
                 bucket = r_bucket.json()
                 basic = bucket.get('basicStats', {})
                 if basic:
@@ -262,6 +270,7 @@ def collect_couchbase(host, port, user, password):
                 data['Dcp View Items'] = dcp['viewItems']
 
     except Exception as e:
+        data['status'] = 0
         data['msg'] = f"Couchbase Error: {str(e)}"
     return data
 

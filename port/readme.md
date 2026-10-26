@@ -18,11 +18,13 @@ cd port/
 ```bash
 wget https://raw.githubusercontent.com/site24x7/plugins/master/port/port.py && sed -i "1s|^.*|#! $(which python3)|" port.py
 wget https://raw.githubusercontent.com/site24x7/plugins/master/port/port.cfg
-wget https://raw.githubusercontent.com/site24x7/plugins/master/port/psutil_built.zip -O psutil_built.zip
 ```
-### Extract the ZIP File in the directory
+### Install the psutil dependency
+
+Install `psutil` using the same Python interpreter that will run the plugin. This works on Windows and on all Linux CPU architectures (x86-64, ARM).
+
 ```bash
-unzip psutil_built.zip
+python3 -m pip install psutil
 ```
 - Execute the below command with appropriate arguments to check for the valid json output:
 

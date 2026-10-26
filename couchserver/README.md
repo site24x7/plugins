@@ -12,13 +12,16 @@ Learn more https://www.site24x7.com/plugins/couchbase-monitoring.html
 
 - Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 - Download and install Python version 3 or higher.
+- Install the `requests` library using the same Python interpreter that runs the plugin:
+
+		python3 -m pip install requests
 
 ## Create a new user and grant read-only access permission
 
 ```bash
 curl -u USERNAME:PASSWORD -X PUT \
 http://localhost:8091/settings/rbac/users/local/your_username \
--d 'password=your_password&roles=cluster_admin,data_reader[*],query_select[*]'
+-d 'password=your_password&roles=ro_admin,data_reader[*],query_select[*]'
 ```
 ## Verify the new user
 
@@ -37,7 +40,9 @@ curl -u USERNAME:PASSWORD http://localhost:8091/settings/rbac/users/local/your_u
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/couchserver/couchserver.py && sed -i "1s|^.*|#! $(which python3)|" couchserver.py
 		wget https://raw.githubusercontent.com/site24x7/plugins/master/couchserver/couchserver.cfg
 
-- Edit the couchserver.py file with appropriate arguments and Execute the below command to check for the valid JSON output:
+- Edit the couchserver.cfg file and set the `USERNAME` and `PASSWORD` values (along with host and port, if different) to the credentials of the user created above. The agent uses these values for every scheduled execution, so update them before moving the directory to the agent plugins folder.
+
+- Execute the below command to check for the valid JSON output (the arguments here apply only to this manual test and are not saved for agent runs):
 
 		python3 couchserver.py --host 127.0.0.1 --port 8091 --user your_username --password your_password
   

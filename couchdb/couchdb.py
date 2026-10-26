@@ -137,7 +137,8 @@ def collect_couchdb(host, port, user, password):
     url = f"http://{host}:{port}/_node/_local/_stats"
     try:
         r = requests.get(url, auth=(user, password), timeout=10)
-        stats = r.json().get('couchdb', {})
+        stats_root = r.json()
+        stats = stats_root.get('couchdb', {})
 
         # -------- Request Time --------
         if 'request_time' in stats:
@@ -220,14 +221,30 @@ def collect_couchdb(host, port, user, password):
         # else: do nothing
 
         # -------- HTTP Other Metrics --------
-        httpd = stats.get('httpd')
+        httpd = stats_root.get('httpd', stats.get('httpd'))
         if httpd:
-            for key in ['view_reads','bulk_requests','temporary_view_reads','clients_requesting_changes','lru_skips','vdu_rejects','map_doc','emits','view_timeouts']:
+            for key in ['view_reads','bulk_requests','temporary_view_reads','clients_requesting_changes','view_timeouts']:
                 if key in httpd:
                     data[key] = httpd[key].get('value', 0)
                 else:
                     data[key] = 0
         # else: do nothing
+
+        # -------- CouchDB Statistics in Other Groups --------
+        mrview = stats_root.get('couchdb.mrview', stats.get('mrview', stats.get('couchdb.mrview', {})))
+        query_server = stats_root.get('couchdb.query_server', stats.get('query_server', stats.get('couchdb.query_server', {})))
+        couch_server = stats_root.get(
+            'couchdb.couch_server',
+            stats.get('couch_server', stats_root.get('couch_server', {}))
+        )
+        for key, group, stat_key in [
+            ('map_doc', mrview, 'map_doc'),
+            ('emits', mrview, 'emits'),
+            ('vdu_rejects', query_server, 'vdu_rejects'),
+            ('lru_skips', couch_server, 'lru_skip'),
+        ]:
+            metric = group.get(stat_key, {})
+            data[key] = metric.get('value', 0) if isinstance(metric, dict) else 0
 
         # -------- Active Tasks --------
         tasks = stats.get('active_tasks')

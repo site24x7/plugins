@@ -35,10 +35,18 @@ try:
     # -------------------------------
     # Argument Parsing (instead of cfg file)
     # -------------------------------
-    parser = argparse.ArgumentParser(description="Monitor a port and gather metrics.")
+    class JsonArgumentParser(argparse.ArgumentParser):
+        # Raise instead of exiting so the error is reported as JSON on stdout.
+        def error(self, message):
+            raise ValueError(message)
+
+    parser = JsonArgumentParser(description="Monitor a port and gather metrics.")
     parser.add_argument("--port", type=int, required=True, help="The port number to monitor")
     parser.add_argument("--duration", type=int, default=5, help="Duration to monitor in seconds (default: 5)")
     args = parser.parse_args()
+
+    if args.duration <= 0:
+        parser.error("--duration must be a positive integer")
 
     port_to_monitor = args.port
     duration = args.duration
@@ -68,15 +76,12 @@ try:
 
     while time.time() < end_time:
         latency_start = time.time()
-        try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.settimeout(1)
-                if s.connect_ex(('localhost', port_to_monitor)) == 0:
-                    metrics["Connection Latency"] = (time.time() - latency_start) * 1000
-                    connections_established += 1
-                    metrics["Port Status Text"] = "open"
-        except Exception:
-            metrics["Port Status Text"] = "closed"
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(1)
+            if s.connect_ex(('localhost', port_to_monitor)) == 0:
+                metrics["Connection Latency"] = (time.time() - latency_start) * 1000
+                connections_established += 1
+                metrics["Port Status Text"] = "open"
 
     # Update Port Status
     metrics["Port Status"] = 1 if metrics["Port Status Text"] == "open" else 0
