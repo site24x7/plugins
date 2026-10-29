@@ -12,6 +12,7 @@ HEARTBEAT="true"
 #Config Section
 host = "localhost"
 port = "6379"
+username = ""
 password = ""
 dbs = "1"
 
@@ -220,6 +221,10 @@ class Redis(object):
         self.args=args
         self.host=args.host
         self.port=args.port
+        if args.username:
+            self.username=args.username
+        else:
+            self.username=""
         if args.password:
             self.password=args.password
         else:
@@ -251,6 +256,7 @@ class Redis(object):
             redis_connection = redis.StrictRedis(
                     host=self.host,
                     port=self.port,
+                    username=self.username if self.username else None,
                     password=self.password,
                     decode_responses=True
             )
@@ -327,6 +333,7 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
     parser.add_argument('--port',help="Port",nargs='?', default= "6379")
+    parser.add_argument('--username',help="Username", nargs='?', default= username)
     parser.add_argument('--password',help="Password" , default= password)
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="true")
     parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default="Redis Logs")
