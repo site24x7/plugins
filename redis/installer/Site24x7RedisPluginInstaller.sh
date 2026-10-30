@@ -203,6 +203,7 @@ install (){
 get_plugin_data() {
     default_host="localhost"
     default_port="6379"
+    default_username=""
     default_password="None"
     tput setaf 3
     echo
@@ -225,6 +226,11 @@ get_plugin_data() {
     read -r -p  "  Enter the Redis port (default: $default_port): " Redis_port
     if [ -z $Redis_port ] ; then
         Redis_port=$default_port
+    fi
+
+    read -r -p "  Enter the username (default: none): " Redis_username
+    if [ -z "$Redis_username" ] ; then
+        Redis_username=$default_username
     fi
 
     read -r -p "  Enter the password (default: $default_password): " password
@@ -288,7 +294,7 @@ python_path_update() {
 
 check_plugin_execution() {
 
-    output=$($python $py_file --host "$Redis_host" --port "$Redis_port" --password "$password")
+    output=$($python $py_file --host "$Redis_host" --port "$Redis_port" --username "$Redis_username" --password "$password")
     if  [ $? -ne 0 ]; then
         tput setaf 1
         echo "------------Error Occured------------"
@@ -336,6 +342,8 @@ add_conf() {
     output=$(sed -i "/^host*/c\host = \"$Redis_host\""  "$cfg_file")
     error_handler $? $output
     output=$(sed -i "/^port*/c\port = \"$Redis_port\""  "$cfg_file")
+    error_handler $? $output
+    output=$(sed -i "/^username*/c\username = \"$Redis_username\""  "$cfg_file")
     error_handler $? $output
     password=$(echo "$password" | sed 's/\\/\\\\/g')
     output=$(sed -i "/^password*/c\password = \"$password\""  $cfg_file)

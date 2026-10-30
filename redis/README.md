@@ -32,7 +32,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/installer/S
 - Execute the below command with appropriate arguments to check for the valid JSON output:
 
 	```bash
-	python redis.py --host "localhost" --port "6379" --password "" 
+	python redis.py --host "localhost" --port "6379" --username "" --password "" 
 	```
 
 - Provide your redis configurations in redis.cfg file.
@@ -41,8 +41,13 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/redis/installer/S
 	[redis]
 	host = "localhost"
 	port = "6379"
+	username = ""
 	password = ""
 	```
+
+	Leave `username` empty if your Redis server doesn't use ACL-based authentication — only `password` is required in that case (or leave both empty if `requirepass` isn't set either).
+
+- If your Redis server uses [ACL-based authentication](https://redis.io/docs/latest/operate/oss_and_stack/management/security/acl/) (Redis 6+), set the `username` field along with `password`.
  
   #### Linux
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the redis.py script.
