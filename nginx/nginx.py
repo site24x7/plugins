@@ -4,12 +4,15 @@ import sys
 import re
 import json
 
+PLUGIN_VERSION = 1
+HEARTBEAT_REQUIRED = True
+
 class NginxServerMonitoring():
     def __init__(self, config_data) :
         self.data = {}
         self._config_data_ = config_data
-        self.data['plugin_version'] = self._config_data_['plugin_version']
-        self.data['heartbeat_required'] = self._config_data_['heartbeat_required']
+        self.data['plugin_version'] = PLUGIN_VERSION
+        self.data['heartbeat_required'] = HEARTBEAT_REQUIRED
         self.data['applog']=self._config_data_['applog']
     
     def _get_request_data_(self):
@@ -30,7 +33,7 @@ class NginxServerMonitoring():
                 opener = urlconnection.build_opener(auth_handler, proxy_support)
                 urlconnection.install_opener(opener)
 
-            response = urlconnection.urlopen(url, timeout=self._config_data_['timeout'])
+            response = urlconnection.urlopen(url)
             return response.read()
         except Exception as e:
             self.data['status'] = 0
@@ -80,10 +83,6 @@ def _load_args_():
     parser.add_argument('--username', help='username', type=str, default=None)
     parser.add_argument('--password', help='password', type=str, default=None)
     
-    parser.add_argument('--timeout', help ="timeout",type=int,default=60)
-    
-    parser.add_argument('--plugin_version', help='plugin_version', type=int,  nargs='?', default=1)
-    parser.add_argument('--heartbeat', help='is heartbeat enabled', type=bool, nargs='?', default=True)
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
     parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
     parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
@@ -93,9 +92,6 @@ def _load_args_():
     _config_data_['url'] = args.nginx_status_url
     _config_data_['username'] = args.username
     _config_data_['password'] = args.password
-    _config_data_['timeout'] = args.timeout
-    _config_data_['plugin_version'] = args.plugin_version
-    _config_data_['heartbeat_required'] = args.heartbeat
     
     logsenabled=args.logs_enabled
     logtypename=args.log_type_name
