@@ -108,18 +108,40 @@ insert_stub_status() {
         return 1
     fi
 
-    if grep -q "location $url_path" "$nginx_conf" && grep -A 3 "location $url_path" "$nginx_conf" | grep -q "stub_status on;"; then
-        echo "stub_status config: already exists for $url_path"
-        return 0
-    fi
+    # Gather nginx.conf plus everything it includes (conf.d/*.conf, sites-enabled/*, etc.)
+    # since different distros/packages split the server block into separate files.
+    local nginx_dir candidate_files=("$nginx_conf") include_pattern f
+    nginx_dir=$(dirname "$nginx_conf")
+    while IFS= read -r include_pattern; do
+        [ -z "$include_pattern" ] && continue
+        [[ "$include_pattern" = /* ]] || include_pattern="$nginx_dir/$include_pattern"
+        for f in $include_pattern; do
+            [ -f "$f" ] && candidate_files+=("$f")
+        done
+    done < <(awk '/^[^#]*include[[:space:]]+/ {for(i=1;i<=NF;i++) if ($i=="include") print $(i+1)}' "$nginx_conf" | sed 's/;$//')
 
-    line_no=$(awk '/^[^#]*server_name[[:space:]]/ {print NR; exit}' "$nginx_conf")
-    if [ -z "$line_no" ]; then
+    # Pick the first candidate file that actually defines a server block
+    target_conf=""
+    for f in "${candidate_files[@]}"; do
+        if awk '/^[^#]*server_name[[:space:]]/ {found=1; exit} END {exit !found}' "$f" 2>/dev/null; then
+            target_conf="$f"
+            break
+        fi
+    done
+
+    if [ -z "$target_conf" ]; then
         echo "stub_status config: FAIL (Server block not found)"
         return 1
     fi
 
-    cp "$nginx_conf" "$nginx_conf.bak.$(date +%Y%m%d%H%M%S)"
+    if grep -q "location $url_path" "$target_conf" && grep -A 3 "location $url_path" "$target_conf" | grep -q "stub_status on;"; then
+        echo "stub_status config: already exists for $url_path"
+        return 0
+    fi
+
+    line_no=$(awk '/^[^#]*server_name[[:space:]]/ {print NR; exit}' "$target_conf")
+
+    cp "$target_conf" "$target_conf.bak.$(date +%Y%m%d%H%M%S)"
 
     awk -v insert_line="$line_no" -v content="$stub_status_block" '
     NR == insert_line {
@@ -127,7 +149,7 @@ insert_stub_status() {
         print content
         next
     }
-    { print $0 }' "$nginx_conf" > "$nginx_conf.tmp" && mv "$nginx_conf.tmp" "$nginx_conf"
+    { print $0 }' "$target_conf" > "$target_conf.tmp" && mv "$target_conf.tmp" "$target_conf"
 
     if [ $? -ne 0 ]; then
         echo "stub_status config: FAIL (insertion failed)"

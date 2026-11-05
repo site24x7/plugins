@@ -2,6 +2,7 @@
 
 import json,sys
 import os,importlib
+import socket,ipaddress
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
@@ -12,6 +13,7 @@ HEARTBEAT="true"
 #Config Section
 host = "localhost"
 port = "6379"
+username = ""
 password = ""
 dbs = "1"
 
@@ -215,11 +217,29 @@ METRICS_UNITS={
     
 }
 
+def resolve_ip_address(host):
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
+
+
 class Redis(object):
     def __init__(self,args):
         self.args=args
         self.host=args.host
         self.port=args.port
+        if args.username:
+            self.username=args.username
+        else:
+            self.username=""
         if args.password:
             self.password=args.password
         else:
@@ -251,6 +271,7 @@ class Redis(object):
             redis_connection = redis.StrictRedis(
                     host=self.host,
                     port=self.port,
+                    username=self.username if self.username else None,
                     password=self.password,
                     decode_responses=True
             )
@@ -315,7 +336,8 @@ class Redis(object):
         data['s247config']={
             "childdiscovery":[
                 'db'
-            ]
+            ],
+            "ip_address": resolve_ip_address(self.host)
         }
         data.update(tabs)
 
@@ -327,6 +349,7 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
     parser.add_argument('--port',help="Port",nargs='?', default= "6379")
+    parser.add_argument('--username',help="Username", nargs='?', default= username)
     parser.add_argument('--password',help="Password" , default= password)
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="true")
     parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default="Redis Logs")
