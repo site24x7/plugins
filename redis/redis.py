@@ -2,6 +2,7 @@
 
 import json,sys
 import os,importlib
+import socket,ipaddress
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
@@ -216,6 +217,20 @@ METRICS_UNITS={
     
 }
 
+def resolve_ip_address(host):
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
+
+
 class Redis(object):
     def __init__(self,args):
         self.args=args
@@ -321,7 +336,8 @@ class Redis(object):
         data['s247config']={
             "childdiscovery":[
                 'db'
-            ]
+            ],
+            "ip_address": resolve_ip_address(self.host)
         }
         data.update(tabs)
 

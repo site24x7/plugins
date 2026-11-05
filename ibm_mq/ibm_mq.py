@@ -2,9 +2,27 @@
 import os
 import json
 import traceback
+import socket
+import ipaddress
 
 PLUGIN_VERSION = 1
 HEARTBEAT = True
+
+
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
 METRICS_UNITS = {
     "QManager Connection Count": "connections",
     "queues": {"oldest_msg_age": "s"},
@@ -234,6 +252,10 @@ class IbmMq:
         else:
             applog["logs_enabled"] = False
         self.maindata["applog"] = applog
+
+        self.maindata["s247config"] = {
+            "ip_address": resolve_ip_address(self.host)
+        }
 
         return self.maindata
 

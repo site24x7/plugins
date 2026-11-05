@@ -2,6 +2,8 @@
 import json
 import pymysql
 import traceback
+import socket
+import ipaddress
 PLUGIN_VERSION = "1"
 HEARTBEAT = True
 
@@ -85,6 +87,22 @@ REPLICATION_METRICS = [
     "Slave_running", "Slave_sql_running", "Slave_io_running", "Seconds_behind_master",
     "Relay_log_space", "Master_host", "Master_user", "Master_retry_count", "Skip_counter"
 ]
+
+
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
 
 
 class MySQLMonitor:
@@ -794,7 +812,8 @@ class MySQLMonitor:
                 self.maindata["msg"] += "Session stats collection error: {}; ".format(str(e))
 
             self.maindata["s247config"] = {
-                "childdiscovery": ["Database"]
+                "childdiscovery": ["Database"],
+                "ip_address": resolve_ip_address(self.host)
             }
             self.maindata["units"] = METRICS_UNITS
             self.maindata["tabs"] = {

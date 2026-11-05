@@ -1,6 +1,8 @@
 
 import json
 import urllib.request
+import socket
+import ipaddress
 
 PLUGIN_VERSION = 1
 HEARTBEAT = True
@@ -113,6 +115,22 @@ def is_none(value):
     return value is None or str(value).strip().lower() in ['none', '']
 
 
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
+
+
 class MesosMonitoring:
 
     def __init__(self, args):
@@ -215,6 +233,10 @@ class MesosMonitoring:
                 'order': 5,
                 'tablist': list(tab_metrics['Messages'].values()),
             }
+        }
+
+        self.maindata['s247config'] = {
+            'ip_address': resolve_ip_address(self.hostname)
         }
 
         return self.maindata

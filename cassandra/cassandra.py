@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 import json
+import socket
+import ipaddress
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
@@ -41,6 +43,22 @@ METRICS_UNITS={
     "Snapshots Size":"bytes",
     "Oldest Task Queue Time":"ms"
 }
+
+
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
 
 
 class cassandra:
@@ -289,6 +307,10 @@ class cassandra:
             self.maindata['msg']=str(e)
             self.maindata['status']=0
             return self.maindata
+
+        self.maindata['s247config'] = {
+            "ip_address": resolve_ip_address(self.hostname)
+        }
 
         return self.maindata
 

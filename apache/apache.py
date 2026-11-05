@@ -2,6 +2,7 @@
 
 import sys
 import json
+import socket
 
 '''
 Created on 21-Jun-2021
@@ -14,10 +15,40 @@ if PYTHON_MAJOR_VERSION == 3:
     import urllib.request as urlconnection
     from urllib.error import URLError, HTTPError
     from urllib.request import ProxyHandler
+    from urllib.parse import urlparse
 elif PYTHON_MAJOR_VERSION == 2:
     import urllib2 as urlconnection
     from urllib2 import HTTPError, URLError
     from httplib import InvalidURL
+    from urlparse import urlparse
+
+try:
+    import ipaddress
+except ImportError:
+    ipaddress = None
+
+
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    if ipaddress is not None:
+        try:
+            ipaddress.ip_address(str(host))
+            return host
+        except ValueError:
+            pass
+    else:
+        try:
+            socket.inet_aton(host)
+            return host
+        except socket.error:
+            pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
 
 
 
@@ -141,6 +172,11 @@ class ApacheMonitoring(object):
             else:
                 applog["logs_enabled"]=False
             self.data['applog'] = applog
+
+            host = urlparse(self.url).hostname
+            self.data['s247config'] = {
+                "ip_address": resolve_ip_address(host)
+            }
 	    
         except Exception as e:
             self.data['status'] = 0

@@ -3,9 +3,32 @@
 import sys
 import re
 import json
+import socket
+import ipaddress
+
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 PLUGIN_VERSION = 1
 HEARTBEAT_REQUIRED = True
+
+
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
 
 class NginxServerMonitoring():
     def __init__(self, config_data) :
@@ -71,6 +94,11 @@ class NginxServerMonitoring():
             self.data['Count of client requests'] = requests
             self.data['Count of successful client connections']= handled
             self.data['Count of dropped connections '] = (conn - handled)
+        
+        host = urlparse(self._config_data_['url']).hostname
+        self.data['s247config'] = {
+            "ip_address": resolve_ip_address(host)
+        }
         
         return self.data
 
