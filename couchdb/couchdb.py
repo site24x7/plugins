@@ -4,7 +4,7 @@ import json
 import requests
 import argparse
 
-PLUGIN_VERSION = 4  # Marking this as the Final Audit version
+PLUGIN_VERSION = 5  # Updated version after audit & fixes
 HEARTBEAT = "true"
 
 UNITS = {
@@ -32,7 +32,7 @@ TABS = {
             'couchdb_document_purges.total', 'couchdb_document_purges.success', 'couchdb_document_purges.failure',
             'couchdb_dbinfo.n', 'couchdb_dbinfo.max', 'couchdb_dbinfo.min', 'couchdb_dbinfo.median',
             'couchdb_active_tasks_db_compaction_count', 'couchdb_active_tasks_indexer_count',
-            'couchdb_active_tasks_view_compaction_count', 'Databases_Details', 'database_writes', 
+            'couchdb_active_tasks_view_compaction_count', 'Databases_Details', 'database_writes',
             'open_databases', 'open_os_files'
         ]
     },
@@ -96,44 +96,118 @@ def collect_couchdb(host, port, user, password):
                 if 'percentile' in rt_val:
                     for pct, pct_val in rt_val['percentile']:
                         data[f"couchdb_request_time_percentile.{pct}"] = pct_val
+                if 'histogram' in rt_val:
+                    for idx, item in enumerate(rt_val['histogram']):
+                        data[f"couchdb_request_time_histogram.{idx}_bucket"] = item[0]
+                        data[f"couchdb_request_time_histogram.{idx}_count"] = item[1]
                 for sub_key, sub_val in rt_val.items():
-                    if sub_key not in ['percentile', 'histogram','n']:
+                    if sub_key not in ['percentile', 'histogram', 'n']:
                         data[f"couchdb_request_time.{sub_key}"] = sub_val
                 data['request_time'] = data.get('couchdb_request_time.arithmetic_mean', 0)
             else:
                 data['request_time'] = rt_val
 
         # -------- Core Metrics (Fixed Mapping) --------
-        core_keys = ['database_reads','database_writes','open_databases','open_os_files', 
+        core_keys = ['database_reads','database_writes','open_databases','open_os_files',
                      'document_inserts', 'document_writes', 'local_document_writes']
         for key in core_keys:
             val = stats.get(key, {}).get('value', 0)
             data[key] = val
             data[f'couchdb_{key}'] = val
 
-        # -------- Modern Auth Mapping --------
-        data['auth_cache_hits'] = stats.get('password_hashing_fast', {}).get('value', 0)
-        data['couchdb_auth_cache_hits'] = data['auth_cache_hits']
-        data['auth_cache_misses'] = stats.get('password_hashing_slow', {}).get('value', 0)
-        data['couchdb_auth_cache_misses'] = data['auth_cache_misses']
+        # -------- Auth Cache Counters --------
+        auth_hits_metric = stats.get('auth_cache_hits', stats_root.get('auth_cache_hits', {}))
+        auth_misses_metric = stats.get('auth_cache_misses', stats_root.get('auth_cache_misses', {}))
+
+        auth_hits = auth_hits_metric.get('value', 0) if isinstance(auth_hits_metric, dict) else (auth_hits_metric if isinstance(auth_hits_metric, (int, float)) else 0)
+        auth_misses = auth_misses_metric.get('value', 0) if isinstance(auth_misses_metric, dict) else (auth_misses_metric if isinstance(auth_misses_metric, (int, float)) else 0)
+
+        data['auth_cache_hits'] = auth_hits
+        data['couchdb_auth_cache_hits'] = auth_hits
+        data['auth_cache_misses'] = auth_misses
+        data['couchdb_auth_cache_misses'] = auth_misses
 
         # -------- HTTP Methods & Status Codes --------
         methods = stats.get('httpd_request_methods', {})
         for m in ['POST', 'COPY', 'GET', 'HEAD', 'MOVE', 'PUT']:
-            data[f'No_of_http_{m}_Requests'] = methods.get(m, {}).get('value', 0)
+            data[f'No_of_http_{m.capitalize()}_Requests'] = methods.get(m, {}).get('value', 0)
 
         status_data = stats.get('httpd_status_codes', {})
         for s in ['200','201','202','301','304','400','401','403','404','405','409','412','500']:
             data[f'No_of_http_{s}_Responses'] = status_data.get(s, {}).get('value', 0)
 
-        # -------- Active Tasks & Logs --------
-        tasks = stats.get('active_tasks', {})
-        for t in ['db_compaction', 'indexer', 'view_compaction']:
-            data[f'couchdb_active_tasks_{t}_count'] = tasks.get(t, {}).get('count', 0)
+        # -------- HTTP Other Metrics --------
+        httpd = stats_root.get('httpd', stats.get('httpd', {}))
+        for key in ['view_reads','bulk_requests','temporary_view_reads','clients_requesting_changes','view_timeouts']:
+            val = httpd.get(key, {})
+            data[key] = val.get('value', 0) if isinstance(val, dict) else (val if isinstance(val, (int, float)) else 0)
 
-        log_levels = stats.get('couch_log', {}).get('level', {})
-        for l in ['alert','critical','error','warning','info']:
-            data[f'couchdb_couch_log.level.{l}'] = log_levels.get(l, 0)
+        # -------- CouchDB Statistics in Other Groups (mrview, query_server, couch_server) --------
+        mrview = stats_root.get('mrview', stats_root.get('couchdb.mrview', stats.get('mrview', {})))
+        query_server = stats_root.get('query_server', stats_root.get('couchdb.query_server', stats.get('query_server', {})))
+        couch_server = stats.get('couch_server', stats_root.get('couch_server', stats_root.get('couchdb.couch_server', {})))
+
+        data['map_doc'] = mrview.get('map_doc', {}).get('value', 0) if isinstance(mrview.get('map_doc'), dict) else 0
+        data['emits'] = mrview.get('emits', {}).get('value', 0) if isinstance(mrview.get('emits'), dict) else 0
+        data['vdu_rejects'] = query_server.get('vdu_rejects', {}).get('value', 0) if isinstance(query_server.get('vdu_rejects'), dict) else 0
+        data['lru_skips'] = couch_server.get('lru_skip', {}).get('value', 0) if isinstance(couch_server.get('lru_skip'), dict) else 0
+
+        # -------- Document Purges & DB Info --------
+        if 'document_purges' in stats:
+            dp = stats['document_purges']
+            for sub_key in ['total','success','failure']:
+                val = dp.get(sub_key, 0)
+                data[f'couchdb_document_purges.{sub_key}'] = val.get('value', val) if isinstance(val, dict) else val
+        else:
+            for sub_key in ['total','success','failure']:
+                data[f'couchdb_document_purges.{sub_key}'] = 0
+
+        if 'dbinfo' in stats:
+            dbi = stats['dbinfo']
+            for sub_key in ['n','max','min','median']:
+                val = dbi.get(sub_key, 0)
+                data[f'couchdb_dbinfo.{sub_key}'] = val.get('value', val) if isinstance(val, dict) else val
+        else:
+            for sub_key in ['n','max','min','median']:
+                data[f'couchdb_dbinfo.{sub_key}'] = 0
+
+        # -------- Active Tasks from Endpoint --------
+        for t in ['db_compaction', 'indexer', 'view_compaction']:
+            data[f'couchdb_active_tasks_{t}_count'] = 0
+        try:
+            r_tasks = requests.get(f"http://{host}:{port}/_active_tasks", auth=(user, password), timeout=10)
+            if r_tasks.status_code == 200:
+                active_tasks_list = r_tasks.json()
+                if isinstance(active_tasks_list, list):
+                    for task in active_tasks_list:
+                        ttype = task.get('type', '')
+                        if ttype in ['db_compaction', 'database_compaction']:
+                            data['couchdb_active_tasks_db_compaction_count'] += 1
+                        elif ttype == 'indexer':
+                            data['couchdb_active_tasks_indexer_count'] += 1
+                        elif ttype == 'view_compaction':
+                            data['couchdb_active_tasks_view_compaction_count'] += 1
+        except Exception:
+            tasks = stats.get('active_tasks', {})
+            for t in ['db_compaction', 'indexer', 'view_compaction']:
+                data[f'couchdb_active_tasks_{t}_count'] = tasks.get(t, {}).get('count', 0)
+
+        # -------- Couch Log Levels --------
+        couch_log = stats_root.get('couch_log', stats_root.get('couchdb.couch_log', stats.get('couch_log', {})))
+        if isinstance(couch_log, dict):
+            log_levels = couch_log.get('level', {})
+            if isinstance(log_levels, dict):
+                for l in ['alert','critical','error','warning','info']:
+                    val = log_levels.get(l, 0)
+                    if isinstance(val, dict):
+                        val = val.get('value', 0)
+                    data[f'couchdb_couch_log.level.{l}'] = val
+            else:
+                for l in ['alert','critical','error','warning','info']:
+                    data[f'couchdb_couch_log.level.{l}'] = 0
+        else:
+            for l in ['alert','critical','error','warning','info']:
+                data[f'couchdb_couch_log.level.{l}'] = 0
 
         data['Databases_Details'] = get_databases_details(host, port, user, password, data)
 
