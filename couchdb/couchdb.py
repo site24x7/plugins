@@ -4,7 +4,7 @@ import json
 import requests
 import argparse
 
-PLUGIN_VERSION = 5  # Updated version after audit & fixes
+PLUGIN_VERSION = 5
 HEARTBEAT = "true"
 
 UNITS = {
@@ -89,7 +89,7 @@ def collect_couchdb(host, port, user, password):
         stats_root = r.json()
         stats = stats_root.get('couchdb', {})
 
-        # -------- Request Time --------
+        # -------- Request Time (Issue #1: Histogram expansion) --------
         if 'request_time' in stats:
             rt_val = stats['request_time'].get('value', 0)
             if isinstance(rt_val, dict):
@@ -107,15 +107,18 @@ def collect_couchdb(host, port, user, password):
             else:
                 data['request_time'] = rt_val
 
-        # -------- Core Metrics (Fixed Mapping) --------
+        # -------- Core Metrics --------
         core_keys = ['database_reads','database_writes','open_databases','open_os_files',
                      'document_inserts', 'document_writes', 'local_document_writes']
         for key in core_keys:
-            val = stats.get(key, {}).get('value', 0)
+            val = stats.get(key, {}).get('value', 0) if isinstance(stats.get(key), dict) else 0
             data[key] = val
             data[f'couchdb_{key}'] = val
 
-        # -------- Auth Cache Counters --------
+        # Handle local_writes fix
+        data['couchdb_local_document_writes'] = stats.get('local_document_writes', {}).get('value', 0) if isinstance(stats.get('local_document_writes'), dict) else 0
+
+        # -------- Auth Cache Counters (Issue #2: Direct authentication cache reading) --------
         auth_hits_metric = stats.get('auth_cache_hits', stats_root.get('auth_cache_hits', {}))
         auth_misses_metric = stats.get('auth_cache_misses', stats_root.get('auth_cache_misses', {}))
 
@@ -127,22 +130,24 @@ def collect_couchdb(host, port, user, password):
         data['auth_cache_misses'] = auth_misses
         data['couchdb_auth_cache_misses'] = auth_misses
 
-        # -------- HTTP Methods & Status Codes --------
+        # -------- HTTP Methods & Status Codes (Issue #3: TitleCase Capitalization) --------
         methods = stats.get('httpd_request_methods', {})
         for m in ['POST', 'COPY', 'GET', 'HEAD', 'MOVE', 'PUT']:
-            data[f'No_of_http_{m.capitalize()}_Requests'] = methods.get(m, {}).get('value', 0)
+            val = methods.get(m, {}).get('value', 0) if isinstance(methods.get(m), dict) else 0
+            data[f'No_of_http_{m.capitalize()}_Requests'] = val
 
         status_data = stats.get('httpd_status_codes', {})
         for s in ['200','201','202','301','304','400','401','403','404','405','409','412','500']:
-            data[f'No_of_http_{s}_Responses'] = status_data.get(s, {}).get('value', 0)
+            val = status_data.get(s, {}).get('value', 0) if isinstance(status_data.get(s), dict) else 0
+            data[f'No_of_http_{s}_Responses'] = val
 
-        # -------- HTTP Other Metrics --------
+        # -------- HTTP Other Metrics (Issue #4: Restored Collectors) --------
         httpd = stats_root.get('httpd', stats.get('httpd', {}))
         for key in ['view_reads','bulk_requests','temporary_view_reads','clients_requesting_changes','view_timeouts']:
-            val = httpd.get(key, {})
+            val = httpd.get(key, {}) if isinstance(httpd, dict) else {}
             data[key] = val.get('value', 0) if isinstance(val, dict) else (val if isinstance(val, (int, float)) else 0)
 
-        # -------- CouchDB Statistics in Other Groups (mrview, query_server, couch_server) --------
+        # -------- View, Query & Couch Server Stats (Issue #4: Restored Collectors) --------
         mrview = stats_root.get('mrview', stats_root.get('couchdb.mrview', stats.get('mrview', {})))
         query_server = stats_root.get('query_server', stats_root.get('couchdb.query_server', stats.get('query_server', {})))
         couch_server = stats.get('couch_server', stats_root.get('couch_server', stats_root.get('couchdb.couch_server', {})))
@@ -152,8 +157,8 @@ def collect_couchdb(host, port, user, password):
         data['vdu_rejects'] = query_server.get('vdu_rejects', {}).get('value', 0) if isinstance(query_server.get('vdu_rejects'), dict) else 0
         data['lru_skips'] = couch_server.get('lru_skip', {}).get('value', 0) if isinstance(couch_server.get('lru_skip'), dict) else 0
 
-        # -------- Document Purges & DB Info --------
-        if 'document_purges' in stats:
+        # -------- Document Purges & DB Info (Issue #4: Restored Collectors) --------
+        if 'document_purges' in stats and isinstance(stats['document_purges'], dict):
             dp = stats['document_purges']
             for sub_key in ['total','success','failure']:
                 val = dp.get(sub_key, 0)
@@ -162,7 +167,7 @@ def collect_couchdb(host, port, user, password):
             for sub_key in ['total','success','failure']:
                 data[f'couchdb_document_purges.{sub_key}'] = 0
 
-        if 'dbinfo' in stats:
+        if 'dbinfo' in stats and isinstance(stats['dbinfo'], dict):
             dbi = stats['dbinfo']
             for sub_key in ['n','max','min','median']:
                 val = dbi.get(sub_key, 0)
@@ -171,7 +176,7 @@ def collect_couchdb(host, port, user, password):
             for sub_key in ['n','max','min','median']:
                 data[f'couchdb_dbinfo.{sub_key}'] = 0
 
-        # -------- Active Tasks from Endpoint --------
+        # -------- Active Tasks (Issue #5: Collect from Endpoint) --------
         for t in ['db_compaction', 'indexer', 'view_compaction']:
             data[f'couchdb_active_tasks_{t}_count'] = 0
         try:
@@ -189,10 +194,11 @@ def collect_couchdb(host, port, user, password):
                             data['couchdb_active_tasks_view_compaction_count'] += 1
         except Exception:
             tasks = stats.get('active_tasks', {})
-            for t in ['db_compaction', 'indexer', 'view_compaction']:
-                data[f'couchdb_active_tasks_{t}_count'] = tasks.get(t, {}).get('count', 0)
+            if isinstance(tasks, dict):
+                for t in ['db_compaction', 'indexer', 'view_compaction']:
+                    data[f'couchdb_active_tasks_{t}_count'] = tasks.get(t, {}).get('count', 0) if isinstance(tasks.get(t), dict) else 0
 
-        # -------- Couch Log Levels --------
+        # -------- Couch Log Levels (Issue #6: Read & unwrap log counters) --------
         couch_log = stats_root.get('couch_log', stats_root.get('couchdb.couch_log', stats.get('couch_log', {})))
         if isinstance(couch_log, dict):
             log_levels = couch_log.get('level', {})
@@ -201,7 +207,7 @@ def collect_couchdb(host, port, user, password):
                     val = log_levels.get(l, 0)
                     if isinstance(val, dict):
                         val = val.get('value', 0)
-                    data[f'couchdb_couch_log.level.{l}'] = val
+                    data[f'couchdb_couch_log.level.{l}'] = val if isinstance(val, (int, float)) else 0
             else:
                 for l in ['alert','critical','error','warning','info']:
                     data[f'couchdb_couch_log.level.{l}'] = 0
