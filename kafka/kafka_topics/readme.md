@@ -69,7 +69,11 @@ python kafka_topics.py --kafka_host "localhost" --kafka_jmx_port "9999" --kafka_
 kafka_host="localhost"
 kafka_jmx_port=9999
 kafka_topic_name="quickstart-events"
+kafka_topics_logs_enabled="False"
+kafka_topics_logs_file_path="/var/log/kafka*/*.log"
 ```
+
+- Applog is supported for Kafka Topics Monitoring. To enable log collection for the static "Kafka Logs" log type, configure `kafka_topics_logs_enabled=true` and set `kafka_topics_logs_file_path` as needed.
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
 

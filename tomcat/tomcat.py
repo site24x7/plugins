@@ -6,6 +6,7 @@ import argparse
 import sys
 import socket
 import ssl
+import ipaddress
 import xml.etree.ElementTree as ET
 import json
 import urllib.request as urlconnection
@@ -25,9 +26,10 @@ TOMCAT_USERNAME = 'user'
 TOMCAT_PASSWORD = 'user'
 TOMCAT_VERIFY_SSL = 'true'
 TOMCAT_URL = '/manager'
-LOGS_ENABLED = 'true'
-LOG_TYPE_NAME = 'Tomcat Access Logs'
-LOG_FILE_PATH = '/opt/*tomcat*/logs/*access*.txt'
+
+TOMCAT_ACCESS_LOGS_LOG_TYPE_NAME = 'Tomcat Access Logs'
+TOMCAT_ACCESS_LOGS_ENABLED = 'true'
+TOMCAT_ACCESS_LOGS_FILE_PATH = '/opt/*tomcat*/logs/*access*.txt'
 
 METRICS_UNITS = {
     'Connectors': {
@@ -76,6 +78,21 @@ def convertMBToGB(v):
     except Exception:
         return v
 
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
+
 class Tomcat(object):
     def __init__(self, config):
         self.configurations = config
@@ -87,9 +104,8 @@ class Tomcat(object):
         self.verify_ssl = self.configurations.get('verify_ssl', TOMCAT_VERIFY_SSL).lower() == 'true'
         self.plugin_version = self.configurations.get('plugin_version', PLUGIN_VERSION)
         self.url = self.configurations.get('url', TOMCAT_URL)
-        self.logs_enabled = self.configurations.get('logs_enabled', LOGS_ENABLED)
-        self.log_type_name = self.configurations.get('log_type_name', LOG_TYPE_NAME)
-        self.log_file_path = self.configurations.get('log_file_path', LOG_FILE_PATH)
+        self.tomcat_access_logs_enabled = self.configurations.get('tomcat_access_logs_enabled', TOMCAT_ACCESS_LOGS_ENABLED)
+        self.tomcat_access_logs_file_path = self.configurations.get('tomcat_access_logs_file_path', TOMCAT_ACCESS_LOGS_FILE_PATH)
 
     def readXmlFromUrl(self, host, port, url, user, password):
         xmlUrl = url + "/status?XML=true"
@@ -297,13 +313,17 @@ class Tomcat(object):
             data['status'] = 0
 
         applog = {}
-        if self.logs_enabled in ['True', 'true', '1']:
+        if self.tomcat_access_logs_enabled in ['True', 'true', '1']:
             applog["logs_enabled"] = True
-            applog["log_type_name"] = self.log_type_name
-            applog["log_file_path"] = self.log_file_path
+            applog["log_type_name"] = TOMCAT_ACCESS_LOGS_LOG_TYPE_NAME
+            applog["log_file_path"] = self.tomcat_access_logs_file_path
         else:
             applog["logs_enabled"] = False
         data['applog'] = applog
+
+        data['s247config'] = {
+            "ip_address": resolve_ip_address(self.host)
+        }
 
         data['units'] = METRICS_UNITS
         return data
@@ -318,9 +338,8 @@ if __name__ == "__main__":
     parser.add_argument('--verify_ssl', help="Verify SSL Certificate (true or false)", default=TOMCAT_VERIFY_SSL)
     parser.add_argument('--plugin_version', help="plugin_version", default=PLUGIN_VERSION)
     parser.add_argument('--url', help="URL", default=TOMCAT_URL)
-    parser.add_argument('--logs_enabled', help="logs_enabled", default=LOGS_ENABLED)
-    parser.add_argument('--log_type_name', help="log_type_name", default=LOG_TYPE_NAME)
-    parser.add_argument('--log_file_path', help="log_file_path", default=LOG_FILE_PATH)
+    parser.add_argument('--tomcat_access_logs_enabled', help="Enable or disable Tomcat access log collection", default=TOMCAT_ACCESS_LOGS_ENABLED)
+    parser.add_argument('--tomcat_access_logs_file_path', help="Tomcat access log file path", default=TOMCAT_ACCESS_LOGS_FILE_PATH)
 
     args = parser.parse_args()
 
@@ -333,9 +352,8 @@ if __name__ == "__main__":
         'verify_ssl': args.verify_ssl,
         'url': args.url,
         'plugin_version': args.plugin_version,
-        'logs_enabled': args.logs_enabled,
-        'log_type_name': args.log_type_name,
-        'log_file_path': args.log_file_path
+        'tomcat_access_logs_enabled': args.tomcat_access_logs_enabled,
+        'tomcat_access_logs_file_path': args.tomcat_access_logs_file_path
     }
 
     tomcat_plugins = Tomcat(configurations)

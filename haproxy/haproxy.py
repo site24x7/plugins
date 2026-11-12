@@ -1,9 +1,15 @@
 #!/usr/bin/python3
 import json
 import csv
+import socket
+import ipaddress
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
+
+# HAProxy Logs: log type name is static and not configurable via .cfg
+HAPROXY_LOGS_LOG_TYPE_NAME = "HAProxy Logs"
+
 METRICS_UNITS={ 'Frontend Qtime':'ms',
                 'Frontend Ctime':'ms',
                 'Frontend Bin':'bytes',
@@ -18,15 +24,29 @@ sys_metrics=["ttime_max","agent_status","cache_lookups","cache_hits","chkfail","
 frontend_metrics=["qcur","qmax","qtime","ctime","scur","smax","bin","bout","dses","dreq","dcon","ereq","econ","wretr","wredis","rate","rate_max","req_rate","req_rate_max","connect","conn_rate","conn_rate_max","conn_tot","srv_icur","qtime_max","ctime_max","idle_conn_cur","safe_conn_cur","used_conn_cur","need_conn_est"]
 backend_metrics=["rtime","rtime_max","dresp","eresp","act","bck","chkdown","lastchg","downtime","lbtot","hrsp_5xx","hrsp_4xx","hrsp_3xx","hrsp_2xx","hrsp_1xx","hrsp_other","lastsess","cookie"]
 
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
+
 class haproxy:
     def __init__(self,args):
         self.maindata={}
         self.maindata['plugin_version'] = PLUGIN_VERSION
         self.maindata['heartbeat_required']=HEARTBEAT
         self.maindata['units']=METRICS_UNITS
-        self.logsenabled=args.logs_enabled
-        self.logtypename=args.log_type_name
-        self.logfilepath=args.log_file_path
+        self.logsenabled=args.haproxy_logs_enabled
+        self.logfilepath=args.haproxy_logs_file_path
         self.username=args.username
         self.password=args.password
         self.url=args.url
@@ -150,6 +170,10 @@ class haproxy:
         hostname=hostname[0].split(":")
         self.maindata['tags']=f"HAPROXY_HOST:{hostname[0]}"
 
+        self.maindata['s247config'] = {
+            "ip_address": resolve_ip_address(hostname[0])
+        }
+
         tabs = {
             "Frontend":{
                 "order": 1,
@@ -181,7 +205,7 @@ class haproxy:
         applog={}
         if(self.logsenabled in ['True', 'true', '1']):
             applog["logs_enabled"]=True
-            applog["log_type_name"]=self.logtypename
+            applog["log_type_name"]=HAPROXY_LOGS_LOG_TYPE_NAME
             applog["log_file_path"]=self.logfilepath
         else:
             applog["logs_enabled"]=False
@@ -197,9 +221,8 @@ if __name__=="__main__":
     parser.add_argument('--username', help='haproxy password',default=username)
     parser.add_argument('--password', help='haproxy username',default=password)
     parser.add_argument('--url', help='haproxy url',default=url)
-    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
-    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
-    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
+    parser.add_argument('--haproxy_logs_enabled', help='enable log collection for HAProxy logs',default="False")
+    parser.add_argument('--haproxy_logs_file_path', help='list of comma separated log file paths', nargs='?', default="/var/log/haproxy*.log*")
     args=parser.parse_args()
     obj=haproxy(args)
     result=obj.metriccollector()

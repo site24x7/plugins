@@ -7,6 +7,11 @@ import socket
 '''
 Created on 21-Jun-2021
 '''
+PLUGIN_VERSION = 1
+
+HEARTBEAT = True
+
+TIMEOUT = 30
 
 PYTHON_MAJOR_VERSION = sys.version_info[0]
 
@@ -84,6 +89,8 @@ UNITS = {   'total_kbytes':'Bytes',
             'cpu_load':'%'
         }
 
+APACHE_ACCESS_LOGS_LOG_TYPE_NAME = 'Apache Access Logs'
+
 class ApacheMonitoring(object):
     '''
     Class to monitor Apache webserver
@@ -102,14 +109,13 @@ class ApacheMonitoring(object):
         
         self.username=args.username
         self.password=args.password  
-        self.logsenabled=args.logs_enabled
-        self.logtypename=args.log_type_name
-        self.logfilepath=args.log_file_path
+        self.logsenabled=args.apache_access_logs_enabled
+        self.logfilepath=args.apache_access_logs_file_path
         
-        self.timeout = args.timeout
+        self.timeout = TIMEOUT
         
-        self.plugin_version=args.plugin_version
-        self.heartbeat=args.heartbeat  
+        self.plugin_version=PLUGIN_VERSION
+        self.heartbeat=HEARTBEAT  
         self.data = {}
         
         self._collect_metrics()
@@ -167,7 +173,7 @@ class ApacheMonitoring(object):
             applog={}
             if(self.logsenabled in ['True', 'true', '1']):
                 applog["logs_enabled"]=True
-                applog["log_type_name"]=self.logtypename
+                applog["log_type_name"]=APACHE_ACCESS_LOGS_LOG_TYPE_NAME
                 applog["log_file_path"]=self.logfilepath
             else:
                 applog["logs_enabled"]=False
@@ -191,13 +197,8 @@ if __name__ == '__main__':
     parser.add_argument('--url', help='apache monitoring url', nargs='?', default="http://localhost:80/server-status?auto")
     parser.add_argument('--username',  help='user name', nargs='?', default= None)
     parser.add_argument('--password', help='password', nargs='?', default= None)
-    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
-    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
-    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
-    parser.add_argument('--timeout', help='timeout', nargs='?', type=int, default=30)
-    
-    parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=1)
-    parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=True)
+    parser.add_argument('--apache_access_logs_enabled', help='enable log collection for Apache access logs',default="False")
+    parser.add_argument('--apache_access_logs_file_path', help='list of comma separated log file paths', nargs='?', default="/etc/httpd/logs/access_log*,/var/log/httpd/access_log*,/var/log/apache/access.log*,/var/log/apache2/access.log*")
     
     
     args = parser.parse_args()

@@ -78,9 +78,8 @@ url="http://localhost:8404/stats;csv"
 	username="username"
 	password="password"
 	url="http://localhost:8404/stats;csv"
-	logs_enabled="True"
-	log_type_name="haproxy"
-	log_file_path="/var/log/haproxy.log"
+	haproxy_logs_enabled="True"
+	haproxy_logs_file_path="/var/log/haproxy*.log*"
 	```
 
 - Move the folder "haproxy" under Site24x7 Linux Agent plugin directory : 

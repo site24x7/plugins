@@ -83,9 +83,10 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/installer/S
 	nginx_status_url="http://localhost/nginx_status"
 	username="None"
 	password="None"
-	logs_enabled = "true"
-	log_type_name = "Nginx Logs"
-	log_file_path = "/var/log/nginx/access*"
+	nginx_access_logs_enabled = "true"
+	nginx_access_logs_file_path = "/var/log/nginx*/access*.log"
+	nginx_error_logs_enabled = "true"
+	nginx_error_logs_file_path = "/var/log/nginx*/error*.log"
  	```
 
 - Once the configuration done, move the `nginx` directory under the Site24x7 Linux Agent plugin directory: 

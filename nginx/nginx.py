@@ -14,6 +14,9 @@ except ImportError:
 PLUGIN_VERSION = 1
 HEARTBEAT_REQUIRED = True
 
+NGINX_ACCESS_LOGS_LOG_TYPE_NAME = "Nginx Logs"
+NGINX_ERROR_LOGS_LOG_TYPE_NAME = "Nginx Error Logs"
+
 
 def resolve_ip_address(host):
     if not host:
@@ -111,9 +114,10 @@ def _load_args_():
     parser.add_argument('--username', help='username', type=str, default=None)
     parser.add_argument('--password', help='password', type=str, default=None)
     
-    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
-    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
-    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
+    parser.add_argument('--nginx_access_logs_enabled', help='enable log collection for Nginx access logs',default="False")
+    parser.add_argument('--nginx_access_logs_file_path', help='list of comma separated log file paths', nargs='?', default="/var/log/nginx*/access*.log")
+    parser.add_argument('--nginx_error_logs_enabled', help='enable log collection for Nginx error logs',default="False")
+    parser.add_argument('--nginx_error_logs_file_path', help='list of comma separated log file paths', nargs='?', default="/var/log/nginx*/error*.log")
 
     args = parser.parse_args()
     
@@ -121,18 +125,26 @@ def _load_args_():
     _config_data_['username'] = args.username
     _config_data_['password'] = args.password
     
-    logsenabled=args.logs_enabled
-    logtypename=args.log_type_name
-    logfilepath=args.log_file_path
-    
-    
-    applog={}
-    if(logsenabled in ['True', 'true', '1']):
-        applog["logs_enabled"]=True
-        applog["log_type_name"]=logtypename
-        applog["log_file_path"]=logfilepath
+    applog=[]
+
+    access_log_entry = {}
+    if(args.nginx_access_logs_enabled in ['True', 'true', '1']):
+        access_log_entry["logs_enabled"]=True
+        access_log_entry["log_type_name"]=NGINX_ACCESS_LOGS_LOG_TYPE_NAME
+        access_log_entry["log_file_path"]=args.nginx_access_logs_file_path
     else:
-        applog["logs_enabled"]=False
+        access_log_entry["logs_enabled"]=False
+    applog.append(access_log_entry)
+
+    error_log_entry = {}
+    if(args.nginx_error_logs_enabled in ['True', 'true', '1']):
+        error_log_entry["logs_enabled"]=True
+        error_log_entry["log_type_name"]=NGINX_ERROR_LOGS_LOG_TYPE_NAME
+        error_log_entry["log_file_path"]=args.nginx_error_logs_file_path
+    else:
+        error_log_entry["logs_enabled"]=False
+    applog.append(error_log_entry)
+
     _config_data_['applog'] = applog
 
     

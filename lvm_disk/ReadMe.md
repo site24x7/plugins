@@ -27,12 +27,10 @@ Logical volume management (LVM) is a form of storage virtualization that offers 
 		[LVM Disk Space]
 		vg = '<Volume Group Name>'
 		lvm = '<LVM Name>,<LVM Name>'
-		plugin_version = 1 
 
 - For the above configuration,
    - In the vg line, enter the Volume Group Name.
    - In the lvm line, enter the LVM names separated by commas. If you want to monitor only one LVM, give one LVM name without commas.
-   - The third line is the plugin version. Increase the value by one if you want to add any additional metrics or to add another LVM after the plugin has been registered successfully. 
 - Place the "lvm_disk" folder under Site24x7 Linux Agent plugin directory : 
 
 		Linux             ->   /opt/site24x7/monagent/plugins/lvm_disk

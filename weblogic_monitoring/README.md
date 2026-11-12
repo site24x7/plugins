@@ -94,9 +94,6 @@ Monitor the availability and performance of your Weblogic Server with Site24x7's
 		server_name="Server_Name"
 		username="username"
 		password="password"
-		logs_enabled=False
-		log_type_name=None
-		log_file_path=None
 
  
 #### Linux:

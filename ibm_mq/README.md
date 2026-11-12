@@ -59,7 +59,12 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/ibm_mq/installer/
 	port="1414"
 	username="app"
 	password ="plugin"
+	ibm_mq_error_logs_enabled="False"
+	ibm_mq_error_logs_file_path="/var/mqm/*.LOG*,/var/mqm/qmgrs/*/*.LOG*"
 	```	
+
+- Applog is supported for IBM MQ Monitoring. To enable log collection for the static "IBM MQ Error Logs" log type, configure `ibm_mq_error_logs_enabled=true` and set `ibm_mq_error_logs_file_path` as needed.
+
 #### Linux
 
  - Move the folder `ibm_mq` into the  Site24x7 Linux Agent plugin directory:

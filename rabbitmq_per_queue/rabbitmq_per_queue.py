@@ -2,10 +2,32 @@
 
 import json
 import argparse
+import socket
+import ipaddress
 import requests
 from requests.auth import HTTPBasicAuth
 
+PLUGIN_VERSION = 1
+
+HEARTBEAT = True
+
 METRICS = {'consumers', 'messages', 'messages_persistent', 'messages_ready', 'messages_unacknowledged'}
+
+
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
 
 def metricCollector():
     data = {}
@@ -17,8 +39,6 @@ def metricCollector():
     parser.add_argument('--password', help='password', type=str, nargs='?', default="guest")
     parser.add_argument('--vhost', help='virtual host name', type=str, nargs='?', default="/")
     parser.add_argument('--queue_name', help='queue_name to be monitored', type=str, nargs='?', default="Test Queue")
-    parser.add_argument('--plugin_version', help='plugin template version', type=int, nargs='?', default=1)
-    parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=True)
     args = parser.parse_args()
 
     input_data = {
@@ -35,8 +55,11 @@ def metricCollector():
     
     URL = f"http://{input_data['hostname']}:{input_data['port']}/api/queues/{input_data['vhost']}/{input_data['queue_name']}"
     
-    data['plugin_version'] = args.plugin_version
-    data['heartbeat_required'] = args.heartbeat
+    data['plugin_version'] = PLUGIN_VERSION
+    data['heartbeat_required'] = HEARTBEAT
+    data['s247config'] = {
+        "ip_address": resolve_ip_address(args.hostname)
+    }
 
     try:
         response = requests.get(URL, auth=HTTPBasicAuth(input_data['username'], input_data['password']), timeout=10)

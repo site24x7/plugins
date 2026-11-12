@@ -7,6 +7,10 @@ import argparse
 import libvirt
 import json
 
+PLUGIN_VERSION = 1
+
+HEARTBEAT = True
+
 if __name__ == '__main__':
     
     conn = None
@@ -16,8 +20,6 @@ if __name__ == '__main__':
         
         parser = argparse.ArgumentParser()
         parser.add_argument('--host', help='kvm host to connect', nargs='?', default='qemu:///system')
-        parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=1)
-        parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=True)
 
         args = parser.parse_args()
         conn = libvirt.openReadOnly(args.host)
@@ -25,8 +27,8 @@ if __name__ == '__main__':
         data['status'] = 0
         data['msg'] = str(e)
     
-    data['heartbeat_required'] = args.heartbeat
-    data['plugin_version'] = args.plugin_version
+    data['heartbeat_required'] = HEARTBEAT
+    data['plugin_version'] = PLUGIN_VERSION
 
     
     if conn is not None : 

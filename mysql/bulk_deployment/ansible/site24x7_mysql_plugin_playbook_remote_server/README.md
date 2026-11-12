@@ -75,17 +75,21 @@ The MySQL username. If there is no username, set the value as `'"None"'`
 
 The MySQL password. If there is no password, set the value as `'"None"'`
 
-**logs_enabled** : 
+**mysql_general_logs_enabled** : 
 
-To enable AppLogs for this plugin, configure logs_enabled=true
+To enable AppLogs collection for the Mysql General Logs log type, configure mysql_general_logs_enabled=true
 	
-**log_type_name** : 
+**mysql_general_logs_file_path** : 
 
-To enable AppLogs, configure log_type_name
+The comma separated file path(s) for the Mysql General Logs log type, configure mysql_general_logs_file_path
 		
-**log_file_path** : 
+**mysql_slow_logs_enabled** : 
 
-To enable applog,configure log_file_path
+To enable AppLogs collection for the Mysql Slow Logs log type, configure mysql_slow_logs_enabled=true
+
+**mysql_slow_logs_file_path** : 
+
+The comma separated file path(s) for the Mysql Slow Logs log type, configure mysql_slow_logs_file_path
 
 ---
 

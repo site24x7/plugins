@@ -41,12 +41,10 @@ For more details on the python-gnupg driver , refer https://pypi.org/project/pyt
 		keys_to_check = "B2E1062C8683440B,23BD06A606281990,B2E1062C86834232,"
 		key_server = "keyserver.ubuntu.com"
 		gpg_location = "/home/local/.gnupg"
-		plugin_version = 1
-		heartbeat = True
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python pgp_expiry.py --keys_to_check "key1,key2,key3" --key_server "keyserver.ubuntu.com" --gpg_location "/home/local/hostname/.gnupg" --plugin-version 1 --heartbeat True
+		python pgp_expiry.py --keys_to_check "key1,key2,key3" --key_server "keyserver.ubuntu.com" --gpg_location "/home/local/hostname/.gnupg"
 		
 - Move the directory "pgp_expiry" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
 

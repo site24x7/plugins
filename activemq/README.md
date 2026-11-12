@@ -57,7 +57,12 @@ Follow the below steps to configure the ActiveMQ plugin and the monitoring metri
 	port=“1099”
 	broker_name=“your_broker_name”
 	destination_name=“your_destination_name”
+	activemq_logs_enabled="False"
+	activemq_logs_file_path="/var/log/apache-activemq*/data/activemq*.log"
 	```
+
+- Applog is supported for ActiveMQ Monitoring. To enable log collection for the static "ActiveMQ Logs" log type, configure `activemq_logs_enabled=true` and set `activemq_logs_file_path` as needed.
+
 #### Linux
 
 - Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the activemq.py script.

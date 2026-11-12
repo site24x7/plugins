@@ -17,6 +17,8 @@ username = ""
 password = ""
 dbs = "1"
 
+REDIS_LOGS_LOG_TYPE_NAME = "Redis Logs"
+
 
 ### Uncomment/Comment the Attribute Names to be monitored
 ### Change plugin_version if you edit this section
@@ -245,10 +247,10 @@ class Redis(object):
         else:
             self.password=""
         self.applog={}
-        if(args.logs_enabled in ['True', 'true', '1']):
+        if(args.redis_logs_enabled in ['True', 'true', '1']):
                 self.applog["logs_enabled"]=True
-                self.applog["log_type_name"]=args.log_type_name
-                self.applog["log_file_path"]=args.log_file_path
+                self.applog["log_type_name"]=REDIS_LOGS_LOG_TYPE_NAME
+                self.applog["log_file_path"]=args.redis_logs_file_path
         else:
                 self.applog["logs_enabled"]=False
 
@@ -351,9 +353,8 @@ if __name__ == '__main__':
     parser.add_argument('--port',help="Port",nargs='?', default= "6379")
     parser.add_argument('--username',help="Username", nargs='?', default= username)
     parser.add_argument('--password',help="Password" , default= password)
-    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="true")
-    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default="Redis Logs")
-    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default="/var/log/redis/redis*.log")
+    parser.add_argument('--redis_logs_enabled', help='enable log collection for this plugin application',default="true")
+    parser.add_argument('--redis_logs_file_path', help='list of comma separated log file paths', nargs='?', default="/var/log/redis/redis*.log")
     args=parser.parse_args()
 
     redis_plugin = Redis(args)

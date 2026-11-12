@@ -137,12 +137,8 @@ The above configuration works for the default Apache configuration. If you want 
 	url ="http://localhost:80/server-status?auto"
 	username=None
 	password =None
-	timeout="30"
-	plugin_version ="1"
-	heartbeat ="true"
-	logs_enabled ="true"
-	log_type_name ="Apache Access Logs"
-	log_file_path ="/var/log/apache2/access.log"
+	apache_access_logs_enabled ="true"
+	apache_access_logs_file_path ="/var/log/apache*/access.log*"
 	```
 
 6. Follow the steps in this [article](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers) to learn how to run the Python script on a Windows server. You don't need to do this for Linux.  

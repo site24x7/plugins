@@ -8,6 +8,8 @@ import ipaddress
 PLUGIN_VERSION = 1
 HEARTBEAT = True
 
+IBM_MQ_ERROR_LOGS_LOG_TYPE_NAME = "IBM MQ Error Logs"
+
 
 def resolve_ip_address(host):
     if not host:
@@ -40,9 +42,8 @@ class IbmMq:
         # self.queue_name=args.queue_name
         self.host = args.host
         self.port = args.port
-        self.logsenabled = args.logs_enabled
-        self.logtypename = args.log_type_name
-        self.logfilepath = args.log_file_path
+        self.logsenabled = args.ibm_mq_error_logs_enabled
+        self.logfilepath = args.ibm_mq_error_logs_file_path
 
         self.maindata["plugin_version"] = PLUGIN_VERSION
         self.maindata["heartbeat_required"] = HEARTBEAT
@@ -247,15 +248,14 @@ class IbmMq:
         applog = {}
         if self.logsenabled in ["True", "true", "1"]:
             applog["logs_enabled"] = True
-            applog["log_type_name"] = self.logtypename
+            applog["log_type_name"] = IBM_MQ_ERROR_LOGS_LOG_TYPE_NAME
             applog["log_file_path"] = self.logfilepath
         else:
             applog["logs_enabled"] = False
         self.maindata["applog"] = applog
 
-        self.maindata["s247config"] = {
-            "ip_address": resolve_ip_address(self.host)
-        }
+        self.maindata["s247config"] = self.maindata.get("s247config", {})
+        self.maindata["s247config"]["ip_address"] = resolve_ip_address(self.host)
 
         return self.maindata
 
@@ -572,18 +572,15 @@ if __name__ == "__main__":
     parser.add_argument("--username", help="Enter username", default=username)
     parser.add_argument("--password", help="Enter password", default=password)
     parser.add_argument(
-        "--logs_enabled",
-        help="enable log collection for this plugin application",
+        "--ibm_mq_error_logs_enabled",
+        help="enable log collection for IBM MQ error logs",
         default="False",
     )
     parser.add_argument(
-        "--log_type_name", help="Display name of the log type", nargs="?", default=None
-    )
-    parser.add_argument(
-        "--log_file_path",
+        "--ibm_mq_error_logs_file_path",
         help="list of comma separated log file paths",
         nargs="?",
-        default=None,
+        default="/var/mqm/*.LOG*,/var/mqm/qmgrs/*/*.LOG*",
     )
 
     args = parser.parse_args()

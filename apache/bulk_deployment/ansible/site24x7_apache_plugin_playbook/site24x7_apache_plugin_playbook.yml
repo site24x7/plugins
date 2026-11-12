@@ -6,12 +6,8 @@
       apache_url: "http://localhost:80/server-status?auto"
       apache_username: "None"                           
       apache_password: "None"    
-      apache_timeout: "30" 
-      apache_plugin_version: "1"    
-      apache_heartbeat: "true"
-      apache_logs_enabled: "true"
-      apache_log_type_name: "Apache Access Logs"
-      apache_log_file_path: "/var/log/apache*/access.log*"
+      apache_access_logs_enabled: "true"
+      apache_access_logs_file_path: "/var/log/apache*/access.log*"
 
   
    tasks:    
@@ -111,12 +107,8 @@
        - { regex: 'url =', line: 'url ="{{apache_url}}"' }
        - { regex: 'username =', line: 'username ="{{apache_username}}"' }
        - { regex: 'password =', line: 'password ="{{apache_password}}"' }
-       - { regex: 'timeout =', line: 'timeout ="{{apache_timeout}}"' }
-       - { regex: 'plugin_version =', line: 'plugin_version ="{{apache_plugin_version}}"' }
-       - { regex: 'heartbeat =', line: 'heartbeat ="{{apache_heartbeat}}"' }
-       - { regex: 'logs_enabled =', line: 'logs_enabled ="{{apache_logs_enabled}}"' }
-       - { regex: 'log_type_name =', line: 'log_type_name ="{{apache_log_type_name}}"' }
-       - { regex: 'log_file_path =', line: 'log_file_path ="{{apache_log_file_path}}"' }
+       - { regex: 'apache_access_logs_enabled =', line: 'apache_access_logs_enabled ="{{apache_access_logs_enabled}}"' }
+       - { regex: 'apache_access_logs_file_path =', line: 'apache_access_logs_file_path ="{{apache_access_logs_file_path}}"' }
 
      when: apache_file_check.stat.exists
 
@@ -142,7 +134,7 @@
      when: apache_python_file_check.stat.exists
 
    - name: "Checking the Site24x7 apache Plugin Output"
-     shell: "python3 /opt/site24x7/monagent/temp/plugins/apache/apache.py --url=\"{{apache_url}}\" --username=\"{{apache_username}}\" --password=\"{{apache_password}}\" --timeout=\"{{apache_timeout}}\" --plugin_version=\"{{apache_plugin_version}}\" --heartbeat=\"{{apache_heartbeat}}\" --logs_enabled=\"{{apache_logs_enabled}}\" --log_type_name=\"{{apache_log_type_name}}\" --log_file_path=\"{{apache_log_file_path}}\""
+     shell: "python3 /opt/site24x7/monagent/temp/plugins/apache/apache.py --url=\"{{apache_url}}\" --username=\"{{apache_username}}\" --password=\"{{apache_password}}\" --apache_access_logs_enabled=\"{{apache_access_logs_enabled}}\" --apache_access_logs_file_path=\"{{apache_access_logs_file_path}}\""
      register: apache_python_output
      when: apache_python_file_check.stat.exists
 

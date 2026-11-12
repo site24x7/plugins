@@ -24,13 +24,6 @@ This plugin monitors the performance metrics of CIFS mount point status, IP addr
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/cifs/cifs.cfg
 	```
 	
-- Configure the mount point to be monitored in the cifs.cfg file, as mentioned below.
-
-	```bash
-	[mounts]
-	plugin_version = "1"
-	```
-
 - The plugin will automatically identify and monitor all CIFS mounts present on the server.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
@@ -46,21 +39,13 @@ This plugin monitors the performance metrics of CIFS mount point status, IP addr
 
 The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
 
-#### Note:
-To add mount points after the registration of the plugin, increase the version of the plugin in cifs.cfg file, as mentioned below.
-
-```bash
-[mounts]
-plugin_version = "2"
-```
-
-
 ## Metrics Captured
 
 Name		        | 	Description
 ---         		|  	 ---
-Mount Permission 	|	Mount permmision for the client to the mount point.
-Mount From 		|	Mount point path on the client, which is connected to the CIFS Server.
+Mount Permission (inside the `Size` table) 	|	Mount permmision for the client to the mount point.
+Mount State (inside the `Size` table) 	|	Whether the mount point is currently `Mounted` or `Unmounted`.
+Mount From (inside the `Size` table) 	|	The CIFS server path (e.g. `//server/share`) that the mount point is mounted from.
 Available size 		|	Available size in gigabytes (GB) represents the amount of free space left on the disk.
 Disk Usage 		|	The percentage of the disk space that is currently in use.
 Total Size 		|	The total size in gigabytes (GB) represents the total storage capacity of the disk.

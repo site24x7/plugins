@@ -42,12 +42,8 @@ To run the playbook, provide the Apache Server configuration details in the `var
       apache_url: "http://localhost:80/server-status?auto"
       apache_username: "None"                           
       apache_password: "None"    
-      apache_timeout: "30" 
-      apache_plugin_version: "1"    
-      apache_heartbeat: "true"
-      apache_logs_enabled: "true"
-      apache_log_type_name: "Apache Access Logs"
-      apache_log_file_path: "/var/log/apache*/access.log*"
+      apache_access_logs_enabled: "true"
+      apache_access_logs_file_path: "/var/log/apache*/access.log*"
 ```
 
 The details below are required to set the values in the [apache.cfg](https://github.com/site24x7/plugins/blob/master/apache/apache.cfg) file for the plugin.
@@ -65,29 +61,13 @@ The Apache Server username. If there is no username, set the value as `'"None"'`
 
 The Apache Server password. If there is no password, set the value as `'"None"'`
 
-**apache_timeout** : 
+**apache_access_logs_enabled** : (True/False)
 
-This sets the maximum time in seconds the monitoring system will wait for a response from the server before considering it unavailable.
-	
-**apache_plugin_version** : 
-
-The plugin version of the plugin. A reserved key in Site24x7 plugins.
-		
-**apache_heartbeat** : 
-
-Another reserved key in Site24x7 plugins that is required for monitoring.
-		
-**apache_logs_enabled** : (True/False)
-
-- `True` for enabling logs collection 
+- `True` for enabling logs collection of the static "Apache Access Logs" log type
 - `False` for disabling logs collection
 	
-**apache_log_type_name** : 
-
- This defines a friendly name for the collected Apache access logs within the monitoring system.
-	
-**apache_log_file_path** : 
-This specifies the path to the Apache access log files that the monitoring system will read and analyze. The * indicates it applies to all access logs in the specified directory.
+**apache_access_logs_file_path** : 
+This specifies the comma separated path(s) to the Apache access log files that the monitoring system will read and analyze. The * indicates it applies to all access logs in the specified directory.
 
 ---
 

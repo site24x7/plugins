@@ -44,7 +44,8 @@ python hbase_regionserver.py --host "hostname" --port "port"
 [HBase]
 host="localhost"
 port="16030"
-log_file_path= "/var/log/*hbase*/*.log , /opt/*hbase*/logs/*.log*, /*hbase*/*log*/*.log, C:\\*hbase*\\logs\\*.log*, C:\\Program Files\\*hbase*\\logs\\*.log*"
+hbase_regionserver_logs_enabled="true"
+hbase_regionserver_logs_file_path="/var/log/*hbase*/*.log*,/opt/*hbase*/logs/*.log*"
 ```
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
