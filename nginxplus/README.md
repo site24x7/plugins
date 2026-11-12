@@ -62,9 +62,6 @@
 		nginx_status_url="http://localhost:80/api/3"
 		username="username"
 		password="password"
-		logs_enabled="False"
-		log_type_name =None
-		log_file_path=None
 	
 - Once the configuration is complete, move the "nginxplus" directory to the Site24x7 Linux Agent plugin directory.
 

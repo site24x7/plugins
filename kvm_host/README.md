@@ -33,14 +33,12 @@ For more details on the libvirt library , refer https://libvirt.org/index.html.
 
 		[localhost]
 		host="qemu:///system"
-		plugin_version="1"
-		heartbeat="True"
 		
 host - KVM host to be monitored.Incase of remote host ssh login details has to be provides.
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python kvm_host.py --host "qemu:///system" --plugin-version "1" --heartbeat "True"
+		python kvm_host.py --host "qemu:///system"
 		
 - Move the directory "kvm_host" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/
 

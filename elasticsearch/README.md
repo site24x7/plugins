@@ -86,6 +86,8 @@ username = "elasticsearch_username"
 password = "elasticsearch_password"
 ssl_option = "false" #true if you are using https
 cafile = "None"
+elasticsearch_slow_log_enabled = "True"
+elasticsearch_slow_log_file_path = "/var/log/elasticsearch/*_index_indexing_slowlog*.log,/var/log/elasticsearch/*_index_search_slowlog*.log"
 ```
 
 #### For Windows 
@@ -98,6 +100,8 @@ username = "elasticsearch_username"
 password = "elasticsearch_password"
 ssl_option = "false" #true if you are using https
 cafile = "None"
+elasticsearch_slow_log_enabled = "True"
+elasticsearch_slow_log_file_path = "/var/log/elasticsearch/*_index_indexing_slowlog*.log,/var/log/elasticsearch/*_index_search_slowlog*.log"
 ```
  
 #### Linux

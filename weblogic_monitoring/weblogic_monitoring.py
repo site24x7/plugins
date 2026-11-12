@@ -18,9 +18,6 @@ class Weblogic:
         self.maindata['plugin_version'] = PLUGIN_VERSION
         self.maindata['heartbeat_required']=HEARTBEAT
         self.maindata['units']=METRICS_UNITS
-        self.logsenabled=args.logs_enabled
-        self.logtypename=args.log_type_name
-        self.logfilepath=args.log_file_path
 
         self.hostname=args.hostname
         self.port=args.port
@@ -79,16 +76,6 @@ class Weblogic:
                     self.maindata[metric]=metric_result[0].value
 
 
-
-            applog={}
-            if(self.logsenabled in ['True', 'true', '1']):
-                    applog["logs_enabled"]=True
-                    applog["log_type_name"]=self.logtypename
-                    applog["log_file_path"]=self.logfilepath
-            else:
-                    applog["logs_enabled"]=False
-            self.maindata['applog'] = applog
-
         except Exception as e:
             self.maindata['msg']=str(e)
             self.maindata['status']=0
@@ -116,9 +103,6 @@ if __name__=="__main__":
     parser.add_argument('--username', help='username for weblogic',default=username)
     parser.add_argument('--password', help='password for weblogic',default=password)
 
-    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
-    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
-    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
     args=parser.parse_args()
 
     obj=Weblogic(args)

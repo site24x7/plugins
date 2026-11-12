@@ -5,6 +5,10 @@ import datetime
 import json
 import argparse
 
+PLUGIN_VERSION = 1
+
+HEARTBEAT = True
+
 class pgp_expiry_monitoring:
     def __init__(self):
         self.data = {}
@@ -13,16 +17,14 @@ class pgp_expiry_monitoring:
         parser.add_argument('--keys_to_check', help="public keys to check for expiry", nargs="?")
         parser.add_argument('--key_server', help ="keyserver name", nargs="?", default='keyserver.ubuntu.com')
         parser.add_argument('--gpg_location', help ="gpg location", nargs="?", default='/home/local/.gnupg')
-        parser.add_argument('--plugin_version', help='plugin_version', type=int,  nargs='?', default=1)
-        parser.add_argument('--heartbeat', help='is heartbeat enabled', type=bool, nargs='?', default=True)
         
         args = parser.parse_args()
         
         self.keys_to_check = args.keys_to_check
         self.key_server = args.key_server
         self.gpg_location = args.gpg_location
-        self.data['plugin_version'] = args.plugin_version
-        self.data['heartbeat_required'] = args.heartbeat
+        self.data['plugin_version'] = PLUGIN_VERSION
+        self.data['heartbeat_required'] = HEARTBEAT
     
     def _check_expiry_(self):
         cur_date = datetime.datetime.utcnow()

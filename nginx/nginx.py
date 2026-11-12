@@ -3,13 +3,42 @@
 import sys
 import re
 import json
+import socket
+import ipaddress
+
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
+
+PLUGIN_VERSION = 1
+HEARTBEAT_REQUIRED = True
+
+NGINX_ACCESS_LOGS_LOG_TYPE_NAME = "Nginx Logs"
+NGINX_ERROR_LOGS_LOG_TYPE_NAME = "Nginx Error Logs"
+
+
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
 
 class NginxServerMonitoring():
     def __init__(self, config_data) :
         self.data = {}
         self._config_data_ = config_data
-        self.data['plugin_version'] = self._config_data_['plugin_version']
-        self.data['heartbeat_required'] = self._config_data_['heartbeat_required']
+        self.data['plugin_version'] = PLUGIN_VERSION
+        self.data['heartbeat_required'] = HEARTBEAT_REQUIRED
         self.data['applog']=self._config_data_['applog']
     
     def _get_request_data_(self):
@@ -30,7 +59,7 @@ class NginxServerMonitoring():
                 opener = urlconnection.build_opener(auth_handler, proxy_support)
                 urlconnection.install_opener(opener)
 
-            response = urlconnection.urlopen(url, timeout=self._config_data_['timeout'])
+            response = urlconnection.urlopen(url)
             return response.read()
         except Exception as e:
             self.data['status'] = 0
@@ -69,6 +98,11 @@ class NginxServerMonitoring():
             self.data['Count of successful client connections']= handled
             self.data['Count of dropped connections '] = (conn - handled)
         
+        host = urlparse(self._config_data_['url']).hostname
+        self.data['s247config'] = {
+            "ip_address": resolve_ip_address(host)
+        }
+        
         return self.data
 
 
@@ -80,35 +114,37 @@ def _load_args_():
     parser.add_argument('--username', help='username', type=str, default=None)
     parser.add_argument('--password', help='password', type=str, default=None)
     
-    parser.add_argument('--timeout', help ="timeout",type=int,default=60)
-    
-    parser.add_argument('--plugin_version', help='plugin_version', type=int,  nargs='?', default=1)
-    parser.add_argument('--heartbeat', help='is heartbeat enabled', type=bool, nargs='?', default=True)
-    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
-    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
-    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
+    parser.add_argument('--nginx_access_logs_enabled', help='enable log collection for Nginx access logs',default="False")
+    parser.add_argument('--nginx_access_logs_file_path', help='list of comma separated log file paths', nargs='?', default="/var/log/nginx*/access*.log")
+    parser.add_argument('--nginx_error_logs_enabled', help='enable log collection for Nginx error logs',default="False")
+    parser.add_argument('--nginx_error_logs_file_path', help='list of comma separated log file paths', nargs='?', default="/var/log/nginx*/error*.log")
 
     args = parser.parse_args()
     
     _config_data_['url'] = args.nginx_status_url
     _config_data_['username'] = args.username
     _config_data_['password'] = args.password
-    _config_data_['timeout'] = args.timeout
-    _config_data_['plugin_version'] = args.plugin_version
-    _config_data_['heartbeat_required'] = args.heartbeat
     
-    logsenabled=args.logs_enabled
-    logtypename=args.log_type_name
-    logfilepath=args.log_file_path
-    
-    
-    applog={}
-    if(logsenabled in ['True', 'true', '1']):
-        applog["logs_enabled"]=True
-        applog["log_type_name"]=logtypename
-        applog["log_file_path"]=logfilepath
+    applog=[]
+
+    access_log_entry = {}
+    if(args.nginx_access_logs_enabled in ['True', 'true', '1']):
+        access_log_entry["logs_enabled"]=True
+        access_log_entry["log_type_name"]=NGINX_ACCESS_LOGS_LOG_TYPE_NAME
+        access_log_entry["log_file_path"]=args.nginx_access_logs_file_path
     else:
-        applog["logs_enabled"]=False
+        access_log_entry["logs_enabled"]=False
+    applog.append(access_log_entry)
+
+    error_log_entry = {}
+    if(args.nginx_error_logs_enabled in ['True', 'true', '1']):
+        error_log_entry["logs_enabled"]=True
+        error_log_entry["log_type_name"]=NGINX_ERROR_LOGS_LOG_TYPE_NAME
+        error_log_entry["log_file_path"]=args.nginx_error_logs_file_path
+    else:
+        error_log_entry["logs_enabled"]=False
+    applog.append(error_log_entry)
+
     _config_data_['applog'] = applog
 
     

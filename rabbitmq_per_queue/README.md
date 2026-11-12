@@ -31,8 +31,6 @@ This plugin monitors the individual rabbitmq queues.
 		password="guest"
 		vhost="/"
 		queue_name="Test Queue"
-		plugin_version=1
-		heartbeat=True
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
@@ -64,8 +62,6 @@ This plugin monitors the individual rabbitmq queues.
 		password="guest"
 		vhost="/"
 		queue_name="Test Queue"
-		plugin_version=1
-		heartbeat=True
 
 - Move the folder `rabbitmq_per_queue` under Site24x7 Windows Agent plugin directory: 
 

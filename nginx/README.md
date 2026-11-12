@@ -21,7 +21,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/installer/S
 	sudo vi /etc/nginx/nginx.conf
 	```
   
-2. Add the following code inside the server block which is present in the "/etc/nginx/nginx.conf" file.
+2. Add the following code inside the server block which is present in the "/etc/nginx/nginx.conf" file (or the file it includes that defines the `server` block, such as `conf.d/default.conf` or `sites-enabled/default`).
 
  	```nginxconf
 	location /nginx_status {
@@ -29,7 +29,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/installer/S
 	}
 	```
   
-3. Save and close the /etc/nginx/nginx.conf file.
+3. Save and close the configuration file.
 4. Now reload the nginx to apply the changes :
 
  	```bash
@@ -80,15 +80,13 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/nginx/installer/S
 
  	```bash
 	[nginx]
-	plugin_version=1
-	heartbeat=true
 	nginx_status_url="http://localhost/nginx_status"
 	username="None"
 	password="None"
-	timeout=60
-	logs_enabled = "true"
-	log_type_name = "Nginx Logs"
-	log_file_path = "/var/log/nginx/access*"
+	nginx_access_logs_enabled = "true"
+	nginx_access_logs_file_path = "/var/log/nginx*/access*.log"
+	nginx_error_logs_enabled = "true"
+	nginx_error_logs_file_path = "/var/log/nginx*/error*.log"
  	```
 
 - Once the configuration done, move the `nginx` directory under the Site24x7 Linux Agent plugin directory: 

@@ -33,12 +33,10 @@ For more details on the hping3 library , refer http://wiki.hping.org/94.
 
 		[localhost]
 		host="localhost"
-		plugin_version="1"
-		heartbeat="True"
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python hping3.py --host "localhost" --plugin-version "1" --heartbeat "True"
+		python hping3.py --host "localhost"
 		
 - Move the directory "hping3" under Site24x7 Linux Agent plugin directory - /opt/site24x7/monagent/plugins/hping3
 

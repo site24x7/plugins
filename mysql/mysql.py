@@ -2,6 +2,8 @@
 import json
 import pymysql
 import traceback
+import socket
+import ipaddress
 PLUGIN_VERSION = "1"
 HEARTBEAT = True
 
@@ -10,9 +12,10 @@ MYSQL_DEFAULTS = {
     "port": 3306,
     "username": "site24x7",
     "password": "site24x7",
-    "logs_enabled": True,
-    "log_type_name": "Mysql General Logs",
-    "log_file_path": "/var/log/mysql/error.log"
+    "mysql_general_logs_enabled": True,
+    "mysql_general_logs_file_path": "/var/log/mysqld*.log,/var/log/mysql/mysql.log,/var/log/mysql/*error*.log",
+    "mysql_slow_logs_enabled": True,
+    "mysql_slow_logs_file_path": "/var/log/mysql/*slow*.log"
 }
 METRICS_UNITS = {
     "Uptime": "seconds",
@@ -86,29 +89,64 @@ REPLICATION_METRICS = [
     "Relay_log_space", "Master_host", "Master_user", "Master_retry_count", "Skip_counter"
 ]
 
+MYSQL_GENERAL_LOGS_LOG_TYPE_NAME = "Mysql General Logs"
+MYSQL_SLOW_LOGS_LOG_TYPE_NAME = "Mysql Slow Logs"
+
+
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
+
 
 class MySQLMonitor:
-    def __init__(self,host,port,username,password,logs_enabled,log_type_name,log_file_path):
+    def __init__(self,host,port,username,password,
+                 mysql_general_logs_enabled,mysql_general_logs_file_path,
+                 mysql_slow_logs_enabled,mysql_slow_logs_file_path):
         self.host = host
         self.port = int(port)
         self.username = username
         self.password = password
-        self.logs_enabled = logs_enabled
-        self.log_type_name = log_type_name
-        self.log_file_path = log_file_path
+        self.mysql_general_logs_enabled = mysql_general_logs_enabled
+        self.mysql_general_logs_file_path = mysql_general_logs_file_path
+        self.mysql_slow_logs_enabled = mysql_slow_logs_enabled
+        self.mysql_slow_logs_file_path = mysql_slow_logs_file_path
         self.maindata = {
             "plugin_version": PLUGIN_VERSION,
             "heartbeat_required": HEARTBEAT,
             
         }
 
-        applog={}
-        if(self.logs_enabled in ['True', 'true', '1']):
-            applog["logs_enabled"]=True
-            applog["log_type_name"]=self.log_type_name
-            applog["log_file_path"]=self.log_file_path
+        applog=[]
+
+        general_log_entry = {}
+        if str(self.mysql_general_logs_enabled) in ['True', 'true', '1']:
+            general_log_entry["logs_enabled"]=True
+            general_log_entry["log_type_name"]=MYSQL_GENERAL_LOGS_LOG_TYPE_NAME
+            general_log_entry["log_file_path"]=self.mysql_general_logs_file_path
         else:
-            applog["logs_enabled"]=False
+            general_log_entry["logs_enabled"]=False
+        applog.append(general_log_entry)
+
+        slow_log_entry = {}
+        if str(self.mysql_slow_logs_enabled) in ['True', 'true', '1']:
+            slow_log_entry["logs_enabled"]=True
+            slow_log_entry["log_type_name"]=MYSQL_SLOW_LOGS_LOG_TYPE_NAME
+            slow_log_entry["log_file_path"]=self.mysql_slow_logs_file_path
+        else:
+            slow_log_entry["logs_enabled"]=False
+        applog.append(slow_log_entry)
+
         self.maindata['applog'] = applog
         self.connection = None
         self.cursor = None
@@ -794,7 +832,8 @@ class MySQLMonitor:
                 self.maindata["msg"] += "Session stats collection error: {}; ".format(str(e))
 
             self.maindata["s247config"] = {
-                "childdiscovery": ["Database"]
+                "childdiscovery": ["Database"],
+                "ip_address": resolve_ip_address(self.host)
             }
             self.maindata["units"] = METRICS_UNITS
             self.maindata["tabs"] = {
@@ -992,12 +1031,13 @@ if __name__ == "__main__":
     parser.add_argument("--username", default=MYSQL_DEFAULTS["username"])
     parser.add_argument("--password", default=MYSQL_DEFAULTS["password"])
 
-    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default=MYSQL_DEFAULTS["logs_enabled"])
-    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=MYSQL_DEFAULTS["log_type_name"])
-    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=MYSQL_DEFAULTS["log_file_path"])
+    parser.add_argument('--mysql_general_logs_enabled', help='enable log collection for MySQL general/error logs',default=MYSQL_DEFAULTS["mysql_general_logs_enabled"])
+    parser.add_argument('--mysql_general_logs_file_path', help='list of comma separated MySQL general/error log file paths', nargs='?', default=MYSQL_DEFAULTS["mysql_general_logs_file_path"])
+    parser.add_argument('--mysql_slow_logs_enabled', help='enable log collection for MySQL slow query logs',default=MYSQL_DEFAULTS["mysql_slow_logs_enabled"])
+    parser.add_argument('--mysql_slow_logs_file_path', help='list of comma separated MySQL slow query log file paths', nargs='?', default=MYSQL_DEFAULTS["mysql_slow_logs_file_path"])
     
     args = parser.parse_args()
-    monitor = MySQLMonitor(args.host, args.port, args.username, args.password, args.logs_enabled, args.log_type_name, args.log_file_path)
+    monitor = MySQLMonitor(args.host, args.port, args.username, args.password, args.mysql_general_logs_enabled, args.mysql_general_logs_file_path, args.mysql_slow_logs_enabled, args.mysql_slow_logs_file_path)
     result = monitor.collect_metrics()
 
     print(json.dumps(result, indent=2))

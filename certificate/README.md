@@ -1,0 +1,66 @@
+# Plugin to monitor windows certificates
+
+This plugin monitors the certificates in windows certificate store
+
+### Prerequisites
+
+- Download and install the latest version of the [Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/monitors-configure/SERVER/windows) in the server where you plan to run the plugin.
+  
+---
+### Plugin installation
+
+
+
+#### Windows
+
+- Create a directory `certificate`.
+
+- Download the files `certificate.ps1` and `certificate.cfg`.
+
+- Set the certificate store path (cert:) and specify the certificate thumbprint (refer to the cfg configuration for additional details).
+
+- Place `certificate.ps1` and `certificate.cfg` files under the `certificate` directory
+
+- Execute the below command with appropriate arguments to check for the valid json output.
+
+      powershell .\certificate.ps1 -certPath "path to the certificate store" -thumbprint "thumbprint of the certificate"
+
+#### Cfg file configurations
+       [display_name]
+       certPath="cerificate path"
+       thumbprint="thumbprint of the certificate"
+
+- certPath refers to the path of the certificate file on your system. Provide the full path to the certificate file in the configuration.
+
+- thumbprint represents the thumbprint of the certificate. To obtain the thumbprint, follow these steps:
+
+     - Navigate to the location where the certificate is stored on your system.
+     - Double-click on the certificate file to open it.
+     - In the certificate details, click on the "Details" tab.
+     - Scroll down to locate the thumbprint value.
+     - Copy the thumbprint value and paste it into the appropriate field in the configuration file.
+       
+- Move the folder "certificate"  into the Site24x7 Windows Agent plugin directory :
+
+      Windows     ->   C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\certificate
+      
+The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+
+---
+       
+### Metrics Captured
+
+
+
+Name		            	| Description
+---         		   	|   ---
+certificate_version                           |      Version of the certificate
+signature_algorithm                           |      Algorithm used to sign certificate
+valid_from                                    |      certificate is valid from (DD-MM-YYYY)
+valid_to                                      |      certificate expiry date (DD-MM-YYYY)
+friendly_name                                 |      Friendly name of the certificate
+days_left                                     |      Number of days left before the certificate expires
+subject_name                                  |      Subject name of the certificate
+is_the_certificate_expired                    |      shows expiry status of certificate as true/false
+verified                                      |      shows verification status of certificate as true/false
