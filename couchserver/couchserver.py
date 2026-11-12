@@ -48,12 +48,14 @@ UNITS = {
     "Get Hits": "ops/sec",
     "Ep Bg Fetched": "items/sec",
     "Mem Used": "MB",
-    "Mem Actual Free": "MB",
-    "Mem Actual Used": "MB",
     "Cache Hits": "ops/sec",
     "Cache Misses": "ops/sec",
     "Disk Write Queue": "ops/sec",
-    "Disk Read Queue": "ops/sec"
+    "Disk Read Queue": "ops/sec",
+    "Bucket_Table": {
+        "Item_Count": "count",
+        "Ops_Per_Sec": "ops/sec"
+    }
 }
 
 # -------------------------
@@ -145,7 +147,7 @@ def fetch_query_metrics(host, port, user, password, bucket):
 # Main collection function
 # -------------------------
 def collect_couchbase(host, port, user, password):
-    data = {}
+    data = {'status': 1}
     try:
         base_url = f"http://{host}:{port}/pools/default"
         r = requests.get(base_url, auth=(user, password), timeout=10)
