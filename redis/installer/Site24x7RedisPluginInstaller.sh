@@ -343,7 +343,8 @@ add_conf() {
     error_handler $? $output
     output=$(sed -i "/^port*/c\port = \"$Redis_port\""  "$cfg_file")
     error_handler $? $output
-    output=$(sed -i "/^username*/c\username = \"$Redis_username\""  "$cfg_file")
+    escaped_username=$(printf '%s' "$Redis_username" | sed 's/\\/\\\\/g')
+    output=$(sed -i "/^username*/c\username = \"$escaped_username\""  "$cfg_file")
     error_handler $? $output
     password=$(echo "$password" | sed 's/\\/\\\\/g')
     output=$(sed -i "/^password*/c\password = \"$password\""  $cfg_file)
