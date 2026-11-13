@@ -11,15 +11,15 @@ HEARTBEAT = "true"
 # Metric Units
 # -------------------------
 UNITS = {
-    "Total HDD": "MB",
-    "Quota Total HDD": "MB",
-    "Used HDD": "MB",
-    "Used by Data HDD": "%",
-    "Total Ram": "MB",
-    "Used Ram": "MB",
-    "Quota Used Ram": "MB",
-    "Quota Used Ram Node": "MB",
-    "Quota Total Ram Node": "MB",
+    "hdd.total": "MB",
+    "hdd.quotaTotal": "MB",
+    "hdd.used": "MB",
+    "hdd.usedByData": "%",
+    "ram.total": "MB",
+    "ram.used": "MB",
+    "ram.quotaUsed": "MB",
+    "ram.quotaUsedPerNode": "MB",
+    "ram.quotaTotalPerNode": "MB",
     "Bucket Ops": "ops/sec",
     "Hit Ratio": "%",
     "Cache Miss Rate": "%",
@@ -48,12 +48,14 @@ UNITS = {
     "Get Hits": "ops/sec",
     "Ep Bg Fetched": "items/sec",
     "Mem Used": "MB",
-    "Mem Actual Free": "MB",
-    "Mem Actual Used": "MB",
     "Cache Hits": "ops/sec",
     "Cache Misses": "ops/sec",
     "Disk Write Queue": "ops/sec",
-    "Disk Read Queue": "ops/sec"
+    "Disk Read Queue": "ops/sec",
+    "Bucket_Table": {
+        "Item_Count": "count",
+        "Ops_Per_Sec": "ops/sec"
+    }
 }
 
 # -------------------------
@@ -145,7 +147,7 @@ def fetch_query_metrics(host, port, user, password, bucket):
 # Main collection function
 # -------------------------
 def collect_couchbase(host, port, user, password):
-    data = {}
+    data = {'status': 1}
     try:
         base_url = f"http://{host}:{port}/pools/default"
         r = requests.get(base_url, auth=(user, password), timeout=10)
@@ -202,17 +204,17 @@ def collect_couchbase(host, port, user, password):
         hdd = storage_totals.get('hdd', {})
 
         if ram:
-            data['Total Ram'] = bytes_to_mb(ram.get('total', 0))
-            data['Used Ram'] = bytes_to_mb(ram.get('used', 0))
-            data['Quota Used Ram'] = bytes_to_mb(ram.get('quotaUsed', 0))
-            data['Quota Used Ram Node'] = bytes_to_mb(ram.get('quotaUsedPerNode', 0))
-            data['Quota Total Ram Node'] = bytes_to_mb(ram.get('quotaTotalPerNode', 0))
+            data['ram.total'] = bytes_to_mb(ram.get('total', 0))
+            data['ram.used'] = bytes_to_mb(ram.get('used', 0))
+            data['ram.quotaUsed'] = bytes_to_mb(ram.get('quotaUsed', 0))
+            data['ram.quotaUsedPerNode'] = bytes_to_mb(ram.get('quotaUsedPerNode', 0))
+            data['ram.quotaTotalPerNode'] = bytes_to_mb(ram.get('quotaTotalPerNode', 0))
 
         if hdd:
-            data['Total HDD'] = bytes_to_mb(hdd.get('total', 0))
-            data['Quota Total HDD'] = bytes_to_mb(hdd.get('quotaTotal', 0))
-            data['Used HDD'] = bytes_to_mb(hdd.get('used', 0))
-            data['Used by Data HDD'] = bytes_to_mb(hdd.get('usedByData', 0))
+            data['hdd.total'] = bytes_to_mb(hdd.get('total', 0))
+            data['hdd.quotaTotal'] = bytes_to_mb(hdd.get('quotaTotal', 0))
+            data['hdd.used'] = bytes_to_mb(hdd.get('used', 0))
+            data['hdd.usedByData'] = bytes_to_mb(hdd.get('usedByData', 0))
 
         # -------- Node Interesting Stats --------
         nodes = stats.get('nodes', [])
@@ -278,12 +280,19 @@ def collect_couchbase(host, port, user, password):
 # Main
 # -------------------------
 def main():
+    # Setup Argument Parser to receive values passed by the Site24x7 agent
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", default="8091")
-    parser.add_argument("--user", default="admin")
-    parser.add_argument("--password", default="password")
-    args = parser.parse_args()
+    parser.add_argument("--user", "--username", dest="user", default="admin")
+    parser.add_argument("--password", "--pass", dest="password", default="password")
+    args, unknown = parser.parse_known_args()
+
+    # Clean any quotes if passed via CLI
+    host = args.host.strip('"\'') if args.host else "127.0.0.1"
+    port = args.port.strip('"\'') if args.port else "8091"
+    user = args.user.strip('"\'') if args.user else "admin"
+    password = args.password.strip('"\'') if args.password else "password"
 
     output = {
         "plugin_version": PLUGIN_VERSION,
@@ -292,7 +301,7 @@ def main():
     }
 
     # Couchbase metrics
-    output.update(collect_couchbase(args.host, args.port, args.user, args.password))
+    output.update(collect_couchbase(host, port, user, password))
 
     # Tabs at the end
     output["tabs"] = TABS
