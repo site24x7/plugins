@@ -151,11 +151,6 @@ def bytes_to_mb(value):
     except Exception:
         return 0
 
-def safe_get(d, key, default=0):
-    if isinstance(d, dict) and key in d:
-        return d[key]
-    return default
-
 def fetch_query_metrics(host, query_port, user, password, bucket):
     metrics = {}
     url = f"http://{host}:{query_port}/query/service"
