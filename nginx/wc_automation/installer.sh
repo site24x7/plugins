@@ -141,7 +141,8 @@ insert_stub_status() {
 
     line_no=$(awk '/^[^#]*server_name[[:space:]]/ {print NR; exit}' "$target_conf")
 
-    cp "$target_conf" "$target_conf.bak.$(date +%Y%m%d%H%M%S)"
+    backup_file="$nginx_dir/$(basename "$target_conf").bak.$(date +%Y%m%d%H%M%S)"
+    cp "$target_conf" "$backup_file"
 
     awk -v insert_line="$line_no" -v content="$stub_status_block" '
     NR == insert_line {
