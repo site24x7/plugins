@@ -1,27 +1,15 @@
-# CouchDB Monitoring Plugin - Audit & Optimization Report (v5)
+Plugin for CouchDB Monitoring
+===========
 
-## Overview
-This version of the plugin was optimized for **CouchDB 3.3.3+**. The original basic plugin contained legacy logic that caused several metrics to remain at zero or throw errors.
+Apache CouchDB is open source database software which has a document-oriented NoSQL architecture. Install and use our CouchDB monitoring tool and get detailed insights into database activity and health.
 
-## Key Changes Made:
+Get to know how to configure the CouchDB plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of CouchDB servers.
 
-### 1. Endpoint Modernization
-- **Change:** Removed trial-and-error fallback for the legacy `/_stats` endpoint.
-- **Why:** CouchDB 3.3.3+ exclusively uses `/_node/_local/_stats`. The legacy endpoint caused unnecessary `404` errors in the logs.
+Learn more https://www.site24x7.com/plugins/couchdb-monitoring.html
 
-### 2. Metric Mapping Fixes (Fixed "0" Values)
-- **Issue:** The original script looked for `document_inserts` and `local_document_writes` inside a non-existent nested `couchdb` sub-folder in the JSON.
-- **Change:** Updated logic to read these metrics directly from the root `stats` JSON object.
-- **Result:** These metrics now correctly reflect real-time database activity instead of showing a flat `0`.
 
-### 3. Modern Authentication Mapping
-- **Issue:** `auth_cache_hits` and `auth_cache_misses` return `0` in modern CouchDB (they are legacy).
-- **Change:** Added a fallback mechanism that maps modern authentication security metrics (`password_hashing_fast` and `password_hashing_slow`) to the dashboard auth fields.
-- **Result:** The Auth graphs on the dashboard now correctly track successful and failed login attempts.
+## Prerequisites
 
-### 4. Stability & Robustness
-- **Change:** Replaced fragile nested `if/else` structures with Python's `.get()` default method.
-- **Why:** Prevented the plugin from crashing entirely if CouchDB returns a partial JSON response or if a specific metric key is missing.
 - Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin. 
 - Download and install Python version 3 or higher.
 
@@ -177,5 +165,4 @@ https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-
 ## Sample Image:
 <img width="1653" height="742" alt="image" src="https://github.com/user-attachments/assets/92d06325-1cb8-411f-ab22-8fa67e495140" />
 
----
 

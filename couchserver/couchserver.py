@@ -194,7 +194,7 @@ def fetch_query_metrics(host, query_port, user, password, bucket):
 # -------------------------
 # Main collection function
 # -------------------------
-def collect_couchbase(host, port, user, password, enable_query=ENABLE_QUERY_METRICS):  
+def collect_couchbase(host, port, user, password, query_port=COUCHBASE_SERVER_QUERY_PORT, enable_query=ENABLE_QUERY_METRICS):
     data = {'status': 1}
     auth = (user, password) if user and password else None
     base_url = f"http://{host}:{port}/{COUCHBASE_SERVER_STATS_URI}"
@@ -263,14 +263,15 @@ def collect_couchbase(host, port, user, password, enable_query=ENABLE_QUERY_METR
                             "Ops_Per_Sec": basic.get('opsPerSec', 0)
                         })
 
-                 # -------- Query Metrics (Optional: Run ONCE outside loop) --------
-                    if enable_query and bucket_table:
-                        data.update(fetch_query_metrics(host, port, user, password, bucket_table[0]["name"]))
             except Exception:
                 continue
 
         # Attach the table to data
         data["Bucket_Table"] = bucket_table
+
+        # -------- Query Metrics (Optional: Run ONCE outside loop) --------
+        if enable_query and bucket_table:
+            data.update(fetch_query_metrics(host, query_port, user, password, bucket_table[0]["name"]))
 
         # -------- Node Interesting Stats --------
         nodes = stats.get('nodes', [])
@@ -361,7 +362,7 @@ def main():
     }
 
     # Couchbase metrics
-    output.update(collect_couchbase(host, port, user, password, query_port))
+    output.update(collect_couchbase(host, port, user, password, query_port, enable_query=args.enable_query_metrics))
 
     # Tabs at the end
     output["tabs"] = TABS
