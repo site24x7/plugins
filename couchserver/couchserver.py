@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # ==============================================================================
-# Couchbase Server Monitoring Plugin - Optimized for Site24x7
-# Compatible with Couchbase 6.x, 7.x+ and Site24x7 Linux Agent
+# Couchbase Server Monitoring Plugin - Optimized for High-Scale Deployments
 # ==============================================================================
 
 import json
@@ -9,10 +8,7 @@ import requests
 import argparse
 import sys
 
-# if any changes to this plugin kindly increment the plugin version here.
-PLUGIN_VERSION = 1
-
-# Setting this to true will alert you when there is a network problem while posting plugin data to server
+PLUGIN_VERSION = 2
 HEARTBEAT = "true"
 
 # ----------------------------------------------------------------------
@@ -26,15 +22,19 @@ COUCHBASE_SERVER_USERNAME = None
 COUCHBASE_SERVER_PASSWORD = None
 DEFAULT_TIMEOUT = 10
 
+# High-Load Safeguards:
+ENABLE_QUERY_METRICS = False    # Set to True to collect query engine metrics
+MAX_BUCKETS_TO_POLL = 20        # Cap HTTP requests on large multi-bucket clusters
+
 # ----------------------------------------------------------------------
 # Metric Units
 # ----------------------------------------------------------------------
 UNITS = {
-    # Storage Totals (Dot-notation matching official Site24x7 dashboard specs)
+    # Storage Totals
     "hdd.total": "MB",
     "hdd.quotaTotal": "MB",
     "hdd.used": "MB",
-    "hdd.usedByData": "%",
+    "hdd.usedByData": "MB",      # Corrected from % to MB
     "ram.total": "MB",
     "ram.used": "MB",
     "ram.quotaUsed": "MB",
@@ -82,14 +82,15 @@ UNITS = {
     "Index Docs Failed": "count",
     "Index Docs Indexed": "count",
 
-    # Query Metrics
+    # Query Engine Vitals (Zero-load metrics)
     "Query Elapsed Time": "ms",
-    "Query Execution Time": "ms",
-    "Query Result Size": "bytes",
-    "Query Result Count": "count",
-    "Query Service Load": "%",
+    "Query Active Requests": "count",
+    "Query Completed Requests": "count",
+    "Query Request Rate 1m": "req/sec",
+    "Query Service CPU Sys": "%",
+    "Query Service CPU User": "%",
 
-    # Replication & Cross-Datacenter (XDCR / DCP)
+    # Replication (XDCR / DCP)
     "Xdcr Ops": "ops/sec",
     "Xdcr Meta Latency": "ms",
     "Xdcr Docs Queue": "count",
@@ -135,8 +136,9 @@ TABS = {
     "Query": {
         "order": 4,
         "tablist": [
-            "Query Elapsed Time", "Query Execution Time", "Query Result Count", "Query Result Size",
-            "Query Service Load", "Xdcr Ops", "Xdcr Docs Queue", "Xdcr Meta Latency",
+            "Query Elapsed Time", "Query Active Requests", "Query Completed Requests",
+            "Query Request Rate 1m", "Query Service CPU Sys", "Query Service CPU User",
+            "Xdcr Ops", "Xdcr Docs Queue", "Xdcr Meta Latency",
             "Dcp Replica Items", "Dcp Xdcr Items", "Dcp View Items"
         ]
     }
@@ -151,16 +153,13 @@ def bytes_to_mb(value):
     except Exception:
         return 0
 
-def safe_get(d, key, default=0):
-    if isinstance(d, dict) and key in d:
-        return d[key]
-    return default
-
-def fetch_query_metrics(host, query_port, user, password, bucket):
+def fetch_query_vitals(host, query_port, user, password):
+    """
+    Zero-load query metrics collector using Couchbase's native /admin/vitals endpoint.
+    Avoids running synthetic SQL/N1QL statements across buckets.
+    """
     metrics = {}
-    url = f"http://{host}:{query_port}/query/service"
-    query = f'SELECT COUNT(*) FROM `{bucket}`;'
-    payload = {"statement": query, "metrics": True}
+    url = f"http://{host}:{query_port}/admin/vitals"
     auth = (user, password) if user and password else None
 
     def to_ms(t):
@@ -177,26 +176,26 @@ def fetch_query_metrics(host, query_port, user, password, bucket):
             return 0
 
     try:
-        r = requests.post(url, auth=auth, json=payload, timeout=DEFAULT_TIMEOUT)
+        r = requests.get(url, auth=auth, timeout=DEFAULT_TIMEOUT)
         if r.status_code == 200:
-            resp = r.json()
-            m = resp.get("metrics", {})
-            metrics['Query Elapsed Time'] = to_ms(m.get("elapsedTime", 0))
-            metrics['Query Execution Time'] = to_ms(m.get("executionTime", 0))
-            metrics['Query Result Count'] = m.get("resultCount", 0)
-            metrics['Query Result Size'] = m.get("resultSize", 0)
-            metrics['Query Service Load'] = m.get("serviceLoad", 0)
+            vitals = r.json()
+            metrics['Query Elapsed Time'] = to_ms(vitals.get("request.time.mean", 0))
+            metrics['Query Active Requests'] = vitals.get("request.active.count", 0)
+            metrics['Query Completed Requests'] = vitals.get("request.completed.count", 0)
+            metrics['Query Request Rate 1m'] = round(float(vitals.get("request.per.sec.1m", 0)), 2)
+            metrics['Query Service CPU Sys'] = round(float(vitals.get("cpu.sys.percent", 0)), 2)
+            metrics['Query Service CPU User'] = round(float(vitals.get("cpu.user.percent", 0)), 2)
     except Exception:
-        # N1QL Query Service may not be enabled or may require primary index;
-        # Passing quietly avoids marking the entire plugin as DOWN.
+        # Silently pass if query service is not co-located on this node
         pass
 
     return metrics
 
 # -------------------------
-# Main collection function
+# Main Collection Function
 # -------------------------
-def collect_couchbase(host, port, user, password, query_port=COUCHBASE_SERVER_QUERY_PORT):
+def collect_couchbase(host, port, user, password, query_port=COUCHBASE_SERVER_QUERY_PORT,
+                      enable_query=ENABLE_QUERY_METRICS, max_buckets=MAX_BUCKETS_TO_POLL):
     data = {'status': 1}
     auth = (user, password) if user and password else None
     base_url = f"http://{host}:{port}/{COUCHBASE_SERVER_STATS_URI}"
@@ -224,12 +223,14 @@ def collect_couchbase(host, port, user, password, query_port=COUCHBASE_SERVER_QU
             data['hdd.used'] = bytes_to_mb(hdd.get('used', 0))
             data['hdd.usedByData'] = bytes_to_mb(hdd.get('usedByData', 0))
 
-        # -------- Bucket Metrics --------
+        # -------- Bucket Metrics (Capped to prevent timeout) --------
         bucket_names = stats.get('bucketNames', [])
         bucket_table = []
 
-        for bucket_info in bucket_names:
-            # Handle both list of dicts [{"bucketName": "..."}] and list of strings ["..."]
+        for idx, bucket_info in enumerate(bucket_names):
+            if idx >= max_buckets:
+                break
+
             bucket_name = bucket_info.get('bucketName') if isinstance(bucket_info, dict) else str(bucket_info)
             if not bucket_name:
                 continue
@@ -258,21 +259,20 @@ def collect_couchbase(host, port, user, password, query_port=COUCHBASE_SERVER_QU
                         data['Write Queue'] = basic.get('opsQueued', 0)
                         data['Bucket Mem Used'] = bytes_to_mb(basic.get('memUsed', 0))
 
-                        # Added for Bucket Table
                         bucket_table.append({
                             "name": bucket_name,
                             "Item_Count": basic.get('itemCount', 0),
                             "Ops_Per_Sec": basic.get('opsPerSec', 0)
                         })
-
-                    # Query Metrics (bucket specific)
-                    query_metrics = fetch_query_metrics(host, query_port, user, password, bucket_name)
-                    data.update(query_metrics)
             except Exception:
                 continue
 
-        # Attach the table to data
         data["Bucket_Table"] = bucket_table
+
+        # -------- Query Engine Metrics (Called ONCE, Outside Loop) --------
+        if enable_query:
+            query_metrics = fetch_query_vitals(host, query_port, user, password)
+            data.update(query_metrics)
 
         # -------- Node Interesting Stats --------
         nodes = stats.get('nodes', [])
@@ -310,7 +310,7 @@ def collect_couchbase(host, port, user, password, query_port=COUCHBASE_SERVER_QU
                 data['Index Ram Used'] = bytes_to_mb(index.get('ramUsed', 0))
                 data['Index Fragmentation'] = index.get('fragmentation', 0)
 
-        # -------- XDCR / DCP Metrics --------
+        # -------- XDCR / DCP Replication Metrics --------
         xdcr = stats.get('xdcr', {})
         if isinstance(xdcr, dict):
             if 'ops' in xdcr:
@@ -339,16 +339,19 @@ def collect_couchbase(host, port, user, password, query_port=COUCHBASE_SERVER_QU
 # Main
 # -------------------------
 def main():
-    # Setup Argument Parser to receive values passed by the Site24x7 agent
     parser = argparse.ArgumentParser(description="Site24x7 Couchbase Monitoring Plugin")
     parser.add_argument("--host", default=COUCHBASE_SERVER_HOST, help="Couchbase host")
     parser.add_argument("--port", default=COUCHBASE_SERVER_PORT, help="Couchbase management port")
     parser.add_argument("--query-port", default=COUCHBASE_SERVER_QUERY_PORT, help="Couchbase N1QL query port")
     parser.add_argument("--user", "--username", dest="user", default=COUCHBASE_SERVER_USERNAME, help="Admin username")
     parser.add_argument("--password", "--pass", dest="password", default=COUCHBASE_SERVER_PASSWORD, help="Admin password")
+    parser.add_argument("--enable-query-metrics", action="store_true", default=ENABLE_QUERY_METRICS,
+                        help="Collect lightweight query engine vitals (default: False)")
+    parser.add_argument("--max-buckets", type=int, default=MAX_BUCKETS_TO_POLL,
+                        help="Maximum number of buckets to poll (default: 20)")
     args, unknown = parser.parse_known_args()
 
-    # Clean any quotes if passed via CLI or configuration wrapper
+    # Clean quotes if passed via CLI or configuration wrapper
     host = args.host.strip('"\'') if args.host else COUCHBASE_SERVER_HOST
     port = args.port.strip('"\'') if args.port else COUCHBASE_SERVER_PORT
     query_port = args.query_port.strip('"\'') if args.query_port else COUCHBASE_SERVER_QUERY_PORT
@@ -361,8 +364,16 @@ def main():
         "units": UNITS
     }
 
-    # Couchbase metrics
-    output.update(collect_couchbase(host, port, user, password, query_port))
+    # Collect Couchbase metrics
+    output.update(collect_couchbase(
+        host=host,
+        port=port,
+        user=user,
+        password=password,
+        query_port=query_port,
+        enable_query=args.enable_query_metrics,
+        max_buckets=args.max_buckets
+    ))
 
     # Tabs at the end
     output["tabs"] = TABS
