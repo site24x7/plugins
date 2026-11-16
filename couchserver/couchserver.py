@@ -15,6 +15,8 @@ PLUGIN_VERSION = 1
 # Setting this to true will alert you when there is a network problem while posting plugin data to server
 HEARTBEAT = "true"
 
+ENABLE_QUERY_METRICS = False
+
 # ----------------------------------------------------------------------
 # Config Section
 # ----------------------------------------------------------------------
@@ -34,7 +36,7 @@ UNITS = {
     "hdd.total": "MB",
     "hdd.quotaTotal": "MB",
     "hdd.used": "MB",
-    "hdd.usedByData": "%",
+    "hdd.usedByData": "MB",
     "ram.total": "MB",
     "ram.used": "MB",
     "ram.quotaUsed": "MB",
@@ -47,7 +49,7 @@ UNITS = {
     "Cache Miss Rate": "%",
     "Data Disk Size": "MB",
     "Actual Disk Size": "MB",
-    "Doc Fragmentation": "MB",
+    "Doc Fragmentation": "%",
     "Bucket Mem Used": "MB",
     "Write Queue": "ops/sec",
     "Get Hits": "ops/sec",
@@ -151,6 +153,7 @@ def bytes_to_mb(value):
     except Exception:
         return 0
 
+
 def fetch_query_metrics(host, query_port, user, password, bucket):
     metrics = {}
     url = f"http://{host}:{query_port}/query/service"
@@ -191,7 +194,7 @@ def fetch_query_metrics(host, query_port, user, password, bucket):
 # -------------------------
 # Main collection function
 # -------------------------
-def collect_couchbase(host, port, user, password, query_port=COUCHBASE_SERVER_QUERY_PORT):
+def collect_couchbase(host, port, user, password, enable_query=ENABLE_QUERY_METRICS):  
     data = {'status': 1}
     auth = (user, password) if user and password else None
     base_url = f"http://{host}:{port}/{COUCHBASE_SERVER_STATS_URI}"
@@ -260,9 +263,9 @@ def collect_couchbase(host, port, user, password, query_port=COUCHBASE_SERVER_QU
                             "Ops_Per_Sec": basic.get('opsPerSec', 0)
                         })
 
-                    # Query Metrics (bucket specific)
-                    query_metrics = fetch_query_metrics(host, query_port, user, password, bucket_name)
-                    data.update(query_metrics)
+                 # -------- Query Metrics (Optional: Run ONCE outside loop) --------
+                    if enable_query and bucket_table:
+                        data.update(fetch_query_metrics(host, port, user, password, bucket_table[0]["name"]))
             except Exception:
                 continue
 
@@ -341,6 +344,7 @@ def main():
     parser.add_argument("--query-port", default=COUCHBASE_SERVER_QUERY_PORT, help="Couchbase N1QL query port")
     parser.add_argument("--user", "--username", dest="user", default=COUCHBASE_SERVER_USERNAME, help="Admin username")
     parser.add_argument("--password", "--pass", dest="password", default=COUCHBASE_SERVER_PASSWORD, help="Admin password")
+    parser.add_argument("--enable-query-metrics", action="store_true", default=ENABLE_QUERY_METRICS)
     args, unknown = parser.parse_known_args()
 
     # Clean any quotes if passed via CLI or configuration wrapper
