@@ -47,7 +47,7 @@ UNITS = {
     "Cache Miss Rate": "%",
     "Data Disk Size": "MB",
     "Actual Disk Size": "MB",
-    "Doc Fragmentation": "%",
+    "Doc Fragmentation": "MB",
     "Bucket Mem Used": "MB",
     "Write Queue": "ops/sec",
     "Get Hits": "ops/sec",
