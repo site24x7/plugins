@@ -490,15 +490,29 @@ class oracle:
         self.close_connection()
         return self.maindata
 
+def clean_quotes(value):
+    if not value:
+        return value
+    
+    value_str = str(value)
+    
+    if value_str.startswith('"') and value_str.endswith('"'):
+        return value_str[1:-1]
+    
+    elif value_str.startswith("'") and value_str.endswith("'"):
+        return value_str[1:-1]
+    
+    return value_str
+
 def run(param):
-    hostname = str(param.get("hostname")).strip('"') if param else "localhost"
-    port = str(param.get("port")).strip('"') if param else "1521"
-    sid = str(param.get("sid")).strip('"') if param else "ORCL"
-    username = str(param.get("username")).strip('"') if param else "None"
-    password = str(param.get("password")).strip('"') if param else "None"
-    tls = str(param.get("tls")).strip('"') if param else "false"
-    wallet_location = str(param.get("wallet_location")).strip('"') if param else "None"
-    oracle_home = str(param.get("oracle_home")).strip('"') if param else None
+    hostname = clean_quotes(param.get("hostname")) if param and param.get("hostname") else "localhost"
+    port = clean_quotes(param.get("port")) if param and param.get("port") else "1521"
+    sid = clean_quotes(param.get("sid")) if param and param.get("sid") else "ORCL"
+    username = clean_quotes(param.get("username")) if param and param.get("username") else "None"
+    password = clean_quotes(param.get("password")) if param and param.get("password") else "None"
+    tls = clean_quotes(param.get("tls")) if param and param.get("tls") else "false"
+    wallet_location = clean_quotes(param.get("wallet_location")) if param and param.get("wallet_location") else "None"
+    oracle_home = clean_quotes(param.get("oracle_home")) if param and param.get("oracle_home") else None
     
     if oracle_home in ["None", "", "null"]:
         oracle_home = None

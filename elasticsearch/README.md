@@ -66,7 +66,7 @@ If you're not using Linux servers or want to install the plugin manually, follow
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 	```bash
-	python3 elasticsearch.py --host "host" --port "port no" --username "elasticsearch username" --password "elasticsearch password" --ssl_option "YES/NO"
+	python3 elasticsearch.py --host "host" --port "port no" --username "elasticsearch username" --password "elasticsearch password" --ssl_option "true/false"
 	```
  
 #### Configurations
@@ -127,6 +127,7 @@ The agent will automatically execute the plugin within five minutes and user can
 |--------------------------------------------------|------------------------------------------------------------------------------|
 | Cluster Name                                     | Name of the Elasticsearch cluster.                                           |
 | Cluster status                                   | Health status of the cluster (`green`, `yellow`, or `red`).                  |
+| Cluster State                                    | Numeric representation of cluster health (0 = green, 1 = yellow, 2 = red).   |
 | Number of Nodes                                  | Total number of nodes in the cluster.                                        |
 | Number of data nodes                             | Number of nodes that store data in the cluster.                              |
 | Initializing shards                              | Count of shards currently in the initializing state.                         |
@@ -134,6 +135,8 @@ The agent will automatically execute the plugin within five minutes and user can
 | Active primary shards                            | Number of active primary shards in the cluster.                              |
 | Relocating shards                                | Count of shards that are currently being moved between nodes.                |
 | Delayed unassigned shards                        | Number of shards delayed from being assigned due to allocation delays.       |
+| Active shards                                    | Total number of active shards in the cluster (primary + replicas).           |
+| Active shards percent                            | Percentage of shards that are active in the cluster.                         |
 | JVM garbage collector old generation count       | Number of old generation garbage collection events.                          |
 | JVM garbage collector old generation time        | Time spent in old generation garbage collection (in ms).                     |
 | Average JVM memory usage in garbage collector(%) | Average percentage of memory used during garbage collection.                 |
@@ -170,7 +173,9 @@ The agent will automatically execute the plugin within five minutes and user can
 | Index refreshes                          | Total number of index refreshes.                                            |
 | Time spent on refreshing indices         | Time spent on index refresh operations (in ms).                             |
 | Index flushes to disk                    | Number of index flushes.                                                    |
-| Time spent on flushing indices to disk  | Time spent flushing index data to disk (in ms).                             |
+| Time spent on flushing indices to disk  | Time spent flushing index data to disk (in ms).                              |
+| Primaries store size                    | Total store size of the primary shards.                                      |
+| Total store size                        | Total store size of the primary and replica shards.                          |
 | Indices docs count                       | Total number of documents across all indices.                               |
 | Indices docs deleted                     | Number of documents deleted from indices.                                   |
 

@@ -4,7 +4,7 @@ This plugin monitors the certificates in windows certificate store
 
 ### Prerequisites
 
-- Download and install the latest version of the [Site24x7 Windows agent] (https://www.site24x7.com/app/client#/admin/inventory/monitors-configure/SERVER/windows) in the server where you plan to run the plugin.
+- Download and install the latest version of the [Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/monitors-configure/SERVER/windows) in the server where you plan to run the plugin.
   
 ---
 ### Plugin installation
@@ -13,27 +13,24 @@ This plugin monitors the certificates in windows certificate store
 
 #### Windows
 
-- Create a directory "certificate_monitoring".
+- Create a directory `certificate_monitoring`.
 
-- Download the files "certificate_monitoring.ps1" and "certificate_monitoring.cfg".
+- Download the files `certificate_monitoring.ps1` and `certificate_monitoring.cfg`.
 
-- Configure the path of the certificate in the certificate store (cert:\) and the name of the certificate that needs to be monitored in "certificate_monitoring.cfg" as mentioned in the configuration section below, multiple certificates can be monitoried by providing multiple configurations..
+- Set the certificate store path (cert:) and specify the certificate thumbprint (refer to the cfg configuration for additional details).
 
-- Place "certificate_monitoring.ps1" and "certificate_monitoring.cfg" files under the "certificate_monitoring" directory
+- Place `certificate_monitoring.ps1` and `certificate_monitoring.cfg` files under the `certificate_monitoring` directory
 
 - Execute the below command with appropriate arguments to check for the valid json output.
 
-      powershell .\certificate_monitoring.ps1 -certPath "path to the certificate store" -certName "Certificate Name" -thumbprint "thumbprint of the certificate"
+      powershell .\certificate_monitoring.ps1 -certPath "path to the certificate store" -thumbprint "thumbprint of the certificate"
 
 #### Cfg file configurations
        [display_name]
        certPath="cerificate path"
        thumbprint="thumbprint of the certificate"
-       certName="certificate name"
 
 - certPath refers to the path of the certificate file on your system. Provide the full path to the certificate file in the configuration.
-
-- certName is the name assigned to the certificate, which will also be used as the name of the plugin monitor. Choose a descriptive name for the certificate.
 
 - thumbprint represents the thumbprint of the certificate. To obtain the thumbprint, follow these steps:
 

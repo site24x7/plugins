@@ -119,6 +119,14 @@ def bytes_to_mb(value):
     except Exception:
         return 0
 
+def clean_quotes(value):
+    if not value:
+        return value
+    value_str = str(value).strip()
+    if (value_str.startswith('"') and value_str.endswith('"')) or (value_str.startswith("'") and value_str.endswith("'")):
+        return value_str[1:-1]
+    return value_str
+
 # -------------------------
 # CouchDB Database Details (dynamic)
 # -------------------------
@@ -126,16 +134,33 @@ def get_databases_details(host, port, user, password, data):
     databases_details = []
     try:
         r = requests.get(f"http://{host}:{port}/_all_dbs", auth=(user, password), timeout=10)
-        db_list = r.json()  # List of database names
+        
+        if r.status_code == 401:
+            data['status'] = 0
+            data['msg'] = "Authentication failed while fetching databases"
+            return databases_details
+        elif r.status_code != 200:
+            data['status'] = 0
+            data['msg'] = f"HTTP Error fetching databases: {r.status_code}"
+            return databases_details
+
+        response_json = r.json()
+        if isinstance(response_json, dict) and 'error' in response_json:
+            data['status'] = 0
+            data['msg'] = f"CouchDB Error: {response_json.get('reason', 'Unknown error')}"
+            return databases_details
+        
+        db_list = response_json if isinstance(response_json, list) else []
         for db_name in db_list:
             r_db = requests.get(f"http://{host}:{port}/{db_name}", auth=(user, password), timeout=10)
-            db_info = r_db.json()
-            databases_details.append({
-                "name": db_name,
-                "doc_count": db_info.get("doc_count", 0),
-                "disk_size": bytes_to_mb(db_info.get("disk_size", 0)),
-                "doc_del_count": db_info.get("doc_del_count", 0)
-            })
+            if r_db.status_code == 200:
+                db_info = r_db.json()
+                databases_details.append({
+                    "name": db_name,
+                    "doc_count": db_info.get("doc_count", 0),
+                    "disk_size": bytes_to_mb(db_info.get("disk_size", 0)),
+                    "doc_del_count": db_info.get("doc_del_count", 0)
+                })
     except Exception as e:
         data['msg'] = f"CouchDB Error fetching DB info: {str(e)}"
     return databases_details
@@ -148,7 +173,24 @@ def collect_couchdb(host, port, user, password):
     url = f"http://{host}:{port}/_node/_local/_stats"
     try:
         r = requests.get(url, auth=(user, password), timeout=10)
+        
+        # Check for HTTP errors
+        if r.status_code == 401:
+            data['status'] = 0
+            data['msg'] = "Authentication failed: Invalid username or password"
+            return data
+        elif r.status_code != 200:
+            data['status'] = 0
+            data['msg'] = f"HTTP Error: {r.status_code} - {r.text}"
+            return data
+        
+        # Parse JSON and ensure stats_root is defined
         stats_root = r.json()
+        if isinstance(stats_root, dict) and 'error' in stats_root:
+            data['status'] = 0
+            data['msg'] = f"CouchDB Error: {stats_root.get('error', 'Unknown')} - {stats_root.get('reason', 'No reason provided')}"
+            return data
+        
         stats = stats_root.get('couchdb', {})
 
         # -------- Request Time --------
@@ -310,8 +352,42 @@ def collect_couchdb(host, port, user, password):
         data['Databases_Details'] = get_databases_details(host, port, user, password, data)
 
     except Exception as e:
+        data['status'] = 0
         data['msg'] = f"CouchDB Error: {str(e)}"
     return data
+
+# -------------------------
+# Agent Runner Integration
+# -------------------------
+def run(param):
+    host = clean_quotes(param.get("host")) if param and param.get("host") else "127.0.0.1"
+    port = clean_quotes(param.get("port")) if param and param.get("port") else "5984"
+    user = clean_quotes(param.get("user")) if param and param.get("user") else "admin"
+    password = clean_quotes(param.get("password")) if param and param.get("password") else "admin"
+    
+    output = {
+        "plugin_version": PLUGIN_VERSION,
+        "heartbeat_required": HEARTBEAT
+    }
+    
+    metrics = collect_couchdb(host, port, user, password)
+    
+    # Check for errors
+    if 'status' in metrics and metrics['status'] == 0:
+        output['status'] = 0
+        output['msg'] = metrics['msg']
+        return output
+    
+    output["units"] = UNITS
+    output.update(metrics)
+    output["tabs"] = TABS
+    output["s247config"] = {
+        "childdiscovery": [
+            "Databases_Details"
+        ]
+    }
+    
+    return output
 
 # -------------------------
 # Main
@@ -322,20 +398,16 @@ def main():
     parser.add_argument("--port", default="5984")
     parser.add_argument("--user", default="admin")
     parser.add_argument("--password", default="admin")
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
-    output = {
-        "plugin_version": PLUGIN_VERSION,
-        "heartbeat_required": HEARTBEAT,
-        "units": UNITS
+    param = {
+        "host": args.host,
+        "port": args.port,
+        "user": args.user,
+        "password": args.password
     }
 
-    # CouchDB metrics
-    output.update(collect_couchdb(args.host, args.port, args.user, args.password))
-
-    # Tabs at the end
-    output["tabs"] = TABS
-
+    output = run(param)
     print(json.dumps(output, indent=4))
 
 if __name__ == "__main__":

@@ -8,35 +8,38 @@ Function Get-MSMQServiceCounters {
     try {
         
         $counterPaths = @{
-            "Incoming_Messages_PerSec" = "\MSMQ Service\Incoming Messages/sec"
-            "Outgoing_Messages_PerSec" = "\MSMQ Service\Outgoing Messages/sec"
-            "MSMQ_Incoming_Messages" = "\MSMQ Service\MSMQ Incoming Messages"
-            "MSMQ_Outgoing_Messages" = "\MSMQ Service\MSMQ Outgoing Messages"
-            "Total_Bytes_All_Queues" = "\MSMQ Service\Total bytes in all queues"
-            "Total_Messages_All_Queues" = "\MSMQ Service\Total messages in all queues"
+            "Incoming Messages Per Sec" = "\MSMQ Service\Incoming Messages/sec"
+            "Outgoing Messages Per Sec" = "\MSMQ Service\Outgoing Messages/sec"
+            "MSMQ Incoming Messages" = "\MSMQ Service\MSMQ Incoming Messages"
+            "MSMQ Outgoing Messages" = "\MSMQ Service\MSMQ Outgoing Messages"
+            "Total Bytes All Queues" = "\MSMQ Service\Total bytes in all queues"
+            "Total Messages All Queues" = "\MSMQ Service\Total messages in all queues"
             "Sessions" = "\MSMQ Service\Sessions"
-            "IP_Sessions" = "\MSMQ Service\IP Sessions"
+            "IP Sessions" = "\MSMQ Service\IP Sessions"
         }
-        
+
+        $reverseLookup = @{}
         foreach ($metric in $counterPaths.Keys) {
-            try {
-                $counterResult = Get-Counter -Counter $counterPaths[$metric] -MaxSamples 1 -ErrorAction SilentlyContinue
-                if ($counterResult -and $counterResult.CounterSamples) {
-                    $counterValue = $counterResult.CounterSamples.CookedValue
-                    $result[$metric] = [math]::Round($counterValue, 2)
-                } else {
-                    $result[$metric] = -1
-                    $counterError = "Counter '$metric' not found or invalid path: $($counterPaths[$metric])"
-                    if ($result.ContainsKey("msg")) {
-                        $result["msg"] = $result["msg"] + "; " + $counterError
-                    } else {
-                        $result.add("msg", $counterError)
-                    }
-                }
+            $reverseLookup[$counterPaths[$metric].ToLower()] = $metric
+        }
+
+        $allPaths = @($counterPaths.Values)
+        $counterResult = Get-Counter -Counter $allPaths -MaxSamples 1 -ErrorAction Stop
+
+        $foundMetrics = @{}
+        foreach ($sample in $counterResult.CounterSamples) {
+            $pathLower = ($sample.Path -replace "^\\\\[^\\]+", "").ToLower()
+            if ($reverseLookup.ContainsKey($pathLower)) {
+                $metric = $reverseLookup[$pathLower]
+                $result[$metric] = [math]::Round($sample.CookedValue, 2)
+                $foundMetrics[$metric] = $true
             }
-            catch {
+        }
+
+        foreach ($metric in $counterPaths.Keys) {
+            if (-not $foundMetrics.ContainsKey($metric)) {
                 $result[$metric] = -1
-                $counterError = "Counter '$metric' failed: " + $_.Exception.Message
+                $counterError = "Counter '$metric' not found in results"
                 if ($result.ContainsKey("msg")) {
                     $result["msg"] = $result["msg"] + "; " + $counterError
                 } else {
@@ -46,14 +49,12 @@ Function Get-MSMQServiceCounters {
         }
     }
     catch {
-        $result.add("Incoming_Messages_PerSec", -1)
-        $result.add("Outgoing_Messages_PerSec", -1)
-        $result.add("MSMQ_Incoming_Messages", -1)
-        $result.add("MSMQ_Outgoing_Messages", -1)
-        $result.add("Total_Bytes_All_Queues", -1)
-        $result.add("Total_Messages_All_Queues", -1)
-        $result.add("Sessions", -1)
-        $result.add("IP_Sessions", -1)
+        foreach ($metric in @("Incoming Messages Per Sec", "Outgoing Messages Per Sec",
+            "MSMQ Incoming Messages", "MSMQ Outgoing Messages",
+            "Total Bytes All Queues", "Total Messages All Queues",
+            "Sessions", "IP Sessions")) {
+            $result[$metric] = -1
+        }
         
         $serviceError = "MSMQ Service Error: " + $_.Exception.Message
         if ($result.ContainsKey("msg")) {
@@ -64,65 +65,115 @@ Function Get-MSMQServiceCounters {
     }
 }
 
+Function Get-MSMQOutgoingQueues {
+    try {
+        $outgoing = @(Get-MsmqOutgoingQueue)
+        $outgoing_count = @($outgoing).Count
+
+        if ($outgoing_count -eq 0) {
+            $result.add("Total Outgoing Queues", 0)
+            $result.add("Total Outgoing Messages", 0)
+            $result.add("Total Outgoing Bytes", 0)
+            $result.add("Total Unacknowledged Messages", 0)
+            $result.add("Total Unprocessed Messages", 0)
+        } else {
+            $totalMessages = ($outgoing | Measure-Object -Property MessageCount -Sum).Sum
+            $totalBytes = ($outgoing | Measure-Object -Property BytesInQueue -Sum).Sum
+            $totalUnacknowledged = ($outgoing | Measure-Object -Property UnacknowledgedMessageCount -Sum).Sum
+            $totalUnprocessed = ($outgoing | Measure-Object -Property UnprocessedMessageCount -Sum).Sum
+
+            $result.add("Total Outgoing Queues", $outgoing_count)
+            $result.add("Total Outgoing Messages", $totalMessages)
+            $result.add("Total Outgoing Bytes", $totalBytes)
+            $result.add("Total Unacknowledged Messages", $totalUnacknowledged)
+            $result.add("Total Unprocessed Messages", $totalUnprocessed)
+        }
+    }
+    catch {
+        $result.add("Total Outgoing Queues", -1)
+        $result.add("Total Outgoing Messages", -1)
+        $result.add("Total Outgoing Bytes", -1)
+        $result.add("Total Unacknowledged Messages", -1)
+        $result.add("Total Unprocessed Messages", -1)
+
+        $outgoingError = "MSMQ Outgoing Queue Error: " + $_.Exception.Message
+        if ($result.ContainsKey("msg")) {
+            $result["msg"] = $result["msg"] + "; " + $outgoingError
+        } else {
+            $result.add("msg", $outgoingError)
+        }
+    }
+}
+
 Function Get-Data($name) {
     try {
         $msmq = @(Get-MsmqQueue -QueueType Private -Name ("*" + $name + "*") | 
                 Select @{Name="name";Expression={($_.QueueName -split "\\")[-1]}}, 
-                       @{Name="Bytes_In_Queue"; Expression={$_.BytesInQueue}},  
-                       @{Name="Bytes_In_Journal"; Expression={$_.BytesInJournal}},  
-                       @{Name="Message_Count"; Expression={if ($_.MessageCount -ne $null) { $_.MessageCount } else { 0 }}},  
-                       @{Name="Message_Journal_Size_MB"; Expression={ [math]::Round($_.MaximumJournalSize / 1MB, 2)}},  
-                       @{Name="Message_Queue_Size_MB"; Expression={ [math]::Round($_.MaximumQueueSize / 1MB, 2)}},  
-                       @{Name="Is_Transactional"; Expression={if ($_.Transactional) { 1 } else { 0 }}})
+                       @{Name="Bytes In Queue"; Expression={$_.BytesInQueue}},  
+                       @{Name="Bytes In Journal"; Expression={$_.BytesInJournal}},  
+                       @{Name="Message Count"; Expression={if ($_.MessageCount -ne $null) { $_.MessageCount } else { 0 }}},  
+                       @{Name="Journal Message Count"; Expression={if ($_.JournalMessageCount -ne $null) { $_.JournalMessageCount } else { 0 }}},  
+                       @{Name="Message Journal Size"; Expression={ "$([math]::Round($_.MaximumJournalSize / 1MB, 2)) MB"}},  
+                       @{Name="Message Queue Size"; Expression={ "$([math]::Round($_.MaximumQueueSize / 1MB, 2)) MB"}},  
+                       @{Name="Is Transactional"; Expression={if ($_.Transactional) { "Yes" } else { "No" }}})
 
-        $msmq = $msmq | Select-Object name, "Bytes_In_Queue", "Bytes_In_Journal", 
-                                     "Message_Count", "Message_Journal_Size_MB", 
-                                     "Message_Queue_Size_MB", "Is_Transactional"
+        $msmq = $msmq | Select-Object name, "Bytes In Queue", "Bytes In Journal", 
+                                     "Message Count", "Journal Message Count", 
+                                     "Message Journal Size", "Message Queue Size", 
+                                     "Is Transactional"
 
         $queues_count = @($msmq).Count
         
         Get-MSMQServiceCounters
 
+        Get-MSMQOutgoingQueues
+
         if ($queues_count -eq 0) {
             $defaultQueue = @{
                 "name" = "No Queue"
-                "Bytes_In_Queue" = -1
-                "Bytes_In_Journal" = -1
-                "Message_Count" = -1
-                "Message_Journal_Size_MB" = -1
-                "Message_Queue_Size_MB" = -1
-                "Is_Transactional" = -1
+                "Bytes In Queue" = -1
+                "Bytes In Journal" = -1
+                "Message Count" = -1
+                "Journal Message Count" = -1
+                "Message Journal Size" = "-"
+                "Message Queue Size" = "-"
+                "Is Transactional" = "-"
             }
             
-            $result.add("Message Count in average", 0)
-            $result.add("Bytes In Queue in average", 0)
-            $result.add("Total No of queues", 0)
+            $result.add("Message Count In Average", 0)
+            $result.add("Bytes In Queue In Average", 0)
+            $result.add("Total No Of Queues", 0)
             $result.add("Queue", @($defaultQueue))
-            $result.add("msg", "No queues found")
+            if ($result.ContainsKey("msg")) {
+                $result["msg"] = $result["msg"] + "; No queues found"
+            } else {
+                $result.add("msg", "No queues found")
+            }
         } else {
-            $msg_avg = ($msmq | Measure-Object -Property "Message_Count" -Average).Average
-            $bytes_in_queue_avg = ($msmq | Measure-Object -Property "Bytes_In_Queue" -Average).Average
+            $msg_avg = ($msmq | Measure-Object -Property "Message Count" -Average).Average
+            $bytes_in_queue_avg = ($msmq | Measure-Object -Property "Bytes In Queue" -Average).Average
 
-            $result.add("Message Count in average", $msg_avg)
-            $result.add("Bytes In Queue in average", $bytes_in_queue_avg)
-            $result.add("Total No of queues", $queues_count)
+            $result.add("Message Count In Average", $msg_avg)
+            $result.add("Bytes In Queue In Average", $bytes_in_queue_avg)
+            $result.add("Total No Of Queues", $queues_count)
             $result.add("Queue", @($msmq))
         }
     }
     catch {
         $defaultQueue = @{
             "name" = "-"
-            "Bytes_In_Queue" = -1
-            "Bytes_In_Journal" = -1
-            "Message_Count" = -1
-            "Message_Journal_Size_MB" = -1
-            "Message_Queue_Size_MB" = -1
-            "Is_Transactional" = -1
+            "Bytes In Queue" = -1
+            "Bytes In Journal" = -1
+            "Message Count" = -1
+            "Journal Message Count" = -1
+            "Message Journal Size" = "-"
+            "Message Queue Size" = "-"
+            "Is Transactional" = "-"
         }
         
-        $result.add("Message Count in average", -1)
-        $result.add("Bytes In Queue in average", -1)
-        $result.add("Total No of queues", -1)
+        $result.add("Message Count In Average", -1)
+        $result.add("Bytes In Queue In Average", -1)
+        $result.add("Total No Of Queues", -1)
         $result.add("Queue", @($defaultQueue))
         
         $queueError = "MSMQ Queue Error: " + $_.Exception.Message
@@ -139,15 +190,17 @@ $result.Add("heartbeat_required", $heartbeat)
 $result.Add("plugin_version", $version)
 
 $units = @{}
-$units.Add("Bytes In Queue in average", "Bytes")
-$units.Add("Message Count in average", "messages")
+$units.Add("Bytes In Queue In Average", "Bytes")
+$units.Add("Message Count In Average", "Messages")
 $units.Add("Queue", @{
-    "Bytes_In_Queue" = "Bytes"
-    "Bytes_In_Journal" = "Bytes"
-    "Message_Journal_Size_MB" = "MB"
-    "Message_Queue_Size_MB" = "MB"
+    "Bytes In Queue" = "Bytes"
+    "Bytes In Journal" = "Bytes"
 })
-$units.Add("Total_Bytes_All_Queues", "Bytes")
+$units.Add("Total Bytes All Queues", "Bytes")
+$units.Add("Total Outgoing Bytes", "Bytes")
+$units.Add("Total Outgoing Messages", "Messages")
+$units.Add("Total Unacknowledged Messages", "Messages")
+$units.Add("Total Unprocessed Messages", "Messages")
 
 $result.Add('units', $units)
 
@@ -162,14 +215,23 @@ $tabs = @{
     }
     "Service" = @{
         "order" = 2
-        "tablist" = @("Incoming_Messages_PerSec",
-            "Outgoing_Messages_PerSec",
-            "MSMQ_Incoming_Messages",
-            "MSMQ_Outgoing_Messages",
-            "Total_Bytes_All_Queues",
-            "Total_Messages_All_Queues",
+        "tablist" = @("Incoming Messages Per Sec",
+            "Outgoing Messages Per Sec",
+            "MSMQ Incoming Messages",
+            "MSMQ Outgoing Messages",
+            "Total Bytes All Queues",
+            "Total Messages All Queues",
             "Sessions",
-            "IP_Sessions"
+            "IP Sessions"
+        )
+    }
+    "Outgoing" = @{
+        "order" = 3
+        "tablist" = @("Total Outgoing Queues",
+            "Total Outgoing Messages",
+            "Total Outgoing Bytes",
+            "Total Unacknowledged Messages",
+            "Total Unprocessed Messages"
         )
     }
 }

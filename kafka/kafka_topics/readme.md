@@ -2,6 +2,30 @@
                                                                                               
 ## Prerequisites
 
+- To enable Kafka Broker JMX port
+
+    Find the following code block in the kafka-server-start.sh script.
+
+
+        if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
+            export KAFKA_HEAP_OPTS="-Xmx1G -Xms1G"
+        fi
+
+
+    Paste the following lines below the above code block.
+
+        
+        export KAFKA_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9999"
+        export JMX_PORT=9999
+        
+- Restart the kafka broker after the above changes.
+
+
+- Install the jmxquery module for Python3.
+  ```
+  pip install jmxquery
+  ```
+
 - Download and install the latest version of the [Site24x7 Linux agent/Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
 
 ## Quick installation
@@ -35,7 +59,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/kafka/
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 ```bash
-python kafka_topics.py --kafka_host "localhost" --kafka_jmx_port "9999" --kafka_server_port "9092" --kafka_topic_name "quickstart-events" --kafka_home "/home/users/kafka"
+python kafka_topics.py --kafka_host "localhost" --kafka_jmx_port "9999" --kafka_topic_name "quickstart-events"
 ```
 
 - Provide your Kafka topics configurations in kafka_topics.cfg file.
@@ -44,9 +68,7 @@ python kafka_topics.py --kafka_host "localhost" --kafka_jmx_port "9999" --kafka_
 [kafka_instance]
 kafka_host="localhost"
 kafka_jmx_port=9999
-kafka_server_port=9092
 kafka_topic_name="quickstart-events"
-kafka_home="/home/users/kafka"
 ```
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
@@ -69,3 +91,33 @@ mv kafka_topics /opt/site24x7/monagent/plugins/
 C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
 ```
 The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+## Supported Metrics
+
+The following metrics are captured by the Kafka Topics monitoring plugin:
+
+### Topics
+
+| Metric Name                                      | Description                                                                                           |
+|--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| Partition Count                                  | Total number of partitions for the topic.                                                             |
+| Bytes In Per Sec                                 | Rate of bytes written to the topic per second.                                                        |
+| Bytes Out Per Sec                                | Rate of bytes read from the topic per second.                                                         |
+| Messages In Per Sec                              | Rate of messages written to the topic per second.                                                     |
+
+### Partitions
+
+The plugin automatically monitors each partition of the topic and collects the following metrics:
+
+| Metric Name                                      | Description                                                                                           |
+|--------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| InSyncReplicasCount                              | Number of in-sync replicas for the partition.                                                         |
+| LastStableOffsetLag                              | Lag between the last stable offset and the high watermark.                                            |
+| ReplicasCount                                    | Total number of replicas configured for the partition.                                                |
+| UnderReplicated                                  | Indicates if the partition is under-replicated (1 = yes, 0 = no).                                    |
+| UnderMinIsr                                      | Indicates if the partition is below minimum in-sync replicas (1 = yes, 0 = no).                      |
+
+
+### Sample Image
+
+<img width="1645" height="859" alt="image" src="https://github.com/user-attachments/assets/d8b5d8a2-2a60-4a7c-8ada-22e7a71afe84" />

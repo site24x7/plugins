@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import json
-import traceback
 import subprocess
 
 data={}
@@ -33,17 +32,24 @@ data["tabs"]={
       "Highest Expected",
       "Total Votes"
     ]
+  },
+  "Resources": {
+    "order": 3,
+    "tablist": [
+      "Resources"
+    ]
   }
 }
 
 
 online_nodes=[]
 offline_nodes=[]
+resources_list=[]
 
 
 def parse_output(line):
     try:
-        data_line=line.strip().split(":")
+        data_line=line.strip().split(":", 1)
         data[data_line[0].title()]=data_line[1].strip()
     except Exception as e:
         data["status"]=0
@@ -97,7 +103,7 @@ def run_command(command):
 
 
 def pcs_status():
-    global online_nodes,offline_nodes
+    global online_nodes,offline_nodes,resources_list
     try:
         output=run_command("pcs status").decode()
         output=output.split("\n")
@@ -124,12 +130,23 @@ def pcs_status():
                 if "Stack:" in line:
                     data_line=line.replace("*","")
                     parse_output(data_line)
-                if "nodes configured" in line:
+                if "Current DC:" in line:
+                    data_line=line.strip().replace("*","").replace("Current DC:","").strip()
+                    data["Current Dc"]=data_line
+                if "Last updated:" in line:
+                    data_line=line.strip().replace("*","").replace("Last updated:","").strip()
+                    data["Last Updated"]=data_line
+                if "Last change:" in line:
+                    data_line=line.strip().replace("*","").replace("Last change:","").strip()
+                    data["Last Change"]=data_line
+                if "node configured" in line or "nodes configured" in line:
                     data_line=line.strip().replace("*","")
-                    data["Nodes Configured"]=data_line.replace("nodes configured","")
-                if "resource instances configured" in line:
+                    data_line = data_line.replace("nodes configured","").replace("node configured","")
+                    data["Nodes Configured"]=data_line.strip()
+                if "resource instance configured" in line or "resource instances configured" in line:
                     data_line=line.strip().replace("*","")
-                    data["Resource Instances Configured"]=data_line.replace("resource instances configured","")
+                    data_line = data_line.replace("resource instances configured","").replace("resource instance configured","")
+                    data["Resource Instances Configured"]=data_line.strip()
 
             if "Node List:" in line:
                 node_list=True
@@ -148,10 +165,15 @@ def pcs_status():
                 resources=True
                 continue
             if resources:
-                if "  *" in line:
-                    data_line=line.strip().replace("*","").replace("\t"," ")
-                    data_line=data_line.split("):")
-                    data[(data_line[0]+")").title()]=data_line[-1].strip()
+                if "  *" in line and "):" in line:
+                    data_line=line.strip().replace("*","").strip().replace("\t"," ")
+                    resource_name = data_line.split("(")[0].strip()
+                    status = data_line.split("):")[1].strip()
+                    resource_dict = {
+                        "name": resource_name,
+                        "state": status
+                    }
+                    resources_list.append(resource_dict)
  
 
             if "Daemon Status:" in line:
@@ -205,6 +227,14 @@ def metric_collector():
         data["Online nodes"]=online
         data["Offline nodes"]=offline
         data["Nodes"]=nodes1+nodes2
+        
+        if not data["Nodes"]:
+            data["Nodes"] = [{"name": "-", "status": 0}]
+        
+        data["Resources"]=resources_list
+        
+        if not data["Resources"]:
+            data["Resources"] = [{"name": "-", "state": "-"}]
       
         status=quorum()
         if not status:
@@ -214,6 +244,9 @@ def metric_collector():
         data["status"]=0
         data["msg"]=repr(e)
 
+def run(param):
+    metric_collector()
+    return data
 
 if __name__ == '__main__':
     metric_collector()

@@ -198,9 +198,11 @@ class Sap_hana(object):
             result = cursor.fetchall()
             self.resultjson["Total Caches"] = len(result)
 
-            cursor.execute("SELECT (sum(DURATION)/1000) FROM SYS.M_DEV_RECOVERY_")
+            cursor.execute(
+                "SELECT MIN(SECONDS_BETWEEN(START_TIME, CURRENT_TIMESTAMP)) FROM M_SERVICE_STATISTICS"
+            )
             result = cursor.fetchall()
-            if result:
+            if result and result[0][0] is not None:
                 self.resultjson["Start Time of Services"] = Decimal(result[0][0])
             else:
                 self.resultjson["Start Time of Services"] = 0
