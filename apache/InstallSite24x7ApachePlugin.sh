@@ -295,11 +295,11 @@ add_conf() {
     #cat $cfg_file
     output=$(sed -i "/^url*/c\url = \"$url\""  "$cfg_file")
     error_handler $? $output
-    username=$(echo "$username" | sed 's/\\/\\\\/g')
-    output=$(sed -i "/^username*/c\username = \"$username\"" $cfg_file)
+    escaped_username=$(printf '%s' "$username" | sed 's/\\/\\\\/g')
+    output=$(sed -i "/^username*/c\username = \"$escaped_username\"" "$cfg_file")
     error_handler $? $output
-    password=$(echo "$password" | sed 's/\\/\\\\/g')
-    output=$(sed -i "/^password*/c\password = \"$password\""  $cfg_file)
+    escaped_password=$(printf '%s' "$password" | sed 's/\\/\\\\/g')
+    output=$(sed -i "/^password*/c\password = \"$escaped_password\"" "$cfg_file")
     error_handler $? $output
     #echo "after"
     #cat $cfg_file

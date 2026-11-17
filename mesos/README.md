@@ -171,8 +171,8 @@ The agent will automatically execute the plugin within five minutes and user can
 | Invalid Status Updates            | Number of invalid task status updates received by the Mesos master from Mesos agents.                    |
 | Registrar Queued Operations       | Number of operations queued in the Mesos master registrar waiting to be persisted.                       |
 | Registry Size                     | Size of the Mesos master registrar registry in bytes, which stores cluster state information.            |
-| State Fetch Time                  | Time taken to fetch the Mesos master registrar state in milliseconds.                                    |
-| State Store Time                  | Time taken to store the Mesos master registrar state in milliseconds.                                    |
+| State Fetch Time                  | Time taken to fetch the Mesos master registrar state in minutes.                                    |
+| State Store Time                  | Time taken to store the Mesos master registrar state in minutes.                                    |
 
 ### Messages
 

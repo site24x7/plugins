@@ -80,7 +80,7 @@ METRICS = { 'Total Accesses':'total_accesses',
             
         }
 
-UNITS = {   'total_kbytes':'Bytes',
+UNITS = {   'total_kbytes':'KB',
             'uptime':'Seconds',
             'bytes_per_sec':'Bytes',
             'bytes_per_req':'Bytes',

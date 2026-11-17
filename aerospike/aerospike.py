@@ -173,6 +173,20 @@ def resolve_ip_address(host):
         return host
 
 
+def import_real_aerospike_client():
+    import os
+    import sys
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    original_sys_path = sys.path
+    sys.path = [p for p in sys.path if os.path.abspath(p if p else os.getcwd()) != script_dir]
+    try:
+        import aerospike
+        return aerospike
+    finally:
+        sys.path = original_sys_path
+
+
 class Aerospike:
 
     def __init__(self, args):
@@ -196,7 +210,7 @@ class Aerospike:
             self.password = None
 
     def connect(self):
-        import aerospike
+        aerospike = import_real_aerospike_client()
 
         if is_true(self.tls_enable):
             tls_config = {'enable': True}
@@ -362,7 +376,7 @@ class Aerospike:
 
     def metriccollector(self):
         try:
-            import aerospike
+            import_real_aerospike_client()
         except Exception as e:
             self.maindata['msg'] = str(e)
             self.maindata['status'] = 0

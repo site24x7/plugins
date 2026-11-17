@@ -99,6 +99,7 @@
      register: apache_file_check
 
    - name: "Site24x7 apache configuration."
+     no_log: true
      lineinfile: 
        path: "/opt/site24x7/monagent/temp/plugins/apache/apache.cfg"
        regexp: "{{ item.regex }}"
@@ -134,7 +135,16 @@
      when: apache_python_file_check.stat.exists
 
    - name: "Checking the Site24x7 apache Plugin Output"
-     shell: "python3 /opt/site24x7/monagent/temp/plugins/apache/apache.py --url=\"{{apache_url}}\" --username=\"{{apache_username}}\" --password=\"{{apache_password}}\" --apache_access_logs_enabled=\"{{apache_access_logs_enabled}}\" --apache_access_logs_file_path=\"{{apache_access_logs_file_path}}\""
+     command:
+       argv:
+         - python3
+         - /opt/site24x7/monagent/temp/plugins/apache/apache.py
+         - "--url={{ apache_url }}"
+         - "--username={{ apache_username }}"
+         - "--password={{ apache_password }}"
+         - "--apache_access_logs_enabled={{ apache_access_logs_enabled }}"
+         - "--apache_access_logs_file_path={{ apache_access_logs_file_path }}"
+     no_log: true
      register: apache_python_output
      when: apache_python_file_check.stat.exists
 

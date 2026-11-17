@@ -269,6 +269,7 @@ class Redis(object):
             data['msg']=str(e)
             return data 
         stats = None
+        max_clients = None
         try:
             redis_connection = redis.StrictRedis(
                     host=self.host,
@@ -278,8 +279,10 @@ class Redis(object):
                     decode_responses=True
             )
             stats = redis_connection.info()
-            max_clients=redis_connection.config_get('maxclients')
-            
+            try:
+                max_clients = redis_connection.config_get('maxclients')
+            except Exception:
+                max_clients = None
 
         except Exception as e:
             data['status']=0
@@ -290,7 +293,8 @@ class Redis(object):
         total_expires=0
         total_persist=0
         db=[]
-        data["Max Clients"]=str(max_clients["maxclients"])+" Connections"
+        if max_clients:
+            data["Max Clients"]=str(max_clients["maxclients"])+" Connections"
         for name, value in stats.items():
             try:
 
