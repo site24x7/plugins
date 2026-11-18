@@ -3,6 +3,11 @@
 ## Prerequisites
 
 - Download and install the latest version of the [Site24x7 Linux agent/Site24x7 Windows agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
+- Install the required Python module psutil by running the following command:
+  
+```bash
+pip install psutil
+```
 
 ### Plugin Installation  
 
@@ -19,13 +24,7 @@ cd port/
 wget https://raw.githubusercontent.com/site24x7/plugins/master/port/port.py && sed -i "1s|^.*|#! $(which python3)|" port.py
 wget https://raw.githubusercontent.com/site24x7/plugins/master/port/port.cfg
 ```
-### Install the psutil dependency
 
-Install `psutil` using the same Python interpreter that will run the plugin. This works on Windows and on all Linux CPU architectures (x86-64, ARM).
-
-```bash
-python3 -m pip install psutil
-```
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 ```bash

@@ -1,13 +1,13 @@
-﻿$msg= ""
+$msg= ""
 try
 {
     $domainControlerName = (Get-ADDomainController).HostName
     $replicationPartners = Get-ADReplicationPartnerMetadata -Target $domainControlerName -PartnerType Both | select Server,@{n="Partner";e={(Resolve-DnsName $_.PartnerAddress).NameHost}},Partition,PartnerType,LastReplicationAttempt,LastReplicationResult,LastReplicationSuccess # | Where-Object { $_.Partner -eq 'win-76qkdkpe00a.mylocal.com'}
     $replicationfailure = Get-ADReplicationFailure -Target $domainControlerName | select Server,@{n="Partner";e={(Resolve-DnsName $_.PartnerAddress).NameHost}},FailureCount,FailureType,FirstFailureTime,LastError # | Where-Object { $_.Partner -eq 'win-76qkdkpe00a.mylocal.com'}
-    $InboundData = $replicationPartners | Where-Object {$_.PartnerType -eq 'Inbound'}
-    $OutboundData = $replicationPartners | Where-Object {$_.PartnerType -eq 'Outbound'}
-    $InboundPartners = $InboundData.Partner -join ','
-    $OutboundPartners = $OutboundData.Partner -join ','
+    $InboundData = @($replicationPartners | Where-Object {$_.PartnerType -eq 'Inbound'})
+    $OutboundData = @($replicationPartners | Where-Object {$_.PartnerType -eq 'Outbound'})
+    $InboundPartners = if($InboundData.Partner) { $InboundData.Partner -join ',' } else { "-" }
+    $OutboundPartners = if($OutboundData.Partner) { $OutboundData.Partner -join ',' } else { "-" }
 }
 catch
 {
@@ -19,7 +19,7 @@ if($InboundData.Count -gt 0)
 }
 else
 {
-    $InboundLastAttempt = ""
+    $InboundLastAttempt = "-"
 }
 if($InboundData.Count -gt 0)
 {
@@ -27,7 +27,7 @@ if($InboundData.Count -gt 0)
 }
 else
 {
-    $InboundLastAttemptPartner = ""
+    $InboundLastAttemptPartner = "-"
 }
 if($InboundData.Count -gt 0)
 {
@@ -35,7 +35,7 @@ if($InboundData.Count -gt 0)
 }
 else
 {
-    $InboundLastSuccess = ""
+    $InboundLastSuccess = "-"
 }
 if($InboundData.Count -gt 0)
 {
@@ -43,7 +43,7 @@ if($InboundData.Count -gt 0)
 }
 else
 {
-    $InboundLastSuccessPartner = ""
+    $InboundLastSuccessPartner = "-"
 }
 if($InboundData.Count -gt 0)
 {
@@ -59,7 +59,7 @@ if($OutboundData.Count -gt 0)
 }
 else
 {
-    $OutboundLastAttempt = ""
+    $OutboundLastAttempt = "-"
 }
 if($OutboundData.Count -gt 0)
 {
@@ -67,7 +67,7 @@ if($OutboundData.Count -gt 0)
 }
 else
 {
-    $OutboundLastAttemptPartner = ""
+    $OutboundLastAttemptPartner = "-"
 }
 if($OutboundData.Count -gt 0)
 {
@@ -75,7 +75,7 @@ if($OutboundData.Count -gt 0)
 }
 else
 {
-    $OutboundLastSuccess = ""
+    $OutboundLastSuccess = "-"
 }
 if($OutboundData.Count -gt 0)
 {
@@ -83,7 +83,7 @@ if($OutboundData.Count -gt 0)
 }
 else
 {
-    $OutboundLastSuccessPartner = ""
+    $OutboundLastSuccessPartner = "-"
 }
 if($OutboundData.Count -gt 0)
 {
@@ -94,11 +94,11 @@ else
     $OutboundLastResult = -1
 }
 $FailureCount = 0
-$FailureType = ""
-$FirstFailureTime = 0
-$LastError = 0
-$ErrorPartner = ""
-$ErrorServer = ""
+$FailureType = "-"
+$FirstFailureTime = "-"
+$LastError = -1
+$ErrorPartner = "-"
+$ErrorServer = "-"
 $Status = 1
 if($replicationfailure -ne $null)
 {
@@ -128,23 +128,23 @@ if($replicationfailure -ne $null)
     }
     if($FailureType -eq $null)
     {
-        $FailureType = ""
+        $FailureType = "-"
     }
     if($FirstFailureTime -eq $null)
     {
-        $FirstFailureTime = ""
+        $FirstFailureTime = "-"
     }
     if($LastError -eq $null)
     {
-        $LastError = ""
+        $LastError = -1
     }
     if($ErrorPartner -eq $null)
     {
-        $ErrorPartner = ""
+        $ErrorPartner = "-"
     }
     if($ErrorServer -eq $null)
     {
-        $ErrorServer = ""
+        $ErrorServer = "-"
     }
     $replicationfailure | ForEach-Object {
     
@@ -156,6 +156,56 @@ if($replicationfailure -ne $null)
     }
     }
 } 
+
+### Destination DSA perspective = Inbound (this DC receiving from partners)
+### Source DSA perspective      = Outbound (this DC sending to partners)
+### These are approximations, not exact repadmin numbers: AD cmdlets don't
+### expose repadmin's internal "total attempts" counter, only current link state.
+$DestLargestDeltaSeconds = -1
+$destFailing = 0
+$destTotal = 0
+$DestSuccessRatePct = -1
+$SourceLargestDeltaSeconds = -1
+$sourceFailing = 0
+$sourceTotal = 0
+$SourceSuccessRatePct = -1
+
+if($InboundData -ne $null -and $InboundData.Count -gt 0)
+{
+    $destDeltas = $InboundData | ForEach-Object {
+        if($_.LastReplicationSuccess) {
+            (New-TimeSpan -Start $_.LastReplicationSuccess -End (Get-Date)).TotalSeconds
+        }
+    }
+    if($destDeltas.Count -gt 0)
+    {
+        $DestLargestDeltaSeconds = [math]::Round(($destDeltas | Measure-Object -Maximum).Maximum)
+    }
+
+    $destTotal = $InboundData.Count
+    $destFailing = ($InboundData | Where-Object { $_.LastReplicationResult -ne 0 }).Count
+    $DestFailsTotal = "$destFailing/$destTotal"
+    $DestSuccessRatePct = [math]::Round((($destTotal - $destFailing) / $destTotal) * 100, 2)
+}
+
+if($OutboundData -ne $null -and $OutboundData.Count -gt 0)
+{
+    $sourceDeltas = $OutboundData | ForEach-Object {
+        if($_.LastReplicationSuccess) {
+            (New-TimeSpan -Start $_.LastReplicationSuccess -End (Get-Date)).TotalSeconds
+        }
+    }
+    if($sourceDeltas.Count -gt 0)
+    {
+        $SourceLargestDeltaSeconds = [math]::Round(($sourceDeltas | Measure-Object -Maximum).Maximum)
+    }
+
+    $sourceTotal = $OutboundData.Count
+    $sourceFailing = ($OutboundData | Where-Object { $_.LastReplicationResult -ne 0 }).Count
+    $SourceFailsTotal = "$sourceFailing/$sourceTotal"
+    $SourceSuccessRatePct = [math]::Round((($sourceTotal - $sourceFailing) / $sourceTotal) * 100, 2)
+}
+### --- End added block ---
 
 $data = @{}
 if($msg.Length -eq 0)
@@ -179,6 +229,15 @@ if($msg.Length -eq 0)
     $data.Add("FirstFailureTime",$FirstFailureTime)
     $data.Add("FailureType",$FailureType)
     $data.Add("Status",$Status)
+    $data.Add("DestLargestDeltaSeconds",$DestLargestDeltaSeconds)
+    $data.Add("DestFails",$destFailing)
+    $data.Add("DestTotal",$destTotal)
+    $data.Add("DestSuccessRatePct",$DestSuccessRatePct)
+    $data.Add("SourceLargestDeltaSeconds",$SourceLargestDeltaSeconds)
+    $data.Add("SourceFails",$sourceFailing)
+    $data.Add("SourceTotal",$sourceTotal)
+    $data.Add("SourceSuccessRatePct",$SourceSuccessRatePct)
+    $data.add("Statustest",1)
 }
 else
 {
@@ -189,7 +248,7 @@ else
 
 
 ### Mandatory - If any attributes added or removed in the plugin, increment the plugin version here to update the plugins template.
-$version = 1  
+$version = 1
 
 ### Mandatory - Setting this to true will alert you when there is a communication problem while posting plugin data to server
 $heartbeat = "true" 
@@ -201,6 +260,10 @@ $displayname = $domainControlerName + " - AD Replication Status"
 $data.Add("plugin_version", $version)
 $data.Add("heartbeat_required", $heartbeat)
 $data.Add("displayname", $displayname) 
+$data["units"] = @{
+    "SourceLargestDeltaSeconds" = "s"
+    "DestLargestDeltaSeconds" = "s"
+}
 
 ### Returns the monitoring data to Site24x7 servers
 return $data | ConvertTo-Json

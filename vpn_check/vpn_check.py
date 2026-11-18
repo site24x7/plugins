@@ -122,12 +122,25 @@ def get_isp_info(vpn_data):
         vpn_data['ISP'] = "unknown"
     return vpn_data
 
-def run(param):
-    VPN_HOST = str(param.get("host", "")).strip('"')
-    VPN_PORT = str(param.get("port", "")).strip('"')
-    VPN_INTERFACE = str(param.get("vpn_interface", "")).strip('"') if param.get("vpn_interface") else None
-    URL_BEHIND_VPN = str(param.get("url", "")).strip('"')
+def clean_quotes(value):
+    if not value:
+        return value
+    
+    value_str = str(value)
+    
+    if value_str.startswith('"') and value_str.endswith('"'):
+        return value_str[1:-1]
+    
+    elif value_str.startswith("'") and value_str.endswith("'"):
+        return value_str[1:-1]
+    
+    return value_str
 
+def run(param):
+    VPN_HOST = clean_quotes(str(param.get("host", "")))
+    VPN_PORT = clean_quotes(str(param.get("port", "")))
+    VPN_INTERFACE = clean_quotes(str(param.get("vpn_interface", ""))) if param.get("vpn_interface") else None
+    URL_BEHIND_VPN = clean_quotes(str(param.get("url", "")))
 
     vpn_data, vpn_status = check_vpn(VPN_HOST, int(VPN_PORT))
     if VPN_INTERFACE:

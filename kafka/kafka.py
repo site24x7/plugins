@@ -36,6 +36,105 @@ class kafka:
         except Exception as e:
             return False
         
+    def get_topics_list(self, jmxConnection):
+        try:
+            import jmxquery as jmx
+            
+            query = jmx.JMXQuery('kafka.cluster:*')
+            result = jmxConnection.query([query])
+            
+            topics = set()
+            for r in result:
+                mbean_name = r.to_query_string()
+                if 'topic=' in mbean_name:
+                    topic = mbean_name.split('topic=')[1].split(',')[0]
+                    if not topic.startswith('__'): # Exclude internal topics
+                        topics.add(topic)
+            
+            return sorted(list(topics))
+            
+        except Exception as e:
+            if 'msg' in self.maindata:
+                self.maindata['msg'] += f"; Error getting topics list: {str(e)}"
+            else:
+                self.maindata['msg'] = f"Error getting topics list: {str(e)}"
+            return []
+
+    def get_topics_metrics(self, jmxConnection):
+        try:
+            import jmxquery as jmx
+            
+            topics_list = self.get_topics_list(jmxConnection)
+            
+            if not topics_list:
+                return [{
+                    "name": "-",
+                    "Partition_Count": -1,
+                    "Bytes_In_Per_Sec": -1,
+                    "Bytes_Out_Per_Sec": -1,
+                    "Messages_In_Per_Sec": -1
+                }]
+            
+            topics_data = []
+            
+            for topic_name in topics_list:
+                topic_metrics = {
+                    "name": topic_name,
+                    "Partition_Count": 0,
+                    "Bytes_In_Per_Sec": 0,
+                    "Bytes_Out_Per_Sec": 0,
+                    "Messages_In_Per_Sec": 0
+                }
+                
+                try:
+                    jmxQuery = [jmx.JMXQuery(f"kafka.cluster:type=*,name=ReplicasCount,topic={topic_name},partition=*")]
+                    partition_result = jmxConnection.query(jmxQuery)
+                    partition_count = len(partition_result)
+                    topic_metrics["Partition_Count"] = partition_count if partition_count > 0 else 0
+                    
+                    jmxQuery = [jmx.JMXQuery(f"kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec,topic={topic_name}")]
+                    result = jmxConnection.query(jmxQuery)
+                    if result and result[0].value is not None:
+                        topic_metrics["Bytes_In_Per_Sec"] = result[0].value
+                    
+                    jmxQuery = [jmx.JMXQuery(f"kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec,topic={topic_name}")]
+                    result = jmxConnection.query(jmxQuery)
+                    if result and result[0].value is not None:
+                        topic_metrics["Bytes_Out_Per_Sec"] = result[0].value
+                    
+                    jmxQuery = [jmx.JMXQuery(f"kafka.server:type=BrokerTopicMetrics,name=MessagesInPerSec,topic={topic_name}")]
+                    result = jmxConnection.query(jmxQuery)
+                    if result and result[0].value is not None:
+                        topic_metrics["Messages_In_Per_Sec"] = result[0].value
+                    
+                except Exception as topic_error:
+                    if 'msg' in self.maindata:
+                        self.maindata['msg'] += f"; Error getting metrics for topic {topic_name}: {str(topic_error)}"
+                    else:
+                        self.maindata['msg'] = f"Error getting metrics for topic {topic_name}: {str(topic_error)}"
+                
+                topics_data.append(topic_metrics)
+            
+            return topics_data if topics_data else [{
+                "name": "-",
+                "Partition_Count": -1,
+                "Bytes_In_Per_Sec": -1,
+                "Bytes_Out_Per_Sec": -1,
+                "Messages_In_Per_Sec": -1
+            }]
+            
+        except Exception as e:
+            if 'msg' in self.maindata:
+                self.maindata['msg'] += f"; Error in get_topics_metrics: {str(e)}"
+            else:
+                self.maindata['msg'] = f"Error in get_topics_metrics: {str(e)}"
+            return [{
+                "name": "-",
+                "Partition_Count": -1,
+                "Bytes_In_Per_Sec": -1,
+                "Bytes_Out_Per_Sec": -1,
+                "Messages_In_Per_Sec": -1
+            }]
 
 
     def metriccollector(self):
@@ -128,14 +227,23 @@ class kafka:
 
             self.maindata['applog'] = applog
 
+            topics_data = self.get_topics_metrics(jmxConnection)
+            self.maindata['Topics'] = topics_data
+
         except Exception as e:
             self.maindata['msg']=str(e)
             self.maindata['status']=0
             return self.maindata
         
         self.maindata['tabs'] = {
-    'Traffic Metrics': {
+    'Topics':{
         'order': 1,
+        'tablist': [
+            'Topics'
+        ]
+    },
+    'Traffic': {
+        'order': 2,
         'tablist': [
             'Bytes In Per Sec',
             'Bytes Out Per Sec',
@@ -145,8 +253,8 @@ class kafka:
             'Failed Produce Requests Per Sec'
         ]
     },
-    'Replication Metrics': {
-        'order': 2,
+    'Replication': {
+        'order': 3,
         'tablist': [
             'Replication Bytes In Per Sec',
             'Replication Bytes Out Per Sec',
@@ -158,8 +266,8 @@ class kafka:
             'Replicas To Delete Count'
         ]
     },
-    'ISR Metrics': {
-        'order': 3,
+    'ISR': {
+        'order': 4,
         'tablist': [
             'At Min Isr Partition Count',
             'Isr Expands Per Sec',
@@ -169,8 +277,8 @@ class kafka:
             'Producer Id Count'
         ]
     },
-    'Controller Metrics': {
-        'order': 4,
+    'Controller and Purgatory': {
+        'order': 5,
         'tablist': [
             'Active Controller Count',
             'Offline Partitions Count',
@@ -178,18 +286,19 @@ class kafka:
             'Leader Election Rate',
             'Total Topics Count',
             'Topics Ineligible To Delete Count',
-            'Topics To Delete Count'
-        ]
-    },
-    'Purgatory Metrics': {
-        'order': 5,
-        'tablist': [
+            'Topics To Delete Count',
             'Purgatory Size Produce',
             'Purgatory Size Fetch',
             'ZooKeeper Disconnects Per Sec'
         ]
     }
 }
+        
+        self.maindata['s247config']={
+            "childdiscovery":[
+                'Topics'
+            ]
+        }
         
         return self.maindata
 

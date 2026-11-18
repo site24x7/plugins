@@ -15,8 +15,8 @@ pip install clickhouse-driver
 
 Log in to ClickHouse as an admin or a user with sufficient privileges:
 
-   ```bash
-   clickhouse-client -u default --password
+```bash
+clickhouse-client -u default --password
 ```
 Run the following SQL query to create a new user and grant the required privileges:
 
@@ -24,8 +24,8 @@ Run the following SQL query to create a new user and grant the required privileg
 -- Create a new user for monitoring
 CREATE USER <username> IDENTIFIED BY 'your_password';
 
--- Grant SELECT privileges on system tables (read-only access)
-GRANT SELECT ON system.* TO <username>;
+-- Grant SELECT privileges (read-only access for full monitoring)
+GRANT SELECT ON *.* TO <username>;
 ```
 
 ## Installation
@@ -51,7 +51,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/refs/heads/master/clickh
 Run the below command with appropriate arguments to check for valid JSON output:
 
 ```bash
-python3 clickhouse.py --host "localhost" --port "9000" --username "default" --password "" --database "default"
+python3 clickhouse.py --host "localhost" --port "9000" --user "default" --password ""
 ```
 ### Move Plugin to Agent Directory
 
@@ -77,7 +77,11 @@ The agent will automatically execute the plugin within five minutes and send per
 
 Name                                | Description
 ---                                 | ---
+BlockReadBytes                       | Total bytes read from OS-level block I/O. Tracks disk read throughput.
+BlockWriteBytes                      | Total bytes written via OS-level block I/O. Tracks disk write throughput.
 CompiledExpressionCacheCount         | Number of compiled expressions cached for query execution. Helps speed up repeated query computations.
+DiskAvailable_default                | Available disk space on the default disk in bytes. Monitors storage capacity.
+DiskUsed_default                     | Used disk space on the default disk in bytes. Tracks storage consumption.
 FailedQuery                          | Total number of queries that failed during execution. Indicates issues or errors in query processing.
 FailedSelectQuery                     | Total number of SELECT queries that failed. Helps identify problems specifically with SELECT statements.
 Inserted rows                         | Total number of rows inserted into tables. Shows the amount of new data being added.
@@ -86,16 +90,16 @@ MarkCacheBytes                         | Memory used for storing marks in MarkCa
 MarkCacheFiles                         | Number of files cached in MarkCache. Helps reduce disk I/O during queries.
 Max parts for partition                 | Maximum number of parts for a single partition in MergeTree tables. Indicates table fragmentation.
 Merges running                          | Number of merges currently running. Helps monitor background merge operations in MergeTree tables.
-MergesTimeMilliseconds                  | Total time spent on merges in milliseconds. Measures the performance cost of merges.
+MergeTotalMilliseconds                  | Total time spent on merges in milliseconds. Measures the performance cost of merges.
 NetworkReceiveElapsedMicroseconds       | Time spent receiving data from the network in microseconds. Monitors network latency for data reception.
 NetworkSendElapsedMicroseconds          | Time spent sending data over the network in microseconds. Monitors network latency for data sending.
-Queries running                          | Number of currently running queries. Shows current database workload.
 Queries/second                           | Number of queries executed per second. Measures query throughput.
 Query                                    | Current active query count. Helps monitor database activity at a glance.
 SelectQuery                              | Total number of SELECT queries executed. Measures read/query load on the server.
 Selected bytes/second                     | Number of bytes read per second during queries. Indicates data read throughput.
 Total MergeTree parts                     | Total parts present in all MergeTree tables. Reflects table storage fragmentation.
 UncompressedCacheBytes                    | Memory used by uncompressed cache. Helps speed up data access without decompressing repeatedly.
+jemalloc.background_thread.num_threads    | Number of jemalloc background threads.
 
 ## Database
 Name                                | Description
@@ -121,7 +125,6 @@ Memory (tracked)                         | Memory tracked internally by ClickHou
 jemalloc.allocated                       | Memory allocated by jemalloc allocator. Helps monitor memory usage by ClickHouse processes.
 jemalloc.retained                        | Memory retained by jemalloc but not currently used. Shows potential memory overhead.
 jemalloc.resident                        | Resident memory managed by jemalloc. Reflects physical memory actually in use.
-jemalloc.background_thread.num_threads   | Number of jemalloc background threads running. Indicates memory management activity.
 jemalloc.arenas.all.dirty_purged         | Total memory purged from dirty jemalloc arenas. Helps reclaim unused memory.
 Uptime                                   | Total uptime of ClickHouse server in seconds. Useful for monitoring server stability and availability.
 
@@ -139,6 +142,8 @@ Merge                                | Total number of merge operations executed
 RWLockAcquiredReadLocks               | Number of read locks acquired on RWLocks. Shows read concurrency activity.
 RWLockReadersWaitMilliseconds         | Time readers waited for acquiring RWLocks in milliseconds. Indicates read lock contention.
 SoftPageFaults                        | Number of soft page faults occurred. Shows memory paging activity without disk access.
+BlockReadBytes                        | Total bytes read from OS-level block I/O. Tracks disk read throughput.
+BlockWriteBytes                       | Total bytes written via OS-level block I/O. Tracks disk write throughput.
 
 ## System
 Name                                | Description
@@ -160,17 +165,22 @@ ContextLockWait                       | Time spent waiting for context locks. Mo
 StorageBufferRows                      | Number of rows in the storage buffer. Indicates buffering activity for writes.
 RWLockWaitingReaders                   | Number of readers waiting for RWLocks. Shows read contention.
 RWLockWaitingWriters                   | Number of writers waiting for RWLocks. Shows write contention.
-OS CPU Usage (userspace)               | CPU usage in userspace. Monitors CPU consumed by application code.
-OS CPU Usage (kernel)                  | CPU usage in kernel mode. Monitors CPU consumed by OS operations.
-CPU usage (cores)                      | Number of CPU cores currently utilized. Tracks overall CPU utilization.
-IO wait                                | Time CPU waits for I/O operations to complete. Indicates I/O bottlenecks.
-CPU wait                               | Time threads wait for CPU availability. Measures CPU contention.
-Read from disk                          | Number of reads from disk. Tracks disk I/O activity.
-Read from filesystem                     | Number of reads from the filesystem cache. Indicates cached read efficiency.
+OS CPU Usage (userspace)               | CPU time spent in userspace in seconds. Monitors CPU consumed by application code.
+OS CPU Usage (kernel)                  | CPU time spent in kernel mode in seconds. Monitors CPU consumed by OS operations.
+IO wait                                | Time CPU waits for I/O operations in seconds. Indicates I/O bottlenecks.
 clickhouse_rss_bytes                     | Resident Set Size in bytes for ClickHouse. Shows memory currently used in RAM.
+DiskAvailable_default                    | Available disk space on the default disk in bytes. Monitors storage capacity.
+DiskUsed_default                         | Used disk space on the default disk in bytes. Tracks storage consumption.
+
+## DATABASES_INFO
+Name                                | Description
+---                                 | ---
+name                                | Database name.
+Engine                              | Database engine type (Atomic, Memory, etc.).
+Table_Count                         | Number of tables in the database.
+Size                                | Total size of active parts in the database in MB.
+Total_Rows                          | Total number of rows across all active parts in the database.
 
 ## Sample Image:
 
 <img width="1636" height="861" alt="image" src="https://github.com/user-attachments/assets/a7676e43-569a-434c-8fbb-6fcc30df5f38" />
-
-

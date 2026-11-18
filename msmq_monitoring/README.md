@@ -46,33 +46,44 @@ The agent will automatically execute the plugin within five minutes and send per
 
 | **Name** | **Description** |
 |-----------|-----------------|
-| **Bytes In Queue in average** | The average number of message bytes in the queue across all monitored queues. |
-| **Message Count in average** | The average number of messages in the queue across all monitored queues. |
-| **Total No of queues** | The total number of queues discovered and monitored by the plugin. |
+| **Bytes In Queue In Average** | The average number of message bytes in the queue across all monitored queues. |
+| **Message Count In Average** | The average number of messages in the queue across all monitored queues. |
+| **Total No Of Queues** | The total number of queues discovered and monitored by the plugin. |
 
 ### Queues
 
 | **Name** | **Description** |
 |-----------|-----------------|
-| **Bytes_In_Queue** | The number of message bytes currently stored in the destination queue. |
-| **Bytes_In_Journal** | The number of message bytes in the journal of the destination queue. |
-| **Message_Count** | The total number of messages in the specified queue. |
-| **Message_Journal_Size_MB** | The maximum size (in MB) of the journal associated with the queue. |
-| **Message_Queue_Size_MB** | The maximum size (in MB) allocated for the queue. |
-| **Is_Transactional** | Indicates whether the queue is transactional (`1`) or non-transactional (`0`). |
+| **Bytes In Queue** | The number of message bytes currently stored in the destination queue. |
+| **Bytes In Journal** | The number of message bytes in the journal of the destination queue. |
+| **Message Count** | The total number of messages in the specified queue. |
+| **Journal Message Count** | The total number of messages in the journal of the specified queue. |
+| **Message Journal Size** | The maximum size (in MB) of the journal associated with the queue. |
+| **Message Queue Size** | The maximum size (in MB) allocated for the queue. |
+| **Is Transactional** | Indicates whether the queue is transactional (`Yes`) or non-transactional (`No`). |
 
 ### Service
 
 | **Name** | **Description** |
 |-----------|-----------------|
-| **Incoming_Messages_PerSec** | The rate (messages per second) of incoming messages being processed by MSMQ. |
-| **Outgoing_Messages_PerSec** | The rate (messages per second) of outgoing messages being processed by MSMQ. |
-| **MSMQ_Incoming_Messages** | The total number of incoming messages handled by MSMQ since startup. |
-| **MSMQ_Outgoing_Messages** | The total number of outgoing messages handled by MSMQ since startup. |
+| **Incoming Messages Per Sec** | The rate (messages per second) of incoming messages being processed by MSMQ. |
+| **Outgoing Messages Per Sec** | The rate (messages per second) of outgoing messages being processed by MSMQ. |
+| **MSMQ Incoming Messages** | The total number of incoming messages handled by MSMQ since startup. |
+| **MSMQ Outgoing Messages** | The total number of outgoing messages handled by MSMQ since startup. |
 | **Sessions** | The number of active MSMQ sessions currently established. |
-| **IP_Sessions** | The number of MSMQ sessions that are using IP-based connections. |
-| **Total_Bytes_All_Queues** | The total number of message bytes across all monitored queues. |
-| **Total_Messages_All_Queues** | The total number of messages across all monitored queues. |
+| **IP Sessions** | The number of MSMQ sessions that are using IP-based connections. |
+| **Total Bytes All Queues** | The total number of message bytes across all monitored queues. |
+| **Total Messages All Queues** | The total number of messages across all monitored queues. |
+
+### Outgoing
+
+| **Name** | **Description** |
+|-----------|-----------------|
+| **Total Outgoing Queues** | The total number of outgoing queues with messages pending delivery to remote servers. |
+| **Total Outgoing Messages** | The total number of messages across all outgoing queues waiting for delivery. |
+| **Total Outgoing Bytes** | The total number of bytes across all outgoing queues waiting for delivery. |
+| **Total Unacknowledged Messages** | The total number of messages sent to remote servers but not yet acknowledged. |
+| **Total Unprocessed Messages** | The total number of messages in outgoing queues that have not yet been processed for delivery. |
 
 
 ## Sample Image

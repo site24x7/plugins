@@ -12,10 +12,8 @@ class kafka:
         self.maindata={}
         self.maindata['plugin_version'] = PLUGIN_VERSION
         self.maindata['heartbeat_required']=HEARTBEAT
-        self.kafka_home=args.kafka_home
         self.kafka_host=args.kafka_host
         self.kafka_jmx_port=args.kafka_jmx_port
-        self.kafka_server_port=args.kafka_server_port
         self.kafka_topic_name=args.kafka_topic_name
 
         self.logsenabled=args.logs_enabled
@@ -87,14 +85,14 @@ class kafka:
                 partition_data.append(data)
 
 
-            self.maindata["Partition_Metrics"]=partition_data
+            self.maindata["Partitions"]=partition_data
             self.maindata["Topic Name"]=self.kafka_topic_name
 
             self.maindata['tabs']={
-                "Kafka Partition Metrics":{
+                "Kafka Partitions":{
                     "order":1,
                     "tablist":[
-                        "Partition_Metrics"
+                        "Partitions"
                     ]}
                 }
 
@@ -120,17 +118,13 @@ if __name__=="__main__":
 
     kafka_host="localhost"
     kafka_jmx_port=9999
-    kafka_server_port=9092
     kafka_topic_name="my-topic"
-    kafka_home="/home/users/kafka"
 
     import argparse
     parser=argparse.ArgumentParser()
     parser.add_argument('--kafka_host', help='host name to access the kafka server metrics',default=kafka_host)
     parser.add_argument('--kafka_jmx_port', help='jmx port to access the kafka server metrics',default=kafka_jmx_port)
-    parser.add_argument('--kafka_server_port', help='server port to access the kafka server metrics',default=kafka_server_port)
     parser.add_argument('--kafka_topic_name', help='kafka topic name',default=kafka_topic_name)
-    parser.add_argument('--kafka_home', help='kafka home path', default=kafka_home)
     parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
     parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
     parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)

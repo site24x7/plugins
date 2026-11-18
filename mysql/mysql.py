@@ -23,10 +23,17 @@ METRICS_UNITS = {
     "Buffer_pool_utilization": "%",
     "Fetch_Latency_ms": "ms",
     "Insert_Latency_ms": "ms",
+    "Avg_Wait_Time_ms": "ms",
     "Throughput_qps": "queries/s",
-    "Bytes_received": "bytes",
-    "Bytes_sent": "bytes",
+    "Network_traffic_received": "MB",
+    "Network_traffic_sent": "MB",
     "Relay_log_space": "bytes",
+    "Total_storage_used": "GB",
+    "Sequential_Percentage": "%",
+    "Index_Percentage": "%",
+    "Top_Tables_Sequential_Scans": {
+        "Total_Wait_Time": "s"
+    },
     "Database": {
         "Db_size_MB": "MB",
         "Index_MB": "MB",
@@ -133,9 +140,24 @@ class MySQLMonitor:
 
     def collect_database(self):
         self.maindata["Database"] = []
+        self.maindata["Total_storage_used"] = 0.0
         
         dbs = []
         db_size_info = {}
+        
+        try:
+            self.cursor.execute("""
+                SELECT 
+                    ROUND(SUM(data_length + index_length) / 1024 / 1024 / 1024, 2) AS total_size_gb
+                FROM information_schema.tables
+            """)
+            result = self.cursor.fetchone()
+            if result and result.get("total_size_gb") is not None:
+                self.maindata["Total_storage_used"] = float(result["total_size_gb"])
+        except Exception as e:
+            if "msg" not in self.maindata:
+                self.maindata["msg"] = ""
+            self.maindata["msg"] += "Total storage query error: {}; ".format(str(e))
         
         try:
             self.cursor.execute("""
@@ -284,9 +306,20 @@ class MySQLMonitor:
                 try:
                     if metric in status:
                         display_name = metric.replace("Com_", "Command_") if metric.startswith("Com_") else metric
-                        self.maindata[display_name] = status[metric]
+                        if metric == "Bytes_received":
+                            display_name = "Network_traffic_received"
+                            self.maindata[display_name] = bytes_to_mb(status[metric])
+                        elif metric == "Bytes_sent":
+                            display_name = "Network_traffic_sent"
+                            self.maindata[display_name] = bytes_to_mb(status[metric])
+                        else:
+                            self.maindata[display_name] = status[metric]
                     else:
                         display_name = metric.replace("Com_", "Command_") if metric.startswith("Com_") else metric
+                        if metric == "Bytes_received":
+                            display_name = "Network_traffic_received"
+                        elif metric == "Bytes_sent":
+                            display_name = "Network_traffic_sent"
                         self.maindata[display_name] = "-1"
                 except Exception as e:
                     if "msg" not in self.maindata:
@@ -320,7 +353,10 @@ class MySQLMonitor:
             for metric in VARIABLE_METRICS:
                 try:
                     if metric in variables:
-                        self.maindata[metric] = variables[metric]
+                        if metric == "max_connections":
+                            self.maindata[metric] = "{} connections configured".format(variables[metric])
+                        else:
+                            self.maindata[metric] = variables[metric]
                     else:
                         self.maindata[metric] = "-1"
                 except Exception as e:
@@ -388,6 +424,150 @@ class MySQLMonitor:
             self.maindata["msg"] += "Server latency query error: {}; ".format(str(e))
             self.maindata["Fetch_Latency_ms"] = -1
             self.maindata["Insert_Latency_ms"] = -1
+
+    def collect_wait_time_metrics(self):
+        try:
+            self.cursor.execute("""
+                SELECT 
+                    ROUND(IFNULL(AVG(SUM_TIMER_WAIT/COUNT_STAR)/1000000000*1000, 0), 2) AS avg_wait_time_ms,
+                    SUM(COUNT_STAR) AS total_wait_events
+                FROM performance_schema.events_waits_summary_global_by_event_name
+                WHERE COUNT_STAR > 0
+                AND EVENT_NAME LIKE 'wait/%'
+            """)
+            r = self.cursor.fetchone()
+            if r:
+                total_wait_events = r.get("total_wait_events", 0) if r.get("total_wait_events") is not None else 0
+                
+                if total_wait_events > 0 and r.get("avg_wait_time_ms") is not None:
+                    self.maindata["Avg_Wait_Time_ms"] = float(r["avg_wait_time_ms"])
+                else:
+                    self.maindata["Avg_Wait_Time_ms"] = -1
+            else:
+                self.maindata["Avg_Wait_Time_ms"] = -1
+        except Exception as e:
+            if "msg" not in self.maindata:
+                self.maindata["msg"] = ""
+            self.maindata["msg"] += "Wait time query error: {}; ".format(str(e))
+            self.maindata["Avg_Wait_Time_ms"] = -1
+
+    def collect_errors_and_warnings(self):
+        try:
+            self.cursor.execute("""
+                SELECT 
+                    SUM(SUM_ERRORS) AS total_errors,
+                    SUM(SUM_WARNINGS) AS total_warnings
+                FROM performance_schema.events_statements_summary_by_digest
+                WHERE SUM_ERRORS > 0 OR SUM_WARNINGS > 0
+            """)
+            result = self.cursor.fetchone()
+            
+            if result:
+                total_errors = int(result.get("total_errors", 0)) if result.get("total_errors") is not None else 0
+                total_warnings = int(result.get("total_warnings", 0)) if result.get("total_warnings") is not None else 0
+                
+                self.maindata["Total_Errors"] = total_errors
+                self.maindata["Total_Warnings"] = total_warnings
+            else:
+                self.maindata["Total_Errors"] = 0
+                self.maindata["Total_Warnings"] = 0
+                
+        except Exception as e:
+            if "msg" not in self.maindata:
+                self.maindata["msg"] = ""
+            self.maindata["msg"] += "Error/Warning collection error: {}; ".format(str(e))
+            self.maindata["Total_Errors"] = -1
+            self.maindata["Total_Warnings"] = -1
+
+    def collect_top_tables_sequential_scans(self):
+        default_value = [{
+            "name": "Table1",
+            "Table_Name": "-",
+            "Sequential_Scans": -1,
+            "Total_Wait_Time": -1
+        }]
+        
+        self.maindata["Top_Tables_Sequential_Scans"] = default_value
+        
+        try:
+            self.cursor.execute("""
+                SELECT 
+                    OBJECT_SCHEMA AS schema_name,
+                    OBJECT_NAME AS table_name,
+                    COUNT_READ AS sequential_scans,
+                    SUM_TIMER_WAIT AS total_wait_time,
+                    CONCAT(OBJECT_SCHEMA, '.', OBJECT_NAME) AS full_table_name
+                FROM performance_schema.table_io_waits_summary_by_index_usage
+                WHERE OBJECT_SCHEMA NOT IN ('mysql', 'performance_schema', 'sys', 'information_schema')
+                AND INDEX_NAME IS NULL
+                AND COUNT_READ > 0
+                ORDER BY COUNT_READ DESC
+                LIMIT 10
+            """)
+            
+            top_tables = []
+            for i, row in enumerate(self.cursor.fetchall(), 1):
+                wait_time_ns = int(row.get("total_wait_time", 0)) if row.get("total_wait_time") is not None else 0
+                table_rec = {
+                    "name": f"Table{i}",
+                    "Table_Name": row.get("full_table_name", "-"),
+                    "Sequential_Scans": int(row.get("sequential_scans", 0)) if row.get("sequential_scans") is not None else 0,
+                    "Total_Wait_Time": nanoseconds_to_seconds(wait_time_ns)
+                }
+                top_tables.append(table_rec)
+            
+            if top_tables:
+                self.maindata["Top_Tables_Sequential_Scans"] = top_tables
+            
+        except Exception as e:
+            if "msg" not in self.maindata:
+                self.maindata["msg"] = ""
+            self.maindata["msg"] += "Top tables sequential scans collection error: {}; ".format(str(e))
+            self.maindata["Top_Tables_Sequential_Scans"] = default_value
+
+    def collect_scan_summary_metrics(self):
+        try:
+            self.cursor.execute("""
+                SELECT SUM(COUNT_READ) AS total_sequential_scans
+                FROM performance_schema.table_io_waits_summary_by_index_usage
+                WHERE OBJECT_SCHEMA NOT IN ('mysql', 'performance_schema', 'sys', 'information_schema')
+                AND INDEX_NAME IS NULL
+                AND COUNT_READ > 0
+            """)
+            seq_result = self.cursor.fetchone()
+            total_sequential = int(seq_result.get("total_sequential_scans", 0)) if seq_result and seq_result.get("total_sequential_scans") else 0
+            
+            self.cursor.execute("""
+                SELECT SUM(COUNT_READ) AS total_index_scans
+                FROM performance_schema.table_io_waits_summary_by_index_usage
+                WHERE OBJECT_SCHEMA NOT IN ('mysql', 'performance_schema', 'sys', 'information_schema')
+                AND INDEX_NAME IS NOT NULL
+                AND COUNT_READ > 0
+            """)
+            idx_result = self.cursor.fetchone()
+            total_index = int(idx_result.get("total_index_scans", 0)) if idx_result and idx_result.get("total_index_scans") else 0
+            
+            total_scans = total_sequential + total_index
+            if total_scans > 0:
+                sequential_percentage = round((total_sequential / total_scans) * 100, 1)
+                index_percentage = round((total_index / total_scans) * 100, 1)
+            else:
+                sequential_percentage = 0.0
+                index_percentage = 0.0
+            
+            self.maindata["Total_Sequential_Scans"] = total_sequential
+            self.maindata["Total_Index_Scans"] = total_index
+            self.maindata["Sequential_Percentage"] = sequential_percentage
+            self.maindata["Index_Percentage"] = index_percentage
+            
+        except Exception as e:
+            if "msg" not in self.maindata:
+                self.maindata["msg"] = ""
+            self.maindata["msg"] += "Scan summary metrics collection error: {}; ".format(str(e))
+            self.maindata["Total_Sequential_Scans"] = 0
+            self.maindata["Total_Index_Scans"] = 0
+            self.maindata["Sequential_Percentage"] = 0.0
+            self.maindata["Index_Percentage"] = 0.0
 
     def collect_calculated_metrics(self, status, variables):
 
@@ -572,6 +752,34 @@ class MySQLMonitor:
                 self.maindata["msg"] += "Latency metrics collection error: {}; ".format(str(e))
 
             try:
+                self.collect_wait_time_metrics()
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Wait time metrics collection error: {}; ".format(str(e))
+
+            try:
+                self.collect_errors_and_warnings()
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Error/Warning metrics collection error: {}; ".format(str(e))
+
+            try:
+                self.collect_top_tables_sequential_scans()
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Top tables sequential scans collection error: {}; ".format(str(e))
+
+            try:
+                self.collect_scan_summary_metrics()
+            except Exception as e:
+                if "msg" not in self.maindata:
+                    self.maindata["msg"] = ""
+                self.maindata["msg"] += "Scan summary metrics collection error: {}; ".format(str(e))
+
+            try:
                 self.collect_version_info()
             except Exception as e:
                 if "msg" not in self.maindata:
@@ -620,6 +828,7 @@ class MySQLMonitor:
                 "Query and Storage": {
                     "order": 4,
                     "tablist": [
+                        "Total_storage_used",
                         "Queries",
                         "Questions",
                         "Slow_queries",
@@ -627,8 +836,6 @@ class MySQLMonitor:
                         "Opened_files",
                         "Binlog_cache_use",
                         "Binlog_cache_disk_use",
-                        "Bytes_received",
-                        "Bytes_sent",
                         "Table_locks_waited",
                         "Table_locks_immediate",
                         "Created_tmp_files",
@@ -692,7 +899,6 @@ class MySQLMonitor:
                         "Innodb_os_log_written",
                         "Innodb_rows_read",
                         "Connection_errors_max_connections",
-                        "max_connections",
                         "Select_full_join",
                         "Select_full_range_join",
                         "Select_range",
@@ -711,7 +917,20 @@ class MySQLMonitor:
                         "Key_read_requests",
                         "Key_write_requests"
                     ]
-                }
+                },
+                "Insights": {
+                    "order": 5,
+                    "tablist": [
+                        "Avg_Wait_Time_ms",
+                        "Total_Errors",
+                        "Total_Warnings",
+                        "Total_Sequential_Scans",
+                        "Total_Index_Scans",
+                        "Sequential_Percentage",
+                        "Index_Percentage",
+                        "Top_Tables_Sequential_Scans"
+                    ]
+                },
             }
             
         except Exception as e:
@@ -721,12 +940,45 @@ class MySQLMonitor:
         finally:
             self.close()
         return self.maindata
+
+def bytes_to_mb(bytes_value):
+    """Convert bytes to megabytes"""
+    if bytes_value is None or bytes_value == 0:
+        return 0.0
+    
+    try:
+        mb = float(bytes_value) / (1024 * 1024)
+        return round(mb, 2)
+    except (ValueError, TypeError):
+        return 0.0
+
+def nanoseconds_to_seconds(nanoseconds):
+    """Convert nanoseconds to seconds"""
+    if nanoseconds is None or nanoseconds == 0:
+        return 0.0
+    
+    seconds = float(nanoseconds) / 1_000_000_000
+    return round(seconds, 6)
+
+def clean_quotes(value):
+    if not value:
+        return value
+    
+    value_str = str(value)
+    
+    if value_str.startswith('"') and value_str.endswith('"'):
+        return value_str[1:-1]
+    
+    elif value_str.startswith("'") and value_str.endswith("'"):
+        return value_str[1:-1]
+    
+    return value_str
     
 def run(param={}):
     mysql_params = {**MYSQL_DEFAULTS, **param}
     mysql_params = {
-    k: (v.strip('\'"') if isinstance(v, str) else v)
-    for k, v in mysql_params.items()
+        k: (clean_quotes(v) if isinstance(v, str) else v)
+        for k, v in mysql_params.items()
     }
     monitor = MySQLMonitor(**mysql_params)
     result = monitor.collect_metrics()

@@ -5,6 +5,7 @@ Site24x7 Tomcat Plugin
 import argparse
 import sys
 import socket
+import ssl
 import xml.etree.ElementTree as ET
 import json
 import urllib.request as urlconnection
@@ -19,24 +20,43 @@ HEARTBEAT = "true"
 # Config Section:
 TOMCAT_HOST = 'localhost'
 TOMCAT_PORT = '8080'
+TOMCAT_PROTOCOL = 'http'
 TOMCAT_USERNAME = 'user'
 TOMCAT_PASSWORD = 'user'
+TOMCAT_VERIFY_SSL = 'true'
 TOMCAT_URL = '/manager'
-TOMCAT_CONNECTOR = 'http-nio-8080'
-TOMCAT_TIMEOUT = '5'
 LOGS_ENABLED = 'true'
 LOG_TYPE_NAME = 'Tomcat Access Logs'
 LOG_FILE_PATH = '/opt/*tomcat*/logs/*access*.txt'
 
 METRICS_UNITS = {
-    'Bytes Received': 'MB',
-    'Bytes Sent': 'MB',
-    'Processing Time': 'ms',
-    'Available Memory': 'GB',
-    'Free Memory': 'GB',
+    'Connectors': {
+        'Bytes Received': 'MB',
+        'Bytes Sent': 'MB',
+        'Processing Time': 'ms',
+        'Max Time': 'ms'
+        },
+    'Available Memory': 'MB',
+    'Free Memory': 'MB',
     'Percent Used Memory': '%',
-    'Total Memory': 'GB',
-    'Used Memory': 'GB'
+    'Total Memory': 'MB',
+    'Used Memory': 'MB',
+    'Committed G1_Eden_Space': 'MB',
+    'Used G1_Eden_Space': 'MB',
+    'Committed G1_Old_Gen': 'MB',
+    'Used G1_Old_Gen': 'MB',
+    'Committed G1_Survivor_Space': 'MB',
+    'Used G1_Survivor_Space': 'MB',
+    "Committed CodeHeap_'non-nmethods'": 'MB',
+    "Used CodeHeap_'non-nmethods'": 'MB',
+    "Committed CodeHeap_'non-profiled_nmethods'": 'MB',
+    "Used CodeHeap_'non-profiled_nmethods'": 'MB',
+    "Committed CodeHeap_'profiled_nmethods'": 'MB',
+    "Used CodeHeap_'profiled_nmethods'": 'MB',
+    'Committed Compressed_Class_Space': 'MB',
+    'Used Compressed_Class_Space': 'MB',
+    'Committed Metaspace': 'MB',
+    'Used Metaspace': 'MB'
 }
 
 def convertBytesToMB(v):
@@ -61,12 +81,15 @@ class Tomcat(object):
         self.configurations = config
         self.host = self.configurations.get('host', TOMCAT_HOST)
         self.port = int(self.configurations.get('port', TOMCAT_PORT))
+        self.protocol = self.configurations.get('protocol', TOMCAT_PROTOCOL)
         self.username = self.configurations.get('username', TOMCAT_USERNAME)
         self.password = self.configurations.get('password', TOMCAT_PASSWORD)
+        self.verify_ssl = self.configurations.get('verify_ssl', TOMCAT_VERIFY_SSL).lower() == 'true'
         self.plugin_version = self.configurations.get('plugin_version', PLUGIN_VERSION)
-        self.connector = self.configurations.get('connector', TOMCAT_CONNECTOR)
         self.url = self.configurations.get('url', TOMCAT_URL)
-        self.timeout = int(self.configurations.get('timeout', TOMCAT_TIMEOUT))
+        self.logs_enabled = self.configurations.get('logs_enabled', LOGS_ENABLED)
+        self.log_type_name = self.configurations.get('log_type_name', LOG_TYPE_NAME)
+        self.log_file_path = self.configurations.get('log_file_path', LOG_FILE_PATH)
 
     def readXmlFromUrl(self, host, port, url, user, password):
         xmlUrl = url + "/status?XML=true"
@@ -83,12 +106,22 @@ class Tomcat(object):
 
     def readUrl(self, host, port, url, user, password):
         error = False
-        tomcatUrl = "http://" + host + ":" + str(port) + url
+        tomcatUrl = self.protocol + "://" + host + ":" + str(port) + url
         try:
             pwdManager = urlconnection.HTTPPasswordMgrWithDefaultRealm()
             pwdManager.add_password(None, tomcatUrl, user, password)
             authHandler = urlconnection.HTTPBasicAuthHandler(pwdManager)
-            opener = urlconnection.build_opener(authHandler)
+            
+            # Handle SSL verification
+            if self.protocol == 'https' and not self.verify_ssl:
+                ssl_context = ssl.create_default_context()
+                ssl_context.check_hostname = False
+                ssl_context.verify_mode = ssl.CERT_NONE
+                https_handler = urlconnection.HTTPSHandler(context=ssl_context)
+                opener = urlconnection.build_opener(authHandler, https_handler)
+            else:
+                opener = urlconnection.build_opener(authHandler)
+            
             urlconnection.install_opener(opener)
             req = urlconnection.Request(tomcatUrl)
             handle = urlconnection.urlopen(req, None)
@@ -125,7 +158,6 @@ class Tomcat(object):
         data['plugin_version'] = self.plugin_version
         data['heartbeat_required'] = HEARTBEAT
 
-        socket.setdefaulttimeout(float(self.timeout))
         serverinfoUrl = self.url + "/serverinfo"
         serverinfoData, serverinfoError = self.readUrl(self.host, self.port, serverinfoUrl, self.username, self.password)
         if serverinfoError:
@@ -133,11 +165,21 @@ class Tomcat(object):
             serverinfoData, serverinfoError = self.readUrl(self.host, self.port, serverinfoUrl, self.username, self.password)
         if not serverinfoError:
             serverinfo = serverinfoData.decode("utf-8").splitlines()
-            tomcatVersionStr = (serverinfo[1].split(":"))[1]
             tomcatStatusStr = serverinfo[0]
-            tomcatVersion = (tomcatVersionStr.split("/"))[1].split(".")[0]
-            if tomcatVersion.isdigit():
-                data['Tomcat Version'] = f"v_{tomcatVersion}"
+            
+            tomcatVersionStr = (serverinfo[1].split(":"))[1].strip()
+            data['Tomcat Version'] = tomcatVersionStr.strip("[]").strip()
+            
+            if len(serverinfo) > 5:
+                jvmVersionStr = (serverinfo[5].split(":"))[1].strip()
+                data['JVM Version'] = jvmVersionStr.strip("[]").strip()
+            
+            if len(serverinfo) > 6:
+                jvmVendorStr = (serverinfo[6].split(":"))[1].strip()
+                data['JVM Vendor'] = jvmVendorStr.strip("[]").strip()
+            
+            data['Server Info'] = tomcatStatusStr.split(' ')[0]
+            
             if tomcatStatusStr.split(' ')[0] == 'OK':
                 status = 1
             else:
@@ -153,31 +195,47 @@ class Tomcat(object):
                         if xmlTreeData.tag == 'status':
                             data['status'] = 1
 
-                    connector_data = {}
+                    connectors = []
                     for connector in xmlTreeData.findall('./connector'):
                         name = str(connector.get('name'))
                         name = name.replace("\"", "")
-                        if name == self.connector:
-                            thread = connector.find('./threadInfo')
-                            request = connector.find('./requestInfo')
-                            connector_data = {
-                                'Name': name,
-                                'Thread Count': int(thread.get('currentThreadCount')),
-                                'Thread Busy': int(thread.get('currentThreadsBusy')),
-                                'Thread Allowed': float(thread.get('maxThreads')),
-                                'Bytes Received': convertBytesToMB(float(request.get('bytesReceived'))),
-                                'Bytes Sent': convertBytesToMB(float(request.get('bytesSent'))),
-                                'Error Count': float(request.get('errorCount')),
-                                'Processing Time': float(request.get('processingTime')),
-                                'Request Count': float(request.get('requestCount'))
-                            }
-
-                    data.update(connector_data)
+                        thread = connector.find('./threadInfo')
+                        request = connector.find('./requestInfo')
+                        connector_data = {
+                            'name': name,
+                            'Current Thread Count': int(thread.get('currentThreadCount')),
+                            'Busy Thread Count': int(thread.get('currentThreadsBusy')),
+                            'Max Thread Count': str(int(thread.get('maxThreads'))) + ' threads',
+                            'Bytes Received': convertBytesToMB(float(request.get('bytesReceived'))),
+                            'Bytes Sent': convertBytesToMB(float(request.get('bytesSent'))),
+                            'Error Count': float(request.get('errorCount')),
+                            'Processing Time': float(request.get('processingTime')),
+                            'Request Count': float(request.get('requestCount')),
+                            'Max Time': float(request.get('maxTime'))
+                        }
+                        connectors.append(connector_data)
+                    
+                    if connectors:
+                        data['Connectors'] = connectors
 
                     memorypool_data = {}
                     for mempool in xmlTreeData.findall('.//memorypool'):
                         name = str(mempool.get('name')).replace(" ", "_")
-                        memorypool_data[f'Usage {name}'] = float(mempool.get('usageUsed'))
+                        
+                        usageInit = convertBytesToMB(float(mempool.get('usageInit')))
+                        usageCommitted = convertBytesToMB(float(mempool.get('usageCommitted')))
+                        usageUsed = convertBytesToMB(float(mempool.get('usageUsed')))
+                        
+                        usageMaxRaw = float(mempool.get('usageMax'))
+                        if usageMaxRaw == -1:
+                            usageMax = 'Unlimited'
+                        else:
+                            usageMax = str(convertBytesToMB(usageMaxRaw)) + ' MB'
+                        
+                        memorypool_data[f'Init {name}'] = str(usageInit) + ' MB'
+                        memorypool_data[f'Committed {name}'] = usageCommitted
+                        memorypool_data[f'Max {name}'] = usageMax
+                        memorypool_data[f'Used {name}'] = usageUsed
 
                     data.update(memorypool_data)
 
@@ -199,33 +257,36 @@ class Tomcat(object):
                         })
 
                     data['tabs'] = {
-                        'Memory Metrics': {
-                            'order': 1,
-                            'tablist': [
-                                'Available Memory',
-                                'Free Memory',
-                                'Max Memory',
-                                'Total Memory',
-                                'Used Memory',
-                                'Percent Used Memory'
+                        'Connectors':{
+                            'order':1,
+                            'tablist':[
+                                'Connectors'
                             ]
                         },
                         'JVM CodeHeap Usage': {
                             'order': 2,
                             'tablist': [
-                                "Usage CodeHeap_'non-nmethods'",
-                                "Usage CodeHeap_'non-profiled_nmethods'",
-                                "Usage CodeHeap_'profiled_nmethods'"
+                                "Committed CodeHeap_'non-nmethods'",
+                                "Used CodeHeap_'non-nmethods'",
+                                "Committed CodeHeap_'non-profiled_nmethods'",
+                                "Used CodeHeap_'non-profiled_nmethods'",
+                                "Committed CodeHeap_'profiled_nmethods'",
+                                "Used CodeHeap_'profiled_nmethods'"
                             ]
                         },
                         'JVM Memory Pool Usage': {
                             'order': 3,
                             'tablist': [
-                                "Usage Compressed_Class_Space",
-                                "Usage G1_Eden_Space",
-                                "Usage G1_Old_Gen",
-                                "Usage G1_Survivor_Space",
-                                "Usage Metaspace"
+                                "Committed Compressed_Class_Space",
+                                "Used Compressed_Class_Space",
+                                "Committed G1_Eden_Space",
+                                "Used G1_Eden_Space",
+                                "Committed G1_Old_Gen",
+                                "Used G1_Old_Gen",
+                                "Committed G1_Survivor_Space",
+                                "Used G1_Survivor_Space",
+                                "Committed Metaspace",
+                                "Used Metaspace"
                             ]
                         }
                     }
@@ -235,6 +296,15 @@ class Tomcat(object):
             data['msg'] = serverinfoData
             data['status'] = 0
 
+        applog = {}
+        if self.logs_enabled in ['True', 'true', '1']:
+            applog["logs_enabled"] = True
+            applog["log_type_name"] = self.log_type_name
+            applog["log_file_path"] = self.log_file_path
+        else:
+            applog["logs_enabled"] = False
+        data['applog'] = applog
+
         data['units'] = METRICS_UNITS
         return data
 
@@ -242,12 +312,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', help="Host Name", nargs='?', default=TOMCAT_HOST)
     parser.add_argument('--port', help="Port", nargs='?', default=TOMCAT_PORT)
+    parser.add_argument('--protocol', help="Protocol (http or https)", default=TOMCAT_PROTOCOL)
     parser.add_argument('--username', help="Username", default=TOMCAT_USERNAME)
     parser.add_argument('--password', help="Password", default=TOMCAT_PASSWORD)
+    parser.add_argument('--verify_ssl', help="Verify SSL Certificate (true or false)", default=TOMCAT_VERIFY_SSL)
     parser.add_argument('--plugin_version', help="plugin_version", default=PLUGIN_VERSION)
-    parser.add_argument('--connector', help="Connector Name", default=TOMCAT_CONNECTOR)
     parser.add_argument('--url', help="URL", default=TOMCAT_URL)
-    parser.add_argument('--timeout', help="Timeout", default=TOMCAT_TIMEOUT)
     parser.add_argument('--logs_enabled', help="logs_enabled", default=LOGS_ENABLED)
     parser.add_argument('--log_type_name', help="log_type_name", default=LOG_TYPE_NAME)
     parser.add_argument('--log_file_path', help="log_file_path", default=LOG_FILE_PATH)
@@ -257,12 +327,15 @@ if __name__ == "__main__":
     configurations = {
         'host': args.host,
         'port': args.port,
+        'protocol': args.protocol,
         'username': args.username,
         'password': args.password,
-        'connector': args.connector,
+        'verify_ssl': args.verify_ssl,
         'url': args.url,
-        'timeout': args.timeout,
-        'plugin_version' : args.plugin_version
+        'plugin_version': args.plugin_version,
+        'logs_enabled': args.logs_enabled,
+        'log_type_name': args.log_type_name,
+        'log_file_path': args.log_file_path
     }
 
     tomcat_plugins = Tomcat(configurations)

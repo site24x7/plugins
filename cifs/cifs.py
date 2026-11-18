@@ -235,8 +235,22 @@ class cifs:
 
         return self.maindata
 
+def clean_quotes(value):
+    if not value:
+        return value
+    
+    value_str = str(value)
+    
+    if value_str.startswith('"') and value_str.endswith('"'):
+        return value_str[1:-1]
+    
+    elif value_str.startswith("'") and value_str.endswith("'"):
+        return value_str[1:-1]
+    
+    return value_str
+
 def run(param):
-    plugin_version = str(param.get("plugin_version")).strip('"') if param else PLUGIN_VERSION
+    plugin_version = clean_quotes(param.get("plugin_version")) if param and param.get("plugin_version") else PLUGIN_VERSION
     cifs_instance = cifs(plugin_version)
     result = cifs_instance.metriccollector()
     return result
