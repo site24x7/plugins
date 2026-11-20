@@ -41,20 +41,13 @@ This plugin monitors the performance metrics of NFS mount point status, the IP a
  
 The agent will automatically execute the plugin within five minutes and the user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
 
-#### Note:
-To add mount points after the registration of the plugin, increase the version of the plugin in nfs.cfg file, as mentioned below.
-
-```bash
-[mounts]
-plugin_version = "2"
-```
-
 ## Metrics Captured
 
 Name		        | 	Description
 ---         		|  	 ---
-Mount Permission 	|	Mount permmision for the client to the mount point.
-Mount From 		|	Mount point path on the client, which is connected to the CIFS Server.
+Mount Permission (inside the `Size` table) 	|	Mount permmision for the client to the mount point.
+Mount State (inside the `Size` table) 	|	Whether the mount point is currently `Mounted` or `Unmounted`.
+Mount From (inside the `Size` table) 	|	The NFS server path (e.g. `server:/export/path`) that the mount point is mounted from.
 Available size 		|	Available size in gigabytes (GB) represents the amount of free space left on the disk.
 Disk Usage 		|	The percentage of the disk space that is currently in use.
 Total Size 		|	The total size in gigabytes (GB) represents the total storage capacity of the disk.

@@ -82,12 +82,15 @@ If you're not using Linux servers or want to install the plugin manually, follow
 	port = "3306"
 	username = "root"
 	password = ""
-	logs_enabled=true
-	log_type_name="Mysql General Logs"
-	log_file_path="/var/log/mysql/error.log"
+	mysql_general_logs_enabled=true
+	mysql_general_logs_file_path="/var/log/mysqld*.log,/var/log/mysql/mysql.log,/var/log/mysql/*error*.log"
+	mysql_slow_logs_enabled=true
+	mysql_slow_logs_file_path="/var/log/mysql/*slow*.log"
  	```
 
-- Applog is supported for MySQL Monitoring. To enable applog for this plugin, configure logs_enabled=true and configure log_type_name and log_file_path as need.
+- Applog is supported for MySQL Monitoring, with two log types collected independently:
+	- **Mysql General Logs**: configure `mysql_general_logs_enabled` and `mysql_general_logs_file_path`.
+	- **Mysql Slow Logs**: configure `mysql_slow_logs_enabled` and `mysql_slow_logs_file_path`.
 
 #### Linux
 - Place the `mysql` folder under Site24x7 Linux Agent plugin directory : 

@@ -2,6 +2,7 @@
 
 import json,sys
 import os,importlib
+import socket,ipaddress
 
 #if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = "1"
@@ -12,8 +13,11 @@ HEARTBEAT="true"
 #Config Section
 host = "localhost"
 port = "6379"
+username = ""
 password = ""
 dbs = "1"
+
+REDIS_LOGS_LOG_TYPE_NAME = "Redis Logs"
 
 
 ### Uncomment/Comment the Attribute Names to be monitored
@@ -215,20 +219,38 @@ METRICS_UNITS={
     
 }
 
+def resolve_ip_address(host):
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
+
+
 class Redis(object):
     def __init__(self,args):
         self.args=args
         self.host=args.host
         self.port=args.port
+        if args.username:
+            self.username=args.username
+        else:
+            self.username=""
         if args.password:
             self.password=args.password
         else:
             self.password=""
         self.applog={}
-        if(args.logs_enabled in ['True', 'true', '1']):
+        if(args.redis_logs_enabled in ['True', 'true', '1']):
                 self.applog["logs_enabled"]=True
-                self.applog["log_type_name"]=args.log_type_name
-                self.applog["log_file_path"]=args.log_file_path
+                self.applog["log_type_name"]=REDIS_LOGS_LOG_TYPE_NAME
+                self.applog["log_file_path"]=args.redis_logs_file_path
         else:
                 self.applog["logs_enabled"]=False
 
@@ -247,16 +269,20 @@ class Redis(object):
             data['msg']=str(e)
             return data 
         stats = None
+        max_clients = None
         try:
             redis_connection = redis.StrictRedis(
                     host=self.host,
                     port=self.port,
+                    username=self.username if self.username else None,
                     password=self.password,
                     decode_responses=True
             )
             stats = redis_connection.info()
-            max_clients=redis_connection.config_get('maxclients')
-            
+            try:
+                max_clients = redis_connection.config_get('maxclients')
+            except Exception:
+                max_clients = None
 
         except Exception as e:
             data['status']=0
@@ -267,7 +293,8 @@ class Redis(object):
         total_expires=0
         total_persist=0
         db=[]
-        data["Max Clients"]=str(max_clients["maxclients"])+" Connections"
+        if max_clients:
+            data["Max Clients"]=str(max_clients["maxclients"])+" Connections"
         for name, value in stats.items():
             try:
 
@@ -315,7 +342,8 @@ class Redis(object):
         data['s247config']={
             "childdiscovery":[
                 'db'
-            ]
+            ],
+            "ip_address": resolve_ip_address(self.host)
         }
         data.update(tabs)
 
@@ -327,10 +355,10 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--host',help="Host Name",nargs='?', default= "localhost")
     parser.add_argument('--port',help="Port",nargs='?', default= "6379")
+    parser.add_argument('--username',help="Username", nargs='?', default= username)
     parser.add_argument('--password',help="Password" , default= password)
-    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="true")
-    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default="Redis Logs")
-    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default="/var/log/redis/redis*.log")
+    parser.add_argument('--redis_logs_enabled', help='enable log collection for this plugin application',default="true")
+    parser.add_argument('--redis_logs_file_path', help='list of comma separated log file paths', nargs='?', default="/var/log/redis/redis*.log")
     args=parser.parse_args()
 
     redis_plugin = Redis(args)

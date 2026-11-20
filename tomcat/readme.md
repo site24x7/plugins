@@ -80,9 +80,8 @@ username = "admin"
 password = "admin"
 protocol = "http"
 verify_ssl = "false"
-logs_enabled = "true"
-log_type_name = "Tomcat Access Logs"
-log_file_path = "/opt/*tomcat*/logs/*access*.txt"
+tomcat_access_logs_enabled = "true"
+tomcat_access_logs_file_path = "/opt/*tomcat*/logs/*access*.txt"
 ```
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.

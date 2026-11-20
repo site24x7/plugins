@@ -8,8 +8,7 @@
       HAProxy_username: 'test_user'                             # HAProxy username    [Enter '"None"' in case of no username]
       HAProxy_password: 'test_password'                         # HAProxy password    [Enter '"None"' in case of no password]
       HAProxy_logs_enabled: "False"
-      HAProxy_log_type_name: "None"
-      HAProxy_log_file_path: "None"
+      HAProxy_logs_file_path: "None"
 
   
    tasks:    
@@ -112,9 +111,8 @@
        - { regex: 'password=', line: 'password ={{HAProxy_password}}' }
        - { regex: 'hostname=', line: 'hostname ={{HAProxy_hostname}}' }
        - { regex: 'port=', line: 'port={{HAProxy_port}}' }
-       - { regex: 'logs_enabled=', line: 'logs_enabled={{HAProxy_logs_enabled}}' }
-       - { regex: 'log_type_name=', line: 'log_type_name={{HAProxy_log_type_name}}' }
-       - { regex: 'log_file_path=', line: 'log_file_path={{HAProxy_log_file_path}}' }
+       - { regex: 'haproxy_logs_enabled=', line: 'haproxy_logs_enabled={{HAProxy_logs_enabled}}' }
+       - { regex: 'haproxy_logs_file_path=', line: 'haproxy_logs_file_path={{HAProxy_logs_file_path}}' }
 
      when: haproxy_file_check.stat.exists
 

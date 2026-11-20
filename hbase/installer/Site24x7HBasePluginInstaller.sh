@@ -173,7 +173,7 @@ get_plugin(){
 get_plugin_data() {
     default_host="localhost"
     default_port="16010"
-    default_log_path="/var/log/*hbase*/*.log , /opt/*hbase*/logs/*.log* , /*hbase*/*log*/*.log"
+    default_log_path="/var/log/*hbase*/*.log*,/opt/*hbase*/logs/*.log*"
 
     tput setaf 3
     echo
@@ -280,12 +280,19 @@ add_conf() {
     error_handler $? "$output"
 
     log_path=$(echo "$log_path" | sed 's/\\/\\\\/g')
-    if grep -q "^log_file_path" "$cfg_file"; then
-        sed -i "/^log_file_path*/c\log_file_path = \"$log_path\"" "$cfg_file"
+    if grep -q "^${plugin}_logs_file_path" "$cfg_file"; then
+        sed -i "/^${plugin}_logs_file_path*/c\\${plugin}_logs_file_path = \"$log_path\"" "$cfg_file"
     else
-        echo "log_file_path = \"$log_path\"" >> "$cfg_file"
+        echo "${plugin}_logs_file_path = \"$log_path\"" >> "$cfg_file"
     fi
-    error_handler $? "Failed to write log_file_path"
+    error_handler $? "Failed to write ${plugin}_logs_file_path"
+
+    if grep -q "^${plugin}_logs_enabled" "$cfg_file"; then
+        sed -i "/^${plugin}_logs_enabled*/c\\${plugin}_logs_enabled = \"true\"" "$cfg_file"
+    else
+        echo "${plugin}_logs_enabled = \"true\"" >> "$cfg_file"
+    fi
+    error_handler $? "Failed to write ${plugin}_logs_enabled"
 }
 
 python_path_update() {

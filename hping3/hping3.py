@@ -9,6 +9,10 @@ import re
 import json
 import argparse
 
+PLUGIN_VERSION = 1
+
+HEARTBEAT = True
+
 ### Pass command line params as dict keys and values. Case sensitive
 config = {}
 ## -c --count packet count
@@ -26,14 +30,12 @@ class Hping3Monitoring():
     def __init__(self) :
         parser = argparse.ArgumentParser()
         parser.add_argument('--host', help='kvm host to connect', nargs='?', default='localhost')
-        parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=1)
-        parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=True)
 
         args = parser.parse_args()
         
         self.host = args.host
-        self.heartbeat = args.heartbeat
-        self.plugin_version = args.plugin_version
+        self.heartbeat = HEARTBEAT
+        self.plugin_version = PLUGIN_VERSION
 
         self.cmd = ''
         

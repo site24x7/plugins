@@ -1,8 +1,12 @@
 #!/usr/bin/python3
 import json
+import socket
+import ipaddress
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
+
+ACTIVEMQ_TOPICS_LOGS_LOG_TYPE_NAME = "ActiveMQ Logs"
 
 METRICS_UNITS={
      
@@ -61,6 +65,21 @@ metrics={
             "UseCache":"Use Cache"
             }
 
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
+
 class appname:
 
     def __init__(self,args):
@@ -69,9 +88,8 @@ class appname:
         self.maindata['plugin_version'] = PLUGIN_VERSION
         self.maindata['heartbeat_required']=HEARTBEAT
         self.maindata['units']=METRICS_UNITS
-        self.logsenabled=args.logs_enabled
-        self.logtypename=args.log_type_name
-        self.logfilepath=args.log_file_path
+        self.logsenabled=args.activemq_topics_logs_enabled
+        self.logfilepath=args.activemq_topics_logs_file_path
         
         self.hostname=args.hostname
         self.port=args.port
@@ -127,11 +145,14 @@ class appname:
         applog={}
         if(self.logsenabled in ['True', 'true', '1']):
                 applog["logs_enabled"]=True
-                applog["log_type_name"]=self.logtypename
+                applog["log_type_name"]=ACTIVEMQ_TOPICS_LOGS_LOG_TYPE_NAME
                 applog["log_file_path"]=self.logfilepath
         else:
                 applog["logs_enabled"]=False
         self.maindata['applog'] = applog
+        self.maindata['s247config'] = {
+            "ip_address": resolve_ip_address(self.hostname)
+        }
         return self.maindata
 
 
@@ -145,9 +166,8 @@ if __name__=="__main__":
     
     import argparse
     parser=argparse.ArgumentParser()
-    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
-    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
-    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
+    parser.add_argument('--activemq_topics_logs_enabled', help='enable log collection for ActiveMQ logs',default="False")
+    parser.add_argument('--activemq_topics_logs_file_path', help='list of comma separated log file paths', nargs='?', default="/var/log/apache-activemq*/data/activemq*.log")
     parser.add_argument('--hostname', help='activemq hostname', nargs='?', default=hostname)
     parser.add_argument('--port', help='activemq port', nargs='?', default=port)
     parser.add_argument('--broker_name', help='activemq broker name', nargs='?', default=broker_name)
