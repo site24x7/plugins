@@ -1,144 +1,95 @@
-# NVIDIA DCGM Monitoring
-**Note:**
+# NVIDIA DCGM Monitoring Plugin
 
-This plugin monitors NVIDIA GPU hardware metrics by scraping the DCGM Prometheus exporter.
+This plugin monitors NVIDIA GPU hardware metrics by scraping the DCGM Prometheus exporter. It provides deep visibility into GPU utilization, memory states, thermal health, and performance states across multi-GPU systems.
 
-## Quick installation
+## Prerequisites
+- **Site24x7 Agent**: Download and install the latest [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor).
+- **Python**: version 3.6 or higher.
+- **NVIDIA DCGM Exporter**: Must be running and exposing metrics (default port 9400). Supports DCGM Exporter v3.x and above.
+- **Network**: The agent must have HTTP/HTTPS access to the DCGM exporter endpoint.
 
-Ensure the `nvidia-dcgm-exporter` is running and reachable at `http://localhost:9400/metrics` on the target server.
+## Quick Installation
+1. Create a directory named `dcgm`:
+   ```bash
+   mkdir dcgm
+   cd dcgm/
+   ```
+2. Download `dcgm.py` and `dcgm.cfg` into the directory.
+3. Verify the plugin output manually:
+   ```bash
+   python3 dcgm.py --dcgm_endpoint "http://localhost:9400/metrics"
+   ```
+4. Move the folder to the Site24x7 agent plugin directory:
+   ```bash
+   mv dcgm /opt/site24x7/monagent/plugins/
+   ```
 
-### Prerequisites
-- Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
-- Download and install Python version 3 or higher.
-- NVIDIA DCGM exporter must be running and exposing metrics on port 9400.
-
-### Plugin Installation
-- Create a directory named `dcgm` in your server.
-
-```bash
-mkdir dcgm
-cd dcgm/
-```
-
-- Place the following files under the `dcgm` directory:
-  - `dcgm.py`
-  - `dcgm.cfg`
-
-- Execute the below command with appropriate arguments to check for the valid JSON output:
-
-```bash
-python3 dcgm.py
-```
-
-- After running the command, configure the relevant parameters in the `dcgm.cfg` file.
+## Configuration
+Configure the following parameters in `dcgm.cfg`:
 
 ```ini
-[global_configurations]
-use_agent_python=1
-
 [instance_1]
-dcgm_endpoint=http://localhost:9400/metrics
-plugin_version=1
-heartbeat=true
-logs_enabled=false
-log_type_name=
-log_file_path=
+dcgm_endpoint="http://localhost:9400/metrics"
+plugin_version=3
+heartbeat="true"
 ```
 
-#### Linux
+| Parameter | Description |
+| :--- | :--- |
+| `dcgm_endpoint` | The URL of the DCGM Prometheus exporter. |
+| `plugin_version` | Plugin version (currently 3). |
+| `heartbeat` | Set to "true" to receive alerts for data collection gaps. |
 
-- Place the `dcgm` folder under the Site24x7 Linux Agent plugin directory:
+## Performance Metrics
 
-```bash
-mv dcgm /opt/site24x7/monagent/plugins
-```
+| Tab | Metric Category | Individual Metrics | Unit |
+| :--- | :--- | :--- | :--- |
+| **Performance** | Utilization | `GPU_Utilization`, `Memory_Copy_Utilization` | % |
+| | Clocks | `SM_Clock`, `Memory_Clock` | MHz |
+| | Engines | `Encoder_Utilization`, `Decoder_Utilization` | % |
+| | Pipelines | `SM_Active`, `SM_Occupancy`, `Tensor_Active`, `FP16/32/64_Active` | fraction |
+| | Throughput | `PCIe_TX_Throughput`, `PCIe_RX_Throughput` | KB/s |
+| **Resources** | Memory | `Memory_Used`, `Memory_Free`, `Memory_Total`, `Memory_Reserved` | MB |
+| | VRAM | `Framebuffer_Utilization` | % |
+| **Health** | Thermal | `Temperature`, `Memory_Temperature`, `Slowdown_Temperature` | C |
+| | Reliability | `Correctable_Remapped_Rows`, `Uncorrectable_Remapped_Rows`, `XID_Errors` | count |
+| | Hardware | `Power_Usage` (W), `Fan_Speed` (%), `Energy_Consumption` (mJ) | - |
+| | State | `PState` | state |
 
-#### Windows
+*Note: Systems with more than 25 GPUs will have the tabular output truncated to the first 25 devices to comply with Site24x7 limits, flagged by `Truncated_Output: "true"`.*
 
-- Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
-
-- Further, move the folder `dcgm` into the Site24x7 Windows Agent plugin directory:
-
-```
-C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins\
-```
-
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7 data center.
-
-### Performance Metrics
-
-| Tab | Metric Category | Individual Metrics Provided |
-| :--- | :--- | :--- |
-| **Performance** | GPU Utilization | `GPU_Utilization` (%) |
-| | Memory Copy Utilization | `Memory_Copy_Utilization` (%) |
-| | SM Clock | `SM_Clock` (MHz) |
-| | Memory Clock | `Memory_Clock` (MHz) |
-| | Encoder/Decoder Utilization | `Encoder_Utilization`, `Decoder_Utilization` (%) |
-| | SM Activity | `SM_Active` (fraction) |
-| | SM Occupancy | `SM_Occupancy` (fraction) |
-| | Tensor Core Activity | `Tensor_Active` (fraction) |
-| | FP Precision Pipes | `FP16_Active`, `FP32_Active`, `FP64_Active` (fraction) |
-| | PCIe Throughput | `PCIe_TX_Throughput`, `PCIe_RX_Throughput` (KB/s) |
-| **Resources** | Memory Usage | `Memory_Used`, `Memory_Free`, `Memory_Total` (MB) |
-| | Framebuffer Utilization | `Framebuffer_Utilization` (%) |
-| | Memory Reserved | `Memory_Reserved` (MB) |
-| **Health** | Temperature | `Temperature`, `Memory_Temperature` (C) |
-| | Power & Fan | `Power_Usage` (W), `Fan_Speed` (%) |
-| | Energy Consumption | `Energy_Consumption` (mJ) |
-| | Clock Throttle Reasons | `Clock_Throttle_Reasons` (bitmask) |
-| | Remapped Rows | `Correctable_Remapped_Rows`, `Uncorrectable_Remapped_Rows` (count) |
-| | XID Errors | `XID_Errors` (count) |
-| | Performance State | `PState` (state) |
-| | Slowdown Temperature | `Slowdown_Temperature` (C) |
-
-### Sample JSON Output
-
+## Sample JSON Output
 ```json
 {
-    "plugin_version": 1,
-    "heartbeat_required": true,
-    "units": {
-        "Average_GPU_Utilization": "%",
-        "Average_Memory_Utilization": "%",
-        "Average_Temperature": "C",
-        "Total_Power_Draw": "W",
-        "GPU_Device_Count": "count",
-        "GPU_Performance_Metrics": {
-            "GPU_Utilization": "%",
-            ...
-        },
-        ...
-    },
-    "tabs": {
-        "Performance": {
-            "order": 1,
-            "tablist": [
-                "Average_GPU_Utilization",
-                "Average_Memory_Utilization",
-                "GPU_Performance_Metrics"
-            ]
-        },
-        ...
-    },
-    "Name": "NVIDIA_DCGM_Monitor",
+    "Average_GPU_Utilization": 45.5,
+    "Average_Memory_Utilization": 12.2,
+    "Average_Temperature": 62.0,
     "GPU_Device_Count": 1,
-    "Average_GPU_Utilization": 10.5,
-    "Average_Memory_Utilization": 5.2,
-    "Average_Temperature": 45.0,
-    "Total_Power_Draw": 120.5,
-    "GPU_Performance_Metrics": [
+    "GPU_Health_Metrics": [
         {
-            "name": "GPU 0",
-            "GPU_Utilization": 10.5,
-            ...
+            "Energy_Consumption": 150230,
+            "Fan_Speed": 35.0,
+            "Power_Usage": 125.5,
+            "Temperature": 62.0,
+            "name": "GPU 0"
         }
     ],
-    ...
+    "Name": "NVIDIA_DCGM_Monitor",
+    "heartbeat_required": "true",
+    "plugin_version": 3,
     "status": 1,
-    "msg": "Success"
+    "units": {
+        "Average_GPU_Utilization": "%",
+        "GPU_Device_Count": "count",
+        "GPU_Health_Metrics": {
+            "Temperature": "C"
+        }
+    }
 }
 ```
 
-The agent will automatically execute the plugin within five minutes and send performance data to the Site24x7.
-
-To see the dcgm monitor in the Site24x7's web client, login Site24x7 with your account, navigate to Server tab -> Plugin Integration -> list of plugin monitors -> user can check the dcgm monitor.
+## Security & Permissions
+- The plugin executes with the same privileges as the Site24x7 agent user.
+- No root access is required for standard exporter scraping.
+- Error messages are sanitized to prevent credential leakage.
+- URL validation and response size limits are enforced.
