@@ -50,9 +50,8 @@ Restart the instance after making the above changes.
 		port="1099"
 		broker_name="broker_name"
 		topic_name="topic_name"
-		logs_enabled="False"
-		log_type_name=None
-		log_file_path=None
+		activemq_topics_logs_enabled="False"
+		activemq_topics_logs_file_path="/var/log/apache-activemq*/data/activemq*.log"
     
 
 - Execute the below command with appropriate arguments to check for the valid json output.  

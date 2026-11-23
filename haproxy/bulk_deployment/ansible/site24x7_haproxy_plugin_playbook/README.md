@@ -56,8 +56,7 @@ Site24x7 - Enable HAProxy stats
       HAProxy_username: "test_user"                             # HAProxy username    [Enter '"None"' in case of no username]
       HAProxy_password: "test_password"                         # HAProxy password    [Enter '"None"' in case of no password]
       HAProxy_logs_enabled: "False"
-      HAProxy_log_type_name: "None"
-      HAProxy_log_file_path: "None"
+      HAProxy_logs_file_path: "None"
 ```
 The details below are required to set the values in the [haproxy.cfg](https://github.com/site24x7/plugins/blob/master/haproxy/haproxy.cfg) file for the plugin.
 
@@ -79,15 +78,11 @@ The details below are required to set the values in the [haproxy.cfg](https://gi
 
 - **HAProxy_logs_enabled** :
 
-    HAProxy logs enabled (True/False)
+    Enables collection of the static "HAProxy Logs" log type (True/False)
 
-- **HAProxy_log_type_name** :
+- **HAProxy_logs_file_path**:
 
-    Name of HAProxy log type
-
-- **HAProxy_log_file_path**:
-
-    Path of HAProxy log file
+    Comma separated path(s) of the HAProxy log file(s), e.g. `/var/log/haproxy*.log*`
 
 
 

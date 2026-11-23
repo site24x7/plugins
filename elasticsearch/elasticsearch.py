@@ -4,6 +4,8 @@ import time
 import os
 import logging
 from logging.handlers import RotatingFileHandler
+import socket
+import ipaddress
 import urllib3
 import requests
 import warnings
@@ -14,6 +16,24 @@ warnings.filterwarnings("ignore")
 
 PLUGIN_VERSION = 1
 HEARTBEAT = True
+
+ELASTICSEARCH_SLOW_LOG_LOG_TYPE_NAME = "Elasticsearch Slow Log"
+
+
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
 
 METRICS_UNITS = {
     "JVM garbage collector old generation time": "ms",
@@ -143,9 +163,8 @@ class esk:
         self.cafile = args.cafile
         self.url_time_out = args.url_time_out
         self.read_time_out = args.read_time_out
-        self.logsenabled = args.logs_enabled
-        self.logtypename = args.log_type_name
-        self.logfilepath = args.log_file_path
+        self.logsenabled = args.elasticsearch_slow_log_enabled
+        self.logfilepath = args.elasticsearch_slow_log_file_path
         self.node_metrics = {}
         self.index_metrics = {}
 
@@ -734,11 +753,15 @@ class esk:
             applog = {}
             if self.logsenabled in ["True", "true", "1"]:
                 applog["logs_enabled"] = True
-                applog["log_type_name"] = self.logtypename
+                applog["log_type_name"] = ELASTICSEARCH_SLOW_LOG_LOG_TYPE_NAME
                 applog["log_file_path"] = self.logfilepath
             else:
                 applog["logs_enabled"] = False
             self.maindata["applog"] = applog
+
+            if "s247config" not in self.maindata:
+                self.maindata["s247config"] = {}
+            self.maindata["s247config"]["ip_address"] = resolve_ip_address(self.hostname)
 
             return self.maindata
         finally:
@@ -791,19 +814,14 @@ def run(param):
         else "60"
     )
     logs_enabled = (
-        clean_quotes(param.get("logs_enabled"))
-        if param and param.get("logs_enabled")
+        clean_quotes(param.get("elasticsearch_slow_log_enabled"))
+        if param and param.get("elasticsearch_slow_log_enabled")
         else "True"
     )
-    log_type_name = (
-        clean_quotes(param.get("log_type_name"))
-        if param and param.get("log_type_name")
-        else "Elasticsearch Slow Log"
-    )
     log_file_path = (
-        clean_quotes(param.get("log_file_path"))
-        if param and param.get("log_file_path")
-        else "/var/log/elasticsearch/*_index_indexing_slowlog*.log"
+        clean_quotes(param.get("elasticsearch_slow_log_file_path"))
+        if param and param.get("elasticsearch_slow_log_file_path")
+        else "/var/log/elasticsearch/*_index_indexing_slowlog*.log,/var/log/elasticsearch/*_index_search_slowlog*.log"
     )
 
     class Args:
@@ -818,7 +836,6 @@ def run(param):
             url_time_out,
             read_time_out,
             logs_enabled,
-            log_type_name,
             log_file_path,
         ):
             self.host = host
@@ -829,9 +846,8 @@ def run(param):
             self.cafile = cafile
             self.url_time_out = int(url_time_out)
             self.read_time_out = int(read_time_out)
-            self.logs_enabled = logs_enabled
-            self.log_type_name = log_type_name
-            self.log_file_path = log_file_path
+            self.elasticsearch_slow_log_enabled = logs_enabled
+            self.elasticsearch_slow_log_file_path = log_file_path
 
     args = Args(
         host,
@@ -843,7 +859,6 @@ def run(param):
         url_time_out,
         read_time_out,
         logs_enabled,
-        log_type_name,
         log_file_path,
     )
     elasticsearch_instance = esk(args)
@@ -862,8 +877,7 @@ if __name__ == "__main__":
     url_time_out = 10
     read_time_out = 60
     logs_enabled = "True"
-    log_type_name = "Elasticsearch Slow Log"
-    log_file_path = "/var/log/elasticsearch/*_index_indexing_slowlog*.log"
+    log_file_path = "/var/log/elasticsearch/*_index_indexing_slowlog*.log,/var/log/elasticsearch/*_index_search_slowlog*.log"
 
     import argparse
 
@@ -902,18 +916,12 @@ if __name__ == "__main__":
         "--cafile", help="cafile for the Elasticsearch", nargs="?", default=cafile
     )
     parser.add_argument(
-        "--logs_enabled",
-        help="enable log collection for this plugin application",
+        "--elasticsearch_slow_log_enabled",
+        help="enable log collection for Elasticsearch slow logs",
         default=logs_enabled,
     )
     parser.add_argument(
-        "--log_type_name",
-        help="Display name of the log type",
-        nargs="?",
-        default=log_type_name,
-    )
-    parser.add_argument(
-        "--log_file_path",
+        "--elasticsearch_slow_log_file_path",
         help="list of comma separated log file paths",
         nargs="?",
         default=log_file_path,

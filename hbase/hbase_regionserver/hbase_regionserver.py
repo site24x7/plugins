@@ -2,9 +2,29 @@
 
 import json
 import requests
+import socket
+import ipaddress
 
 PLUGIN_VERSION = 1
 HEARTBEAT = True
+
+HBASE_REGIONSERVER_LOGS_LOG_TYPE_NAME = "HBase Logs"
+
+
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
 
 METRICS_UNITS = {
     "IPC Queue Size": "bytes",
@@ -46,7 +66,8 @@ class HBaseMonitor:
         }
         self.host = args.host
         self.port = args.port
-        self.log_file_path = args.log_file_path
+        self.logsenabled = args.hbase_regionserver_logs_enabled
+        self.log_file_path = args.hbase_regionserver_logs_file_path
 
     def metric_collector(self):
         try:
@@ -293,10 +314,19 @@ class HBaseMonitor:
                 }
             }
 
-            self.maindata["applog"] = {
-                "logs_enabled": True,
-                "log_type_name":"HBase Logs",
-                "log_file_path": self.log_file_path
+            if self.logsenabled in ['True', 'true', '1']:
+                self.maindata["applog"] = {
+                    "logs_enabled": True,
+                    "log_type_name": HBASE_REGIONSERVER_LOGS_LOG_TYPE_NAME,
+                    "log_file_path": self.log_file_path
+                }
+            else:
+                self.maindata["applog"] = {
+                    "logs_enabled": False
+                }
+
+            self.maindata["s247config"] = {
+                "ip_address": resolve_ip_address(self.host)
             }
 
             return self.maindata
@@ -312,18 +342,13 @@ class HBaseMonitor:
 if __name__ == "__main__":
     import argparse
 
-    default_log_path = (
-        "/var/log/*hbase*/*.log , "
-        "/opt/*hbase*/logs/*.log*, "
-        "/*hbase*/*log*/*.log, "
-        "C:\\*hbase*\\logs\\*.log*, "
-        "C:\\Program Files\\*hbase*\\logs\\*.log*"
-    )
+    default_log_path = "/var/log/*hbase*/*.log*,/opt/*hbase*/logs/*.log*"
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', help='HBase host', default='localhost')
     parser.add_argument('--port', help='HBase JMX port', default='16030')
-    parser.add_argument('--log_file_path', help='HBase log file path', default=default_log_path)
+    parser.add_argument('--hbase_regionserver_logs_enabled', help='enable log collection for HBase logs', default='True')
+    parser.add_argument('--hbase_regionserver_logs_file_path', help='HBase log file path', default=default_log_path)
     args = parser.parse_args()
 
     obj = HBaseMonitor(args)

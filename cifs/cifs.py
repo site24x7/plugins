@@ -17,13 +17,15 @@ current_file_path = os.path.dirname(os.path.abspath(__file__))
 
 class cifs:
 
-    def __init__(self, plugin_version=PLUGIN_VERSION):
+    def __init__(self):
         self.maindata = {}
-        self.maindata["plugin_version"] = plugin_version
+        self.maindata["plugin_version"] = PLUGIN_VERSION
         self.maindata["heartbeat_required"] = HEARTBEAT
         self.maindata["units"] = METRICS_UNITS
         self.mounts = {}
         self.mount_points = []
+        self.mount_state = {}
+        self.mount_permission = {}
 
     def execute_cmd(self, command):
 
@@ -75,10 +77,10 @@ class cifs:
             unmounted = list(set1 - set2)
 
             for i in mounted:
-                self.maindata[i + " State"] = "Mounted"
+                self.mount_state[i] = "Mounted"
 
             for i in unmounted:
-                self.maindata[i + " State"] = "Unmounted"
+                self.mount_state[i] = "Unmounted"
 
             self.maindata["Mounted Shares"] = len(mounted)
             self.maindata["Unmounted Shares"] = len(unmounted)
@@ -102,7 +104,7 @@ class cifs:
                 f.close()
                 file_written = True
                 for i in self.mount_points:
-                    self.maindata[i + " State"] = "Mounted"
+                    self.mount_state[i] = "Mounted"
             except:
                 pass
 
@@ -128,9 +130,9 @@ class cifs:
                             info = i[1:-1].split(",")
                             break
                     if "rw" in info[0]:
-                        self.maindata[mount_data[2] + " Permission"] = "read/write"
+                        self.mount_permission[mount_data[2]] = "read/write"
                     elif "ro" in info[0]:
-                        self.maindata[mount_data[2] + " Permission"] = "read only"
+                        self.mount_permission[mount_data[2]] = "read only"
                     if "vers" in info[2]:
                         self.maindata["Cifs Version"] = info[2].split("=")[-1]
 
@@ -199,6 +201,9 @@ class cifs:
                 basic_data = {}
                 basic_data["name"] = i
                 basic_data["status"] = 0
+                basic_data["permission"] = self.mount_permission.get(i, "-")
+                basic_data["state"] = self.mount_state.get(i, "-")
+                basic_data["mounted_from"] = self.mounts.get(i, "-")
                 cifs_mount_data.append(basic_data)
 
             for key, values in cifs_mounts.items():
@@ -214,15 +219,12 @@ class cifs:
                         basic_data["status"] = 0
                 elif file_written:
                     basic_data["status"] = 1
+                basic_data["permission"] = self.mount_permission.get(key, "-")
+                basic_data["state"] = self.mount_state.get(key, "-")
+                basic_data["mounted_from"] = values
                 cifs_mount_data.append(basic_data)
 
             self.maindata["Size"] = cifs_mount_data
-            mount_from = {}
-
-            for i, j in cifs_mounts.items():
-                mount_from[i + " Mounted From"] = j
-
-            self.maindata.update(mount_from)
             self.maindata.update(TABS)
 
             if "status" in self.maindata:
@@ -250,19 +252,13 @@ def clean_quotes(value):
     return value_str
 
 def run(param):
-    plugin_version = clean_quotes(param.get("plugin_version")) if param and param.get("plugin_version") else PLUGIN_VERSION
-    cifs_instance = cifs(plugin_version)
+    cifs_instance = cifs()
     result = cifs_instance.metriccollector()
     return result
 
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--plugin_version", help="plugin version", default=PLUGIN_VERSION
-    )
-    args = parser.parse_args()
-    cifs = cifs(args.plugin_version)
+    cifs = cifs()
     result = cifs.metriccollector()
     print(json.dumps(result, indent=True))

@@ -7,9 +7,10 @@
       port: 3306
       username: "site24x7"
       password: "site24x7" 
-      logs_enabled: true
-      log_type_name: '"Mysql General Logs"'
-      log_file_path: '"/var/log/mysql/error.log"'
+      mysql_general_logs_enabled: true
+      mysql_general_logs_file_path: '"/var/log/mysqld*.log,/var/log/mysql/mysql.log,/var/log/mysql/*error*.log"'
+      mysql_slow_logs_enabled: true
+      mysql_slow_logs_file_path: '"/var/log/mysql/*slow*.log"'
 
 
   
@@ -137,9 +138,10 @@
        - { regex: 'port =', line: 'port ={{port}}' }
        - { regex: 'username =', line: 'username ={{username}}' }
        - { regex: '^password =', line: 'password ={{password}}' }
-       - { regex: 'logs_enabled=', line: 'logs_enabled ={{logs_enabled}}' }
-       - { regex: 'log_type_name=', line: 'log_type_name ={{log_type_name}}' }
-       - { regex: 'log_file_path=', line: 'log_file_path ={{log_file_path}}' }
+       - { regex: 'mysql_general_logs_enabled=', line: 'mysql_general_logs_enabled ={{mysql_general_logs_enabled}}' }
+       - { regex: 'mysql_general_logs_file_path=', line: 'mysql_general_logs_file_path ={{mysql_general_logs_file_path}}' }
+       - { regex: 'mysql_slow_logs_enabled=', line: 'mysql_slow_logs_enabled ={{mysql_slow_logs_enabled}}' }
+       - { regex: 'mysql_slow_logs_file_path=', line: 'mysql_slow_logs_file_path ={{mysql_slow_logs_file_path}}' }
      when: mysql_file_check.stat.exists
 
 

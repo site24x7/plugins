@@ -3,6 +3,10 @@
 import json 
 import subprocess
 
+PLUGIN_VERSION = 1
+
+HEARTBEAT = True
+
 
 def get_process_details(process_name):
     process_cmd = "ps -eo ruser,pid,args  | grep -wiE '"+process_name+"' | grep -v grep | grep -v process_availability "
@@ -17,14 +21,12 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--process', help='process to be monitored', type=str, nargs='?')
-    parser.add_argument('--plugin_version', help='plugin template version', type=int,  nargs='?', default=1)
-    parser.add_argument('--heartbeat', help='alert if monitor does not send data', type=bool, nargs='?', default=True)
     args = parser.parse_args()
     
     process_data = {}    
     process_name = args.process
-    process_data['plugin_version'] = args.plugin_version
-    process_data['heartbeat_required'] = args.heartbeat
+    process_data['plugin_version'] = PLUGIN_VERSION
+    process_data['heartbeat_required'] = HEARTBEAT
     process_data['process_name'] = process_name
     process_cmd_output = get_process_details(process_name)
     

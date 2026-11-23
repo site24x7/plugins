@@ -2,6 +2,8 @@
 
 import json
 import argparse
+import socket
+import ipaddress
 
 # if any impacting changes to this plugin kindly increment the plugin version here.
 PLUGIN_VERSION = 1
@@ -20,6 +22,10 @@ BROKER_NAME = ""
 
 # Enter the Destination name to be monitored from your Activemq Queue name
 DESTINATION_NAME = ""
+
+ACTIVEMQ_LOGS_LOG_TYPE_NAME = "ActiveMQ Logs"
+ACTIVEMQ_LOGS_ENABLED = "False"
+ACTIVEMQ_LOGS_FILE_PATH = "/var/log/apache-activemq*/data/activemq*.log"
 
 URL = ""
 QUERY = ""
@@ -113,6 +119,22 @@ def get_output():
     return result
 
 
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
+
+
 # arguments are parsed from activemq.cfg file and assigned with the variables
 if __name__ == "__main__":
 
@@ -121,6 +143,8 @@ if __name__ == "__main__":
     parser.add_argument('--port', help="activemq port", type=str)
     parser.add_argument('--broker_name', help="activemq broker_name", type=str)
     parser.add_argument('--destination_name', help="activemq destination_name", type=str)
+    parser.add_argument('--activemq_logs_enabled', help='enable log collection for ActiveMQ logs', default=ACTIVEMQ_LOGS_ENABLED)
+    parser.add_argument('--activemq_logs_file_path', help='list of comma separated log file paths', nargs='?', default=ACTIVEMQ_LOGS_FILE_PATH)
     args = parser.parse_args()
     if args.host_name:
         HOST_NAME = args.host_name
@@ -136,5 +160,18 @@ if __name__ == "__main__":
     result_json['plugin_version'] = PLUGIN_VERSION
     result_json['heartbeat_required'] = HEARTBEAT
     result_json['units'] = METRIC_UNITS
+
+    applog = {}
+    if args.activemq_logs_enabled in ['True', 'true', '1']:
+        applog["logs_enabled"] = True
+        applog["log_type_name"] = ACTIVEMQ_LOGS_LOG_TYPE_NAME
+        applog["log_file_path"] = args.activemq_logs_file_path
+    else:
+        applog["logs_enabled"] = False
+    result_json['applog'] = applog
+
+    result_json['s247config'] = {
+        "ip_address": resolve_ip_address(HOST_NAME)
+    }
 
     print(json.dumps(result_json, indent=4, sort_keys=True))

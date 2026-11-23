@@ -66,6 +66,10 @@ If you're not using Linux servers or want to install the plugin manually, follow
       [kafka]
       kafka_host = "localhost"
       kafka_jmx_port = "9999"
+      kafka_logs_enabled = "False"
+      kafka_logs_file_path = "/var/log/kafka*/*.log"
+
+- Applog is supported for Kafka Monitoring. To enable log collection for the static "Kafka Logs" log type, configure `kafka_logs_enabled=true` and set `kafka_logs_file_path` as needed.
 
 
 #### Linux

@@ -37,9 +37,6 @@
 	[ls_monitoring]
 	metric_path='/tmp/lshttpd/'
 	virtual_host='_AdminVHost'
-	logs_enabled='False'
-	log_type_name='None'
-	log_file_path='None'
 	```
  
 - Move the directory "litespeed_monitoring" under the Site24x7 Linux Agent plugin directory: 

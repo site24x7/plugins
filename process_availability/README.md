@@ -27,12 +27,10 @@ This plugin monitors if the specified process is running in the current machine 
 
 		[java]
 		host="java"
-		plugin_version="1"
-		heartbeat="True"
 
 - Execute the below command with appropriate arguments to check for the valid json output.  
 
-		python process_availability.py --process="java" --plugin_version="1" --heartbeat="True"
+		python process_availability.py --process="java"
 		
 - Move the directory "process_availability" under Site24x7 Linux Agent plugin directory
 

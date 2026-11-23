@@ -1,9 +1,28 @@
 #!/usr/bin/python3
 import json
 import subprocess
+import socket
+import ipaddress
 
 PLUGIN_VERSION=1
 HEARTBEAT=True
+
+KAFKA_TOPICS_LOGS_LOG_TYPE_NAME = "Kafka Logs"
+
+def resolve_ip_address(host):
+    if not host:
+        return host
+    if host == "localhost":
+        return "localhost"
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    try:
+        return socket.gethostbyname(host)
+    except Exception:
+        return host
 
 class kafka:
 
@@ -16,9 +35,8 @@ class kafka:
         self.kafka_jmx_port=args.kafka_jmx_port
         self.kafka_topic_name=args.kafka_topic_name
 
-        self.logsenabled=args.logs_enabled
-        self.logtypename=args.log_type_name
-        self.logfilepath=args.log_file_path
+        self.logsenabled=args.kafka_topics_logs_enabled
+        self.logfilepath=args.kafka_topics_logs_file_path
 
 
     def execute_command(self,cmd, need_out=False):
@@ -99,13 +117,17 @@ class kafka:
             applog={}
             if(self.logsenabled in ['True', 'true', '1']):
                     applog["logs_enabled"]=True
-                    applog["log_type_name"]=self.logtypename
+                    applog["log_type_name"]=KAFKA_TOPICS_LOGS_LOG_TYPE_NAME
                     applog["log_file_path"]=self.logfilepath
             else:
                     applog["logs_enabled"]=False
 
             self.maindata['applog'] = applog
             self.maindata['tags']=f"Kafka_Broker_Host:Kafka_Topics_Monitoring"
+
+            self.maindata['s247config'] = {
+                "ip_address": resolve_ip_address(self.kafka_host)
+            }
 
         except Exception as e:
             self.maindata['msg']=str(e)
@@ -125,9 +147,8 @@ if __name__=="__main__":
     parser.add_argument('--kafka_host', help='host name to access the kafka server metrics',default=kafka_host)
     parser.add_argument('--kafka_jmx_port', help='jmx port to access the kafka server metrics',default=kafka_jmx_port)
     parser.add_argument('--kafka_topic_name', help='kafka topic name',default=kafka_topic_name)
-    parser.add_argument('--logs_enabled', help='enable log collection for this plugin application',default="False")
-    parser.add_argument('--log_type_name', help='Display name of the log type', nargs='?', default=None)
-    parser.add_argument('--log_file_path', help='list of comma separated log file paths', nargs='?', default=None)
+    parser.add_argument('--kafka_topics_logs_enabled', help='enable log collection for Kafka logs',default="False")
+    parser.add_argument('--kafka_topics_logs_file_path', help='list of comma separated log file paths', nargs='?', default="/var/log/kafka*/*.log")
     args=parser.parse_args()
 
     obj=kafka(args)
