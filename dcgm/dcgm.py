@@ -8,7 +8,7 @@ import urllib.request
 from typing import Any, Dict, List, Optional
 
 # Mandatory Site24x7 Plugin Constants
-PLUGIN_VERSION = 3
+PLUGIN_VERSION = 1
 HEARTBEAT = True
 
 # Metric units for individual categories (Tabular data)

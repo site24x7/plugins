@@ -5,7 +5,7 @@ import urllib.request
 from typing import Any, Dict, List, Optional
 
 # Mandatory Site24x7 Plugin Constants
-PLUGIN_VERSION = 2
+PLUGIN_VERSION = 1
 HEARTBEAT = True
 
 # Metric units registry for Site24x7 Dashboard
