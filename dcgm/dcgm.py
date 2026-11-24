@@ -101,7 +101,9 @@ class Plugin:
         self.data = {
             "plugin_version": args.plugin_version,
             "heartbeat_required": args.heartbeat,
-            "Name": "NVIDIA_DCGM_Monitor"
+            "Name": "NVIDIA_DCGM_Monitor",
+            "units": METRIC_UNITS,
+            "tabs": TABS
         }
 
     def getData(self) -> Dict[str, Any]:
@@ -119,7 +121,6 @@ class Plugin:
                 self.data["status"] = 0
                 self.data["msg"] = "No GPU metrics found in exporter output"
                 self.data.pop("tabs", None)
-                self.data.pop("units", None)
                 return self.data
 
             # Build Site24x7 Tabular lists
@@ -135,120 +136,71 @@ class Plugin:
             for gpu_id, m in sorted(gpu_data.items(), key=lambda x: int(x[0]) if x[0].isdigit() else x[0]):
                 gpu_name = f"GPU {gpu_id}"
 
-                # Performance Tab - omit keys if metric not provided by exporter
+                # Performance Tab
                 perf_row = {"name": gpu_name}
-                if "gpu_util" in m: perf_row["GPU_Utilization"] = m["gpu_util"]
-                if "mem_util" in m: perf_row["Memory_Copy_Utilization"] = m["mem_util"]
-                if "sm_clock" in m: perf_row["SM_Clock"] = m["sm_clock"]
-                if "mem_clock" in m: perf_row["Memory_Clock"] = m["mem_clock"]
-                if "enc_util" in m: perf_row["Encoder_Utilization"] = m["enc_util"]
-                if "dec_util" in m: perf_row["Decoder_Utilization"] = m["dec_util"]
-                if "sm_active" in m: perf_row["SM_Active"] = m["sm_active"]
-                if "sm_occupancy" in m: perf_row["SM_Occupancy"] = m["sm_occupancy"]
-                if "tensor_active" in m: perf_row["Tensor_Active"] = m["tensor_active"]
-                if "fp16_active" in m: perf_row["FP16_Active"] = m["fp16_active"]
-                if "fp32_active" in m: perf_row["FP32_Active"] = m["fp32_active"]
-                if "fp64_active" in m: perf_row["FP64_Active"] = m["fp64_active"]
-                if "pcie_tx" in m: perf_row["PCIe_TX_Throughput"] = m["pcie_tx"]
-                if "pcie_rx" in m: perf_row["PCIe_RX_Throughput"] = m["pcie_rx"]
+                perf_row["GPU_Utilization"] = m.get("gpu_util", 0)
+                perf_row["Memory_Copy_Utilization"] = m.get("mem_util", 0)
+                perf_row["SM_Clock"] = m.get("sm_clock", 0)
+                perf_row["Memory_Clock"] = m.get("mem_clock", 0)
+                perf_row["Encoder_Utilization"] = m.get("enc_util", 0)
+                perf_row["Decoder_Utilization"] = m.get("dec_util", 0)
+                perf_row["SM_Active"] = m.get("sm_active", 0)
+                perf_row["SM_Occupancy"] = m.get("sm_occupancy", 0)
+                perf_row["Tensor_Active"] = m.get("tensor_active", 0)
+                perf_row["FP16_Active"] = m.get("fp16_active", 0)
+                perf_row["FP32_Active"] = m.get("fp32_active", 0)
+                perf_row["FP64_Active"] = m.get("fp64_active", 0)
+                perf_row["PCIe_TX_Throughput"] = m.get("pcie_tx", 0)
+                perf_row["PCIe_RX_Throughput"] = m.get("pcie_rx", 0)
                 perf_list.append(perf_row)
 
-                # Resource Tab - omit keys if metric not provided by exporter
+                # Resource Tab
                 resource_row = {"name": gpu_name}
-                if "fb_used" in m: resource_row["Memory_Used"] = m["fb_used"]
-                if "fb_free" in m: resource_row["Memory_Free"] = m["fb_free"]
-                if "fb_total" in m: resource_row["Memory_Total"] = m["fb_total"]
+                resource_row["Memory_Used"] = m.get("fb_used", 0)
+                resource_row["Memory_Free"] = m.get("fb_free", 0)
+                resource_row["Memory_Total"] = m.get("fb_total", 0)
+                fb_util = 0
                 if "fb_used" in m and "fb_total" in m and m["fb_total"] > 0:
                     fb_util = round((m["fb_used"] / m["fb_total"] * 100), 2)
-                    if math.isfinite(fb_util):
-                        resource_row["Framebuffer_Utilization"] = fb_util
-                if "fb_reserved" in m: resource_row["Memory_Reserved"] = m["fb_reserved"]
+                resource_row["Framebuffer_Utilization"] = fb_util
+                resource_row["Memory_Reserved"] = m.get("fb_reserved", 0)
                 resource_list.append(resource_row)
 
-                # Health Tab - omit keys if metric not provided by exporter
+                # Health Tab
                 health_row = {"name": gpu_name}
-                if "temp" in m: health_row["Temperature"] = m["temp"]
-                if "mem_temp" in m: health_row["Memory_Temperature"] = m["mem_temp"]
-                if "power" in m: health_row["Power_Usage"] = m["power"]
-                if "fan" in m: health_row["Fan_Speed"] = m["fan"]
-                if "energy" in m: health_row["Energy_Consumption"] = m["energy"]
-                if "clock_throttle" in m: health_row["Clock_Throttle_Reasons"] = m["clock_throttle"]
-                if "corr_remap" in m: health_row["Correctable_Remapped_Rows"] = m["corr_remap"]
-                if "uncorr_remap" in m: health_row["Uncorrectable_Remapped_Rows"] = m["uncorr_remap"]
-                if "xid_errors" in m: health_row["XID_Errors"] = m["xid_errors"]
-                if "pstate" in m: health_row["PState"] = m["pstate"]
-                if "slowdown_temp" in m: health_row["Slowdown_Temperature"] = m["slowdown_temp"]
+                health_row["Temperature"] = m.get("temp", 0)
+                health_row["Memory_Temperature"] = m.get("mem_temp", 0)
+                health_row["Power_Usage"] = m.get("power", 0)
+                health_row["Fan_Speed"] = m.get("fan", 0)
+                health_row["Energy_Consumption"] = m.get("energy", 0)
+                health_row["Clock_Throttle_Reasons"] = m.get("clock_throttle", 0)
+                health_row["Correctable_Remapped_Rows"] = m.get("corr_remap", 0)
+                health_row["Uncorrectable_Remapped_Rows"] = m.get("uncorr_remap", 0)
+                health_row["XID_Errors"] = m.get("xid_errors", 0)
+                health_row["PState"] = m.get("pstate", 0)
+                health_row["Slowdown_Temperature"] = m.get("slowdown_temp", 0)
                 health_list.append(health_row)
 
                 # Collect values for aggregates
-                if "gpu_util" in m: gpu_utils.append(m["gpu_util"])
-                if "mem_util" in m: mem_utils.append(m["mem_util"])
-                if "temp" in m: temps.append(m["temp"])
-                if "power" in m: powers.append(m["power"])
+                gpu_utils.append(m.get("gpu_util", 0))
+                mem_utils.append(m.get("mem_util", 0))
+                temps.append(m.get("temp", 0))
+                powers.append(m.get("power", 0))
 
-            # Populate top-level aggregate metrics only if list of values is not empty
+            # Populate top-level aggregate metrics
             self.data["GPU_Device_Count"] = len(gpu_data)
-            if gpu_utils:
-                avg_gpu = round(sum(gpu_utils) / len(gpu_utils), 2)
-                if math.isfinite(avg_gpu):
-                    self.data["Average_GPU_Utilization"] = avg_gpu
-            if mem_utils:
-                avg_mem = round(sum(mem_utils) / len(mem_utils), 2)
-                if math.isfinite(avg_mem):
-                    self.data["Average_Memory_Utilization"] = avg_mem
-            if temps:
-                avg_temp = round(sum(temps) / len(temps), 2)
-                if math.isfinite(avg_temp):
-                    self.data["Average_Temperature"] = avg_temp
-            if powers:
-                total_power = round(sum(powers), 2)
-                if math.isfinite(total_power):
-                    self.data["Total_Power_Draw"] = total_power
+            self.data["Average_GPU_Utilization"] = round(sum(gpu_utils) / len(gpu_utils), 2) if gpu_utils else 0
+            self.data["Average_Memory_Utilization"] = round(sum(mem_utils) / len(mem_utils), 2) if mem_utils else 0
+            self.data["Average_Temperature"] = round(sum(temps) / len(temps), 2) if temps else 0
+            self.data["Total_Power_Draw"] = round(sum(powers), 2) if powers else 0
 
-            # Limit tabular output to 25 rows and flag truncation if applicable
+            # Assign tabular data (Limit to 25 rows)
             self.data["GPU_Performance_Metrics"] = perf_list[:25]
             self.data["GPU_Resource_Metrics"] = resource_list[:25]
             self.data["GPU_Health_Metrics"] = health_list[:25]
 
             if len(gpu_data) > 25:
                 self.data["Truncated_Output"] = "true"
-
-            # Dynamically construct units to ONLY include keys present in output data
-            units = {}
-            for k in ["Average_GPU_Utilization", "Average_Memory_Utilization", "Average_Temperature", "Total_Power_Draw", "GPU_Device_Count"]:
-                if k in self.data and k in TOP_LEVEL_UNITS:
-                    units[k] = TOP_LEVEL_UNITS[k]
-
-            present_perf_keys = {k for row in self.data["GPU_Performance_Metrics"] for k in row if k != "name"}
-            perf_units = {k: v for k, v in PERF_UNITS.items() if k in present_perf_keys}
-            if perf_units:
-                units["GPU_Performance_Metrics"] = perf_units
-
-            present_res_keys = {k for row in self.data["GPU_Resource_Metrics"] for k in row if k != "name"}
-            res_units = {k: v for k, v in RESOURCE_UNITS.items() if k in present_res_keys}
-            if res_units:
-                units["GPU_Resource_Metrics"] = res_units
-
-            present_health_keys = {k for row in self.data["GPU_Health_Metrics"] for k in row if k != "name"}
-            health_units = {k: v for k, v in HEALTH_UNITS.items() if k in present_health_keys}
-            if health_units:
-                units["GPU_Health_Metrics"] = health_units
-
-            self.data["units"] = units
-
-            # Configure tabs to only include metrics present in data
-            filtered_tabs = {}
-            for tab_name, tab_info in TABS.items():
-                tab_metrics = [m for m in tab_info["tablist"] if m in self.data]
-                if tab_metrics:
-                    filtered_tabs[tab_name] = {
-                        "order": tab_info["order"],
-                        "tablist": tab_metrics
-                    }
-            if filtered_tabs:
-                self.data["tabs"] = filtered_tabs
-            else:
-                self.data.pop("tabs", None)
 
             self.data["status"] = 1
             self.data["msg"] = "Success"
@@ -258,7 +210,6 @@ class Plugin:
             self.data["status"] = 0
             self.data["msg"] = "Failed to collect metrics. Check exporter connectivity."
             self.data.pop("tabs", None)
-            self.data.pop("units", None)
 
         return self.data
 
@@ -276,7 +227,6 @@ class Plugin:
             "DCGM_FI_DEV_POWER_USAGE": "power",
             "DCGM_FI_DEV_GPU_TEMP": "temp",
             "DCGM_FI_DEV_MEMORY_TEMP": "mem_temp",
-            "DCGM_FI_DEV_MEM_TEMP": "mem_temp",
             "DCGM_FI_DEV_SM_CLOCK": "sm_clock",
             "DCGM_FI_DEV_MEM_CLOCK": "mem_clock",
             "DCGM_FI_DEV_FB_USED": "fb_used",
@@ -284,7 +234,6 @@ class Plugin:
             "DCGM_FI_DEV_FB_TOTAL": "fb_total",
             "DCGM_FI_DEV_FAN_SPEED": "fan",
             "DCGM_FI_DEV_TOTAL_ENERGY_CONSUMPTION": "energy",
-            "DCGM_FI_DEV_ENERGY_CONSUMPTION": "energy",
             "DCGM_FI_DEV_SM_ACTIVE": "sm_active",
             "DCGM_FI_DEV_SM_OCCUPANCY": "sm_occupancy",
             "DCGM_FI_DEV_TENSOR_ACTIVE": "tensor_active",
