@@ -213,20 +213,20 @@ class HealthCollector:
     def collect(pynvml: Any, handle: Any, name: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         h, stats = {"name": name}, {}
         try: h["GPU_Temperature"] = stats["temp"] = float(pynvml.nvmlDeviceGetTemperature(handle, pynvml.NVML_TEMPERATURE_GPU))
-        except Exception: h["GPU_Temperature"] = "N/A"
+        except Exception: h["GPU_Temperature"] = 0
         try:
             # NVML_TEMPERATURE_MEMORY is usually 1
             h["Memory_Temperature"] = float(pynvml.nvmlDeviceGetTemperature(handle, 1))
-        except Exception: h["Memory_Temperature"] = "N/A"
+        except Exception: h["Memory_Temperature"] = 0
 
         try: h["Fan_Speed"] = float(pynvml.nvmlDeviceGetFanSpeed(handle))
-        except Exception: h["Fan_Speed"] = "N/A"
+        except Exception: h["Fan_Speed"] = 0
         try: h["Power_Usage"] = stats["power"] = round(pynvml.nvmlDeviceGetPowerUsage(handle) / 1000.0, 2)
-        except Exception: h["Power_Usage"] = "N/A"
+        except Exception: h["Power_Usage"] = 0
         try: h["Power_Limit"] = round(pynvml.nvmlDeviceGetEnforcedPowerLimit(handle) / 1000.0, 2)
-        except Exception: h["Power_Limit"] = "N/A"
+        except Exception: h["Power_Limit"] = 0
         try: h["Energy_Consumption"] = round(pynvml.nvmlDeviceGetTotalEnergyConsumption(handle) / 1000.0, 2)
-        except Exception: h["Energy_Consumption"] = "N/A"
+        except Exception: h["Energy_Consumption"] = 0
 
         reasons = []
         try:
@@ -236,7 +236,7 @@ class HealthCollector:
             if bits & getattr(pynvml, 'nvmlClocksThrottleReasonHwThermalSlowdown', 0): reasons.append("Thermal_Slowdown")
             if bits & getattr(pynvml, 'nvmlClocksThrottleReasonGpuIdle', 0x1): reasons.append("Idle")
             h["Clock_Throttle_Reasons"] = ", ".join(reasons) if reasons else "None"
-        except Exception: h["Clock_Throttle_Reasons"] = "N/A"
+        except Exception: h["Clock_Throttle_Reasons"] = "None"
 
         try:
             sbe = pynvml.nvmlDeviceGetTotalEccErrors(handle, 0, 0)
@@ -244,15 +244,15 @@ class HealthCollector:
             h["ECC_Errors_Single_Bit"], h["ECC_Errors_Double_Bit"], h["ECC_Errors"] = sbe, dbe, sbe+dbe
             stats["sbe"], stats["dbe"] = sbe, dbe
         except Exception:
-            for k in ["ECC_Errors_Single_Bit", "ECC_Errors_Double_Bit", "ECC_Errors"]: h[k] = "N/A"
+            for k in ["ECC_Errors_Single_Bit", "ECC_Errors_Double_Bit", "ECC_Errors"]: h[k] = 0
 
         try: h["PCIe_Replay_Errors"] = pynvml.nvmlDeviceGetPcieReplayCounter(handle)
-        except Exception: h["PCIe_Replay_Errors"] = "N/A"
+        except Exception: h["PCIe_Replay_Errors"] = 0
 
         try:
             c, u, _, f = pynvml.nvmlDeviceGetRemappedRows(handle)
             h["Remapped_Memory_Rows"], h["Row_Remapping_Failures"] = c+u, (1 if f else 0)
-        except Exception: h["Remapped_Memory_Rows"] = h["Row_Remapping_Failures"] = "N/A"
+        except Exception: h["Remapped_Memory_Rows"] = h["Row_Remapping_Failures"] = 0
 
         return h, stats
 
@@ -387,12 +387,12 @@ class Plugin:
             xid = get_latest_xid_errors()
             return {
                 "status": 1, "msg": "Collected via NVML", "GPU_Device_Count": count, "GPU_Allocated_Devices": a_d, "GPU_Active_Devices": ac_d, "GPU_Idle_Devices": i_d, "Total_Active_Processes": t_ap,
-                "GPU_Idle_Cost": round(i_d * self.hourly_cost, 2), "Average_GPU_Utilization": round(sum(g_u)/len(g_u), 2) if g_u else "N/A",
-                "Average_Memory_Utilization": round(sum(m_u)/len(m_u), 2) if m_u else "N/A", "Average_Temperature": round(sum(temps)/len(temps), 2) if temps else "N/A",
-                "Total_Power_Draw": round(sum(pwrs), 2) if pwrs else "N/A", "NVLink_Active_Links": sum(nvl) if nvl else "N/A",
-                "NVLink_TX_Throughput": sum(n_tx) if n_tx else "N/A", "NVLink_RX_Throughput": sum(n_rx) if n_rx else "N/A",
-                "ECC_Errors_Single_Bit": sum(sbes) if sbes else "N/A", "ECC_Errors_Double_Bit": sum(dbes) if dbes else "N/A", "ECC_Errors": sum(sbes)+sum(dbes) if sbes else "N/A",
-                "Driver_Version": d_ver, "CUDA_Version": c_ver, "XID_Errors_Count": xid if xid is not None else "N/A",
+                "GPU_Idle_Cost": round(i_d * self.hourly_cost, 2), "Average_GPU_Utilization": round(sum(g_u)/len(g_u), 2) if g_u else 0,
+                "Average_Memory_Utilization": round(sum(m_u)/len(m_u), 2) if m_u else 0, "Average_Temperature": round(sum(temps)/len(temps), 2) if temps else 0,
+                "Total_Power_Draw": round(sum(pwrs), 2) if pwrs else 0, "NVLink_Active_Links": sum(nvl) if nvl else 0,
+                "NVLink_TX_Throughput": sum(n_tx) if n_tx else 0, "NVLink_RX_Throughput": sum(n_rx) if n_rx else 0,
+                "ECC_Errors_Single_Bit": sum(sbes) if sbes else 0, "ECC_Errors_Double_Bit": sum(dbes) if dbes else 0, "ECC_Errors": sum(sbes)+sum(dbes) if sbes else 0,
+                "Driver_Version": d_ver, "CUDA_Version": c_ver, "XID_Errors_Count": xid if xid is not None else 0,
                 "GPU_Performance_Core": p_c, "GPU_Performance_Bus": p_b, "GPU_Resource_Memory": r_m, "GPU_Resource_Hardware": r_h, "GPU_Health_Metrics": hl, "GPU_Process_Metrics": pr
             }
         finally:
@@ -420,12 +420,12 @@ class Plugin:
             gu, mu, mt, mus, mf, t, pd, pl, fs = [parse_smi_number(x) for x in row[2:11]]
             uuid, sn, vb = row[11], row[12], row[13]
 
-            p_c.append({"name": lbl, "GPU_Utilization": gu if gu is not None else "N/A", "Memory_Utilization": mu if mu is not None else "N/A", "SM_Clock": "N/A", "Core_Clock": "N/A", "Memory_Clock": "N/A", "Encoder_Utilization": "N/A", "Decoder_Utilization": "N/A"})
-            p_b.append({"name": lbl, "PCIe_TX_Throughput": "N/A", "PCIe_RX_Throughput": "N/A", "NVLink_TX_Throughput": "N/A", "NVLink_RX_Throughput": "N/A"})
-            r_m.append({"name": lbl, "Memory_Total": mt if mt is not None else "N/A", "Memory_Used": mus if mus is not None else "N/A", "Memory_Free": mf if mf is not None else "N/A", "Memory_Reserved": "N/A", "Framebuffer_Utilization": round((mus/mt*100), 2) if (mus and mt) else "N/A", "BAR1_Memory_Total": "N/A", "BAR1_Memory_Used": "N/A", "BAR1_Memory_Free": "N/A", "Allocatable_Capacity": mf if mf is not None else "N/A"})
-            r_h.append({"name": lbl, "UUID": uuid, "Serial_Number": sn, "VBIOS_Version": vb, "PCIe_Link_Width": "N/A", "NVLink_Active_Links": "N/A", "Compute_Capability": "N/A", "Device_Capacity": "N/A"})
-            hl.append({"name": lbl, "GPU_Temperature": t if t is not None else "N/A", "Memory_Temperature": "N/A", "Fan_Speed": fs if fs is not None else "N/A", "Power_Usage": pd if pd is not None else "N/A", "Power_Limit": pl if pl is not None else "N/A", "Energy_Consumption": "N/A", "Clock_Throttle_Reasons": "N/A", "ECC_Errors": "N/A", "ECC_Errors_Single_Bit": "N/A", "ECC_Errors_Double_Bit": "N/A", "PCIe_Replay_Errors": "N/A", "Remapped_Memory_Rows": "N/A", "Row_Remapping_Failures": "N/A"})
-            pr.append({"name": lbl, "Active_Processes_Count": "N/A", "Process_ID": "N/A", "Process_Name": "N/A", "Process_GPU_Memory": "N/A", "Pod_Level_GPU_Usage": "N/A", "Container_Level_GPU_Usage": "N/A", "Slurm_Job_Attribution": "N/A", "Training_Workload_Active": "N/A"})
+            p_c.append({"name": lbl, "GPU_Utilization": gu if gu is not None else 0, "Memory_Utilization": mu if mu is not None else 0, "SM_Clock": 0, "Core_Clock": 0, "Memory_Clock": 0, "Encoder_Utilization": 0, "Decoder_Utilization": 0})
+            p_b.append({"name": lbl, "PCIe_TX_Throughput": 0, "PCIe_RX_Throughput": 0, "NVLink_TX_Throughput": 0, "NVLink_RX_Throughput": 0})
+            r_m.append({"name": lbl, "Memory_Total": mt if mt is not None else 0, "Memory_Used": mus if mus is not None else 0, "Memory_Free": mf if mf is not None else 0, "Memory_Reserved": 0, "Framebuffer_Utilization": round((mus/mt*100), 2) if (mus and mt) else 0, "BAR1_Memory_Total": 0, "BAR1_Memory_Used": 0, "BAR1_Memory_Free": 0, "Allocatable_Capacity": mf if mf is not None else 0})
+            r_h.append({"name": lbl, "UUID": uuid, "Serial_Number": sn, "VBIOS_Version": vb, "PCIe_Link_Width": 0, "NVLink_Active_Links": 0, "Compute_Capability": "N/A", "Device_Capacity": "N/A"})
+            hl.append({"name": lbl, "GPU_Temperature": t if t is not None else 0, "Memory_Temperature": 0, "Fan_Speed": fs if fs is not None else 0, "Power_Usage": pd if pd is not None else 0, "Power_Limit": pl if pl is not None else 0, "Energy_Consumption": 0, "Clock_Throttle_Reasons": "None", "ECC_Errors": 0, "ECC_Errors_Single_Bit": 0, "ECC_Errors_Double_Bit": 0, "PCIe_Replay_Errors": 0, "Remapped_Memory_Rows": 0, "Row_Remapping_Failures": 0})
+            pr.append({"name": lbl, "Active_Processes_Count": 0, "Process_ID": "N/A", "Process_Name": "N/A", "Process_GPU_Memory": 0, "Pod_Level_GPU_Usage": "N/A", "Container_Level_GPU_Usage": "N/A", "Slurm_Job_Attribution": "N/A", "Training_Workload_Active": 0})
 
             if gu is not None: g_u.append(gu)
             if mu is not None: m_u.append(mu)
@@ -436,11 +436,11 @@ class Plugin:
         ac_d = sum(1 for u in g_u if u > 0); i_d = len(rows) - ac_d
         xid = get_latest_xid_errors()
         return {
-            "status": 1, "msg": "Collected via CLI", "GPU_Device_Count": len(rows), "GPU_Allocated_Devices": ac_d, "GPU_Active_Devices": ac_d, "GPU_Idle_Devices": i_d, "Total_Active_Processes": "N/A",
-            "GPU_Idle_Cost": round(i_d * self.hourly_cost, 2), "Average_GPU_Utilization": round(sum(g_u)/len(g_u), 2) if g_u else "N/A",
-            "Average_Memory_Utilization": round(sum(m_u)/len(m_u), 2) if m_u else "N/A", "Average_Temperature": round(sum(temps)/len(temps), 2) if temps else "N/A",
-            "Total_Power_Draw": round(sum(pwrs), 2) if pwrs else "N/A", "NVLink_Active_Links": "N/A", "NVLink_TX_Throughput": "N/A", "NVLink_RX_Throughput": "N/A",
-            "ECC_Errors_Single_Bit": "N/A", "ECC_Errors_Double_Bit": "N/A", "ECC_Errors": "N/A", "Driver_Version": "N/A", "CUDA_Version": "N/A", "XID_Errors_Count": xid if xid is not None else "N/A",
+            "status": 1, "msg": "Collected via CLI", "GPU_Device_Count": len(rows), "GPU_Allocated_Devices": ac_d, "GPU_Active_Devices": ac_d, "GPU_Idle_Devices": i_d, "Total_Active_Processes": 0,
+            "GPU_Idle_Cost": round(i_d * self.hourly_cost, 2), "Average_GPU_Utilization": round(sum(g_u)/len(g_u), 2) if g_u else 0,
+            "Average_Memory_Utilization": round(sum(m_u)/len(m_u), 2) if m_u else 0, "Average_Temperature": round(sum(temps)/len(temps), 2) if temps else 0,
+            "Total_Power_Draw": round(sum(pwrs), 2) if pwrs else 0, "NVLink_Active_Links": 0, "NVLink_TX_Throughput": 0, "NVLink_RX_Throughput": 0,
+            "ECC_Errors_Single_Bit": 0, "ECC_Errors_Double_Bit": 0, "ECC_Errors": 0, "Driver_Version": "N/A", "CUDA_Version": "N/A", "XID_Errors_Count": xid if xid is not None else 0,
             "GPU_Performance_Core": p_c, "GPU_Performance_Bus": p_b, "GPU_Resource_Memory": r_m, "GPU_Resource_Hardware": r_h, "GPU_Health_Metrics": hl, "GPU_Process_Metrics": pr
         }
 
