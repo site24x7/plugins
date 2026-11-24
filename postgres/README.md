@@ -1,9 +1,9 @@
-Plugin for PostGres Monitoring
+Plugin for PostgreSQL Monitoring
 =============================
 
-PostgreSQL is an ORDBMS server whose primary function is to store data securely, and allows retrieval at the request of other software applications. Analyze and optimize your Postgres server by configuring our Postgres plugin and proactively monitor the availability and performance of business-crtical Postgres database server.
+PostgreSQL is an ORDBMS server whose primary function is to store data securely, and allows retrieval at the request of other software applications. Analyze and optimize your Postgres server by configuring our Postgres plugin and proactively monitor the availability and performance of business-critical Postgres database servers.
 
-Get to know how to configure the PostgreSQL plugin and the monitoring metrics for providing in-depth visibility into the performance, availability, and usage stats of Postgres servers.
+The plugin also monitors PostgreSQL clusters. Configure any one address of the cluster and the plugin discovers the remaining nodes, identifies the primary, and tracks replication health and failovers. Supported setups include streaming replication, Patroni, repmgr, pgpool-II, Citus, pg_auto_failover and logical replication.
 
 Learn more https://www.site24x7.com/plugins/postgres-monitoring.html
 
@@ -17,15 +17,31 @@ Execute the command below in the terminal to run the installer and follow the in
 wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installer/Site24x7PostgresPluginInstaller.sh && sudo bash Site24x7PostgresPluginInstaller.sh
 ```
 
+> **Note:** To upgrade from version 1, run the same command. The installer replaces the plugin files and keeps the existing `postgres.cfg`.
+
 ### Prerequisites
 
 - Download and install the latest version of the [Site24x7 agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you plan to run the plugin.
-- Python version 3 or higher.
-- Execute the following command in your server to install psycopg2: 
+- Python 3.6 or higher.
+- The psycopg2 module. The Site24x7 Linux agent includes it. On Windows, install it with:
 
 		pip3 install psycopg2-binary
 
-### Plugin Installation  
+- PostgreSQL 9.6 or higher.
+- A database user with the `pg_monitor` role. To monitor a cluster, create the user on every node with the same password.
+
+	```sql
+	CREATE USER site24x7 WITH PASSWORD 'site24x7';
+	GRANT pg_monitor TO site24x7;
+	```
+
+> **Note:** Version 1 required the `pg_read_all_stats` role. When upgrading, grant `pg_monitor` to the existing user:
+>
+> ```sql
+> GRANT pg_monitor TO <user>;
+> ```
+
+### Plugin Installation
 
 - Create a directory named `postgres`.
 
@@ -33,133 +49,201 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
 	mkdir postgres
 	cd postgres/
 	```
-  
-- Download all the files and place it under the `postgres` directory.
+
+- Download all the files and place them under the `postgres` directory.
 
 	```bash
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.py
 	wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.cfg
 	```
- 
-- Execute the following command in your server to install psycopg2: 
 
-	```bash
-	pip3 install psycopg2-binary
-	```
- 
-- Ensure **pg_read_all_stats** permission is provided to the user. For example, create a user `site24x7` with password `site24x7` and provide `pg_read_all_stats` permission to the `site24x7` user created.
-  
 - Execute the below command with appropriate arguments to check for the valid json output:
 
 	```bash
-	python3 postgres.py  --host "localhost" --port "5432" --username "username" --password "password" --db "postgres"
+	python3 postgres.py --host "localhost" --port "5432" --username "username" --password "password" --db "postgres"
 	```
- 
-- Provide your Postgres DB configurations in postgres.cfg file.
 
-    ```ini
-    [postgres]
-    host="localhost"
-    port="5432"
-    username="None"
-    password="None"
-    db="postgres"
-    plugin_version="1"
-    ```
-    
-  #### Linux
+- Provide your Postgres DB configurations in the postgres.cfg file.
 
-- Follow the steps in [this article](https://support.site24x7.com/portal/en/kb/articles/updating-python-path-in-a-plugin-script-for-linux-servers) to update the Python path in the postgres.py script.
-- Move the directory `postgres` under the Site24x7 Linux Agent plugin directory: 
+	```ini
+	[postgres]
+	host="localhost"
+	port="5432"
+	username="None"
+	password="None"
+	db="postgres"
+	```
+
+	To monitor a cluster, set `host` to any node, a VIP, a DNS name or an HAProxy port. To monitor more than one server from the same agent, add one section per server.
+
+#### Linux
+
+- Move the directory `postgres` under the Site24x7 Linux Agent plugin directory:
+
 	```bash
 	mv postgres /opt/site24x7/monagent/plugins/
- 	```
- 
-  #### Windows 
+	```
+
+#### Windows
 
 - Since it's a Python plugin, to run the plugin in a Windows server please follow the steps in [this link](https://support.site24x7.com/portal/en/kb/articles/run-python-plugin-scripts-in-windows-servers). The remaining configuration steps are the same.
+- Set `use_agent_python=0` in the `[global_configurations]` section of postgres.cfg.
+- Move the folder `postgres` under the Site24x7 Windows Agent plugin directory:
 
-
-- Move the folder `postgres` under Site24x7 Windows Agent plugin directory: 
 	```bash
 	C:\Program Files (x86)\Site24x7\WinAgent\monitoring\Plugins
- 	```
+	```
 
-The agent will automatically execute the plugin within five minutes and user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+The agent will automatically execute the plugin within five minutes and the user can see the plugin monitor under Site24x7 > Plugins > Plugin Integrations.
+
+## Cluster Monitoring
+
+| **Cluster Type** | **Configure host as** |
+| :--- | :--- |
+| Streaming replication | The primary, any standby, or a VIP |
+| Patroni | Any node, with `patroni_port` set |
+| repmgr | Any node |
+| pgpool-II | The pgpool port |
+| Citus | The coordinator |
+| pg_auto_failover | The monitor node |
+| Logical replication (native, pglogical, Spock, BDR) | Any node |
+
+The role of each node is read from PostgreSQL. If a cluster manager reports a different role, the plugin raises it as a health issue.
+
+## Configuration Options
+
+| **Option** | **Description** |
+| :--- | :--- |
+| host, port | PostgreSQL server address. Default `localhost`, `5432`. |
+| username, password | Monitoring user. |
+| db | Database to connect to. Default `postgres`. |
+| sslmode | `disable`, `require`, `verify-ca` or `verify-full`, with optional `sslrootcert`, `sslcert` and `sslkey`. |
+| timeout | Connection timeout in seconds. Default `10`. |
+| patroni_port | Patroni REST API port, usually `8008`. Required to use Patroni. |
+| patroni_scheme, patroni_verify, patroni_cafile | HTTPS settings for the Patroni REST API. |
+| patroni_certfile, patroni_keyfile | Client certificate for a Patroni API that requires one. |
+| patroni_username, patroni_password | Basic authentication for a proxy in front of the Patroni API. |
+| address_map | Maps node addresses reported by the cluster to addresses reachable from the agent. Example: `10.0.0.5:5432=192.168.1.5:6432`. |
+| logs_enabled | Set to `true` to send cluster events to Site24x7 AppLogs. |
+| log_type_name, log_file_path | AppLogs log type and file name. |
+
+## Health Codes
+
+| **Health Code** | **Description** |
+| :--- | :--- |
+| 0 | Healthy |
+| 1 | A node is down or a standby is not streaming |
+| 2 | No primary is reachable |
+| 3 | More than one primary (split brain) |
+| 4 | A cluster manager and PostgreSQL report different roles |
 
 ## PostgreSQL Server Monitoring Plugin Metrics
 
-| **Metric Name**                    | **Description**                                                                        |
-|-------------------------------------|----------------------------------------------------------------------------------------|
-| Table Count                         | The total number of tables in the database.                                            |
-| Active Queries                      | The number of queries that are currently active.                                        |
-| Transactions Open                   | The number of transactions currently open.                                             |
-| Transactions Idle In Transaction    | The number of transactions that are idle within a transaction.                         |
-| Active Connections                  | The number of active connections to the database.                                      |
-| Total Commits                       | The total number of commits executed in the database.                                  |
-| Total Rollbacks                     | The total number of rollbacks executed in the database.                                |
-| Total Conflicts                     | The number of conflicts that occurred during database operations.                      |
-| Checkpoints Timed                   | The total number of timed checkpoints.                                                 |
-| Checkpoints Req                     | The total number of requested checkpoints.                                             |
-| Checkpoint Write Time               | The total time spent writing during checkpoints in milliseconds.                       |
-| Checkpoint Sync Time                | The total time spent syncing during checkpoints in milliseconds.                       |
-| Buffers Checkpoint                  | The number of buffers used during checkpoint processes.                                |
-| Buffers Clean                       | The number of clean buffers used during checkpoint processes.                          |
-| Maxwritten Clean                    | The number of maximum written clean buffers.                                           |
-| Buffers Backend                     | The number of buffers used by the backend.                                             |
-| Buffers Backend Fsync               | The number of buffers flushed to disk by the backend.                                  |
-| Buffers Alloc                       | The number of buffer allocations in the system.                                        |
-| Locks Count                         | The total number of locks held by the database.                                        |
-| Max Connections                     | The maximum number of allowed connections to the database.                             |
-| Total Rows Inserted                 | The total number of rows inserted into the database.                                   |
-| Total Rows Updated                  | The total number of rows updated in the database.                                      |
-| Total Rows Deleted                  | The total number of rows deleted from the database.                                    |
-| Total Rows Fetched                  | The total number of rows fetched from the database.                                    |
-| Total Rows Returned                 | The total number of rows returned by queries.                                         |
-| Total Block Reads                   | The total number of blocks read from disk.                                             |
-| Total Block Hits                    | The total number of block hits (cache hits) in memory.                                 |
-| Index Scans                         | The total number of index scans performed.                                             |
-| Index Rows Read                     | The total number of rows read through index scans.                                    |
-| Index Rows Fetched                  | The total number of rows fetched via index scans.                                      |
-| Server Version                      | The version of the PostgreSQL server currently running.                                |
-| Uptime                              | The total time the PostgreSQL server has been running since the last restart.         |
-| Database Count                      | The total number of databases in the PostgreSQL instance.                              |
-| Total Sessions                      | The total number of active sessions in the PostgreSQL server.                          |
-| Total Sessions Abandoned            | The number of sessions abandoned by users.                                             |
-| Total Sessions Fatal                | The number of sessions that ended with a fatal error.                                 |
-| Total Sessions Killed               | The number of sessions that were killed.                                               |
-| Heap Blocks Read                    | The total number of heap blocks read from the disk.                                    |
-| Heap Blocks Hit                     | The total number of heap blocks found in memory.                                       |
-| Cache Hit Ratio                     | The ratio of cache hits versus block reads.                                            |
-| Active Waiting Queries              | The number of queries that are currently waiting for resources to become available.    |
+| **Metric Name** | **Description** |
+| :--- | :--- |
+| Uptime | Time since the server started |
+| Server Version | PostgreSQL version |
+| Node Role | Primary or standby |
+| Active Connections | Number of connections to the databases |
+| Max Connections | Maximum number of concurrent connections allowed |
+| Connection Utilization | Active connections as a percentage of max connections |
+| Idle Connections | Number of idle client connections |
+| Active Queries | Number of client sessions running a query |
+| Active Waiting Queries | Number of active queries waiting on an event |
+| Long Running Queries | Number of queries running for more than 5 minutes |
+| Longest Transaction | Age of the oldest open transaction |
+| Blocked Sessions | Number of sessions waiting on a lock held by another session |
+| Locks Count | Number of locks held or awaited |
+| Waiting Locks | Number of lock requests not yet granted |
+| Transactions Per Sec | Number of commits per second |
+| Rollbacks Per Sec | Number of rollbacks per second |
+| Buffer Cache Hit Percent | Percentage of block reads served from shared buffers |
+| Index Hit Percent | Percentage of index block reads served from shared buffers |
+| Database Count | Number of databases |
+| Table Count | Number of tables in the configured database |
+| Total Database Size | Total size of all databases |
+| Rows Inserted / Updated / Deleted / Fetched / Returned Per Sec | Rows processed per second |
+| Block Reads Per Sec | Disk blocks read per second |
+| Index Scans Per Sec, Sequential Scans Per Sec | Scans of user tables per second |
+| Temp Data Per Sec | Temporary file data written per second |
+| Checkpoints Timed, Checkpoints Req | Number of scheduled and requested checkpoints |
+| Checkpoint Write Time, Checkpoint Sync Time | Time spent writing and syncing checkpoint files |
+| Buffers Checkpoint, Buffers Clean, Buffers Backend | Buffers written by checkpoints, the background writer and backends |
+| Buffers Alloc | Number of buffers allocated |
+| Dead Tuples, Live Tuples | Number of dead and live rows in user tables |
+| Tables Never Vacuumed | Number of tables never vacuumed |
+| Oldest Table Vacuum Age | Time since the least recently vacuumed table was vacuumed |
+| Max XID Age, Max Multixact Age | Age of the oldest unfrozen transaction and multixact ID |
+| XID Wraparound Percent | Max XID age as a percentage of `autovacuum_freeze_max_age` |
+| WAL Generated Per Sec | WAL generated per second |
+| WAL Files, WAL Directory Size | Number and size of WAL files |
+| Archived Count, Archive Failed Count | Number of WAL files archived and failed |
+| Last Archive Age | Time since the last successful archive |
+| Archiving Failing | 1 if the last archive attempt failed |
+| Archive Ready Files | Number of WAL files waiting to be archived |
+| Checksum Failures | Number of data checksum failures |
+| Collection Time | Time taken to collect the metrics |
+| Failed Queries, Permission Gaps | Number of queries that failed or that the user is not permitted to run |
 
-## Transactions and Session Metrics per Database
+## Replication and Cluster Metrics
 
-| **Metric Name**                    | **Description**                                                                        |
-|-------------------------------------|----------------------------------------------------------------------------------------|
-| Commits                            | The total number of commits executed in the specific database.                         |
-| Rollbacks                          | The total number of rollbacks executed in the specific database.                       |
-| Conflicts                          | The number of conflicts that occurred in the specific database.                        |
-| Sessions                           | The total number of active sessions in the specific database.                          |
-| Sessions Abandoned                 | The number of sessions abandoned by users in the specific database.                    |
-| Sessions Fatal                     | The number of sessions that ended with a fatal error in the specific database.         |
-| Sessions Killed                    | The number of sessions that were killed in the specific database.                      |
-| Session Time                       | The total session time for all sessions in the specific database.                      |
-| Sessions Active Time               | The total active time spent by sessions in the specific database.                      |
-| Session Idle In Transaction Time   | The total idle time within transactions in the specific database.                     |
+| **Metric Name** | **Description** |
+| :--- | :--- |
+| Cluster Type | Detected cluster type |
+| Cluster Health, Health Code, Health Reason | Overall cluster status |
+| Primary Node | Current primary node |
+| Nodes Total, Nodes Up, Nodes Down | Number of known, reachable and unreachable nodes |
+| Standbys Streaming, Sync Standbys | Number of standbys streaming from the primary, and synchronous standbys |
+| Timeline | Current timeline, incremented at each promotion |
+| Last Failover Age, Failovers 24h | Time since the last failover, and failovers in the last 24 hours |
+| WAL Receiver Connected | 1 if the standby is streaming from its primary |
+| Replay Lag, Replay Backlog | Replication delay and pending WAL on a standby |
+| Max Standby Replay Lag, Max Standby Backlog | Highest replication delay and pending WAL across standbys |
+| Replication Slots, Inactive Replication Slots | Number of replication slots, and slots not in use |
+| Max Slot Retained WAL | Largest WAL volume retained by a slot |
+| Subscriptions, Active Subscriptions | Number of logical subscriptions, and those running |
+| Subscription Apply Errors, Subscription Sync Errors | Logical replication errors |
+
+## Transactions and Sessions per Database
+
+| **Metric Name** | **Description** |
+| :--- | :--- |
+| commits, rollbacks | Number of transactions committed and rolled back |
+| conflicts | Number of queries cancelled due to recovery conflicts |
+| sessions, sessions_abandoned, sessions_fatal, sessions_killed | Number of sessions by outcome |
+| session_time, sessions_active_time, session_idle_in_transaction_time | Time spent in sessions |
 
 ## Stats per Database
 
-| **Metric Name**                    | **Description**                                                                        |
-|-------------------------------------|----------------------------------------------------------------------------------------|
-| Active Connections                  | The number of active connections in the specific database.                             |
-| Size in MB                          | The size of the specific database in megabytes.                                        |
-| Rows Inserted                       | The total number of rows inserted into the specific database.                          |
-| Rows Updated                        | The total number of rows updated in the specific database.                             |
-| Rows Deleted                        | The total number of rows deleted from the specific database.                           |
-| Rows Fetched                        | The total number of rows fetched from the specific database.                           |
-| Rows Returned                       | The total number of rows returned by queries in the specific database.                 |
-| Block Reads                         | The total number of blocks read from disk in the specific database.                    |
-| Block Hits                          | The total number of block hits (cache hits) in memory in the specific database.        |
+| **Metric Name** | **Description** |
+| :--- | :--- |
+| active_connections | Number of connections to the database |
+| size_in_mb | Size of the database |
+| rows_inserted, rows_updated, rows_deleted, rows_fetched, rows_returned | Rows processed |
+| block_reads, block_hits | Blocks read from disk and found in shared buffers |
+| cache_hit_percent | Buffer cache hit percentage |
+| deadlocks, temp_files | Number of deadlocks and temporary files |
 
-![Image](https://github.com/user-attachments/assets/60577fff-5947-4c96-98ef-2271c9dbce82)
+## Other Tables
+
+| **Table** | **Description** |
+| :--- | :--- |
+| Nodes | Role, status and replication lag of each cluster node |
+| Replication_Links | Replication state and lag of each standby or subscriber |
+| Replication_Slots | Replication slots and the WAL they retain |
+| Events | Recent failovers and node changes |
+| Wait_Events | Active sessions grouped by wait event |
+| Top_Queries | Top 10 queries by total time, when `pg_stat_statements` is installed |
+
+## Upgrading from Version 1
+
+The following metrics are renamed or replaced in version 2:
+
+| **Version 1** | **Version 2** |
+| :--- | :--- |
+| Cache Hit Ratio | Buffer Cache Hit Percent |
+| Heap Blocks Read, Heap Blocks Hit | Total Block Reads, Total Block Hits |
+| Index Rows Read, Index Rows Fetched | Index Scans |
+| Tranasctions_and_Session_per_Database | Transactions_and_Sessions_per_Database |
+
+Active Queries now counts client sessions only.
