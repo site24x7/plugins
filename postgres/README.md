@@ -139,70 +139,129 @@ The role of each node is read from PostgreSQL. If a cluster manager reports a di
 
 ## PostgreSQL Server Monitoring Plugin Metrics
 
+Metrics are grouped by the tab they appear in. "Per Sec" metrics are averaged over the poll interval, and "New" metrics count what happened since the previous poll.
+
+### Summary
+
 | **Metric Name** | **Description** |
 | :--- | :--- |
 | Uptime | Time since the server started |
+| Active Connections | Number of connections to the databases |
+| Connection Utilization | Active connections as a percentage of max connections |
+| Transactions Per Sec | Number of commits per second |
+| Buffer Cache Hit Percent | Percentage of block reads served from shared buffers |
+| Cluster Health | 0 healthy, 1 warning, 2 critical (see Health Codes) |
+| Nodes Up | Number of reachable cluster nodes |
+| Collection Time | Time taken to collect the metrics |
+| Failed Queries | Number of queries that failed in this poll |
+| Permission Gaps | Number of queries the monitoring user is not permitted to run |
+
+### Cluster
+
+| **Metric Name** | **Description** |
+| :--- | :--- |
+| Cluster Type | Detected cluster type |
+| Health Code, Health Reason | Cluster status and its cause (see Health Codes) |
+| Primary Node | Current primary node |
+| Nodes Total, Nodes Down | Number of known nodes, and nodes that are down or not streaming |
+| Standbys Streaming, Sync Standbys | Number of standbys streaming from the primary, and synchronous standbys |
+| Timeline | Current timeline, incremented at each promotion |
+| Last Failover Age | Time since the last failover |
+| Failovers 24h | Number of failovers in the last 24 hours |
+
+### Replication
+
+| **Metric Name** | **Description** |
+| :--- | :--- |
+| WAL Receiver Connected | 1 if the standby is streaming from its primary |
+| Replay Lag | Replication delay on a standby |
+| Replay Backlog | WAL received by a standby but not yet replayed |
+| Last WAL Message Age | Time since a standby last heard from its primary |
+| Max Standby Replay Lag, Max Standby Backlog | Highest replication delay and backlog across standbys |
+| Replication Slots, Inactive Replication Slots | Number of replication slots, and slots not in use |
+| Max Slot Retained WAL | Largest WAL volume retained by a slot |
+| Subscriptions, Active Subscriptions | Number of logical subscriptions, and those running |
+| Last Subscription Message Age | Time since a subscription last heard from its publisher |
+| Subscription Apply Errors, Subscription Sync Errors | Logical replication errors |
+
+### Activity
+
+| **Metric Name** | **Description** |
+| :--- | :--- |
 | Server Version | PostgreSQL version |
 | Node Role | Primary or standby |
-| Active Connections | Number of connections to the databases |
 | Max Connections | Maximum number of concurrent connections allowed |
-| Connection Utilization | Active connections as a percentage of max connections |
-| Idle Connections | Number of idle client connections |
 | Active Queries | Number of client sessions running a query |
 | Active Waiting Queries | Number of active queries waiting on an event |
+| Idle Connections | Number of idle client connections |
 | Long Running Queries | Number of queries running for more than 5 minutes |
 | Longest Transaction | Age of the oldest open transaction |
 | Blocked Sessions | Number of sessions waiting on a lock held by another session |
 | Locks Count | Number of locks held or awaited |
 | Waiting Locks | Number of lock requests not yet granted |
-| Transactions Per Sec | Number of commits per second |
+
+### Transactions and Sessions
+
+| **Metric Name** | **Description** |
+| :--- | :--- |
+| Total Commits, Total Rollbacks | Number of transactions committed and rolled back |
 | Rollbacks Per Sec | Number of rollbacks per second |
-| Buffer Cache Hit Percent | Percentage of block reads served from shared buffers |
-| Index Hit Percent | Percentage of index block reads served from shared buffers |
+| Transactions Open | Number of sessions with an open transaction |
+| Transactions Idle In Transaction | Number of sessions idle inside an open transaction |
+| New Deadlocks | Number of deadlocks |
+| New Conflicts | Number of queries cancelled due to recovery conflicts |
+| Total Sessions, Total Sessions Abandoned, Total Sessions Fatal, Total Sessions Killed | Number of sessions by outcome (PostgreSQL 14+) |
+
+### DB and IO stats
+
+| **Metric Name** | **Description** |
+| :--- | :--- |
 | Database Count | Number of databases |
 | Table Count | Number of tables in the configured database |
 | Total Database Size | Total size of all databases |
 | Rows Inserted / Updated / Deleted / Fetched / Returned Per Sec | Rows processed per second |
 | Block Reads Per Sec | Disk blocks read per second |
+| Total Block Hits | Number of blocks found in shared buffers |
 | Index Scans Per Sec, Sequential Scans Per Sec | Scans of user tables per second |
+| Index Hit Percent | Percentage of index block reads served from shared buffers |
+| Total Temp Files | Number of temporary files written by queries |
 | Temp Data Per Sec | Temporary file data written per second |
-| Checkpoints Timed, Checkpoints Req | Number of scheduled and requested checkpoints |
-| Checkpoint Write Time, Checkpoint Sync Time | Time spent writing and syncing checkpoint files |
-| Buffers Checkpoint, Buffers Clean, Buffers Backend | Buffers written by checkpoints, the background writer and backends |
-| Buffers Alloc | Number of buffers allocated |
+| New Checksum Failures | Number of data checksum failures (PostgreSQL 12+) |
+
+### Vacuum and Wraparound
+
+| **Metric Name** | **Description** |
+| :--- | :--- |
 | Dead Tuples, Live Tuples | Number of dead and live rows in user tables |
 | Tables Never Vacuumed | Number of tables never vacuumed |
 | Oldest Table Vacuum Age | Time since the least recently vacuumed table was vacuumed |
 | Max XID Age, Max Multixact Age | Age of the oldest unfrozen transaction and multixact ID |
 | XID Wraparound Percent | Max XID age as a percentage of `autovacuum_freeze_max_age` |
-| WAL Generated Per Sec | WAL generated per second |
-| WAL Files, WAL Directory Size | Number and size of WAL files |
-| Archived Count, Archive Failed Count | Number of WAL files archived and failed |
-| Last Archive Age | Time since the last successful archive |
-| Archiving Failing | 1 if the last archive attempt failed |
-| Archive Ready Files | Number of WAL files waiting to be archived |
-| Checksum Failures | Number of data checksum failures |
-| Collection Time | Time taken to collect the metrics |
-| Failed Queries, Permission Gaps | Number of queries that failed or that the user is not permitted to run |
 
-## Replication and Cluster Metrics
+### WAL and Archiving
 
 | **Metric Name** | **Description** |
 | :--- | :--- |
-| Cluster Type | Detected cluster type |
-| Cluster Health, Health Code, Health Reason | Overall cluster status |
-| Primary Node | Current primary node |
-| Nodes Total, Nodes Up, Nodes Down | Number of known, reachable and unreachable nodes |
-| Standbys Streaming, Sync Standbys | Number of standbys streaming from the primary, and synchronous standbys |
-| Timeline | Current timeline, incremented at each promotion |
-| Last Failover Age, Failovers 24h | Time since the last failover, and failovers in the last 24 hours |
-| WAL Receiver Connected | 1 if the standby is streaming from its primary |
-| Replay Lag, Replay Backlog | Replication delay and pending WAL on a standby |
-| Max Standby Replay Lag, Max Standby Backlog | Highest replication delay and pending WAL across standbys |
-| Replication Slots, Inactive Replication Slots | Number of replication slots, and slots not in use |
-| Max Slot Retained WAL | Largest WAL volume retained by a slot |
-| Subscriptions, Active Subscriptions | Number of logical subscriptions, and those running |
-| Subscription Apply Errors, Subscription Sync Errors | Logical replication errors |
+| WAL Generated Per Sec | WAL generated per second |
+| WAL Files, WAL Directory Size | Number and size of WAL files |
+| New WAL Buffers Full | Number of times WAL buffers filled up (PostgreSQL 14+) |
+| Archived Count | Number of WAL files archived |
+| New Archive Failures | Number of failed archive attempts |
+| Last Archive Age | Time since the last successful archive |
+| Archiving Failing | 1 if the last archive attempt failed |
+| Archive Ready Files | Number of WAL files waiting to be archived (PostgreSQL 12+) |
+
+### BG Writer
+
+| **Metric Name** | **Description** |
+| :--- | :--- |
+| Checkpoints Timed | Number of scheduled checkpoints |
+| New Requested Checkpoints | Number of checkpoints requested before their schedule |
+| Checkpoint Write Time, Checkpoint Sync Time | Time spent writing and syncing checkpoint files |
+| Buffers Checkpoint, Buffers Clean, Buffers Backend | Buffers written by checkpoints, the background writer and backends |
+| Buffers Backend Fsync | Number of fsync calls made by backends (up to PostgreSQL 16) |
+| Buffers Alloc | Number of buffers allocated |
+| Maxwritten Clean | Number of times the background writer stopped for writing too many buffers |
 
 ## Transactions and Sessions per Database
 
@@ -237,13 +296,17 @@ The role of each node is read from PostgreSQL. If a cluster manager reports a di
 
 ## Upgrading from Version 1
 
-The following metrics are renamed or replaced in version 2:
+The following version 1 metrics are no longer sent. The second column lists the nearest version 2 metric, which is measured differently, so its values are not directly comparable:
 
 | **Version 1** | **Version 2** |
 | :--- | :--- |
 | Cache Hit Ratio | Buffer Cache Hit Percent |
-| Heap Blocks Read, Heap Blocks Hit | Total Block Reads, Total Block Hits |
-| Index Rows Read, Index Rows Fetched | Index Scans |
-| Tranasctions_and_Session_per_Database | Transactions_and_Sessions_per_Database |
+| Heap Blocks Read, Heap Blocks Hit | Block Reads Per Sec, Total Block Hits |
+| Index Rows Read, Index Rows Fetched | Index Scans Per Sec |
+| Total Rows Inserted, Updated, Deleted, Fetched, Returned | Rows Inserted, Updated, Deleted, Fetched, Returned Per Sec |
+| Total Block Reads | Block Reads Per Sec |
+| Index Scans | Index Scans Per Sec |
+| Total Conflicts | New Conflicts |
+| Checkpoints Req | New Requested Checkpoints |
 
-Active Queries now counts client sessions only.
+The table `Tranasctions_and_Session_per_Database` is renamed `Transactions_and_Sessions_per_Database`. Active Queries now counts client sessions only.

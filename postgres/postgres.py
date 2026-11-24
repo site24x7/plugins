@@ -144,18 +144,28 @@ class Rate(object):
         self.scale = scale
 
 
+# Summary plus these 8 tabs all fit on one line of the Site24x7 console.
 TAB_ORDER = [
+    "Cluster",
+    "Replication",
     "Activity",
     "Transactions and Sessions",
     "DB and IO stats",
-    "BG Writer",
     "Vacuum and Wraparound",
     "WAL and Archiving",
-    "Replication",
-    "Cluster",
-    "Plugin",
+    "BG Writer",
 ]
 SUMMARY = ""                      # metrics with no tab chart on the built-in Summary tab
+
+# Counters that only grow since the server started. The plugin reads them to compute
+# the "Per Sec" and "New ..." metrics, but does not send them: a lifetime total is a
+# rising line, and its rate or per-poll change is what people watch and alert on.
+HIDDEN_COUNTERS = {
+    "Total Rows Inserted", "Total Rows Updated", "Total Rows Deleted", "Total Rows Fetched",
+    "Total Rows Returned", "Total Block Reads", "Total Temp Data", "Sequential Scans",
+    "Index Scans", "WAL Written", "Total Deadlocks", "Total Conflicts", "Checkpoints Req",
+    "Archive Failed Count", "Checksum Failures", "WAL Buffers Full",
+}
 
 # pg_stat_activity filter for client sessions, excluding this plugin's own session.
 _CLIENTS_10 = "backend_type = 'client backend' AND pid <> pg_backend_pid()"
@@ -453,9 +463,9 @@ DERIVED = [
     M("Node Role", tab="Activity", kind=str),
     M("Connection Utilization", "%", SUMMARY, float),
     M("Buffer Cache Hit Percent", "%", SUMMARY, float),
-    M("Collection Time", "ms", "Plugin"),
-    M("Failed Queries", "queries", "Plugin"),
-    M("Permission Gaps", "queries", "Plugin"),
+    M("Collection Time", "ms", SUMMARY),
+    M("Failed Queries", "queries", SUMMARY),
+    M("Permission Gaps", "queries", SUMMARY),
     # Cluster layer (built in section 6 from the discovered nodes)
     M("Cluster Type", tab="Cluster", kind=str),
     M("Cluster Health", "status", SUMMARY),
@@ -595,7 +605,7 @@ CHILD_DISCOVERY = ["Transactions_and_Sessions_per_Database", "Stats_per_DB"]
 
 
 def all_metric_defs():
-    """Every metric the catalogue can emit, in a stable order, without duplicates."""
+    """Every metric the plugin sends, in a stable order, without duplicates."""
     seen = {}
     for q in QUERIES:
         for v in q.variants:
@@ -605,7 +615,7 @@ def all_metric_defs():
         seen.setdefault(r.name, M(r.name, r.unit, r.tab, float))
     for d in DERIVED:
         seen.setdefault(d.name, d)
-    return list(seen.values())
+    return [m for m in seen.values() if m.name not in HIDDEN_COUNTERS]
 
 
 def build_tabs_and_units():
@@ -2113,7 +2123,7 @@ def run(param):
     denied = sorted(set(node.denied))
     metrics["Permission Gaps"] = len(denied)
     metrics["Collection Time"] = int((time.time() - t0) * 1000)
-    payload.update(metrics)
+    payload.update({k: v for k, v in metrics.items() if k not in HIDDEN_COUNTERS})
     payload.update(tables)
     payload.update(cluster_tables)
     if node.failures:
