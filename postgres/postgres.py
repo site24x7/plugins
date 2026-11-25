@@ -1415,14 +1415,21 @@ class CitusAdapter(object):
     def nodes(self, seed, ctx):
         reg = quiet_query(seed, "SELECT nodename, nodeport, groupid, noderole, isactive"
                                 " FROM pg_dist_node ORDER BY groupid, nodename", all_rows=True) or []
-        members = [(n, n, int(p), "coordinator" if g == 0 else
-                    ("worker" if r == "primary" else "worker standby"),
-                    "active" if a else "inactive", bool(a), {}) for n, p, g, r, a in reg]
+        # The server knows its own group, so it is found even when the configured
+        # address differs from its pg_dist_node entry (an IP, a mapped port).
+        local = quiet_query(seed, "SELECT groupid FROM pg_dist_local_group")
+        local_group = local[0] if local else None
+        members = []
+        for n, p, g, r, a in reg:
+            host, port = (seed.host, seed.port) if (g == local_group and r == "primary") else (n, int(p))
+            members.append((n, host, port, "coordinator" if g == 0 else
+                            ("worker" if r == "primary" else "worker standby"),
+                            "active" if a else "inactive", bool(a), {}))
         rows = registry_rows(seed, ctx, members)
-        if not any("_probe" not in r for r in rows):      # the coordinator is not registered
-            coord = seed_row(seed, ctx)
-            coord["role"] = "coordinator"
-            rows.insert(0, coord)
+        if not any("_probe" not in r for r in rows):      # this server is not registered
+            own = seed_row(seed, ctx)
+            own["role"] = "coordinator" if local_group in (0, None) else "worker"
+            rows.insert(0, own)
         return ClusterView(nodes=rows, primary_name=rows[0]["name"])
 
 
