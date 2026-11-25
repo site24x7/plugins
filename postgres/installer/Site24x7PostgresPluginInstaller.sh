@@ -174,7 +174,7 @@ add_conf() {
     sed -i "s|^db=.*|db=\"$(escape "$pg_db")\"|" "$cfg"
     error_handler $? "Could not write $cfg"
     if [ -n "$patroni_port" ]; then
-        echo "patroni_port=$patroni_port" >> "$cfg"
+        sed -i "s|^patroni_port=.*|patroni_port=\"$(escape "$patroni_port")\"|" "$cfg"
     fi
 }
 

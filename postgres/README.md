@@ -72,9 +72,18 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
 	username="None"
 	password="None"
 	db="postgres"
+	sslmode="None"
+	patroni_port="None"
+	logs_enabled="false"
 	```
 
-	To monitor a cluster, set `host` to any node, a VIP, a DNS name or an HAProxy port. To monitor more than one server from the same agent, add one section per server.
+	- To monitor a cluster, set `host` to any node, a VIP, a DNS name or an HAProxy port.
+	- For a Patroni cluster, set `patroni_port` to the Patroni REST API port, usually `8008`. Other cluster types need no extra settings.
+	- The plugin uses SSL when the server supports it. To refuse unencrypted connections, set `sslmode` to `require`; to also verify the server's certificate, use `verify-full` with `sslrootcert`.
+	- To send cluster events such as failovers to Site24x7 AppLogs, set `logs_enabled` to `true`.
+	- To monitor more than one server from the same agent, add one section per server.
+
+	All other settings are listed under [Configuration Options](#configuration-options).
 
 #### Linux
 
@@ -98,15 +107,17 @@ The agent will automatically execute the plugin within five minutes and the user
 
 ## Cluster Monitoring
 
-| **Cluster Type** | **Configure host as** |
-| :--- | :--- |
-| Streaming replication | The primary, any standby, or a VIP |
-| Patroni | Any node, with `patroni_port` set |
-| repmgr | Any node |
-| pgpool-II | The pgpool port |
-| Citus | The coordinator |
-| pg_auto_failover | The monitor node |
-| Logical replication (native, pglogical, Spock, BDR) | Any node |
+The plugin detects the cluster type and discovers the other nodes automatically.
+
+| **Cluster Type** | **Configure host as** | **Extra settings** |
+| :--- | :--- | :--- |
+| Streaming replication | The primary, any standby, or a VIP | None |
+| Patroni | Any node | `patroni_port` |
+| repmgr | Any node | None |
+| pgpool-II | The pgpool address and port | None |
+| Citus | The coordinator | None |
+| pg_auto_failover | The monitor node | None |
+| Logical replication (native, pglogical, Spock, BDR) | Any node | None |
 
 The role of each node is read from PostgreSQL. If a cluster manager reports a different role, the plugin raises it as a health issue.
 

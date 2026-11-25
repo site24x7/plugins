@@ -117,13 +117,14 @@ class Query(object):
 class Table(object):
     """A multi-row query whose rows become a Site24x7 child table."""
 
-    def __init__(self, name, tab, variants, units, role=ANY, when=None):
+    def __init__(self, name, tab, variants, units, role=ANY, when=None, optional=False):
         self.name = name
         self.tab = tab
         self.variants = sorted(variants, key=lambda v: v[0], reverse=True)
         self.units = units        # column -> unit, also fixes column order and types
         self.role = role
         self.when = when
+        self.optional = optional  # True: a failure leaves the table out silently
 
     def pick(self, version):
         for min_ver, sql in self.variants:
@@ -334,29 +335,23 @@ QUERIES = [
         [M("WAL Files", "files", "WAL and Archiving"),
          M("WAL Directory Size", "MB", "WAL and Archiving", float)])]),
 
-    Query("archiver", [
-        Variant((12, 0),
-            "SELECT archived_count, failed_count,"
-            " floor(extract(epoch FROM now() - last_archived_time))::bigint,"
-            " CASE WHEN last_failed_time IS NOT NULL AND (last_archived_time IS NULL"
-            " OR last_failed_time > last_archived_time) THEN 1 ELSE 0 END,"
-            " (SELECT count(*) FROM pg_ls_archive_statusdir() WHERE name LIKE '%.ready')"
-            " FROM pg_stat_archiver",
-            [M("Archived Count", "files", "WAL and Archiving"),
-             M("Archive Failed Count", "files", "WAL and Archiving"),
-             M("Last Archive Age", "s", "WAL and Archiving"),
-             M("Archiving Failing", "flag", "WAL and Archiving"),
-             M("Archive Ready Files", "files", "WAL and Archiving")]),
-        Variant((9, 6),
-            "SELECT archived_count, failed_count,"
-            " floor(extract(epoch FROM now() - last_archived_time))::bigint,"
-            " CASE WHEN last_failed_time IS NOT NULL AND (last_archived_time IS NULL"
-            " OR last_failed_time > last_archived_time) THEN 1 ELSE 0 END"
-            " FROM pg_stat_archiver",
-            [M("Archived Count", "files", "WAL and Archiving"),
-             M("Archive Failed Count", "files", "WAL and Archiving"),
-             M("Last Archive Age", "s", "WAL and Archiving"),
-             M("Archiving Failing", "flag", "WAL and Archiving")])],
+    Query("archiver", [Variant((9, 6),
+        "SELECT archived_count, failed_count,"
+        " floor(extract(epoch FROM now() - last_archived_time))::bigint,"
+        " CASE WHEN last_failed_time IS NOT NULL AND (last_archived_time IS NULL"
+        " OR last_failed_time > last_archived_time) THEN 1 ELSE 0 END"
+        " FROM pg_stat_archiver",
+        [M("Archived Count", "files", "WAL and Archiving"),
+         M("Archive Failed Count", "files", "WAL and Archiving"),
+         M("Last Archive Age", "s", "WAL and Archiving"),
+         M("Archiving Failing", "flag", "WAL and Archiving")])],
+        when=lambda node: node.settings.get("archive_mode", "off") != "off"),
+
+    # Its own query: listing the archive status directory needs pg_monitor, and without
+    # that role only this metric should be missing, not every archive metric.
+    Query("archive_ready", [Variant((12, 0),
+        "SELECT count(*) FROM pg_ls_archive_statusdir() WHERE name LIKE '%.ready'",
+        [M("Archive Ready Files", "files", "WAL and Archiving")])],
         when=lambda node: node.settings.get("archive_mode", "off") != "off"),
 
     Query("wal_receiver", [
@@ -597,7 +592,9 @@ TABLES = [
          " FROM pg_stat_statements WHERE queryid IS NOT NULL"
          " ORDER BY total_time DESC LIMIT 10")],
         {"calls": "calls", "total_time_ms": "ms", "mean_time_ms": "ms", "rows": "rows", "query": ""},
-        when=lambda node: node.settings.get("pg_stat_statements")),
+        # installed but not in shared_preload_libraries, the view raises an error on
+        # every read: that is the extension's setup, not a collection failure
+        when=lambda node: node.settings.get("pg_stat_statements"), optional=True),
 ]
 
 # Per-database tables Site24x7 discovers as child items (as in version 1).
@@ -895,7 +892,11 @@ def collect_tables(node, deadline):
         if not applies(t, node):
             continue
         sql = t.pick(node.version)
+        before, denied_before = len(node.failures), len(node.denied)
         result = node.query_all(sql, with_columns=True) if sql else None
+        if result is None and t.optional:
+            del node.failures[before:]
+            del node.denied[denied_before:]
         if result is None:
             continue
         cols, rows = result
@@ -970,24 +971,29 @@ def sampled_rates(node, deadline):
 
 def truthful_zeros(node, metrics):
     """Values that are genuinely 0 for this node rather than unknown, so the metric is
-    sent (and registered in the template) instead of left out."""
+    sent (and registered in the template) instead of left out.
+
+    A value is filled only where there is nothing to measure. Where something should
+    have been measured and was not (a standby with no WAL receiver, archiving on but
+    nothing archived yet, a disabled subscription, a table never vacuumed), the value
+    is unknown and stays out, so "age above X" alerts are never silenced by a fake 0."""
     zeros = {}
     if node.settings.get("archive_mode", "off") == "off":
         # nothing is archived, so nothing has been archived, failed or is waiting
         zeros.update({"Archived Count": 0, "Archive Failed Count": 0, "Archiving Failing": 0,
-                      "Archive Ready Files": 0, "New Archive Failures": 0})
+                      "Archive Ready Files": 0, "New Archive Failures": 0, "Last Archive Age": 0})
     if not node.is_recovery:
         # a primary replays nothing and receives WAL from no one
-        zeros.update({"Replay Lag": 0, "Replay Backlog": 0.0, "WAL Receiver Connected": 0})
+        zeros.update({"Replay Lag": 0, "Replay Backlog": 0.0, "WAL Receiver Connected": 0,
+                      "Last WAL Message Age": 0})
     else:
         # a standby generates no WAL of its own
         zeros.update({"WAL Generated Per Sec": 0.0, "WAL Written": 0.0})
-    # Sent so every metric registers in the Site24x7 template on the first poll.
-    # Each value is safe for alerting: "lower is better" ages are 0 (nothing pending),
-    # and hit ratios with no reads are 100 % (no misses), never a fake 0 % hit rate.
-    zeros.update({"Last Archive Age": 0, "Last Subscription Message Age": 0,
-                  "Last WAL Message Age": 0, "Oldest Table Vacuum Age": 0,
-                  "Index Hit Percent": 100.0})
+    if not metrics.get("Subscriptions"):
+        zeros["Last Subscription Message Age"] = 0      # no subscription, nothing to wait for
+    if not metrics.get("Tables Never Vacuumed"):
+        zeros["Oldest Table Vacuum Age"] = 0            # no table with rows awaits a first vacuum
+    zeros["Index Hit Percent"] = 100.0                  # no index reads: no misses, never a fake 0 %
     return {k: v for k, v in zeros.items() if k not in metrics}
 
 
@@ -2058,8 +2064,24 @@ def permission_note(denied, prev_denied):
     return ""
 
 
+def error_payload(exc):
+    """What the agent receives if the plugin itself fails: always valid output."""
+    return {"plugin_version": PLUGIN_VERSION, "heartbeat_required": HEARTBEAT,
+            "status": 0, "msg": scrub("plugin error: %s" % exc)[:MAX_MSG_CHARS]}
+
+
 def run(param):
-    """Collects one poll. `param` is the cfg section as a dict; returns the payload."""
+    """Collects one poll. `param` is the cfg section as a dict; returns the payload.
+
+    The Linux agent imports this module and calls run() itself, so the guard against
+    an unexpected error lives here and not only in __main__."""
+    try:
+        return collect(param)
+    except Exception as exc:
+        return error_payload(exc)
+
+
+def collect(param):
     t0 = time.time()
     args = resolve_args(param)
     payload = base_payload(args)
@@ -2170,7 +2192,6 @@ def parse_cli(argv=None):
 if __name__ == "__main__":
     try:
         result = run(parse_cli())
-    except Exception as exc:  # the agent must always receive valid JSON
-        result = {"plugin_version": PLUGIN_VERSION, "heartbeat_required": HEARTBEAT,
-                  "status": 0, "msg": scrub("plugin error: %s" % exc)[:MAX_MSG_CHARS]}
+    except Exception as exc:  # argument parsing: the agent must still receive valid JSON
+        result = error_payload(exc)
     print(json.dumps(result, indent=4, sort_keys=True))
