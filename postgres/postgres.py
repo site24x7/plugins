@@ -158,6 +158,19 @@ TAB_ORDER = [
 ]
 SUMMARY = ""                      # metrics with no tab chart on the built-in Summary tab
 
+# Text values shown in the Cluster_Info table instead of as metrics.
+CLUSTER_INFO_TEXT = {"Node Role", "Cluster Type", "Health Reason", "Primary Node"}
+
+# Values that only exist in a cluster. On a standalone server they are not sent, so
+# the console shows "No Data" (and "-" under Last Polled): not applicable, never a 0
+# that reads as a measurement or trips a threshold.
+STANDALONE_NOT_APPLICABLE = {
+    "Cluster Health", "Nodes Up", "Health Code", "Nodes Total", "Nodes Down",
+    "Standbys Streaming", "Sync Standbys", "Last Failover Age", "Failovers 24h",
+    "WAL Receiver Connected", "Replay Lag", "Replay Backlog", "Last WAL Message Age",
+    "Max Standby Replay Lag", "Max Standby Backlog",
+}
+
 # Counters that only grow since the server started. The plugin reads them to compute
 # the "Per Sec" and "New ..." metrics, but does not send them: a lifetime total is a
 # rising line, and its rate or per-poll change is what people watch and alert on.
@@ -180,7 +193,7 @@ def _activity_sql(clients):
         " count(*) FILTER (WHERE state = 'idle'),"
         " count(*) FILTER (WHERE state LIKE 'idle in transaction%%'),"
         " count(*) FILTER (WHERE xact_start IS NOT NULL),"
-        " coalesce(max(extract(epoch FROM now() - xact_start)), 0)::bigint,"
+        " max(extract(epoch FROM now() - xact_start))::bigint,"
         " count(*) FILTER (WHERE state = 'active' AND now() - query_start > interval '%d seconds'),"
         " count(*) FILTER (WHERE cardinality(pg_blocking_pids(pid)) > 0)"
         " FROM pg_stat_activity WHERE %s" % (LONG_QUERY_S, clients)
@@ -313,8 +326,8 @@ QUERIES = [
         [M("Total Database Size", "MB", "DB and IO stats", float)])]),
 
     Query("checksums", [Variant((12, 0),
-        # failures detected; 0 when none were (or checksums are off and none can be)
-        "SELECT coalesce(sum(checksum_failures), 0) FROM pg_stat_database",
+        # NULL (left out: "No Data") when data checksums are off and failures can't be detected
+        "SELECT sum(checksum_failures) FROM pg_stat_database",
         [M("Checksum Failures", "failures", "DB and IO stats")])]),
 
     Query("wal_position", [
@@ -397,8 +410,9 @@ QUERIES = [
     Query("slots", [
         Variant((10, 0),
             "SELECT count(*), count(*) FILTER (WHERE NOT active),"
-            " round(coalesce(max(pg_wal_lsn_diff(CASE WHEN pg_is_in_recovery()"
-            " THEN pg_last_wal_receive_lsn() ELSE pg_current_wal_lsn() END, restart_lsn)), 0)"
+            # no slot: NULL, so Max Slot Retained WAL is left out ("No Data"), not 0
+            " round(max(pg_wal_lsn_diff(CASE WHEN pg_is_in_recovery()"
+            " THEN pg_last_wal_receive_lsn() ELSE pg_current_wal_lsn() END, restart_lsn))"
             " / 1048576.0, 2)"
             " FROM pg_replication_slots",
             [M("Replication Slots", "slots", "Replication"),
@@ -422,11 +436,21 @@ QUERIES = [
              M("Last Subscription Message Age", "s", "Replication"),
              M("Subscription Apply Errors", "errors", "Replication"),
              M("Subscription Sync Errors", "errors", "Replication")]),
-        Variant((10, 0),
+        Variant((14, 0),
             "SELECT count(*), count(s.pid),"
             " floor(extract(epoch FROM now() - max(s.last_msg_receipt_time)))::bigint"
             " FROM pg_subscription sub LEFT JOIN pg_stat_subscription s"
             " ON s.subid = sub.oid AND s.relid IS NULL",
+            [M("Subscriptions", "subscriptions", "Replication"),
+             M("Active Subscriptions", "subscriptions", "Replication"),
+             M("Last Subscription Message Age", "s", "Replication")]),
+        # Before 14, pg_subscription is readable only by superusers. pg_stat_subscription
+        # is readable by any user and has one row per subscription (relid NULL: the main
+        # worker, with a NULL pid when the worker is not running).
+        Variant((10, 0),
+            "SELECT count(*), count(pid),"
+            " floor(extract(epoch FROM now() - max(last_msg_receipt_time)))::bigint"
+            " FROM pg_stat_subscription WHERE relid IS NULL",
             [M("Subscriptions", "subscriptions", "Replication"),
              M("Active Subscriptions", "subscriptions", "Replication"),
              M("Last Subscription Message Age", "s", "Replication")])]),
@@ -455,18 +479,14 @@ RATES = [
 
 # Metrics computed in derive_metrics() rather than read from a query.
 DERIVED = [
-    M("Node Role", tab="Activity", kind=str),
     M("Connection Utilization", "%", SUMMARY, float),
     M("Buffer Cache Hit Percent", "%", SUMMARY, float),
     M("Collection Time", "ms", SUMMARY),
     M("Failed Queries", "queries", SUMMARY),
     M("Permission Gaps", "queries", SUMMARY),
     # Cluster layer (built in section 6 from the discovered nodes)
-    M("Cluster Type", tab="Cluster", kind=str),
     M("Cluster Health", "status", SUMMARY),
     M("Health Code", "code", "Cluster"),
-    M("Health Reason", tab="Cluster", kind=str),
-    M("Primary Node", tab="Cluster", kind=str),
     M("Nodes Total", "nodes", "Cluster"),
     M("Nodes Up", "nodes", SUMMARY),
     M("Nodes Down", "nodes", "Cluster"),
@@ -481,6 +501,11 @@ DERIVED = [
 # Child tables built by the cluster layer: name -> (tab, column units). The column
 # order here is the order rows are built in; "" marks a string column.
 CLUSTER_TABLES = {
+    # One row summarising the cluster as text, on the Cluster tab. Site24x7 shows text
+    # values only at the foot of Summary, so they are shown in this table instead.
+    "Cluster_Info": ("Cluster", {
+        "cluster_type": "", "primary_node": "", "health": "", "node_role": "",
+        "health_code": "code", "nodes_up": "nodes", "nodes_total": "nodes"}),
     "Nodes": ("Cluster", {
         "role": "", "state": "", "address": "", "status": "flag", "reachable": "flag",
         "replay_lag_s": "s", "backlog_mb": "MB", "timeline": "timeline",
@@ -612,7 +637,7 @@ def all_metric_defs():
         seen.setdefault(r.name, M(r.name, r.unit, r.tab, float))
     for d in DERIVED:
         seen.setdefault(d.name, d)
-    return [m for m in seen.values() if m.name not in HIDDEN_COUNTERS]
+    return [m for m in seen.values() if m.name not in HIDDEN_COUNTERS | CLUSTER_INFO_TEXT]
 
 
 def build_tabs_and_units():
@@ -970,31 +995,36 @@ def sampled_rates(node, deadline):
 
 
 def truthful_zeros(node, metrics):
-    """Values that are genuinely 0 for this node rather than unknown, so the metric is
-    sent (and registered in the template) instead of left out.
-
-    A value is filled only where there is nothing to measure. Where something should
-    have been measured and was not (a standby with no WAL receiver, archiving on but
-    nothing archived yet, a disabled subscription, a table never vacuumed), the value
-    is unknown and stays out, so "age above X" alerts are never silenced by a fake 0."""
+    """Counts that are really 0 rather than unknown: with archiving off, nothing has
+    been archived, has failed or is waiting. Anything that does not apply (a replay lag
+    on a primary, an age of something that never happened) is left out instead, so the
+    console shows "No Data" and no threshold fires on a made-up value."""
     zeros = {}
     if node.settings.get("archive_mode", "off") == "off":
-        # nothing is archived, so nothing has been archived, failed or is waiting
         zeros.update({"Archived Count": 0, "Archive Failed Count": 0, "Archiving Failing": 0,
-                      "Archive Ready Files": 0, "New Archive Failures": 0, "Last Archive Age": 0})
-    if not node.is_recovery:
-        # a primary replays nothing and receives WAL from no one
-        zeros.update({"Replay Lag": 0, "Replay Backlog": 0.0, "WAL Receiver Connected": 0,
-                      "Last WAL Message Age": 0})
-    else:
-        # a standby generates no WAL of its own
-        zeros.update({"WAL Generated Per Sec": 0.0, "WAL Written": 0.0})
-    if not metrics.get("Subscriptions"):
-        zeros["Last Subscription Message Age"] = 0      # no subscription, nothing to wait for
-    if not metrics.get("Tables Never Vacuumed"):
-        zeros["Oldest Table Vacuum Age"] = 0            # no table with rows awaits a first vacuum
-    zeros["Index Hit Percent"] = 100.0                  # no index reads: no misses, never a fake 0 %
+                      "Archive Ready Files": 0, "New Archive Failures": 0})
     return {k: v for k, v in zeros.items() if k not in metrics}
+
+
+# Stand-in values sent only on a monitor's first poll, for metrics with no real value
+# then. Site24x7 builds a plugin's charts from the first poll of the first monitor
+# that registers and never adds charts later, so the first poll must carry every
+# metric; from the second poll on, a metric with no real value is left out ("No Data").
+REGISTRATION_STANDINS = {"Index Hit Percent": 100.0, "Buffer Cache Hit Percent": 100.0}
+
+
+def registration_payload(payload):
+    """Adds every metric and table missing from a first poll, so the template is
+    complete whichever kind of server registers first."""
+    for m in all_metric_defs():
+        if m.name not in payload and m.kind is not str:
+            payload[m.name] = REGISTRATION_STANDINS.get(m.name, 0)
+    tables = [(t.name, t.units) for t in TABLES if t.name not in CHILD_DISCOVERY]
+    tables += [(name, cols) for name, (_, cols) in CLUSTER_TABLES.items()]
+    for name, cols in tables:
+        if not payload.get(name):
+            payload[name] = [dict({"name": "-"}, **{c: ("-" if u == "" else 0)
+                                                    for c, u in cols.items()})]
 
 
 def derive_metrics(node, metrics):
@@ -1448,8 +1478,11 @@ class LogicalAdapter(object):
     def detect(self, seed, ctx):
         if seed.is_recovery or seed.version < (10, 0):
             return False
+        # pg_subscription is superuser-only before 14; pg_stat_subscription is readable
+        subscriptions = ("pg_subscription" if seed.version >= (14, 0)
+                         else "pg_stat_subscription WHERE relid IS NULL")
         row = seed.query_one(
-            "SELECT (SELECT count(*) FROM pg_subscription),"
+            "SELECT (SELECT count(*) FROM " + subscriptions + "),"
             " (SELECT count(*) FROM pg_replication_slots WHERE slot_type = 'logical' AND active),"
             " (SELECT string_agg(extname, ',') FROM pg_extension WHERE extname IN ('bdr', 'spock', 'pglogical'))")
         if not row:
@@ -1595,7 +1628,7 @@ PROBE_SQL = (
     " round(100.0 * (SELECT count(*) FROM pg_stat_activity WHERE datname IS NOT NULL)"
     " / current_setting('max_connections')::int, 2),"
     " floor(extract(epoch FROM now() - pg_postmaster_start_time()))::bigint,"
-    " (SELECT coalesce(floor(max(extract(epoch FROM now() - xact_start))), 0)::bigint"
+    " (SELECT floor(max(extract(epoch FROM now() - xact_start)))::bigint"
     " FROM pg_stat_activity WHERE datname IS NOT NULL AND pid <> pg_backend_pid()),"
     " (SELECT floor(extract(epoch FROM now() - max(last_msg_receipt_time)))::bigint"
     " FROM pg_stat_wal_receiver),"
@@ -1745,7 +1778,7 @@ def evaluate_health(rows, cluster_type, single_writer=True):
     return HEALTH_OK, "%d of %d nodes up" % (len(up), len(rows))
 
 
-def cluster_metrics(view, cluster_type, history, now, single_writer=True, since=None):
+def cluster_metrics(view, cluster_type, history, now, single_writer=True):
     rows = view.nodes
     code, reason = evaluate_health(rows, cluster_type, single_writer)
     standbys = [r for r in rows if r["role"] == ROLE_STANDBY]
@@ -1769,17 +1802,13 @@ def cluster_metrics(view, cluster_type, history, now, single_writer=True, since=
     if not lags and view.links:     # node names didn't match link names: use the links
         lags = [l["replay_lag_s"] for l in view.links if l.get("replay_lag_s") is not None]
         backlogs = [l["replay_lag_mb"] for l in view.links if l.get("replay_lag_mb") is not None]
-    if lags or not standbys:       # no standby means no standby is behind
-        out["Max Standby Replay Lag"] = max(lags) if lags else 0.0
-    if backlogs or not standbys:
-        out["Max Standby Backlog"] = max(backlogs) if backlogs else 0.0
+    if lags:
+        out["Max Standby Replay Lag"] = max(lags)
+    if backlogs:
+        out["Max Standby Backlog"] = max(backlogs)
     promotions = [e["ts"] for e in history if e["event"] == "promoted"]
     if promotions:
         out["Last Failover Age"] = int(now - max(promotions))
-    elif since is not None:
-        # no failover seen since monitoring began: report that time, a true lower bound
-        # ("no failover for at least this long"), never 0, which would read as "just now"
-        out["Last Failover Age"] = int(now - since)
     out["Failovers 24h"] = len([t for t in promotions if now - t <= 86400])
     return out
 
@@ -1793,6 +1822,19 @@ def event_rows(history, now):
                      "old_role": e["old_role"] or "-", "new_role": e["new_role"] or "-",
                      "age_s": int(now - e["ts"])})
     return rows
+
+
+def cluster_info_rows(metrics):
+    """The one-row Cluster_Info table: what the cluster is and how it is, as text."""
+    row = {"name": "cluster",
+           "cluster_type": metrics.get("Cluster Type") or "-",
+           "primary_node": str(metrics.get("Primary Node") or "-")[:MAX_STRING_CHARS],
+           "health": str(metrics.get("Health Reason") or "-")[:MAX_STRING_CHARS],
+           "node_role": metrics.get("Node Role") or "-",
+           "health_code": metrics.get("Health Code"),
+           "nodes_up": metrics.get("Nodes Up"),
+           "nodes_total": metrics.get("Nodes Total")}
+    return [{k: v for k, v in row.items() if v is not None}]
 
 
 def link_rows(links):
@@ -2038,13 +2080,11 @@ def collect_cluster(seed, metrics, prev, args, deadline, now):
         nodes_state[r["name"]] = {
             "role": r["role"], "status": r["status"], "address": r.get("address", ""),
             "last_seen": now if r["status"] else old.get("last_seen", now)}
-    since = float(prev_cluster.get("since") or now)
-    out = cluster_metrics(view, cluster_type, history, now, adapter.single_writer, since)
+    out = cluster_metrics(view, cluster_type, history, now, adapter.single_writer)
     tables = {"Nodes": public_rows(view.nodes), "Events": event_rows(history, now)}
     if view.links is not None:
         tables["Replication_Links"] = link_rows(view.links)
-    state = {"sysid": sysid, "type": cluster_type, "nodes": nodes_state, "events": history,
-             "since": since}
+    state = {"sysid": sysid, "type": cluster_type, "nodes": nodes_state, "events": history}
     state.update(ctx["state_extra"])
     return out, tables, events, state
 
@@ -2141,13 +2181,21 @@ def collect(param):
                              "log_file_path": log_path(args)}
 
     metrics.update(cluster_out)
+    if cluster_out:
+        cluster_tables["Cluster_Info"] = cluster_info_rows(metrics)
     metrics["Failed Queries"] = len(node.failures)
     denied = sorted(set(node.denied))
     metrics["Permission Gaps"] = len(denied)
     metrics["Collection Time"] = int((time.time() - t0) * 1000)
-    payload.update({k: v for k, v in metrics.items() if k not in HIDDEN_COUNTERS})
+    payload.update({k: v for k, v in metrics.items()
+                    if k not in HIDDEN_COUNTERS and k not in CLUSTER_INFO_TEXT})
     payload.update(tables)
     payload.update(cluster_tables)
+    if not prev:                        # this monitor's first poll: its registration
+        registration_payload(payload)
+    elif metrics.get("Cluster Type") == "standalone":
+        for name in STANDALONE_NOT_APPLICABLE:
+            payload.pop(name, None)
     if node.failures:
         payload["msg"] = "%d queries failed: %s" % (len(node.failures), node.failures[0])
     else:

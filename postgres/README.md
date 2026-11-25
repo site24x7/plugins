@@ -17,7 +17,7 @@ Execute the command below in the terminal to run the installer and follow the in
 wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installer/Site24x7PostgresPluginInstaller.sh && sudo bash Site24x7PostgresPluginInstaller.sh
 ```
 
-> **Note:** To upgrade from version 1, run the same command. The installer replaces the plugin files and keeps the existing `postgres.cfg`.
+> **Note:** To upgrade from version 1, run the same command. See [Upgrading from Version 1](#upgrading-from-version-1).
 
 ### Prerequisites
 
@@ -35,11 +35,7 @@ wget https://raw.githubusercontent.com/site24x7/plugins/master/postgres/installe
 	GRANT pg_monitor TO site24x7;
 	```
 
-> **Note:** Version 1 required the `pg_read_all_stats` role. When upgrading, grant `pg_monitor` to the existing user:
->
-> ```sql
-> GRANT pg_monitor TO <user>;
-> ```
+> **Note:** Version 1 required only the `pg_read_all_stats` role. When upgrading, grant `pg_monitor` to the existing user.
 
 ### Plugin Installation
 
@@ -152,6 +148,12 @@ The role of each node is read from PostgreSQL. If a cluster manager reports a di
 
 Metrics are grouped by the tab they appear in. "Per Sec" metrics are averaged over the poll interval, and "New" metrics count what happened since the previous poll.
 
+Metrics that do not apply to a server are not sent and show as "No Data", so no threshold fires on them. On a standalone server this covers the cluster and standby metrics: Cluster Health, Nodes Up, Health Code, Nodes Total, Nodes Down, Standbys Streaming, Sync Standbys, Last Failover Age, Failovers 24h, WAL Receiver Connected, Replay Lag, Replay Backlog, Last WAL Message Age, Max Standby Replay Lag and Max Standby Backlog. The same applies on any server to ages of events that have not happened yet, such as Last Archive Age before the first archive.
+
+A monitor's first poll sends every metric, using a stand-in value where there is no real one, because Site24x7 creates the charts from the first poll. Later polls send only real values.
+
+> **Note:** If you delete the plugin's template in Site24x7, also delete the `.state` folder inside the plugin folder before the monitors register again, so that their first poll sends every metric.
+
 ### Summary
 
 | **Metric Name** | **Description** |
@@ -171,14 +173,20 @@ Metrics are grouped by the tab they appear in. "Per Sec" metrics are averaged ov
 
 | **Metric Name** | **Description** |
 | :--- | :--- |
-| Cluster Type | Detected cluster type |
-| Health Code, Health Reason | Cluster status and its cause (see Health Codes) |
-| Primary Node | Current primary node |
+| Health Code | Cluster status (see Health Codes) |
 | Nodes Total, Nodes Down | Number of known nodes, and nodes that are down or not streaming |
 | Standbys Streaming, Sync Standbys | Number of standbys streaming from the primary, and synchronous standbys |
 | Timeline | Current timeline, incremented at each promotion |
 | Last Failover Age | Time since the last failover |
 | Failovers 24h | Number of failovers in the last 24 hours |
+
+The Cluster tab also shows three tables:
+
+| **Table** | **Description** |
+| :--- | :--- |
+| Cluster_Info | Cluster type, primary node, health, the role of the monitored server, and nodes up out of total |
+| Nodes | Role, status and replication lag of each cluster node |
+| Events | Recent failovers and node changes |
 
 ### Replication
 
@@ -200,7 +208,6 @@ Metrics are grouped by the tab they appear in. "Per Sec" metrics are averaged ov
 | **Metric Name** | **Description** |
 | :--- | :--- |
 | Server Version | PostgreSQL version |
-| Node Role | Primary or standby |
 | Max Connections | Maximum number of concurrent connections allowed |
 | Active Queries | Number of client sessions running a query |
 | Active Waiting Queries | Number of active queries waiting on an event |
@@ -237,7 +244,7 @@ Metrics are grouped by the tab they appear in. "Per Sec" metrics are averaged ov
 | Index Hit Percent | Percentage of index block reads served from shared buffers |
 | Total Temp Files | Number of temporary files written by queries |
 | Temp Data Per Sec | Temporary file data written per second |
-| New Checksum Failures | Number of data checksum failures (PostgreSQL 12+) |
+| New Checksum Failures | Number of data checksum failures (PostgreSQL 12+, data checksums enabled) |
 
 ### Vacuum and Wraparound
 
@@ -298,26 +305,38 @@ Metrics are grouped by the tab they appear in. "Per Sec" metrics are averaged ov
 
 | **Table** | **Description** |
 | :--- | :--- |
-| Nodes | Role, status and replication lag of each cluster node |
 | Replication_Links | Replication state and lag of each standby or subscriber |
 | Replication_Slots | Replication slots and the WAL they retain |
-| Events | Recent failovers and node changes |
 | Wait_Events | Active sessions grouped by wait event |
-| Top_Queries | Top 10 queries by total time, when `pg_stat_statements` is installed |
+| Top_Queries | Top 10 queries by total time, when the `pg_stat_statements` extension is installed and preloaded |
 
 ## Upgrading from Version 1
 
-The following version 1 metrics are no longer sent. The second column lists the nearest version 2 metric, which is measured differently, so its values are not directly comparable:
+1. Run the installer command from [Quick installation](#quick-installation). It replaces `postgres.py` and keeps the existing `postgres.cfg`, so every configured server keeps its settings.
+2. Grant the `pg_monitor` role to the monitoring user on every server:
 
-| **Version 1** | **Version 2** |
-| :--- | :--- |
-| Cache Hit Ratio | Buffer Cache Hit Percent |
-| Heap Blocks Read, Heap Blocks Hit | Block Reads Per Sec, Total Block Hits |
-| Index Rows Read, Index Rows Fetched | Index Scans Per Sec |
-| Total Rows Inserted, Updated, Deleted, Fetched, Returned | Rows Inserted, Updated, Deleted, Fetched, Returned Per Sec |
-| Total Block Reads | Block Reads Per Sec |
-| Index Scans | Index Scans Per Sec |
-| Total Conflicts | New Conflicts |
-| Checkpoints Req | New Requested Checkpoints |
+	```sql
+	GRANT pg_monitor TO <user>;
+	```
 
-The table `Tranasctions_and_Session_per_Database` is renamed `Transactions_and_Sessions_per_Database`. Active Queries now counts client sessions only.
+	Without it the plugin still runs. The metrics it cannot read are named in the monitor message and counted in Permission Gaps.
+3. The agent registers the monitors as version 2 at its next poll. The new tabs, metrics and tables then appear in Site24x7.
+
+### Metric changes
+
+| **Version 1 metric** | **Version 2 metric** | **Change** |
+| :--- | :--- | :--- |
+| Cache Hit Ratio | Buffer Cache Hit Percent | Covers all databases, tables and indexes, as a percentage |
+| Heap Blocks Read, Heap Blocks Hit | Block Reads Per Sec, Total Block Hits | Covers all databases |
+| Index Rows Read, Index Rows Fetched | Index Scans Per Sec | Counts index scans per second |
+| Total Rows Inserted, Updated, Deleted, Fetched, Returned | Rows Inserted, Updated, Deleted, Fetched, Returned Per Sec | Rate per second instead of a running total |
+| Total Block Reads | Block Reads Per Sec | Rate per second instead of a running total |
+| Index Scans | Index Scans Per Sec | Rate per second instead of a running total |
+| Total Conflicts | New Conflicts | Count since the previous poll |
+| Checkpoints Req | New Requested Checkpoints | Count since the previous poll |
+
+Other changes:
+
+- The table `Tranasctions_and_Session_per_Database` is renamed `Transactions_and_Sessions_per_Database`.
+- Active Queries counts client sessions only, not background processes.
+- Stats_per_DB no longer lists the `template0` and `template1` databases.
