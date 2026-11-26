@@ -1,493 +1,253 @@
 #!/bin/bash
+# Installs or upgrades the Site24x7 PostgreSQL plugin (version 2) for the Site24x7 Linux agent.
+#
+# Upgrading keeps the existing postgres.cfg (all monitors and their encrypted
+# credentials) and the plugin's state; only postgres.py and the README are replaced.
+#
+# Usage: bash Site24x7PostgresPluginInstaller.sh [--from-dir DIR]
+#   --from-dir DIR   install postgres.py, postgres.cfg and README.md from a local
+#                    folder instead of downloading them (offline / air-gapped hosts)
 
-#trap Function To reset terminal colours 
 func_exit() {
-    tput sgr0 # Reset Terminal Colors
-    exit 0 # Cleanly exit script
+    tput sgr0 2>/dev/null
+    exit 0
 }
-
-#Trap for ctr+c(SIGINT) and ctrl+z(SIGTSTP)
-
 trap func_exit SIGINT SIGTSTP
 
-# Agent and Plugin Directory
 plugin=postgres
 agent_dir=/opt/site24x7/monagent
 agent_path_change=false
+base_url="https://raw.githubusercontent.com/site24x7/plugins/master/$plugin"
+from_dir=""
+mode="install"          # install | upgrade
 
+if [ "$1" = "--from-dir" ] && [ -n "$2" ]; then
+    from_dir="$2"
+fi
+
+color() { tput setaf "$1" 2>/dev/null; }
+reset() { tput sgr0 2>/dev/null; }
 
 error_handler() {
-    if  [ $1 -ne 0 ]; then
-        tput setaf 1
-        echo  "------------Error Occured---------"
-        echo $2
-        tput sgr0
+    if [ "$1" -ne 0 ]; then
+        color 1
+        echo "------------Error Occurred------------"
+        echo "$2"
+        reset
         echo "------------Process Exited------------"
-        exit
+        exit 1
     fi
 }
 
-agent_check(){
-# Check if the service exists
-    if  ! [ -d $agent_dir"/bin"  ]; then
-      agent_path_change=true
-      output=$(ls $agent_dir )
-      if ! echo "$output" | grep -qE ": Permission denied"; then
-            error_handler $? $output
-      fi
-
-      tput setaf 3
-      if [ $i -eq 0 ]; then
-        echo "The Site24x7LinuxAgent is not installed in the default $agent_dir directory."
-      fi
-      echo -e "Enter the path of the directory where the Site24x7LinuxAgent is installed: \c"
-      read -r  agent_dir
-      tput sgr0
-
-    else 
-        if [ $i -gt 0 ] ; then
-            echo "The agent Directory is $agent_dir"
+agent_check() {
+    for i in 0 1 2; do
+        if [ -x "$agent_dir/bin/monagent" ] && "$agent_dir/bin/monagent" status 2>/dev/null | grep -Eq "Site24x7 (monitoring|full-stack) agent service"; then
+            return
         fi
-      
-    fi
-
-}
-
-
-for (( i=0; i<3; i++ )); do
-  agent_check
-  if [ -z $agent_dir ]; then
-    tput setaf 1
-    echo
-    echo "The Site24x7LinuxAgent is required to install the postgres plugin. Enter the correct directory path of the agent to proceed."
-    agent_dir=/opt/site24x7/monagent
-    tput sgr0
-  else
-    agent_status=$($agent_dir/bin/monagent status)
-    if ! echo "$agent_status" | grep -q "Site24x7 monitoring agent service" ; then
-        tput setaf 1
-        echo
-        echo "The Site24x7LinuxAgent is required to install the postgres plugin. Enter the correct directory path of the agent to proceed."
-        tput sgr0
-
-    else
-        break
-    fi
-  fi
-
-  if [ $i -eq 2 ]; then
-      echo "No such file or directory found. Install the Site24x7LinuxAgent and try installing the plugin again."
-      exit
-  fi
-done
-
-
-
-# Variables for the plugin installation
-temp_dir=$agent_dir/temp/plugins/$plugin
-plugin_dir=$agent_dir/plugins/
-py_file="$temp_dir/$plugin.py"
-cfg_file="$temp_dir/$plugin.cfg"
-reinstall=false
-prerequisites(){
-    tput setaf 3
-    echo "------------Prerequisites------------"
-    echo
-    tput sgr0
-    echo "Ensure you meet the following prerequisites before proceeding."
-    echo "Press Enter to continue if you meet the prerequisites, or run the installer again once the prerequisites are met."
-    echo
-
-    echo "  1.Python 3 or a higher version should be installed in the server."
-    echo "  2.Create a Postgres user with $(tput bold)pg_read_all_stats$(tput sgr0) permission or ensure an existing user with the permission is present for monitoring. For example, create a user 'site24x7' with password 'site24x7' and provide 'pg_read_all_stats' permission to the 'site24x7' user created."
-    echo "  3.Add an entry in the pg_hba.conf file to allow the user to connect to the database."
-    echo
-    tput setaf 3
-    read -p "Do you want to continue with the installation? (y or n):" continue
-    tput sgr0
-    
-    if [ -z "$continue" ] || [ $continue = "y" -o $continue = "Y" ] ; then
-        echo
-    else
-        echo "Process exited."
-        exit
-    fi
-}
-
-download_files() {
-
-    file_name=$1 
-    echo "Downloading: $file_name"
-    echo
-    
-    output=$(wget -P $temp_dir $file_name  2>&1 )
-
-    if [ $? -ne 0 ]; then
-        tput setaf 1
-        error=$(grep -E 'HTTP' <<< "$output" )
-        echo $error
-        if echo "$error" | grep -q "200"; then
-            echo $output
-        else
-            error_handler $? "$output"
-        fi
-        tput sgr0
-        exit
-    else
-        tput setaf 2
-        echo $(grep -E 'HTTP' <<< "$output" )
-        echo $(grep -E 'saved' <<< "$output" )
-        tput sgr0
-        
-    fi
-    echo
-
-}
-loading_animation() {
-    installation_command=$1
-    output=$($installation_command) &
-    pid=$! # Process Id of the previous running command
-
-    spin='-\|/'
-
-    i=0
-    tput civis # cursor invisible
-    while kill -0 $pid 2>/dev/null
-    do
-        i=$(( (i+1) %4 ))
-        printf "\rInstalling $2... ${spin:$i:1}"
-        sleep .1
+        agent_path_change=true
+        color 3
+        [ "$i" -eq 0 ] && echo "The Site24x7 Linux agent was not found in $agent_dir."
+        read -r -p "Enter the directory where the Site24x7 Linux agent is installed: " agent_dir
+        reset
     done
-    wait $pid
-    exit_status=$?
-    tput cnorm
-    echo
-    if [ $exit_status -ne 0 ]; then
-        tput setaf 1
-        echo "------------Error Occured------------"
-        echo $output
-        tput sgr0
-        exit
-    fi
-    echo "Installation completed!"
+    echo "The Site24x7 Linux agent is required. Install it and run this installer again."
+    exit 1
 }
 
-Install_pakages(){
-    tput setaf 3
+prerequisites() {
+    color 3; echo "------------Prerequisites------------"; reset
     echo
-    echo "------------Installing the psycopg2 module------------"
-    echo 
-    tput sgr0
-    deb_packages=("libpq-dev" "python3-dev" "gcc")
-    redhat_packages=("postgresql-libs" "postgresql-devel" "python3-devel" "gcc")
-    if [[ -f /etc/debian_version ]] ; then
-        packages=("${deb_packages[@]}")
-        command="apt install"
-    elif [[ -f /etc/redhat-release ]] ; then
-        packages=("${redhat_packages[@]}")
-        command="yum install"
-
-    fi
-    
-    echo "The psycopg2 module is required to install the plugin."
+    echo "  1. Python 3.6 or later on this server."
+    echo "  2. A PostgreSQL user for monitoring with the $(tput bold 2>/dev/null)pg_monitor$(reset) role, on every node of the cluster with the same password:"
+    echo "       CREATE USER site24x7 WITH PASSWORD '<password>';"
+    echo "       GRANT pg_monitor TO site24x7;"
+    echo "  3. A pg_hba.conf entry that lets this user connect from this server."
     echo
-    echo "The psycopg2 module along with the following packages will installed."
-    echo ${packages[@]}
-    echo
-    read -p "Select 'y' to install the psycopg2 module. Select 'n' if you have the module already installed and proceed with the plugin installation. (y or n):" psycopg2
-    tput sgr0
-    
-    echo
-    if [ -z "$psycopg2" ] || [ $psycopg2 = "y" -o $psycopg2 = "Y" ] ; then
-        for i in "${packages[@]}" ;do
-            loading_animation "$command $i -y" $i
-        done
-        echo "Installing psycopg2"
-        loading_animation "pip3 install psycopg2-binary" "psycopg2"
-
-    else
+    color 3; read -r -p "Continue with the installation? (y or n): " ans; reset
+    if [ -n "$ans" ] && [ "$ans" != "y" ] && [ "$ans" != "Y" ]; then
         echo "Process exited."
-            
+        exit 0
     fi
-
-
 }
 
-install (){
-    
-    if [[ -d $temp_dir ]] ; then
-
-        if ( [[ -f $py_file ]] ) ; then 
-            rm $py_file
-        fi
-        if ( [[ -f $cfg_file ]] ) ; then 
-            rm $cfg_file
-        fi
-
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.py
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.cfg
-
+fetch() {
+    # fetch <file> <destination-dir>
+    if [ -n "$from_dir" ]; then
+        cp "$from_dir/$1" "$2/$1"
+        error_handler $? "Could not copy $from_dir/$1"
+    elif command -v wget >/dev/null 2>&1; then
+        wget -q -O "$2/$1" "$base_url/$1"
+        error_handler $? "Could not download $base_url/$1"
     else
-        output=$(mkdir -p $temp_dir)
-         if [ $? -ne 0 ]; then
-            tput setaf 1
-            echo "------------Error Occured------------"
-         fi
-
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.py
-        download_files https://raw.githubusercontent.com/site24x7/plugins/master/postgres/postgres.cfg
-        
-    
+        curl -fsSL -o "$2/$1" "$base_url/$1"
+        error_handler $? "Could not download $base_url/$1"
     fi
+    echo "  $1"
+}
 
+check_existing() {
+    if [ -f "$plugin_dir/$plugin/$plugin.cfg" ]; then
+        echo "The $plugin plugin is already installed in $plugin_dir/$plugin."
+        color 3
+        read -r -p "Upgrade it and keep the existing configuration and monitors? (y or n): " ans
+        reset
+        if [ -z "$ans" ] || [ "$ans" = "y" ] || [ "$ans" = "Y" ]; then
+            mode="upgrade"
+        else
+            echo "Process exited. Nothing was changed."
+            exit 0
+        fi
+    fi
+}
+
+download() {
+    color 3; echo; echo "------------Getting the plugin files------------"; reset
+    rm -rf "$temp_dir"
+    mkdir -p "$temp_dir"
+    error_handler $? "Could not create $temp_dir"
+    fetch "$plugin.py" "$temp_dir"
+    fetch "README.md" "$temp_dir"
+    if [ "$mode" = "install" ]; then
+        fetch "$plugin.cfg" "$temp_dir"
+    fi
+}
+
+install_driver() {
+    # The Full-Stack Linux agent runs plugins in its own Python (use_agent_python=1),
+    # which already bundles psycopg2: nothing to install.
+    if ls -d "$agent_dir"/lib/lib/psycopg2 >/dev/null 2>&1; then
+        echo "The agent's own Python already includes psycopg2."
+        return
+    fi
+    if "$python" -c "import psycopg2" >/dev/null 2>&1; then
+        echo "The psycopg2 module is already installed."
+        return
+    fi
+    color 3; echo; echo "------------Installing the psycopg2 module------------"; reset
+    echo "The plugin needs psycopg2. It will be installed with: $python -m pip install psycopg2-binary"
+    read -r -p "Install it now? (y or n): " ans
+    if [ -z "$ans" ] || [ "$ans" = "y" ] || [ "$ans" = "Y" ]; then
+        "$python" -m pip install psycopg2-binary
+        error_handler $? "psycopg2-binary could not be installed. Install it manually and run the installer again."
+    else
+        echo "Install psycopg2 before the plugin can collect data: $python -m pip install psycopg2-binary"
+    fi
+}
+
+find_python() {
+    python=$(command -v python3)
+    if [ -z "$python" ]; then
+        error_handler 1 "Python 3 was not found. Install Python 3.6 or later and run the installer again."
+    fi
+    sed -i "1s|^.*|#!$python|" "$temp_dir/$plugin.py"
+    error_handler $? "Could not set the Python path in $plugin.py"
+    echo "Using $("$python" --version 2>&1) at $python"
 }
 
 get_plugin_data() {
-    default_host="localhost"
-    default_port="5432"
-    default_username="None"
-    default_password="None"
-    tput setaf 3
+    color 3; echo; echo "------------Connection details------------"; reset
+    echo " Press Enter to keep a default. The password is encrypted by the agent and is not stored in Site24x7."
+    echo " For a cluster, give any one node, a VIP, a DNS name or a proxy write port; the other nodes are found automatically."
     echo
-    echo "------------Connection Details------------"
-    echo 
-    tput sgr0
-    echo " 1.Provide the host, port and authentication credentials (if any) below to access Postgres to fetch metrics. These will be used in the .cfg file."
-    echo " 2.Press Enter to keep the default values. If you hit Enter, the default values will be used for the connection."
+    read -r -p "  PostgreSQL host (default: localhost): " pg_host
+    read -r -p "  PostgreSQL port (default: 5432): " pg_port
+    read -r -p "  Username of the user with pg_monitor (default: None): " pg_user
+    read -r -s -p "  Password of that user (default: None): " pg_password
     echo
-    echo " $(tput setaf 3)$(tput bold)Note$(tput sgr0): The username and password you provide will be securely encrypted in the agent and will not be stored in any of the Site24x7 databases."
-    echo
-    
-    tput setaf 6
-    tput bold
-    read -r -p  "  Enter the Postgres host (default: $default_host): " postgres_host
-    if [ -z $postgres_host ] ; then
-        postgres_host=$default_host
-    fi
-
-    read -r -p  "  Enter the Postgres port (default: $default_port): " postgres_port
-    if [ -z $postgres_port ] ; then
-        postgres_port=$default_port
-    fi
-
-    read -r -p "  Enter the username of the Postgres user with pg_read_all_stats permission enabled (default: $default_username): " username
-    if [ -z $username ] ; then
-        username=$default_username
-    fi
-
-    read -r -p "  Enter the password of the above user (default: $default_password): " password
-    if [ -z $password ] ; then
-        password=$default_password
-    fi
-
-
-    tput sgr0
+    read -r -p "  Database (default: postgres): " pg_db
+    read -r -p "  Patroni REST API port, only if this is a Patroni cluster (default: none): " patroni_port
+    pg_host=${pg_host:-localhost}
+    pg_port=${pg_port:-5432}
+    pg_user=${pg_user:-None}
+    pg_password=${pg_password:-None}
+    pg_db=${pg_db:-postgres}
 }
 
+escape() { printf '%s' "$1" | sed -e 's/[\\&|]/\\&/g'; }
 
-python_path_update() {
-    echo "Checking for python3"
-    output=$(which python3)
-
-    if [ $? -ne 0 ]; then
-
-        echo $(python3 --version)
-        echo
-        echo "Checking for python2"
-        output=$(which python)
-        if [ $? -ne 0 ]; then
-            tput setaf 1
-            echo "------------The Python path could not be updated------------"
-            echo 
-            tput sgr0
-            echo $(python --version)
-            exit
-        else
-            python=python
-            output=$(sed -i "1s|^.*|#! $output|" $py_file)
-            if [ $? -ne 0 ]; then
-                tput setaf 1
-                echo "------------The Python path could not be updated------------"
-                echo 
-                tput sgr0
-            
-            else
-                echo "Python path updated with $(python --version 2>&1)"
-            fi
-        fi
-
-    else
-        python=python3
-         output=$(sed -i "1s|^.*|#! $output|" $py_file)
-         if [ $? -ne 0 ]; then
-            tput setaf 1
-            echo "------------The Python path could not be updated------------"
-            echo 
-            tput sgr0
-        else
-            echo "Python path updated with $(python3 --version)"
-        fi
-    echo
-    
-
+add_conf() {
+    cfg="$temp_dir/$plugin.cfg"
+    sed -i "s|^host=.*|host=\"$(escape "$pg_host")\"|" "$cfg" &&
+    sed -i "s|^port=.*|port=\"$(escape "$pg_port")\"|" "$cfg" &&
+    sed -i "s|^username=.*|username=\"$(escape "$pg_user")\"|" "$cfg" &&
+    sed -i "s|^password=.*|password=\"$(escape "$pg_password")\"|" "$cfg" &&
+    sed -i "s|^db=.*|db=\"$(escape "$pg_db")\"|" "$cfg"
+    error_handler $? "Could not write $cfg"
+    if [ -n "$patroni_port" ]; then
+        sed -i "s|^patroni_port=.*|patroni_port=\"$(escape "$patroni_port")\"|" "$cfg"
     fi
-
 }
 
 check_plugin_execution() {
-
-    output=$($python $py_file --host "$postgres_host" --port "$postgres_port" --username "$username" --password "$password")
-    if  [ $? -ne 0 ]; then
-        tput setaf 1
-        echo "------------Error Occured------------"
-        echo $output
-        echo
-        echo $(grep -E '"status": 0' <<< "$output" )
-        echo $(grep -E '"msg": *' <<< "$output" )
-        tput sgr0
-        exit
+    output=$("$python" "$temp_dir/$plugin.py" --host "$pg_host" --port "$pg_port" \
+             --username "$pg_user" --password "$pg_password" --db "$pg_db" 2>&1)
+    if [ $? -ne 0 ] || grep -q '"status": 0' <<< "$output"; then
+        color 1
+        echo "------------The test run failed------------"
+        grep -E '"msg"' <<< "$output"
+        reset
+        exit 1
     fi
-
-    if grep -qE '"status": 0' <<< "$output"  ; then
-        tput setaf 1
-        echo "------------Error Occured------------"
-        echo $output
-        echo
-        echo "Status and Error Message:"
-        echo $(grep -E '"status": 0' <<< "$output" )
-        echo $(grep -E '"msg": *' <<< "$output" )
-        tput sgr0
-        exit
-
-    elif ! echo "$output" | grep -qE "\"Server Version\":|\"Active Connections\":"; then
-       tput setaf 3
-       echo "The output does not contain metrics. Check if you have provided the correct details."
-       error_handler 1 "$output"
-
-    else
-        tput setaf 3
-        echo "------------Successful test execution------------"
-        echo
-        tput setaf 2
-        echo $output
-        tput sgr0
-
+    if ! grep -qE '"Server Version"|"Active Connections"' <<< "$output"; then
+        error_handler 1 "The test run returned no metrics. Check the connection details."
     fi
-
-
-}
-
-add_conf() {
-    echo
-    #echo "before"
-    #cat $cfg_file
-    output=$(sed -i "/^host*/c\host = \"$postgres_host\""  "$cfg_file")
-    error_handler $? $output
-    output=$(sed -i "/^port*/c\port = \"$postgres_port\""  "$cfg_file")
-    error_handler $? $output
-    username=$(echo "$username" | sed 's/\\/\\\\/g')
-    output=$(sed -i "/^username*/c\username = \"$username\"" $cfg_file)
-    error_handler $? $output
-    password=$(echo "$password" | sed 's/\\/\\\\/g')
-    output=$(sed -i "/^password*/c\password = \"$password\""  $cfg_file)
-    error_handler $? $output
-    #echo "after"
-    #cat $cfg_file
-    
-}
-
-check_plugin_exists() {
-    if  [[ -d "$plugin_dir/$plugin" ]]  ; then 
-        echo "The Postgres monitoring plugin folder already exists in the Plugins directory."
-        read -p "Do you want to reinstall the plugin? (y or n):" reinstall
-        if [ -z "$reinstall" ] || [ $reinstall = "y" -o $reinstall = "Y" ] ; then
-            rm -rf "$plugin_dir/$plugin"
-            reinstall=true
-        else
-            echo "Process exited."
-            exit
-        fi
-        
-    fi
-}
-
-restart_agent(){
-
-    if $restart ; then
-        read -p "Do you want to restart the Site24x7LinuxAgent?(y or n): " re_agent
-        if  [ -z "$re_agent" ] || [ $re_agent = "y" -o $re_agent = "Y" ] ; then
-        
-            output=$($agent_dir/bin/monagent restart)
-            error_handler $? $output
-            echo "Completed."
-
-        else
-            echo "Process exited."
-        fi
-        echo "If you have installed the agent as non-root, execute the command below with appropriate details to allow the user access to the plugin folder."
-        echo "For example, if the user is 'site24x7-agent' and the group is 'site24x7-group', the command would be:"
-        echo "$(tput bold)chown -R site24x7-agent:site24x7-group $plugin_dir$plugin$(tput sgr0)"
-    fi
+    color 2
+    echo "------------Test run successful------------"
+    grep -E '"(Server Version|Node Role|Cluster Type|Nodes Up)": [^[{]' <<< "$output"
+    reset
 }
 
 move_plugin() {
-    output=$(mv $temp_dir $plugin_dir )
-    if  [ $? -ne 0 ]; then
-        tput setaf 1
-        echo "------------Error Occured------------"
-        tput sgr0
+    if [ "$mode" = "upgrade" ]; then
+        # replace only the code and README; keep postgres.cfg, .state/ and logs
+        cp "$temp_dir/$plugin.py" "$plugin_dir/$plugin/$plugin.py" &&
+        cp "$temp_dir/README.md" "$plugin_dir/$plugin/README.md"
+        error_handler $? "Could not update $plugin_dir/$plugin"
+        rm -rf "$temp_dir"
     else
-        echo "Completed."
+        mkdir -p "$plugin_dir" && mv "$temp_dir" "$plugin_dir/$plugin"
+        error_handler $? "Could not move the plugin to $plugin_dir"
     fi
-
+    echo "Completed."
 }
 
-install_plugin() {
-    echo
-    echo "The installer helps you to install the Postgres plugin for monitoring in Site24x7."
-    echo "Follow the in-line instructions below to complete the installation successfully."
-    echo
+restart_agent() {
+    color 3; read -r -p "Restart the Site24x7 Linux agent now? (y or n): " ans; reset
+    if [ -z "$ans" ] || [ "$ans" = "y" ] || [ "$ans" = "Y" ]; then
+        "$agent_dir/bin/monagent" restart
+        error_handler $? "Could not restart the agent"
+    fi
+    if $agent_path_change; then
+        echo "If the agent runs as a non-root user, give it access to the plugin folder, for example:"
+        echo "  chown -R site24x7-agent:site24x7-group $plugin_dir/$plugin"
+    fi
+}
 
-    prerequisites
-    check_plugin_exists
-
-    tput setaf 3
-    echo
-    echo "------------Downloading the plugin files from Site24x7's GitHub repository------------"
-    echo    
-    tput sgr0
-
-    install
-    output=""
-    Install_pakages
-
-    echo
-    echo 
-
+echo
+echo "Site24x7 PostgreSQL plugin installer (version 2)"
+echo
+agent_check
+temp_dir="$agent_dir/temp/plugins/$plugin"
+plugin_dir="$agent_dir/plugins"
+prerequisites
+check_existing
+download
+find_python
+install_driver
+if [ "$mode" = "install" ]; then
     get_plugin_data
-
     add_conf
-
-    python_path_update
-
     check_plugin_execution
-
-    tput setaf 3
-    echo
-    echo "------------Moving plugin files to the Site24x7 Plugins directory------------"
-    echo
-    tput sgr0
-
-    move_plugin
-    tput setaf 3
-    echo
-    echo "------------Plugin installed successfully------------"
-    tput sgr0
-    restart_agent
-    if  $agent_path_change ; then
-        echo "If you have installed the agent as non-root, execute the command below with appropriate details to allow the user access to the plugin folder."
-        echo "For example, if the user is 'site24x7-agent' and the group is 'site24x7-group', the command would be:"
-        echo "$(tput bold)chown -R site24x7-agent:site24x7-group $plugin_dir$plugin$(tput sgr0)"
-    fi
-}
-install_plugin
+else
+    # an upgrade has no plain-text credentials to test with (the agent encrypted them)
+    "$python" -c "import ast,sys; ast.parse(open(sys.argv[1]).read())" "$temp_dir/$plugin.py"
+    error_handler $? "The downloaded $plugin.py is not valid Python."
+    echo "Existing configuration kept: $plugin_dir/$plugin/$plugin.cfg"
+fi
+color 3; echo; echo "------------Installing into $plugin_dir/$plugin------------"; reset
+move_plugin
+color 2
+if [ "$mode" = "upgrade" ]; then echo "------------Plugin upgraded successfully------------"
+else echo "------------Plugin installed successfully------------"; fi
+reset
+restart_agent
