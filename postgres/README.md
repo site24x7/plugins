@@ -115,6 +115,8 @@ The plugin detects the cluster type and discovers the other nodes automatically.
 | pg_auto_failover | The monitor node | None |
 | Logical replication (native, pglogical, Spock, BDR) | Any node | None |
 
+Native logical replication must run both ways; one-way publisher to subscriber shows as standalone (its subscription metrics are still collected).
+
 The role of each node is read from PostgreSQL. If a cluster manager reports a different role, the plugin raises it as a health issue.
 
 ## Configuration Options
