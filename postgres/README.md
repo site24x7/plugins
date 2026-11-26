@@ -148,7 +148,7 @@ The role of each node is read from PostgreSQL. If a cluster manager reports a di
 
 Metrics are grouped by the tab they appear in. "Per Sec" metrics are averaged over the poll interval, and "New" metrics count what happened since the previous poll.
 
-Metrics that do not apply to a server are not sent and show as "No Data", so no threshold fires on them. On a standalone server this covers the cluster and standby metrics: Cluster Health, Nodes Up, Health Code, Nodes Total, Nodes Down, Standbys Streaming, Sync Standbys, Last Failover Age, Failovers 24h, WAL Receiver Connected, Replay Lag, Replay Backlog, Last WAL Message Age, Max Standby Replay Lag and Max Standby Backlog. The same applies on any server to ages of events that have not happened yet, such as Last Archive Age before the first archive.
+Metrics that do not apply to a server are not sent and show as "No Data", so no threshold fires on them. On a standalone server this covers the cluster and standby metrics: Cluster Health, Nodes Up, Health Code, Nodes Total, Nodes Down, Standbys Streaming, Sync Standbys, Last Failover Age, Failovers 24h, Replay Lag, Replay Backlog, Last WAL Message Age, Max Standby Replay Lag and Max Standby Backlog. The same applies on any server to ages of events that have not happened yet, such as Last Archive Age before the first archive.
 
 A monitor's first poll sends every metric, using a stand-in value where there is no real one, because Site24x7 creates the charts from the first poll. Later polls send only real values.
 
@@ -192,7 +192,7 @@ The Cluster tab also shows three tables:
 
 | **Metric Name** | **Description** |
 | :--- | :--- |
-| WAL Receiver Connected | 1 if the standby is streaming from its primary |
+| WAL Receiver | Streaming, Disconnected (a standby that lost its primary), or Not a standby |
 | Replay Lag | Replication delay on a standby |
 | Replay Backlog | WAL received by a standby but not yet replayed |
 | Last WAL Message Age | Time since a standby last heard from its primary |
@@ -266,7 +266,7 @@ The Cluster tab also shows three tables:
 | Archived Count | Number of WAL files archived |
 | New Archive Failures | Number of failed archive attempts |
 | Last Archive Age | Time since the last successful archive |
-| Archiving Failing | 1 if the last archive attempt failed |
+| Archiving | OK, Failing (the last archive attempt failed), or Off (archive_mode is off) |
 | Archive Ready Files | Number of WAL files waiting to be archived (PostgreSQL 12+) |
 
 ### BG Writer

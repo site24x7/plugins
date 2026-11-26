@@ -167,7 +167,7 @@ CLUSTER_INFO_TEXT = {"Node Role", "Cluster Type", "Health Reason", "Primary Node
 STANDALONE_NOT_APPLICABLE = {
     "Cluster Health", "Nodes Up", "Health Code", "Nodes Total", "Nodes Down",
     "Standbys Streaming", "Sync Standbys", "Last Failover Age", "Failovers 24h",
-    "WAL Receiver Connected", "Replay Lag", "Replay Backlog", "Last WAL Message Age",
+    "Replay Lag", "Replay Backlog", "Last WAL Message Age",
     "Max Standby Replay Lag", "Max Standby Backlog",
 }
 
@@ -352,12 +352,12 @@ QUERIES = [
         "SELECT archived_count, failed_count,"
         " floor(extract(epoch FROM now() - last_archived_time))::bigint,"
         " CASE WHEN last_failed_time IS NOT NULL AND (last_archived_time IS NULL"
-        " OR last_failed_time > last_archived_time) THEN 1 ELSE 0 END"
+        " OR last_failed_time > last_archived_time) THEN 'Failing' ELSE 'OK' END"
         " FROM pg_stat_archiver",
         [M("Archived Count", "files", "WAL and Archiving"),
          M("Archive Failed Count", "files", "WAL and Archiving"),
          M("Last Archive Age", "s", "WAL and Archiving"),
-         M("Archiving Failing", "flag", "WAL and Archiving")])],
+         M("Archiving", tab="WAL and Archiving", kind=str)])],
         when=lambda node: node.settings.get("archive_mode", "off") != "off"),
 
     # Its own query: listing the archive status directory needs pg_monitor, and without
@@ -369,25 +369,27 @@ QUERIES = [
 
     Query("wal_receiver", [
         Variant((10, 0),
-            "SELECT (SELECT count(*) FROM pg_stat_wal_receiver WHERE status = 'streaming'),"
+            "SELECT CASE WHEN EXISTS (SELECT 1 FROM pg_stat_wal_receiver WHERE status = 'streaming')"
+            " THEN 'Streaming' ELSE 'Disconnected' END,"
             " CASE WHEN pg_last_wal_receive_lsn() = pg_last_wal_replay_lsn() THEN 0"
             " ELSE floor(extract(epoch FROM now() - pg_last_xact_replay_timestamp()))::bigint END,"
             " round(pg_wal_lsn_diff(pg_last_wal_receive_lsn(), pg_last_wal_replay_lsn()) / 1048576.0, 2),"
             " (SELECT floor(extract(epoch FROM now() - max(last_msg_receipt_time)))::bigint"
             " FROM pg_stat_wal_receiver)",
-            [M("WAL Receiver Connected", "flag", "Replication"),
+            [M("WAL Receiver", tab="Replication", kind=str),
              M("Replay Lag", "s", "Replication"),
              M("Replay Backlog", "MB", "Replication", float),
              M("Last WAL Message Age", "s", "Replication")]),
         Variant((9, 6),
-            "SELECT (SELECT count(*) FROM pg_stat_wal_receiver WHERE status = 'streaming'),"
+            "SELECT CASE WHEN EXISTS (SELECT 1 FROM pg_stat_wal_receiver WHERE status = 'streaming')"
+            " THEN 'Streaming' ELSE 'Disconnected' END,"
             " CASE WHEN pg_last_xlog_receive_location() = pg_last_xlog_replay_location() THEN 0"
             " ELSE floor(extract(epoch FROM now() - pg_last_xact_replay_timestamp()))::bigint END,"
             " round(pg_xlog_location_diff(pg_last_xlog_receive_location(),"
             " pg_last_xlog_replay_location()) / 1048576.0, 2),"
             " (SELECT floor(extract(epoch FROM now() - max(last_msg_receipt_time)))::bigint"
             " FROM pg_stat_wal_receiver)",
-            [M("WAL Receiver Connected", "flag", "Replication"),
+            [M("WAL Receiver", tab="Replication", kind=str),
              M("Replay Lag", "s", "Replication"),
              M("Replay Backlog", "MB", "Replication", float),
              M("Last WAL Message Age", "s", "Replication")])],
@@ -1001,8 +1003,10 @@ def truthful_zeros(node, metrics):
     console shows "No Data" and no threshold fires on a made-up value."""
     zeros = {}
     if node.settings.get("archive_mode", "off") == "off":
-        zeros.update({"Archived Count": 0, "Archive Failed Count": 0, "Archiving Failing": 0,
+        zeros.update({"Archived Count": 0, "Archive Failed Count": 0, "Archiving": "Off",
                       "Archive Ready Files": 0, "New Archive Failures": 0})
+    if not node.is_recovery:
+        zeros["WAL Receiver"] = "Not a standby"
     return {k: v for k, v in zeros.items() if k not in metrics}
 
 
