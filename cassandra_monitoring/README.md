@@ -6,7 +6,7 @@ Apache Cassandra is an open-source, distributed NoSQL database management system
 ### Monitor the health and performance of your Cassandra database with our plugin integration:
 
 #### Prerequisites
--  Download and install the latest version of the [Site24x7 Linux agent](https://www.site24x7.com/app/client#/admin/inventory/add-monitor) in the server where you intend to run the plugin
+-  Download and install the latest version of the [Site24x7 Linux agent / Site24x7 Windows Agent](https://www.site24x7.com/help/admin/adding-a-monitor.html#server) in the server where you intend to run the plugin
 
 -  Install the jmxquery module for python.
 	```
