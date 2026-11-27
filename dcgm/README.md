@@ -30,7 +30,7 @@ Configure the following parameters in `dcgm.cfg`:
 ```ini
 [instance_1]
 dcgm_endpoint="http://localhost:9400/metrics"
-plugin_version=3
+plugin_version=1
 heartbeat="true"
 ```
 
@@ -47,22 +47,22 @@ heartbeat="true"
 | **Performance** | Utilization | `GPU_Utilization`, `Memory_Copy_Utilization` | % |
 | | Clocks | `SM_Clock`, `Memory_Clock` | MHz |
 | | Engines | `Encoder_Utilization`, `Decoder_Utilization` | % |
-| | Pipelines | `SM_Active`, `SM_Occupancy`, `Tensor_Active`, `FP16/32/64_Active` | fraction |
 | | Throughput | `PCIe_TX_Throughput`, `PCIe_RX_Throughput` | KB/s |
+| **Advanced** | GPU details | `SM_Active`, `SM_Occupancy`, `Tensor_Active`, `FP16/32/64_Active`, `Clock_Throttle_Reasons`, `XID_Errors` | fraction, bitmask, count |
 | **Resources** | Memory | `Memory_Used`, `Memory_Free`, `Memory_Total`, `Memory_Reserved` | MB |
 | | VRAM | `Framebuffer_Utilization` | % |
 | **Health** | Thermal | `Temperature`, `Memory_Temperature`, `Slowdown_Temperature` | C |
-| | Reliability | `Correctable_Remapped_Rows`, `Uncorrectable_Remapped_Rows`, `XID_Errors` | count |
+| | Reliability | `Correctable_Remapped_Rows`, `Uncorrectable_Remapped_Rows` | count |
 | | Hardware | `Power_Usage` (W), `Fan_Speed` (%), `Energy_Consumption` (mJ) | - |
 | | State | `PState` | state |
 
-*Note: Systems with more than 25 GPUs will have the tabular output truncated to the first 25 devices to comply with Site24x7 limits, flagged by `Truncated_Output: "true"`.*
+*Note: The Advanced tab contains the `GPU_Advanced_Metrics` table. Each table has at most 10 columns, including the GPU name. Systems with more than 25 GPUs will have the tabular output truncated to the first 25 devices to comply with Site24x7 limits, flagged by `Truncated_Output: "true"`.*
 
 ## Sample JSON Output
 ```json
 {
     "Average_GPU_Utilization": 45.5,
-    "Average_Memory_Utilization": 12.2,
+    "Memory_Copy_Utilization": 12.2,
     "Average_Temperature": 62.0,
     "GPU_Device_Count": 1,
     "GPU_Health_Metrics": [
@@ -74,12 +74,26 @@ heartbeat="true"
             "name": "GPU 0"
         }
     ],
+    "GPU_Advanced_Metrics": [
+        {
+            "Clock_Throttle_Reasons": 0,
+            "FP16_Active": 0.0,
+            "FP32_Active": 0.0,
+            "FP64_Active": 0.0,
+            "SM_Active": 0.0,
+            "SM_Occupancy": 0.0,
+            "Tensor_Active": 0.0,
+            "XID_Errors": 0,
+            "name": "GPU 0"
+        }
+    ],
     "Name": "NVIDIA_DCGM_Monitor",
     "heartbeat_required": "true",
     "plugin_version": 3,
     "status": 1,
     "units": {
         "Average_GPU_Utilization": "%",
+        "Memory_Copy_Utilization": "%",
         "GPU_Device_Count": "count",
         "GPU_Health_Metrics": {
             "Temperature": "C"

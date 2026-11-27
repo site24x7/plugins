@@ -94,18 +94,21 @@ Production-ready Site24x7 Linux Monitoring Agent plugin collecting hardware, wor
 | 5 | Total_Active_Processes | count | Total running GPU processes |
 | 6 | GPU_Idle_Cost | $/hr | Total idle cost across fleet |
 | 7 | Average_GPU_Utilization | % | Fleet-wide average utilization |
-| 8 | Average_Memory_Utilization | % | Fleet-wide average memory usage |
-| 9 | Average_Temperature | °C | Fleet-wide average temperature |
-| 10 | Total_Power_Draw | W | Total power across all GPUs |
-| 11 | XID_Errors_Count | count | Total XID critical errors |
-| 12 | NVLink_Active_Links | count | Total active NVLink links |
-| 13 | NVLink_TX_Throughput | KB/s | Total NVLink TX throughput |
-| 14 | NVLink_RX_Throughput | KB/s | Total NVLink RX throughput |
-| 15 | ECC_Errors | count | Total ECC errors |
-| 16 | ECC_Errors_Single_Bit | count | Total single-bit ECC errors |
-| 17 | ECC_Errors_Double_Bit | count | Total double-bit ECC errors |
-| 18 | Driver_Version | text | NVIDIA driver version |
-| 19 | CUDA_Version | text | CUDA toolkit version |
+| 8 | Average_Memory_Utilization | % | Fleet-wide average memory activity |
+| 9 | Highest_Memory_Utilization | % | Highest memory activity across GPUs |
+| 10 | Lowest_Memory_Utilization | % | Lowest memory activity across GPUs |
+| 11 | Average_Memory_Used | MB | Average VRAM used across GPUs |
+| 12 | Average_Temperature | °C | Fleet-wide average temperature |
+| 13 | Total_Power_Draw | W | Total power across all GPUs |
+| 14 | XID_Errors_Count | count | Total XID critical errors |
+| 15 | NVLink_Active_Links | count | Total active NVLink links |
+| 16 | NVLink_TX_Throughput | KB/s | Total NVLink TX throughput |
+| 17 | NVLink_RX_Throughput | KB/s | Total NVLink RX throughput |
+| 18 | ECC_Errors | count | Total ECC errors |
+| 19 | ECC_Errors_Single_Bit | count | Total single-bit ECC errors |
+| 20 | ECC_Errors_Double_Bit | count | Total double-bit ECC errors |
+| 21 | Driver_Version | text | NVIDIA driver version |
+| 22 | CUDA_Version | text attribute | CUDA driver-supported version, prefixed with `v` to keep it textual |
 
 ## 8. Summary
 
@@ -115,8 +118,8 @@ Production-ready Site24x7 Linux Monitoring Agent plugin collecting hardware, wor
 | Resource metrics | 16 |
 | Health metrics | 13 |
 | Process metrics | 8 |
-| Fleet summary metrics | 19 |
-| **Total** | **68 metrics** |
+| Fleet summary metrics | 22 |
+| **Total** | **71 metrics** |
 
 ---
 

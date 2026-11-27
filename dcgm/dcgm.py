@@ -3,13 +3,13 @@ import argparse
 import json
 import math
 import re
-import urllib.error
 import urllib.request
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict 
 
 # Mandatory Site24x7 Plugin Constants
 PLUGIN_VERSION = 1
 HEARTBEAT = True
+MAX_RESPONSE_SIZE_MIB = 30
 
 # Metric units for individual categories (Tabular data)
 PERF_UNITS = {
@@ -19,14 +19,19 @@ PERF_UNITS = {
     "Memory_Clock": "MHz",
     "Encoder_Utilization": "%",
     "Decoder_Utilization": "%",
+    "PCIe_TX_Throughput": "KB/s",
+    "PCIe_RX_Throughput": "KB/s"
+}
+
+ADVANCED_UNITS = {
     "SM_Active": "fraction",
     "SM_Occupancy": "fraction",
     "Tensor_Active": "fraction",
     "FP16_Active": "fraction",
     "FP32_Active": "fraction",
     "FP64_Active": "fraction",
-    "PCIe_TX_Throughput": "KB/s",
-    "PCIe_RX_Throughput": "KB/s"
+    "Clock_Throttle_Reasons": "bitmask",
+    "XID_Errors": "count"
 }
 
 RESOURCE_UNITS = {
@@ -43,17 +48,15 @@ HEALTH_UNITS = {
     "Power_Usage": "W",
     "Fan_Speed": "%",
     "Energy_Consumption": "mJ",
-    "Clock_Throttle_Reasons": "bitmask",
     "Correctable_Remapped_Rows": "count",
     "Uncorrectable_Remapped_Rows": "count",
-    "XID_Errors": "count",
     "PState": "state",
     "Slowdown_Temperature": "C"
 }
 
 TOP_LEVEL_UNITS = {
     "Average_GPU_Utilization": "%",
-    "Average_Memory_Utilization": "%",
+    "Memory_Copy_Utilization": "%",
     "Average_Temperature": "C",
     "Total_Power_Draw": "W",
     "GPU_Device_Count": "count"
@@ -62,6 +65,7 @@ TOP_LEVEL_UNITS = {
 # Global units registry reference
 METRIC_UNITS = {
     "GPU_Performance_Metrics": PERF_UNITS,
+    "GPU_Advanced_Metrics": ADVANCED_UNITS,
     "GPU_Resource_Metrics": RESOURCE_UNITS,
     "GPU_Health_Metrics": HEALTH_UNITS,
     **TOP_LEVEL_UNITS
@@ -73,7 +77,7 @@ TABS = {
         "order": 1,
         "tablist": [
             "Average_GPU_Utilization",
-            "Average_Memory_Utilization",
+            "Memory_Copy_Utilization",
             "GPU_Performance_Metrics"
         ]
     },
@@ -90,6 +94,12 @@ TABS = {
             "Average_Temperature",
             "Total_Power_Draw",
             "GPU_Health_Metrics"
+        ]
+    },
+    "Advanced": {
+        "order": 4,
+        "tablist": [
+            "GPU_Advanced_Metrics"
         ]
     }
 }
@@ -111,7 +121,15 @@ class Plugin:
             # Fetch metrics from DCGM Prometheus exporter with timeout and response size limit
             req = urllib.request.Request(self.args.dcgm_endpoint)
             with urllib.request.urlopen(req, timeout=10) as response:
-                content = response.read(1024 * 512).decode('utf-8', errors='replace')
+                response_bytes = response.read(MAX_RESPONSE_SIZE_MIB * 1024 * 1024 + 1)
+
+            if len(response_bytes) > MAX_RESPONSE_SIZE_MIB * 1024 * 1024:
+                self.data["status"] = 0
+                self.data["msg"] = "Exporter response exceeded the limit"
+                self.data.pop("tabs", None)
+                return self.data
+
+            content = response_bytes.decode('utf-8', errors='replace')
 
             # Parse metrics per GPU
             gpu_data = self._parse_multi_gpu_metrics(content)
@@ -125,6 +143,7 @@ class Plugin:
 
             # Build Site24x7 Tabular lists
             perf_list = []
+            advanced_list = []
             resource_list = []
             health_list = []
 
@@ -137,25 +156,30 @@ class Plugin:
                 gpu_name = f"GPU {gpu_id}"
 
                 # Performance Tab
-                perf_row = {"name": gpu_name}
+                perf_row: Dict[str, Any] = {"name": gpu_name}
                 perf_row["GPU_Utilization"] = m.get("gpu_util", 0)
                 perf_row["Memory_Copy_Utilization"] = m.get("mem_util", 0)
                 perf_row["SM_Clock"] = m.get("sm_clock", 0)
                 perf_row["Memory_Clock"] = m.get("mem_clock", 0)
                 perf_row["Encoder_Utilization"] = m.get("enc_util", 0)
                 perf_row["Decoder_Utilization"] = m.get("dec_util", 0)
-                perf_row["SM_Active"] = m.get("sm_active", 0)
-                perf_row["SM_Occupancy"] = m.get("sm_occupancy", 0)
-                perf_row["Tensor_Active"] = m.get("tensor_active", 0)
-                perf_row["FP16_Active"] = m.get("fp16_active", 0)
-                perf_row["FP32_Active"] = m.get("fp32_active", 0)
-                perf_row["FP64_Active"] = m.get("fp64_active", 0)
                 perf_row["PCIe_TX_Throughput"] = m.get("pcie_tx", 0)
                 perf_row["PCIe_RX_Throughput"] = m.get("pcie_rx", 0)
                 perf_list.append(perf_row)
 
+                advanced_row: Dict[str, Any] = {"name": gpu_name}
+                advanced_row["SM_Active"] = m.get("sm_active", 0)
+                advanced_row["SM_Occupancy"] = m.get("sm_occupancy", 0)
+                advanced_row["Tensor_Active"] = m.get("tensor_active", 0)
+                advanced_row["FP16_Active"] = m.get("fp16_active", 0)
+                advanced_row["FP32_Active"] = m.get("fp32_active", 0)
+                advanced_row["FP64_Active"] = m.get("fp64_active", 0)
+                advanced_row["Clock_Throttle_Reasons"] = m.get("clock_throttle", 0)
+                advanced_row["XID_Errors"] = m.get("xid_errors", 0)
+                advanced_list.append(advanced_row)
+
                 # Resource Tab
-                resource_row = {"name": gpu_name}
+                resource_row: Dict[str, Any] = {"name": gpu_name}
                 resource_row["Memory_Used"] = m.get("fb_used", 0)
                 resource_row["Memory_Free"] = m.get("fb_free", 0)
                 resource_row["Memory_Total"] = m.get("fb_total", 0)
@@ -167,16 +191,14 @@ class Plugin:
                 resource_list.append(resource_row)
 
                 # Health Tab
-                health_row = {"name": gpu_name}
+                health_row: Dict[str, Any] = {"name": gpu_name}
                 health_row["Temperature"] = m.get("temp", 0)
                 health_row["Memory_Temperature"] = m.get("mem_temp", 0)
                 health_row["Power_Usage"] = m.get("power", 0)
                 health_row["Fan_Speed"] = m.get("fan", 0)
                 health_row["Energy_Consumption"] = m.get("energy", 0)
-                health_row["Clock_Throttle_Reasons"] = m.get("clock_throttle", 0)
                 health_row["Correctable_Remapped_Rows"] = m.get("corr_remap", 0)
                 health_row["Uncorrectable_Remapped_Rows"] = m.get("uncorr_remap", 0)
-                health_row["XID_Errors"] = m.get("xid_errors", 0)
                 health_row["PState"] = m.get("pstate", 0)
                 health_row["Slowdown_Temperature"] = m.get("slowdown_temp", 0)
                 health_list.append(health_row)
@@ -190,12 +212,13 @@ class Plugin:
             # Populate top-level aggregate metrics
             self.data["GPU_Device_Count"] = len(gpu_data)
             self.data["Average_GPU_Utilization"] = round(sum(gpu_utils) / len(gpu_utils), 2) if gpu_utils else 0
-            self.data["Average_Memory_Utilization"] = round(sum(mem_utils) / len(mem_utils), 2) if mem_utils else 0
+            self.data["Memory_Copy_Utilization"] = round(sum(mem_utils) / len(mem_utils), 2) if mem_utils else 0
             self.data["Average_Temperature"] = round(sum(temps) / len(temps), 2) if temps else 0
             self.data["Total_Power_Draw"] = round(sum(powers), 2) if powers else 0
 
             # Assign tabular data (Limit to 25 rows)
             self.data["GPU_Performance_Metrics"] = perf_list[:25]
+            self.data["GPU_Advanced_Metrics"] = advanced_list[:25]
             self.data["GPU_Resource_Metrics"] = resource_list[:25]
             self.data["GPU_Health_Metrics"] = health_list[:25]
 
@@ -241,9 +264,7 @@ class Plugin:
             "DCGM_FI_DEV_PIPE_FP32_ACTIVE": "fp32_active",
             "DCGM_FI_DEV_PIPE_FP16_ACTIVE": "fp16_active",
             "DCGM_FI_PROF_PCIE_TX_BYTES": "pcie_tx",
-            "DCGM_FI_DEV_PCIE_TX_THROUGHPUT": "pcie_tx",
             "DCGM_FI_PROF_PCIE_RX_BYTES": "pcie_rx",
-            "DCGM_FI_DEV_PCIE_RX_THROUGHPUT": "pcie_rx",
             "DCGM_FI_DEV_CLOCK_THROTTLE_REASONS": "clock_throttle",
             "DCGM_FI_DEV_CORRECTABLE_REMAP_ROWS": "corr_remap",
             "DCGM_FI_DEV_UNCORRECTABLE_REMAP_ROWS": "uncorr_remap",
@@ -276,7 +297,7 @@ class Plugin:
                 # Reject NaN and Infinity to maintain JSON compliance
                 if not math.isfinite(value):
                     continue
-            except (ValueError, TypeError):
+            except (ValueError):
                 continue
 
             # Extract GPU ID from labels
